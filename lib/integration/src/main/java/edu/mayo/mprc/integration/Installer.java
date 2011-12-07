@@ -28,8 +28,8 @@ import java.util.zip.ZipFile;
  */
 public class Installer {
 	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
-	private static final String RESOURCE_MD5 = "2fd07dfa2f0e2a8a5c18c06e7acd15da";
-	private static final long RESOURCE_LENGTH = 16908110;
+	private static final String RESOURCE_MD5 = "3d88e7f26d9c4422d24666af75b154bc";
+	private static final long RESOURCE_LENGTH = 34000593;
 
 	private static Date lastChecked = null;
 
@@ -95,6 +95,58 @@ public class Installer {
 			"/linux_x86_64/msmsEval"
 	);
 
+	private static final String MYRIMATCH_EXE_WINDOWS = "myrimatch.exe";
+
+	private static final String MYRIMATCH_EXE_LINUX = "myrimatch";
+
+	private static final List<String> MYRIMATCH_WINDOWS = Arrays.asList(
+			"agtsampleinforw.dll",
+			"BaseCommon.dll",
+			"BaseDataAccess.dll",
+			"BaseError.dll",
+			"BaseTof.dll",
+			"BDal.CXt.Lc.dll",
+			"BDal.CXt.Lc.Factory.dll",
+			"BDal.CXt.Lc.Interfaces.dll",
+			"BDal.CXt.Lc.UntU2.dll",
+			"boost_date_time-vc80-mt-1_33_1-BDAL_20070424.dll",
+			"boost_regex-vc80-mt-1_33_1-BDAL_20070424.dll",
+			"boost_thread-vc80-mt-1_33_1-BDAL_20070424.dll",
+			"Clearcore2.Data.AnalystDataProvider.dll",
+			"Clearcore2.Data.CommonInterfaces.dll",
+			"Clearcore2.Data.dll",
+			"Clearcore2.Data.WiffReader.dll",
+			"Clearcore2.InternalRawXYProcessing.dll",
+			"Clearcore2.ProjectUtilities.dll",
+			"Clearcore2.StructuredStorage.dll",
+			"Clearcore2.Utility.dll",
+			"CompassXtractMS.dll",
+			"EULA.MHDAC",
+			"EULA.MSFileReader",
+			"fileio.dll",
+			"FlexVariableTable.xml",
+			"fregistry.dll",
+			"HSReadWrite.dll",
+			"ICRVariableTable.xml",
+			"Interop.DataExplorer.dll",
+			"Interop.EDAL.dll",
+			"Interop.EDAL.SxS.manifest",
+			"Interop.HSREADWRITELib.dll",
+			"Interop.HSREADWRITELib.SxS.manifest",
+			"libfftw3-3.dll",
+			"libfftw3f-3.dll",
+			"MassLynxRaw.dll",
+			"MassSpecDataReader.dll",
+			"MSFileReader.XRawfile2.dll",
+			"MSFileReader.XRawfile2.SxS.manifest",
+			MYRIMATCH_EXE_WINDOWS,
+			"NTB-vc80-mt-1_5_97.dll"
+	);
+
+	private static final List<String> MYRIMATCH_LINUX = Arrays.asList(
+			"!/myrimatch_2_1_87/linux/" + MYRIMATCH_EXE_LINUX
+	);
+
 	private static final String WRAPPER_SCRIPT = "unixXvfbWrapper.sh";
 
 	private static final List<String> UNIX_XVFB_WRAPPER = Arrays.asList(
@@ -155,7 +207,7 @@ public class Installer {
 		for (String file : files) {
 			try {
 				boolean makeExecutable = false;
-				if (file.startsWith("!")) {
+				if (file.startsWith("!" )) {
 					file = file.substring(1);
 					makeExecutable = true;
 				}
@@ -190,7 +242,7 @@ public class Installer {
 		}
 		FileUtilities.quietDelete(folder);
 		if (folder.exists()) {
-			throw new MprcException("Could not uninstall files - the folder " + folder.getAbsolutePath() + " is not empty.");
+			throw new MprcException("Could not uninstall files - the folder " + folder.getAbsolutePath() + " is not empty." );
 		}
 	}
 
@@ -217,19 +269,27 @@ public class Installer {
 	}
 
 	public static File omssa(File folder, Action action) {
-		return processList(folder, "omssa", getOmssaFiles(), action);
+		return processList(folder, "omssa", FileUtilities.isWindowsPlatform() ? OMSSA_WINDOWS : OMSSA_LINUX, action);
 	}
 
 	public static File tandem(File folder, Action action) {
 		return processList(folder, "tandem", getTandemFiles(), action);
 	}
 
+	public static File myrimatch(File folder, Action action) {
+		final boolean win = FileUtilities.isWindowsPlatform();
+		return processSingleFile(folder, "myrimatch",
+				win ? MYRIMATCH_WINDOWS : MYRIMATCH_LINUX,
+				win ? MYRIMATCH_EXE_WINDOWS : MYRIMATCH_EXE_LINUX,
+				action);
+	}
+
 	public static File msmsEval(File folder, Action action) {
-		return processList(folder, "msmsEval", getMsmsEvalFiles(), action);
+		return processList(folder, "msmsEval", FileUtilities.isWindowsPlatform() ? MSMSEVAL_WINDOWS : MSMSEVAL_LINUX, action);
 	}
 
 	public static File formatDb(File folder, Action action) {
-		return processList(folder, "formatdb", getFormatDbFiles(), action);
+		return processList(folder, "formatdb", FileUtilities.isWindowsPlatform() ? FORMATDB_WINDOWS : FORMATDB_LINUX, action);
 	}
 
 	public static File xvfbWrapper(File folder, Action action) {
@@ -268,7 +328,7 @@ public class Installer {
 	 * @return Path to the file containing the integration data.
 	 */
 	public static File getIntegrationArchive() {
-		File resource = new File(FileUtilities.getDefaultTempDirectory(), "integration-" + RESOURCE_MD5 + ".zip");
+		File resource = new File(FileUtilities.getDefaultTempDirectory(), "integration-" + RESOURCE_MD5 + ".zip" );
 
 		if (lastChecked == null) {
 			if (!resource.exists()) {
@@ -280,7 +340,7 @@ public class Installer {
 				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected size: expected {2}, got {2} bytes", resource.getAbsolutePath(), RESOURCE_LENGTH, actualLength));
 			}
 
-			final String checksum = StringUtilities.toHex(checksum(resource), "");
+			final String checksum = StringUtilities.toHex(checksum(resource), "" );
 			if (!RESOURCE_MD5.equals(checksum)) {
 				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected {1} checksum {2}", resource.getAbsolutePath(), DIGEST_INSTANCE, RESOURCE_MD5));
 			}
@@ -291,23 +351,11 @@ public class Installer {
 		return resource;
 	}
 
-	private static List<String> getOmssaFiles() {
-		return FileUtilities.isWindowsPlatform() ? OMSSA_WINDOWS : OMSSA_LINUX;
-	}
-
 	private static List<String> getTandemFiles() {
 		if (FileUtilities.isMacPlatform()) {
 			return TANDEM_MAC;
 		}
 		return FileUtilities.isWindowsPlatform() ? TANDEM_WINDOWS : TANDEM_LINUX;
-	}
-
-	private static List<String> getMsmsEvalFiles() {
-		return FileUtilities.isWindowsPlatform() ? MSMSEVAL_WINDOWS : MSMSEVAL_LINUX;
-	}
-
-	private static List<String> getFormatDbFiles() {
-		return FileUtilities.isWindowsPlatform() ? FORMATDB_WINDOWS : FORMATDB_LINUX;
 	}
 
 	private static File processSingleFile(File folder, String defaultFolder, List<String> files, String mainFile, Action action) {
