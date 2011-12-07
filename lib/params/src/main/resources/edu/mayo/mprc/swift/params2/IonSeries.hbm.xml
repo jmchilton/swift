@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.swift.params2">
+    <class name="IonSeries" table="ion_series">
+        <id name="id" type="integer" column="ion_series_id">
+            <generator class="native"/>
+        </id>
+        <properties name="uniqueness" unique="true">
+            <property name="name" type="string" length="20" column="name"/>
+            <many-to-one name="deletion" column="deletion" class="edu.mayo.mprc.database.Change" lazy="proxy"/>
+        </properties>
+
+        <many-to-one name="creation" column="creation" class="edu.mayo.mprc.database.Change" lazy="proxy"/>
+    </class>
+</hibernate-mapping>

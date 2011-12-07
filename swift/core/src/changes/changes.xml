@@ -1,0 +1,20 @@
+<document>
+	<properties>
+		<title>Swift Core</title>
+		<author email="zenka.roman@mayo.edu">Roman Zenka</author>
+	</properties>
+	<body>
+		<release version="2.4.3" date="2005-03-01" description="RCF migration">
+			<action dev="m044910" type="add">
+				Started the changelog.
+			</action>
+			<!--      <action dev="aramirez" type="fix" issue="MPJIRA-11">
+					Enable retrieving component-specific issues.
+				  </action>
+				  <action dev="jruiz" type="remove">
+					The element type " link " must be terminated by the matching end-tag.
+					Deleted the erroneous code.
+				  </action> -->
+		</release>
+	</body>
+</document>

@@ -1,0 +1,241 @@
+body, tr, th, td {
+    font-family: arial, sans-serif;
+    font-size: 13px;
+}
+
+body {
+    background-color: #fff;
+    border: 0;
+    padding: 5px;
+}
+
+#header {
+    text-align: center;
+}
+
+#content {
+    text-align: left;
+    padding: 0;
+}
+
+h1 {
+    text-align: left;
+}
+
+#progress {
+    background: url(ajax-loader.gif) no-repeat;
+    padding-left: 20px;
+}
+
+.progress {
+    background: url(ajax-loader.gif) no-repeat;
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.section {
+    margin-top: 10px;
+}
+
+.section h2, .section input {
+    color: #39c;
+    vertical-align: middle;
+    font-size: 18px;
+    line-height: 23px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.error, .validation-panel {
+    color: red;
+    background: url(warning.gif) no-repeat top left;
+    padding-left: 25px;
+}
+
+.validation-panel {
+    margin-top: 20px;
+}
+
+.validation-panel div {
+    display: inline;
+}
+
+.file-path {
+    display: inline;
+    font-family: monospace;
+}
+
+.module {
+    background-color: #eee;
+    border: 1px solid #9eb6ce;
+    width: 700px;
+}
+
+.module-label {
+    font-size: 18px;
+    background: #d2dbe8 url(blue_gradient.gif) repeat-x;
+    border: solid #9eb6ce;
+    border-width: 0 0 1px 0;
+    padding: 5px;
+}
+
+.module-description {
+    margin-bottom: 5px;
+    padding: 3px;
+    border-bottom: 1px solid white;
+}
+
+.new-module-button {
+    margin: 5px auto 0 auto;
+    text-align: center;
+}
+
+.module-wrapper {
+    padding: 0 0 10px 0;
+}
+
+/* ----------------------------- */
+
+.gwt-TabBar {
+    background-color: #fff;
+    padding-top: 0;
+}
+
+.gwt-TabPanelBottom {
+    background-color: #d2dbe8;
+    border-top: none;
+
+    padding: 5px;
+    margin: 0 0 3px 0;
+}
+
+.gwt-TabBar .gwt-TabBarFirst, .gwt-TabBar .gwt-TabBarRest {
+    border-bottom: 1px solid #e2ebf8;
+    padding: 3px;
+
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+    border-bottom: 1px solid #e2ebf8;
+
+    margin-left: 5px;
+    margin-right: 2px;
+
+    padding: 5px;
+
+    cursor: pointer;
+
+    background-color: #f2fbf8;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+    border: 1px solid #9eb6ce;
+    border-bottom: 0;
+    background: #d2dbe8 url(blue_gradient.gif) repeat-x;
+}
+
+.gwt-TabBar .selectedText {
+    color: white;
+    background-color: #d2dbf8;
+    font-weight: bold;
+    padding: 3px 7px 5px 7px;
+}
+
+.gwt-TabBar .unselectedText {
+    color: rgb(227, 209, 13);
+    background-color: rgb(48, 48, 48);
+
+    padding: 3px 7px 5px 7px;
+}
+
+.gwt-TabBar .onMouseEnter {
+    color: white;
+    background-color: rgb(64, 64, 64);
+}
+
+.gwt-TabBar .onMouseLeave {
+
+}
+
+.runner-wrapper {
+    margin: 0 0 0 5px;
+    padding: 0;
+    border: 0;
+}
+
+.module-cell {
+    vertical-align: top;
+}
+
+.runner-cell {
+    vertical-align: top;
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+}
+
+.remove-button {
+    float: right;
+}
+
+.property-description {
+    font-size: 12px;
+    padding: 0 0 1em 3em;
+    width: 400px;
+}
+
+.property-text-box {
+    width: 400px;
+}
+
+.editor-column {
+    width: 100%;
+}
+
+.property-editor {
+    text-align: left;
+}
+
+.delete-button {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-image: url(delete.gif);
+}
+
+.tree-item-pusbutton {
+    margin: 2px;
+    padding: 2px 5px;
+    background-color: #ddd;
+    border: 1px solid #f8f8f8;
+    border-right-color: #aaa;
+    border-bottom-color: #aaa;
+}
+
+.gwt-TreeItem-selected {
+    background-color: #e2ebf8;
+}
+
+.successIndicator {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: url(task_ok.gif) no-repeat 2px 2px;
+}
+
+/* the outside of the dialog */
+.gwt-DialogBox {
+    background: #cde;
+}
+
+.property-caption {
+    font-weight: bold;
+}
+
+.config-tree {
+    width: 250px;
+}

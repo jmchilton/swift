@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.database">
+    <class name="TestSet" table="set">
+        <id name="id" type="integer" column="set_id">
+            <generator class="native"/>
+        </id>
+        <property name="setName" type="string" length="30" column="set_name"/>
+        <set name="members" table="set_members" lazy="false" cascade="none" access="field">
+            <key column="sm_set"/>
+            <many-to-many column="sm_member" class="TestSetMember"/>
+        </set>
+    </class>
+</hibernate-mapping>

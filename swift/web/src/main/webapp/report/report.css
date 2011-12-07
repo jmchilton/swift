@@ -1,0 +1,479 @@
+body, tr, th, td, input, select {
+    font-family: "Verdana", sans-serif;
+    font-size: 12px;
+    background-color: #fcfcfc; /* Reduce glare while still appear white */
+    margin: 0;
+}
+
+tr, th, td {
+    border: 0;
+}
+
+body {
+    text-align: center;
+}
+
+#contents, #contents table {
+    text-align: left;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.search {
+    background-color: #eeeef8;
+    padding: 0.75em 0.5em;
+    margin: 0.5em 0;
+    border-style: solid;
+    border-color: #aab;
+    border-width: 0 3px 3px 0;
+}
+
+.search-details {
+    background-color: #eee;
+    padding: 0.5em 0.25em;
+    margin: 0.5em 0.25em 0.25em 1.25em;
+}
+
+.progressbar {
+    position: relative;
+    background-color: white;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    height: 20px;
+    overflow: hidden;
+    line-height: 20px;
+}
+
+.barcell {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+.progressbar {
+    background-position: 0 50%;
+    background-repeat: repeat-x;
+    background-image: url(bar_blank.gif);
+}
+
+.progressbar-error {
+    text-align: center;
+}
+
+.progressbar-error a {
+    background-image: url(task_fail.gif);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
+.progressbar-complete {
+    background-image: url(task_ok.gif);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+.progressbar .barrunning, .progressbar .barok, .progressbar .barwarn, .progressbar .barfail {
+    height: 21px;
+    border: 0;
+    margin: 0;
+    padding: 0; /* Progress bar color */
+    position: relative;
+    background-position: 0 50%;
+    background-repeat: repeat-x;
+}
+
+.progressbar .barrunning {
+    background-image: url(bar_run.gif);
+}
+
+.progressbar .barok {
+    background-image: url(bar_ok.gif);
+    top: -21px;
+}
+
+.progressbar .barwarn {
+    background-image: url(bar_warn.gif);
+    top: -42px;
+}
+
+.progressbar .barfail {
+    background-image: url(bar_error.gif);
+    top: -63px;
+}
+
+a.arrow {
+    float: left;
+    line-height: 16px;
+    text-align: center;
+}
+
+a.arrow .arrowright, a.arrow .arrowdown {
+    display: block;
+    width: 0;
+    height: 0;
+    font-size: 1px;
+    line-height: 1px;
+    border: 8px solid white;
+}
+
+a.arrow .arrowright {
+    border-left-color: #00c;
+    border-right-width: 0;
+    margin-left: 4px;
+    margin-right: 8px;
+}
+
+a.arrow .arrowdown {
+    margin-right: 4px;
+    margin-top: 4px;
+    border-top-color: #00c;
+    border-bottom-width: 0;
+}
+
+a:hover.arrow .arrowright {
+    border-left-color: #88f;
+}
+
+a:hover.arrow .arrowdown {
+    border-top-color: #88f;
+}
+
+.columns {
+    padding: 0;
+    margin: 0;
+}
+
+table.report {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #9eb6ce;
+    text-align: left;
+    width: 100%;
+}
+
+.report > thead > tr > th {
+    background-color: #d2dbe8;
+    background-image: url(/common/blue_gradient.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #9eb6ce;
+    line-height: 2em;
+    padding: 0.25em;
+}
+
+.report > tbody > tr > td {
+    border: 1px solid #9eb6ce;
+    padding: 0.25em;
+}
+
+.tasktable {
+    float: left;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.tasktable > tbody > tr > td {
+    border: none;
+    padding: 0.1em 0.25em 0.1em 1.5em;
+}
+
+table.reportList {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 360px;
+}
+
+th#type {
+    width: 60px;
+}
+
+th#actions {
+    width: 60px;
+}
+
+th#results {
+    width: 360px;
+}
+
+table.reportList td {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.columns th.column {
+    text-align: center;
+    margin: 0;
+}
+
+.status-completed, .status-failed, .status-warnings, .status-running, .status-ready {
+    padding: 0 0 0 1.5em;
+}
+
+.status-running {
+    background-image: url(task_running.gif);
+    background-repeat: no-repeat;
+}
+
+.status-ready {
+    background-image: url(task_ready.gif);
+    background-repeat: no-repeat;
+}
+
+.status-completed {
+    background-image: url(task_ok.gif);
+    background-repeat: no-repeat;
+}
+
+.status-failed {
+    background-image: url(task_fail.gif);
+    background-repeat: no-repeat;
+}
+
+.status-warnings {
+    background-image: url(task_warn.gif);
+    background-repeat: no-repeat;
+}
+
+.dropdown {
+    z-index: 199;
+    display: none;
+    border: 1px solid black;
+    border-left: 1em solid blue;
+    padding: 0.25em;
+    text-align: left;
+    position: absolute;
+    background-color: white;
+}
+
+form {
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sort_button {
+    text-decoration: none;
+    color: #00b;
+    margin-right: 23px;
+    line-height: 1.2em;
+}
+
+.sort_button.no_dropdown {
+    margin-right: 0;
+}
+
+a.sort_button:hover {
+    color: #88f;
+}
+
+a.filter_button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: 21px;
+    height: 21px;
+    background-image: url(btn.gif);
+}
+
+a.filter_button.filter {
+    background-image: url(btn_filter.gif);
+}
+
+a.filter_button.atoz {
+    background-image: url(btn_atoz.gif);
+}
+
+a.filter_button.ztoa {
+    background-image: url(btn_ztoa.gif);
+}
+
+a.filter_button.filter.atoz {
+    background-image: url(btn_filter_atoz.gif);
+}
+
+a.filter_button.filter.ztoa {
+    background-image: url(btn_filter_ztoa.gif);
+}
+
+a:hover.filter_button {
+    background-image: url(btn_h.gif);
+}
+
+a:hover.filter_button.filter {
+    background-image: url(btn_filter_h.gif);
+}
+
+a:hover.filter_button.atoz {
+    background-image: url(btn_atoz_h.gif);
+}
+
+a:hover.filter_button.ztoa {
+    background-image: url(btn_ztoa_h.gif);
+}
+
+a:hover.filter_button.filter.atoz {
+    background-image: url(btn_filter_atoz_h.gif);
+}
+
+a:hover.filter_button.filter.ztoa {
+    background-image: url(btn_filter_ztoa_h.gif);
+}
+
+#popupMask {
+    position: absolute;
+    z-index: 198;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    /* this hack is so it works in IE
+             * I find setting the color in the css gives me more flexibility
+             * than the PNG solution.
+             */
+    background-color: #333333;
+    display: none;
+}
+
+.arrowCell {
+    vertical-align: top;
+}
+
+.path {
+    color: #121;
+}
+
+.search-details td table {
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.gantt {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 102px;
+    position: relative;
+    background-color: #fcfcfc;
+}
+
+.queue-bar {
+    position: relative;
+    top: 2px;
+    height: 7px;
+    background-color: #aaa;
+    border: 1px solid #ddd;
+}
+
+.run-bar {
+    position: relative;
+    top: -7px;
+    height: 7px;
+    background-color: blue;
+    border: 1px solid #ddf;
+}
+
+.rerun-link, .edit-link, .hide-link, .qa-link, .parent-dir-link {
+    display: block;
+    color: #fff;
+    font-size: 1px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    float: left;
+}
+
+.rerun-link {
+    background-image: url(search_rerun.gif);
+}
+
+.edit-link {
+    background-image: url(search_edit.gif);
+}
+
+.hide-link {
+    background-image: url(search_hide.gif);
+}
+
+.parent-dir-link {
+    background-image: url(folder.gif);
+}
+
+.qa-link {
+    background-image: url(search.gif);
+}
+
+#navigation {
+    display: block;
+    width: 80px;
+    text-align: center;
+    margin: 0 auto;
+    background-color: #e0e0ff;
+}
+
+#navigation a {
+    display: block;
+    font-size: 1px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    float: left;
+}
+
+#navigation a.first {
+    background-image: url(home.gif);
+}
+
+#navigation a.prev {
+    background-image: url(arrow_l.gif);
+}
+
+#navigation a.next {
+    background-image: url(arrow_r.gif);
+}
+
+td.result-link {
+    width: 320px;
+}
+
+td.result-link span {
+    display: block;
+    width: 300px;
+    padding: 0.25em;
+    overflow: hidden;
+}
+
+span.result-status {
+    display: block;
+    width: 300px;
+    padding: 0.25em;
+    overflow: hidden;
+    font-style: italic;
+}
+
+td.result-buttons {
+    width: 40px;
+}

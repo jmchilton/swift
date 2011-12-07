@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="edu.mayo.mprc.swift.dbmapping.TaskStateData" table="task_state" lazy="false">
+        <id name="id" column="task_state_id" type="long">
+            <generator class="native"/>
+        </id>
+        <property name="description" column="description" length="60"/>
+    </class>
+
+</hibernate-mapping>

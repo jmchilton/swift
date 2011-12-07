@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>edu.mayo.mprc</groupId>
+    <artifactId>db-curator-ui</artifactId>
+    <version>3.0-SNAPSHOT</version>
+    <name>db-curator-ui</name>
+    <description>GWT user interface for db-curator</description>
+
+    <properties>
+        <gwtVersion>2.4.0</gwtVersion>
+    </properties>
+
+    <parent>
+        <groupId>edu.mayo.mprc</groupId>
+        <artifactId>swift</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>gwt-common</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>db-curator</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Optional dependency for commons-fileupload -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>integration</artifactId>
+            <version>3.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- 3rd party GWT libraries -->
+        <dependency>
+            <groupId>com.google.code.gwt-dnd</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
+        <!--  GWT deps (from central repo) -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Produce source .jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <connection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/swift/db-curator-ui</connection>
+        <developerConnection>scm:svn:https://bsisvn.mayo.edu/mprc/trunk/java/swift/db-curator-ui</developerConnection>
+        <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/swift/db-curator-ui</url>
+    </scm>
+
+    <distributionManagement>
+        <site>
+            <id>mprc-site</id>
+            <name>db-curator-ui documentation</name>
+            <url>scp://delphi.mayo.edu/var/www/html/projects/db-curator-ui</url>
+        </site>
+    </distributionManagement>
+</project>

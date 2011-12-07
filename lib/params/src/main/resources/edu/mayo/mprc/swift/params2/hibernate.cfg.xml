@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Mapping files -->
+        <mapping resource="edu/mayo/mprc/database/Change.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/IonSeries.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/Instrument.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/ExtractMsnSettings.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/Protease.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/SearchEngineParameters.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/SavedSearchEngineParameters.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/ScaffoldSettings.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/swift/params2/StarredProteins.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

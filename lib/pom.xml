@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>edu.mayo.mprc</groupId>
+    <artifactId>lib</artifactId>
+    <packaging>pom</packaging>
+    <version>3.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>edu.mayo.mprc</groupId>
+        <artifactId>mprc</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../mprc/pom.xml</relativePath>
+    </parent>
+
+    <name>MPRC Library</name>
+    <description>MPRC library - reusable tools and utilities</description>
+
+    <modules>
+        <module>chem</module>
+        <module>commandline</module>
+        <module>config</module>
+        <module>daemon</module>
+	<module>database</module>
+	<module>db-curator</module>
+        <module>filesharing</module>
+        <module>integration</module>
+        <module>math</module>
+        <module>messaging</module>
+        <module>mgf</module>
+        <module>mprcfile</module>
+	<module>mzxml</module>
+	<module>params</module>
+        <module>scaffoldparser</module>
+        <module>scafml</module>
+        <module>search-engine</module>
+        <module>sge</module>
+        <module>tar</module>
+        <module>textio</module>
+        <module>unimod</module>
+        <module>util</module>
+        <module>webscraping</module>
+        <module>workflow-engine</module>
+        <module>workspace</module>
+        <module>fasta</module>
+    </modules>
+</project>

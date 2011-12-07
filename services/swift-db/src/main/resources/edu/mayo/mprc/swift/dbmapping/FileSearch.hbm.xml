@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.mayo.mprc.swift.dbmapping">
+    <class name="FileSearch" table="file_search" lazy="false">
+        <id name="id" column="file_search_id" type="int">
+            <generator class="native"/>
+        </id>
+
+        <properties name="uniqueness" unique="true">
+            <property name="inputFile" type="edu.mayo.mprc.database.FileType" column="input_file"/>
+            <property name="biologicalSample" type="string" length="128" column="biological_sample"/>
+            <property name="categoryName" type="string" length="128" column="category_name"/>
+            <property name="experiment" type="string" length="128" column="experiment"/>
+            <many-to-one name="enabledEngines" class="EnabledEngines" column="enabled_engines" lazy="false"/>
+            <property name="swiftSearchDefinitionId" type="integer" column="input_files_id"/>
+        </properties>
+    </class>
+</hibernate-mapping>

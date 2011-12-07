@@ -1,0 +1,9 @@
+<module rename-to="configuration">
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name='edu.mayo.mprc.common.Common'/>
+
+    <entry-point class='edu.mayo.mprc.swift.configuration.client.Configuration'/>
+
+    <servlet path="/configuration/ConfigurationService"
+             class="edu.mayo.mprc.swift.configuration.server.ConfigurationServiceImpl"/>
+</module>

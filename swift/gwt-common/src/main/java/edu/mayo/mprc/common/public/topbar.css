@@ -1,0 +1,81 @@
+.topbar {
+    background: white url(logo_small_30.png) no-repeat 12px -8px;
+
+    border: 0 solid #9eb6ce;
+    border-bottom-width: 1px;
+
+    height: 30px;
+    margin: 0;
+    font-size: 12px;
+    font-family: "Verdana", sans-serif;
+    clear: both;
+}
+
+#contents {
+    background-color: #e0e0ff;
+    padding: 5px;
+    clear: both;
+}
+
+ul.locations {
+    /* Skip the logo */
+    margin: 0 0 0 140px;
+    list-style: none;
+}
+
+ul.locations li {
+    float: left;
+    margin: 0 2px 0 2px;
+    background: #d2dbe8 url(blue_gradient.gif) repeat-x;
+
+    border: 0;
+    height: auto;
+    position: relative;
+    top: 5px;
+}
+
+ul.locations li a {
+    width: 140px;
+    text-align: center;
+    padding: 0 10px;
+    border: 1px solid #9eb6ce;
+
+    display: block;
+    height: 24px;
+    line-height: 24px;
+}
+
+ul.locations li.active-tab {
+    background: #e0e0ff none;
+
+    margin: 0 2px 0 2px;
+    position: relative;
+    top: 1px;
+}
+
+ul.locations li.active-tab a {
+    border-bottom-color: #e0e0ff;
+    border-style: solid;
+    height: 28px;
+    line-height: 28px;
+}
+
+/* The iframe with status */
+.status-window {
+    display: block;
+    width: 250px;
+    height: 25px;
+    margin: 3px 0 0 20px;
+    border: 0;
+    overflow: hidden;
+    position: absolute;
+    left: 660px;
+    top: 2px;
+}
+
+.user-message {
+    border: 1px solid #f00;
+    background-color: #fee;
+    padding: 10px;
+    margin: 5px;
+}

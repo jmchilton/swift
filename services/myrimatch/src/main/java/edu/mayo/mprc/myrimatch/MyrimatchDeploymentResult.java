@@ -1,0 +1,28 @@
+package edu.mayo.mprc.myrimatch;
+
+import edu.mayo.mprc.enginedeployment.DeploymentResult;
+
+public final class MyrimatchDeploymentResult extends DeploymentResult {
+	private static final long serialVersionUID = 20110715L;
+	private long numForwardEntries;
+	private String decoySequencePrefix;
+
+	public MyrimatchDeploymentResult() {
+	}
+
+	public long getNumForwardEntries() {
+		return numForwardEntries;
+	}
+
+	public void setNumForwardEntries(long numForwardEntries) {
+		this.numForwardEntries = numForwardEntries;
+	}
+
+	public String getDecoySequencePrefix() {
+		return decoySequencePrefix;
+	}
+
+	public void setDecoySequencePrefix(String decoySequencePrefix) {
+		this.decoySequencePrefix = decoySequencePrefix;
+	}
+}

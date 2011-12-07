@@ -1,0 +1,54 @@
+package edu.mayo.mprc.messaging;
+
+import java.io.Serializable;
+
+/**
+ * A service is a named entity that allows requests to be sent, delivered, executed and
+ * responses returned back. There are two users of a service - those who send requests, and those who receive them and send
+ * back responses.
+ * <p/>
+ * How exactly are the requests sent and queued is dependent on implementation - JMS, GridEngine, sockets or other technologies can be used.
+ * A service can be one-to-one, one-to-many, load balanced, etc. You create services through
+ * central service factory {@link ServiceFactory}. Which service you obtain is specified by the URI.
+ * <p/>
+ * The Service allows multi-threaded access. You can share one service and send requests from multiple threads,
+ * or you can receive requests from multiple threads. Internally, the service might create thread-local variables
+ * to cope with such usage patterns in case the underlying technology is not multi-treaded.
+ * <p/>
+ * See {@link ServiceFactory}.
+ */
+public interface Service {
+	/**
+	 * Sends an object request to given target.
+	 *
+	 * @param request  Message to be sent.
+	 * @param listener The object to be notified about the request sending progress.
+	 * @throws edu.mayo.mprc.MprcException Message could not be sent.
+	 */
+	void sendRequest(Serializable request, ResponseListener listener);
+
+	/**
+	 * This methods returns the next request sent through this service object. The call to this method
+	 * blocks until a request is received.
+	 * <p/>
+	 * Once you are done receiving, do not forget to call {@link #stopReceiving()}. If somebody else wants to
+	 * start receiving requests later on and you do not indicate you are no longer receiving, the requests
+	 * would bounce round-robin style between the two receivers and the messaging would block.
+	 *
+	 * @param timeout Timeout in milliseconds. If no message arrives within timeout, null is returned as request.
+	 * @throws edu.mayo.mprc.MprcException Request could not be received.
+	 */
+	Request receiveRequest(long timeout);
+
+	/**
+	 * Invoke this once you no longer want to receive more data.
+	 */
+	void stopReceiving();
+
+	/**
+	 * Gets service name.
+	 *
+	 * @return
+	 */
+	String getName();
+}

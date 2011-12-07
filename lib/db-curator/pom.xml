@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>edu.mayo.mprc</groupId>
+    <artifactId>db-curator</artifactId>
+    <version>3.0-SNAPSHOT</version>
+    <name>db-curator</name>
+    <description>FASTA database curator - can download, filter, reverse databases</description>
+
+    <parent>
+        <groupId>edu.mayo.mprc</groupId>
+        <artifactId>lib</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>database</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>fasta</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>textio</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>util</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.enterprisedt</groupId>
+            <artifactId>edtFTPj</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.mayo.mprc</groupId>
+            <artifactId>integration</artifactId>
+            <version>3.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.0.57</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <site>
+            <id>mprc-site</id>
+            <name>db-curator documentation</name>
+            <url>scp://delphi.mayo.edu/var/www/html/projects/db-curator</url>
+        </site>
+    </distributionManagement>
+</project>

@@ -1,0 +1,741 @@
+body {
+    background-color: #e0e0ff;
+    border: 0;
+    margin: 0;
+}
+
+#fileTable table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 20px 0 0 0;
+    text-align: left;
+    border: 0;
+    width: 100%;
+}
+
+#fileTable .table-header td {
+    background-color: #d2dbe8;
+    background-image: url(/common/blue_gradient.gif);
+    background-repeat: repeat-x;
+    border: 1px solid #9eb6ce;
+    line-height: 2em;
+    padding: 0.25em;
+    text-align: center;
+}
+
+#fileTable table td {
+    border: 1px solid #9eb6ce;
+    padding: 0.25em;
+}
+
+#fileTable table .info-row td {
+    border-width: 0;
+    text-align: center;
+}
+
+#fileTable table .info-row td.search-type {
+    border-width: 1px;
+    background-color: #d2dbe8;
+    background-image: url(/common/blue_gradient.gif);
+    background-repeat: repeat-x;
+}
+
+.file-count {
+    text-align: left;
+    margin-left: 0;
+}
+
+#fileTable table .button-column {
+    text-align: center;
+    width: 20px;
+}
+
+#fileTable table .engine-column {
+    width: 58px;
+    text-align: center;
+}
+
+.filelistcell {
+    vertical-align: top;
+}
+
+.filelist {
+    vertical-align: top;
+    border: 0;
+}
+
+* .gwt-DialogBox {
+    border: 2px solid black;
+    background-color: #fff;
+}
+
+.gwt-Tree {
+    text-align: left;
+}
+
+.gwt-Tree .gwt-TreeItem, .gwt-Tree .gwt-TreeItem-selected {
+    text-align: left;
+}
+
+.gwt-Tree .gwt-TreeItem-selected {
+    background-color: #ddf;
+}
+
+.file-dialog-caption {
+    background-color: #dfd;
+    width: 100%;
+    line-height: 25px;
+}
+
+.folder2-loading {
+    background-image: url(images/ajax-loader.gif);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.folder-loading {
+    padding-right: 20px;
+    background-image: url(images/ajax-loader.gif);
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+.file-deselected {
+    color: #b3b3cc;
+}
+
+.file-deselected .editable-label, .file-deselected select, .file-deselected input {
+    background-color: #e6e6ff;
+    color: #b3b3cc;
+}
+
+.file-selected {
+    color: #000;
+}
+
+.file-selected .editable-label {
+    background-color: #fff;
+    color: #000;
+}
+
+.file-raw, .file-mgf {
+    background: no-repeat 4px 2px;
+    padding-left: 0;
+}
+
+.file-raw {
+    background-image: url(images/raw.png);
+}
+
+.file-mgf {
+    background-image: url(images/mgf.png);
+}
+
+body, td, th {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+}
+
+input, select, button {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+}
+
+div.filelist {
+    background: #FFFFFF no-repeat 50% 50%;
+    z-index: 10;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    border-width: 0;
+    text-align: left;
+}
+
+.selected {
+    background-color: #3399ff;
+    color: #ffffff;
+}
+
+.active {
+    background-color: #FFFFFF;
+}
+
+.sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200px;
+    bottom: 40px;
+    margin-top: 36px;
+    z-index: 20;
+}
+
+#maintable td, #maintable th {
+    padding: 2px;
+}
+
+#maintable tr.shrink td, #maintable tr.shrink th {
+    vertical-align: middle;
+    padding: 2px;
+}
+
+#maintable tr.shrink td.leftcol, #maintable tr.shrink th.leftcol {
+    width: 140px !important;
+    min-width: 140px !important;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.leftcol.middle {
+    vertical-align: middle;
+}
+
+.rightcol {
+    padding: 0 1em !important;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+.required {
+    color: red;
+}
+
+input.warning, select.warning {
+    background-color: #f9f500;
+    border: 1px solid #ccc;
+}
+
+div.hint, div.warning {
+    background: no-repeat 5px 7px;
+    padding: 6px 6px 6px 26px;
+    font-size: 9px;
+    text-align: left;
+}
+
+div.hint {
+    background-image: url(images/info.gif); /* background-color: #eef0ff; */
+    margin: 0 0 0.5em 0;
+}
+
+div.warning {
+    background-image: url(images/warning.gif);
+    visibility: hidden; /* background-color: #ffd; */
+    margin: 0;
+}
+
+.label {
+    text-align: right;
+    width: 20%;
+    vertical-align: top;
+}
+
+div.navigation * {
+    margin: 2px;
+}
+
+span.itemlabel {
+    padding: 0 2px;
+    margin: 0 0 0 1px;
+    line-height: 16px;
+    height: 16px;
+}
+
+.dircontents {
+    padding-left: 16px;
+}
+
+.dircontents-last {
+    background: none -1px 0;
+}
+
+.file-size {
+    position: relative;
+}
+
+.file-size-bar {
+    background-color: #bbf !important;
+    display: block;
+    position: absolute;
+    height: 1.25em;
+}
+
+.file-size .file-size-text {
+    position: relative;
+    text-align: center;
+}
+
+.file-size .file-size-text-missing {
+    position: relative;
+    text-align: center;
+    color: red;
+    font-style: italic;
+}
+
+.file-deselected .file-size-bar {
+    background-color: #d8d8ff !important;
+}
+
+.addFileButton, .removeFileButton, .runButton, .modsSelectionButton {
+    margin: 0 5px 0 0;
+    text-align: center;
+    width: 146px !important;
+    height: 33px !important;
+    cursor: pointer;
+}
+
+.addFileButton {
+    float: left;
+}
+
+.bottom-bar {
+    text-align: center;
+    margin: 0 auto;
+}
+
+#runButton {
+    text-align: center;
+    margin: 0 auto;
+
+}
+
+#mods-selection-popup .choose-modifications-popup {
+    background: #AAFFAA;
+    border: 5px solid #336699;
+    font-size: 25px;
+}
+
+.modsSelectionButton .gwt-PushButton, .modsSelectionButton .gwt-PushButton-up, .modsSelectionButton .gwt-PushButton-down, .modsSelectionButton .gwt-PushButton-up-hovering, .modsSelectionButton .gwt-PushButton-down-hovering {
+    background-image: url(images/run_button.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.modsSelectionButton .gwt-PushButton-down, .modsSelectionButton .gwt-PushButton-down-hovering, .modsSelectionButton .gwt-PushButton-up-hovering {
+    background-image: url(images/run_button_h.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.modsSelectionButton .gwt-PushButton-up-disabled, .modsSelectionButton .gwt-PushButton-down-disabled {
+    background-image: url(images/run_button_d.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.runButton .gwt-PushButton, .runButton .gwt-PushButton-up, .runButton .gwt-PushButton-down, .runButton .gwt-PushButton-up-hovering, .runButton .gwt-PushButton-down-hovering {
+    background-image: url(images/run_button.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.runButton .gwt-PushButton-down, .runButton .gwt-PushButton-down-hovering, .runButton .gwt-PushButton-up-hovering {
+    background-image: url(images/run_button_h.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.runButton .gwt-PushButton-up-disabled, .runButton .gwt-PushButton-down-disabled {
+    background-image: url(images/run_button_d.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.addFileButton .gwt-PushButton, .addFileButton .gwt-PushButton-up, .addFileButton .gwt-PushButton-down, .addFileButton .gwt-PushButton-up-hovering, .addFileButton .gwt-PushButton-down-hovering {
+    background-image: url(images/add_files.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.addFileButton .gwt-PushButton-down, .addFileButton .gwt-PushButton-down-hovering, .addFileButton .gwt-PushButton-up-hovering {
+    background-image: url(images/add_files_h.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.addFileButton .gwt-PushButton-down-disabled, .addFileButton .gwt-PushButton-up-disabled {
+    background-image: url(images/add_files_d.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.removeFileButton .gwt-PushButton, .removeFileButton .gwt-PushButton-up, .removeFileButton .gwt-PushButton-down, .removeFileButton .gwt-PushButton-up-hovering, .removeFileButton .gwt-PushButton-down-hovering {
+    background-image: url(images/remove_files.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.removeFileButton .gwt-PushButton-down, .removeFileButton .gwt-PushButton-down-hovering, .removeFileButton .gwt-PushButton-up-hovering {
+    background-image: url(images/remove_files_h.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.removeFileButton .gwt-PushButton-down-disabled, .removeFileButton .gwt-PushButton-up-disabled {
+    background-image: url(images/remove_files_d.gif);
+    width: 146px !important;
+    height: 33px !important;
+}
+
+.searchTypeInput {
+    margin-right: 1em;
+}
+
+.serverfilereader {
+    background: white;
+    border: 4px solid navy;
+}
+
+.serverfilereader_commands {
+    padding-right: 15px;
+    background: white;
+    height: 25px;
+}
+
+.serverfilereader_text {
+    font-size: 10px;
+    font: monospace;
+}
+
+.serverfilereader_commandbuttons {
+    padding-right: 15px;
+}
+
+.curator-message-popup {
+    background: pink;
+    border: 4px solid navy;
+    padding: 25px;
+}
+
+.editable-label {
+    background: white;
+}
+
+.submit-progress {
+    background-image: url(images/ajax-loader.gif);
+    background-position: 50% 80%;
+    background-repeat: no-repeat;
+}
+
+.loader-anim {
+    height: 600px;
+    background-image: url(images/ajax-loader.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+#hidden_while_loading {
+    display: none;
+}
+
+/* Tab panel -------------------------------------------------------------------------------------------------------- */
+
+.gwt-TabPanel {
+    margin-top: 4px;
+}
+
+.gwt-TabPanelBottom {
+    background-color: #E8EEF7;
+}
+
+.gwt-TabBar {
+    background-color: #FFFFFF;
+    border-bottom: 4px solid #87B3FF;
+    padding-top: 2px;
+}
+
+.gwt-TabBar .gwt-TabBarFirst {
+}
+
+.gwt-TabBar .gwt-TabBarRest {
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+    background-color: #E8EEF7;
+    border-bottom: 2px solid white;
+    cursor: pointer;
+    margin-right: 2px;
+    padding: 4px;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+    background-color: #87B3FF;
+    border-bottom: 2px solid #87B3FF;
+    cursor: default;
+    font-weight: bold;
+    margin-right: 2px;
+    padding: 4px;
+}
+
+.param-preview {
+    overflow: auto;
+}
+
+.param-preview pre {
+    margin: 0;
+}
+
+.toggle-button {
+    float: left;
+}
+
+.warning-message {
+    border: 1px solid red;
+    background-color: #e5e5ff;
+    padding: 1em;
+}
+
+.help-popup-button {
+    background-color: #A0A0FF;
+    float: left;
+    padding: 3px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.help-panel {
+    text-align: left;
+    padding: 5px;
+}
+
+.editModsButton-up, .editModsButton-down, .editModsButton-up-hovering, .editModsButton-down-hovering {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    float: left;
+}
+
+.editModsButton-up-disabled, .editModsButton-down-disabled {
+    color: #ccc;
+    cursor: auto;
+}
+
+/* //////////////////////////////////////// */
+.dottedBorder {
+    border: 1px dashed gray;
+}
+
+.actionLink {
+    color: blue;
+    font-size: 11px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.actionLink:hover {
+    color: red;
+}
+
+.spaceAfter {
+    padding-right: 10px;
+}
+
+.severity-Warning {
+    background-color: #eeff9a;
+}
+
+.severity-Error {
+    background-color: #ffc1d2;
+}
+
+.errorDialog {
+    padding: 5px;
+    border: 4px black;
+    background-color: #CCCCCC;
+    opacity: 0.9;
+
+}
+
+.errorPane {
+    opacity: 1;
+    background-color: #FFFFFF;
+}
+
+.frameDialog {
+    background-color: #f5f5f5;
+    padding: 0;
+    border: 4px black;
+}
+
+.frameDialogHeader {
+    background-color: #dfd;
+    width: 100%;
+    line-height: 25px;
+    padding: 0 5px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.line {
+    height: 1px;
+}
+
+.dbCuratorEmbed {
+    background-color: #FFFFFF;
+    border: 4px black;
+}
+
+.gwt-PushButton-up-disabled {
+    color: #AAAAAA;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+/*
+.params-border-bottom {
+	border-bottom: 1px black solid;
+}
+
+.params-border-top-left {
+	border-top: 1px black solid;
+	border-left: 1px black solid;
+}
+.params-border-top-right {
+	border-top: 1px black solid;
+	border-right: 1px black solid;
+}
+
+.params-border-verytop {
+	height:8px;
+}
+
+.params-row-right {
+	border-right: 1px black solid;
+}
+.params-row-left {
+	border-left: 1px black solid;
+}
+*/
+.params-label {
+    font-style: italic;
+}
+
+.params-validation {
+    display: inline;
+    vertical-align: middle;
+}
+
+.ok-cancel-button-panel {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.command-link {
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+#mods-selection-popup .choose-modifications-popup {
+    background: #AAFFAA;
+    border-width: 10px;
+
+    border-bottom: 5px solid #336699;
+    border-right: 5px solid #336699;
+    border-left: 5px solid #336699;
+    border-top: 5px solid #336699;
+
+    font-size: 25px;
+
+}
+
+.modsSelection-popup {
+    background: #AAFFAA;
+    border-width: 10px;
+
+    border-bottom: 5px solid #336699;
+    border-right: 5px solid #336699;
+    border-left: 5px solid #336699;
+    border-top: 5px solid #336699;
+
+    font-size: 25px;
+}
+
+.mods-label-selected {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.mods-label-selected {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.mods-label-available {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.mods-label-title {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.mods-label-text {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.mods-search-definition {
+    font-style: italic;
+    color: gray;
+}
+
+.mods-search-definition-enter {
+    font-weight: bold;
+    color: black;
+    background-color: white;
+}
+
+.mods-label {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+    }
+
+.mods-label-description {
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.mods-selection-selected {
+
+    font-style: italic;
+    text-align: right;
+    padding-left: 25px;
+    padding-right: 0;
+
+}
+
+.mods-selection-available {
+
+    font-style: italic;
+    text-align: left;
+    padding: 25px;
+}
+
+.editModsButton {
+
+}
+
+.validation-popup {
+    background-color: #fcc;
+    border: 1px solid red;
+    padding: 5px;
+}
+
+.scaffold-setting-group {
+    margin-left: 10px;
+}
+
+.help-html-popup {
+    overflow: scroll;
+}

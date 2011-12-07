@@ -1,0 +1,20 @@
+package edu.mayo.mprc.qstat;
+
+import edu.mayo.mprc.daemon.WorkPacketBase;
+
+/**
+ * Work packet for the qstat call. Defines the job id to be queried.
+ */
+public final class QstatWorkPacket extends WorkPacketBase {
+	private static final long serialVersionUID = 20080130;
+	private int jobId;
+
+	public QstatWorkPacket(int jobId) {
+		super("qstat:" + jobId, true);
+		this.jobId = jobId;
+	}
+
+	public int getJobId() {
+		return jobId;
+	}
+}

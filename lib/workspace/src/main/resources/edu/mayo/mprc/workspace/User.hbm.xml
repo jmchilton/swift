@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="edu.mayo.mprc.workspace.User" table="workflow_user" lazy="false">
+        <id name="id" column="workflow_user_id" type="integer">
+            <generator class="native"/>
+        </id>
+        <property name="firstName" column="first_name" length="60"/>
+        <property name="lastName" column="last_name" length="60"/>
+        <property name="userPassword" column="user_password" length="30"/>
+        <property name="userName" column="user_name" length="60"/>
+        <property name="initials" column="initials" length="6"/>
+        <!-- obsolete -->
+        <property name="rights" column="rights"/>
+
+        <map name="preferences" table="user_preferences" cascade="all" lazy="true">
+            <key column="user_id"/>
+            <index column="preference_name" type="string" length="40"/>
+            <element column="preference_value" type="text"/>
+        </map>
+
+        <many-to-one name="creation" column="creation" class="edu.mayo.mprc.database.Change" lazy="proxy"/>
+        <many-to-one name="deletion" column="deletion" class="edu.mayo.mprc.database.Change" lazy="proxy"/>
+    </class>
+
+</hibernate-mapping>

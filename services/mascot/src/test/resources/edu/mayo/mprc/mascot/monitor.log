@@ -1,0 +1,10 @@
+Thu Aug 23 13:00:41 2007 - Sprot_humx_200707240 Compressed files -&gt; cluster to Finished compressing files 
+Thu Aug 23 13:00:42 2007 - Sprot_humx_200707240 Finished compressing files  to Running 1st test           
+Thu Aug 23 13:00:48 2007 - Sprot_humx_200707240 Running 1st test            to First test just run OK     
+Thu Aug 23 13:00:49 2007 - Sprot_humx_200707240 First test just run OK      to Waiting for other DB to end
+Thu Aug 23 13:00:50 2007 - Sprot_humx_200707240 Waiting for other DB to end to Trying to memory map files 
+Thu Aug 23 13:00:51 2007 - Sprot_humx_200707240 Trying to memory map files  to Just enabled memory mapping
+Thu Aug 23 13:00:52 2007 - Sprot_humx_200707240 Just enabled memory mapping to In use                     
+Thu Aug 23 13:00:52 2007 - uniprot_sprot_abridged Just enabled memory mapping to In use
+Thu Aug 23 13:00:52 2007 - Sprot20070925A Just enabled memory mapping to In use
+Thu Aug 23 13:00:52 2007 - Sprot20070925A Just enabled memory mapping to In use

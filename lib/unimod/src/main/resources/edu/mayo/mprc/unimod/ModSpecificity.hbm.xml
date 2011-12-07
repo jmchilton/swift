@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.unimod">
+    <class name="edu.mayo.mprc.unimod.ModSpecificity" table="mod_specificity">
+        <id name="id" type="integer" column="specificity_id">
+            <generator class="native"/>
+        </id>
+
+        <many-to-one name="modification" column="mod_id" not-null="true"/>
+        <property name="hidden" column="hidden" type="boolean"/>
+        <property name="site" column="site" type="character"/>
+        <property name="term" column="terminus">
+            <type name="edu.mayo.mprc.database.EnumUserType">
+                <param name="enumClassName">edu.mayo.mprc.unimod.Terminus</param>
+            </type>
+        </property>
+        <property name="proteinOnly" column="protein_only" type="boolean"/>
+        <property name="classification" column="classification" type="string" length="200"/>
+        <property name="specificityGroup" column="specificity_group" type="int"/>
+        <property name="comments" column="comments" type="text"/>
+    </class>
+</hibernate-mapping>

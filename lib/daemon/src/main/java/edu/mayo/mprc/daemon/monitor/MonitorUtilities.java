@@ -1,0 +1,62 @@
+package edu.mayo.mprc.daemon.monitor;
+
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+public final class MonitorUtilities {
+
+	private static final Pattern PID_MATCHER = Pattern.compile("(\\d+)@.*");
+
+	private MonitorUtilities() {
+	}
+
+	/**
+	 * Return the process id of this java virtual machine.  This
+	 * should only be used in an advisory context (error/log messages, etc), because obtaining
+	 * this depends on JVM vendor specific functionality.
+	 *
+	 * @return a process id for the current JVM.
+	 */
+	public static int getPid() {
+		// WARNING: this is vendor specific... oh well...
+
+		String pidstr = ManagementFactory.getRuntimeMXBean().getName();
+		if (pidstr == null || pidstr.length() == 0) {
+			return -1;
+		}
+		Matcher m = PID_MATCHER.matcher(pidstr);
+		if (!m.lookingAt()) {
+			return -1;
+		}
+		try {
+			return Integer.parseInt(m.group(1));
+		} catch (Exception e) {
+			// SWALLOWED: won't happen...
+		}
+		return -1;
+	}
+
+	/**
+	 * Return a string identifiying this host/user/JVM.
+	 */
+	public static String getHostInformation() {
+		// find the hostname
+		String hostname = "unknown";
+		InetAddress host;
+		try {
+			host = InetAddress.getLocalHost();
+			hostname = host.getHostName();
+			hostname = hostname.replaceAll("\\..*", "");
+		} catch (Exception ignore) {
+			// SWALLOWED
+		}
+		// find the user name
+		String userName = System.getProperty("user.name");
+		// and add these to the message
+		return userName + "@" + hostname + " " + (getPid() != -1 ? "(" + getPid() + ")" : "");
+	}
+
+}

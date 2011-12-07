@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bioml>
+
+    <!-- steps:
+
+ 1) create fastaindex file
+ 2) input format?
+ 3) make sure some identifier for spectrum shows up in output.
+ 4)
+
+-->
+
+    <note>list path parameters</note>
+    <note label="list path, default parameters" type="input">default_input.xml</note>
+    <note>This value is ignored when it is present in the default parameter
+        list path.
+    </note>
+    <note label="list path, taxonomy information" type="input">${TAXONXML}</note>
+
+    <note>spectrum parameters</note>
+    <note label="spectrum, fragment monoisotopic mass error" type="input">0.8</note>
+    <note label="spectrum, fragment monoisotopic mass error units" type="input">Daltons</note>
+    <note label="spectrum, parent monoisotopic mass error plus" type="input">10</note>
+    <note label="spectrum, parent monoisotopic mass error minus" type="input">10</note>
+    <note label="spectrum, parent monoisotopic mass isotope error" type="input">yes</note>
+    <note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
+    <note label="spectrum, parent monoisotopic mass error units" type="input">ppm</note>
+    <note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
+    <note label="spectrum, fragment mass type" type="input">monoisotopic</note>
+    <note>values are monoisotopic|average</note>
+
+    <note>spectrum conditioning parameters</note>
+    <note label="spectrum, dynamic range" type="input">100.0</note>
+    <!-- ?? -->
+    <note>The peaks read in are normalized so that the most intense peak
+        is set to the dynamic range value. All peaks with values of less that
+        1, using this normalization, are not used. This normalization has the
+        overall effect of setting a threshold value for peak intensities.
+    </note>
+    <note label="spectrum, total peaks" type="input">50</note>
+    <!-- ?? -->
+    <note>If this value is 0, it is ignored. If it is greater than zero (lets say 50),
+        then the number of peaks in the spectrum with be limited to the 50 most intense
+        peaks in the spectrum. X! tandem does not do any peak finding: it only
+        limits the peaks used by this parameter, and the dynamic range parameter.
+    </note>
+    <note label="spectrum, maximum parent charge" type="input">6</note>
+    <note label="spectrum, use noise suppression" type="input">no</note>
+    <note label="spectrum, minimum parent m+h" type="input">0.0</note>
+    <note label="spectrum, minimum fragment mz" type="input">0.0</note>
+    <note label="spectrum, minimum peaks" type="input">0</note>
+    <note label="spectrum, threads" type="input">1</note>
+    <!-- ?? -->
+
+    <note>residue modification parameters</note>
+    <note label="residue, modification mass" type="input">144.102063@K,144.102063@[</note>
+    <note>The format of this parameter is m@X, where m is the modfication
+        mass in Daltons and X is the appropriate residue to modify. Lists of
+        modifications are separated by commas. For example, to modify M and C
+        with the addition of 16.0 Daltons, the parameter line would be
+        +16.0@M,+16.0@C
+        Positive and negative values are allowed.
+    </note>
+    <note label="residue, potential modification mass" type="input">144.102063@Y,45.987721@C,15.994915@M</note>
+    <note>The format of this parameter is the same as the format
+        for residue, modification mass (see above).
+    </note>
+    <note label="residue, potential modification motif" type="input"/>
+    <note>The format of this parameter is similar to residue, modification mass,
+        with the addition of a modified PROSITE notation sequence motif specification.
+        For example, a value of 80@[ST!]PX[KR] indicates a modification
+        of either S or T when followed by P, and residue and the a K or an R.
+        A value of 204@N!{P}[ST]{P} indicates a modification of N by 204, if it
+        is NOT followed by a P, then either an S or a T, NOT followed by a P.
+        Positive and negative values are allowed.
+    </note>
+
+    <note>protein parameters</note>
+    <note label="protein, taxon" type="input">${DB:Sprot081031}</note>
+    <note>This value is interpreted using the information in taxonomy.xml.</note>
+    <note label="protein, cleavage site" type="input">[KR]|[X]</note>
+    <note>this setting corresponds to the enzyme trypsin. The first characters
+        in brackets represent residues N-terminal to the bond - the '|' pipe -
+        and the second set of characters represent residues C-terminal to the
+        bond. The characters must be in square brackets (denoting that only
+        these residues are allowed for a cleavage) or french brackets (denoting
+        that these residues cannot be in that position). Use UPPERCASE characters.
+        To denote cleavage at any residue, use [X]|[X] and reset the
+        scoring, maximum missed cleavage site parameter (see below) to something like 50.
+    </note>
+    <note label="protein, cleavage C-terminal mass change" type="input">+17.002735</note>
+    <note label="protein, cleavage N-terminal mass change" type="input">+1.007825</note>
+    <note label="protein, N-terminal residue modification mass" type="input">0.0</note>
+    <note label="protein, C-terminal residue modification mass" type="input">0.0</note>
+    <note label="protein, homolog management" type="input">no</note>
+    <note>if yes, an upper limit is set on the number of homologues kept for a particular spectrum</note>
+    <note label="protein, cleavage semi" type="input">no</note>
+
+    <note>model refinement parameters</note>
+    <note label="refine" type="input">yes</note>
+    <note label="refine, spectrum synthesis" type="input">yes</note>
+    <note label="refine, maximum valid expectation value" type="input">0.1</note>
+    <note label="refine, potential N-terminus modifications" type="input"/>
+    <note label="refine, potential C-terminus modifications" type="input"/>
+    <note label="refine, unanticipated cleavage" type="input">yes</note>
+    <note label="refine, potential modification mass" type="input"/>
+    <note label="refine, point mutations" type="input">no</note>
+    <note label="refine, use potential modifications for full refinement" type="input">no</note>
+    <note label="refine, point mutations" type="input">no</note>
+    <note label="refine, potential modification motif" type="input"/>
+    <note>The format of this parameter is similar to residue, modification mass,
+        with the addition of a modified PROSITE notation sequence motif specification.
+        For example, a value of 80@[ST!]PX[KR] indicates a modification
+        of either S or T when followed by P, and residue and the a K or an R.
+        A value of 204@N!{P}[ST]{P} indicates a modification of N by 204, if it
+        is NOT followed by a P, then either an S or a T, NOT followed by a P.
+        Positive and negative values are allowed.
+    </note>
+
+    <note>scoring parameters</note>
+    <note label="scoring, minimum ion count" type="input">0</note>
+    <note label="scoring, maximum missed cleavage sites" type="input">2</note>
+    <note label="scoring, x ions" type="input">no</note>
+    <note label="scoring, y ions" type="input">yes</note>
+    <note label="scoring, z ions" type="input">no</note>
+    <note label="scoring, a ions" type="input">no</note>
+    <note label="scoring, b ions" type="input">yes</note>
+    <note label="scoring, c ions" type="input">no</note>
+    <note label="scoring, cyclic permutation" type="input">no</note>
+    <note>if yes, cyclic peptide sequence permutation is used to pad the scoring histograms</note>
+    <note label="scoring, include reverse" type="input">no</note>
+    <note>if yes, then reversed sequences are searched at the same time as forward sequences</note>
+
+    <note>output parameters</note>
+    <note label="output, path" type="input">${OUTPATH}</note>
+    <note label="output, sort results by" type="input">protein</note>
+    <note>values = protein|spectrum (spectrum is the default)</note>
+    <note label="output, path hashing" type="input">no</note>
+    <note>values = yes|no</note>
+    <note label="output, xsl path" type="input">tandem-style.xsl</note>
+    <note label="output, parameters" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, performance" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, spectra" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, histograms" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, proteins" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, sequences" type="input">yes</note>
+    <note>values = yes|no</note>
+    <note label="output, one sequence copy" type="input">no</note>
+    <note>values = yes|no, set to yes to produce only one copy of each protein sequence in the output xml</note>
+    <note label="output, results" type="input">all</note>
+    <note>values = all|valid|stochastic</note>
+    <note label="output, maximum valid expectation value" type="input">1000</note>
+    <note>value is used in the valid|stochastic setting of output, results</note>
+    <note label="output, histogram column width" type="input">30</note>
+    <note>values any integer greater than 0. Setting this to '1' makes cutting and pasting histograms
+        into spread sheet programs easier.
+    </note>
+    <note type="description">ADDITIONAL EXPLANATIONS</note>
+    <note type="description">Each one of the parameters for X! tandem is entered as a labeled note
+        node. In the current version of X!, keep those note nodes
+        on a single line.
+    </note>
+    <note type="description">The presence of the type 'input' is necessary if a note is to be considered
+        an input parameter.
+    </note>
+    <note type="description">Any of the parameters that are paths to files may require alteration for a
+        particular installation. Full path names usually cause the least trouble,
+        but there is no reason not to use relative path names, if that is the
+        most convenient.
+    </note>
+    <note type="description">Any parameter values set in the 'list path, default parameters' file are
+        reset by entries in the normal input file, if they are present. Otherwise,
+        the default set is used.
+    </note>
+    <note type="description">The 'list path, taxonomy information' file must exist.
+    </note>
+    <note type="description">The directory containing the 'output, path' file must exist: it will not be created.
+    </note>
+    <note type="description">The 'output, xsl path' is optional: it is only of use if a good XSLT style sheet exists.
+    </note>
+
+    <note label="spectrum, path" type="input">${PATH}</note>
+
+</bioml>

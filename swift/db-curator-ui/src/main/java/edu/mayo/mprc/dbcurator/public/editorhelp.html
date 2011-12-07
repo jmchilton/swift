@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+
+	<title>Curation Editor Help</title>
+</head>
+
+
+<body>
+
+<h1>Curation Editor</h1>
+
+<br>
+
+
+<h2>Mayo Clinic Proteomics Resource Center (MPRC)</h2>
+
+<br>
+
+<span style="font-weight: bold;">Purpose</span>: &nbsp;This application is used to create FASTA databases by
+performing a number of steps. &nbsp;These steps will either add,
+remove, or modify sequences. &nbsp;Steps will happen in order so that
+if you add a sequence in a previous step it may be removed or modified
+by a subsequent step.<br>
+<br>
+<img style="width: 1063px; height: 797px;" alt="Screenshot of open application" title="How the window looks"
+	 src="images/screenshot.png"><br>
+<br>
+Use:<br>
+<ul>
+	<li>There are a number of things that should be included in all curations. &nbsp;These include:</li>
+	<ul>
+		<li><span style="font-weight: bold;">ID</span>: &nbsp;this is a
+			read only field that shows the id of the curaiton that is displayed.
+			&nbsp;A curation acquires and ID after it is saved. &nbsp;This ID can
+			later be used to retrieve the curation.
+		</li>
+		<li><span style="font-weight: bold;">Unique Name</span>: &nbsp;A unique name that must not be longer than 21
+			characters and cannot contain spaces
+		</li>
+		<li><span style="font-weight: bold;">Curation Title:</span> &nbsp;A fairly brief description of the curation
+		</li>
+		<li><span style="font-weight: bold;">Owners Email:</span> &nbsp;the email of the person who should be notified
+			with regards to this curation such as when it gets refreshed (see below)
+		</li>
+		<li><span style="font-weight: bold;">Next automatic refresh date:</span> &nbsp;the date that the curation should
+			next be automatically re-run (see below) (Optional).
+		</li>
+		<li><span style="font-weight: bold;">Re-run expiration date:</span> &nbsp;when should the curation should not be
+			re-run after re-run (Optional).
+		</li>
+		<li><span style="font-weight: bold;">How often to re-run:</span> the frequency that a re-run should be performed
+		</li>
+		<li><span style="font-weight: bold;">Any notes to make:</span> &nbsp;A place to put more detailed information
+			about the curation
+		</li>
+	</ul>
+	<li><span style="font-weight: bold;">Progress report</span>: &nbsp;this box is used to display any messages to the
+		user as well as show the progress of an executing curaiton.
+	</li>
+	<li><span style="font-weight: bold;">Load Curation</span>: clicking this will prompt the user for different option
+		to load a curation
+	</li>
+	<ul>
+		<li>enter an id of an existing curation to load</li>
+		<li>create a new curation with no set properties</li>
+		<li>create an editable copy of the curation that is currently open.
+			&nbsp;If this is done then a shortname then the unique name will not be
+			set and needs to be re entered.
+		</li>
+		<li>cancel - just leave the current curation open</li>
+	</ul>
+	<li><span style="font-weight: bold;">Save:</span> clicking this will
+		save the curation so it can be accessed later. &nbsp;The ID for the
+		curation will then be displayed. &nbsp;Note that a curation cannot be
+		saved after it has been run
+	</li>
+	<li><span style="font-weight: bold;">Test:</span> (not yet
+		implemented) performs a complete run of the curation but leaves no
+		trace of the run meaning that no files are retained and the curation is
+		not saved
+	</li>
+	<li><span style="font-weight: bold;">Run:</span> &nbsp;performs the
+		curation and generates the resulting .fasta file and then saves the
+		curation when it is complete. &nbsp;Not that editing of a curation
+		after running is not permitted.
+	</li>
+	<li><span style="font-weight: bold;">Choose a step to add:</span>
+		&nbsp;this list gives the steps that can be added to the curation.
+		&nbsp;Steps will be added at the end (bottom) of the curation and then
+		you can move them to where you would like them in the process.
+	</li>
+	<li><span style="font-weight: bold;">Steps to run:</span> &nbsp;this
+		area show the steps that are currently part of the curation. &nbsp;You
+		can move them up and down or remove them from the curation using the
+		respective buttons.
+	</li>
+	<li><span style="font-weight: bold;">Path to completed curation file:</span> &nbsp;this text box can be copied and
+		after the curation is run the path to the file will be located
+	</li>
+</ul>
+Step Types (more steps will be added upon user request):<br>
+<ul>
+	<li>
+		New FASTA database from FTP&nbsp;</li>
+	<ul>
+		<li>specify a ftp address for accessing a FASTA database over anonymous ftp</li>
+		<li>you can alternatively select from a list of commonly requested databases (if you have one you use a lot let
+			us know).
+		</li>
+		<li>if you want to always use the most up-to-date version then
+			check the "Always check for newest release" box otherwise any re-runs
+			of the curation will just use the same fasta file if it can.
+		</li>
+	</ul>
+	<li>FASTA header filter - filter the database based on either simple text or regular expression criteria</li>
+	<ul>
+		<li>This step allows you to enter some words to search for in the
+			header of each FASTA sequence. &nbsp;The "Simple Text" setting will
+			just take a space delimitted set of words and to see if they exist in
+			the sequence. &nbsp;You must specify an option
+		</li>
+		<ul>
+			<li>"Any" - meaning that if the header contains any of the given words then you should include that
+				sequence
+			</li>
+			<li>"All" - meaning all of the words given must be in the header</li>
+			<li>"None" - meaning that none of the words given can appear in the header</li>
+		</ul>
+		<li>This step also allows you to enter a regular expression that
+			you want to match in the header. &nbsp;The "All" and "Any" setting work
+			identically in this case and if you want to specify multiple regular
+			expressions then you should add another step to do this. &nbsp;The
+			"None" setting will invert the results meaning that you don't want to
+			match the given regular expression.
+		</li>
+	</ul>
+	<li>Sequence randomization - take the sequences and either reverse or scramble them in order to perform some
+		statistical
+		tricks
+	</li>
+	<ul>
+		<li>This performs an operation on the sequences to provide a nonsense sequence.</li>
+		<ul>
+			<li>Sequence Reversal - takes each sequence and reverses it. &nbsp;Each header is appended with &lt;REVERSED&gt;.</li>
+			<li>Sequence Scamble - takes each monomer in the sequence and
+				randomly moves it to a new location. &nbsp;Each header is appended with
+				&lt;SCRAMBLED&gt;</li>
+			<li>You can choose to retain the original sequences as well in
+				which case both the original and manipulated sequences will be included.
+			</li>
+		</ul>
+	</ul>
+	<li>Add a manual sequence - Enter a header and a sequence of your own
+		to the final database. &nbsp;Anything in the "Header" will be appended
+		with a '&gt;' character if one is not already there. &nbsp;If you do
+		not enter a header then the first line in the sequence must be the
+		header (with '&gt;') which will be automatically detected and moved to
+		the header location.
+	</li>
+</ul>
+<br>
+
+Contact <a href="mailto:Winter.Eric@mayo.edu">Eric Winter</a> with any feedback or further questions.<br>
+<br>
+<small>
+	<small>Copyright 2007, Mayo Clinic Proteomics Resource Center<br>
+		MPRC Development Team: &nbsp;David Lentz, Chris Mason, Eric Winter, and Roman Zenka
+	</small>
+</small>
+</body>
+</html>

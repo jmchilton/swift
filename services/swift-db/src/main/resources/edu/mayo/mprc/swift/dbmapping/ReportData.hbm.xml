@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.mayo.mprc.swift.dbmapping">
+    <class name="ReportData" table="report" lazy="false">
+        <id name="id" column="report_id" type="long">
+            <generator class="native"/>
+        </id>
+
+        <property name="reportFileId" column="report_file" type="edu.mayo.mprc.database.FileType" length="1500"/>
+        <property name="dateCreated" type="timestamp" column="date_created"/>
+        <many-to-one name="searchRun" class="SearchRun" column="transaction_id"
+                     index="Report_transaction_index" not-null="true"/>
+    </class>
+</hibernate-mapping>

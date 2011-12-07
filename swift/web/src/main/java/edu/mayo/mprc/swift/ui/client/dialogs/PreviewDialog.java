@@ -1,0 +1,64 @@
+package edu.mayo.mprc.swift.ui.client.dialogs;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabPanel;
+import edu.mayo.mprc.swift.ui.client.Service;
+import edu.mayo.mprc.swift.ui.client.ServiceAsync;
+import edu.mayo.mprc.swift.ui.client.SimpleParamsEditorPanel;
+import edu.mayo.mprc.swift.ui.client.rpc.ClientParamFile;
+import edu.mayo.mprc.swift.ui.client.rpc.ClientParamSet;
+
+/**
+ * Show a preview of the generated params files.
+ */
+public final class PreviewDialog extends FrameDialog {
+
+	public PreviewDialog(ClientParamSet paramSet, ServiceAsync service) {
+		super("Parameter file preview", /*ok button*/true, /*cancel button*/false, /*closed by clicking outside*/true, false);
+
+		Label label = new Label("Please wait..."); // TODO replace with Roman's indeterminate progress bar?
+
+		setContent(label);
+
+		service.getFiles(new Service.Token(true), paramSet, new AsyncCallback<ClientParamFile[]>() {
+			public void onFailure(Throwable throwable) {
+				hide();
+				SimpleParamsEditorPanel.handleGlobalError(throwable);
+			}
+
+			public void onSuccess(ClientParamFile[] files) {
+
+				TabPanel panel = new TabPanel();
+				panel.setWidth((int) (Window.getClientWidth() * 0.8) + "px");
+				panel.setHeight((int) (Window.getClientHeight() * 0.8) + "px");
+				for (ClientParamFile file : files) {
+					String text = file.getText();
+					if (text == null) {
+						text = "(null)";
+					}
+					text = text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+					HTML html = new HTML("<div class=\"param-preview\" style=\"width: " + Window.getClientWidth() * 0.8 + "px; height: " + Window.getClientHeight() * 0.8 + "px\"><pre>" + text + "</pre></div>");
+					//ScrollPanel spanel = new ScrollPanel(html);
+					panel.add(html, file.getName());
+				}
+				setContent(panel);
+				panel.selectTab(0);
+				center();
+				show();
+			}
+		});
+		center();
+		show();
+	}
+
+	protected void cancel() {
+		hide();
+	}
+
+	protected void okay() {
+		hide();
+	}
+}

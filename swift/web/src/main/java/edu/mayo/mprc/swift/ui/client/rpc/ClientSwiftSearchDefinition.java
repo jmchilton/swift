@@ -1,0 +1,114 @@
+package edu.mayo.mprc.swift.ui.client.rpc;
+
+import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Ui version of {@link SwiftSearchDefinition}.
+ */
+public final class ClientSwiftSearchDefinition implements Serializable {
+	private static final long serialVersionUID = 20111129L;
+	private String searchTitle;
+	private ClientUser user;
+	/**
+	 * Path to output folder. Relative to browse root.
+	 */
+	private String outputFolder;
+	private ClientSpectrumQa clientSpectrumQa;
+	private ClientPeptideReport clientPeptideReport;
+	private ClientParamSet paramSet;
+	private boolean publicMgfFiles;
+	private boolean publicSearchFiles;
+
+	private boolean fromScratch; // Rerun everything from scratch, no caching
+
+	private List<ClientFileSearch> inputFiles;
+
+	// Search run id in case this search was previously run
+	private int previousSearchRunId;
+
+	public ClientSwiftSearchDefinition() {
+	}
+
+	/**
+	 * Creates search definition object.
+	 *
+	 * @param searchTitle       Title of the search.
+	 * @param user              User.
+	 * @param outputFolder      Output folder. Relative to browse root - the folder that is root for the UI.
+	 *                          Example "/instruments/search1234"
+	 * @param inputFiles        Table of files to be searched + information about how to search them.
+	 * @param spectrumQa        Parameters for spectrum QA.
+	 * @param peptideReport     Parameters for peptide report
+	 * @param publicMgfFiles    True if the mgf files are to be published.
+	 * @param publicSearchFiles True if the intermediate search results are to be published.
+	 * @param publicSearchFiles
+	 */
+	public ClientSwiftSearchDefinition(String searchTitle, ClientUser user, String outputFolder,
+	                                   ClientParamSet paramSet, List<ClientFileSearch> inputFiles,
+	                                   ClientSpectrumQa spectrumQa, ClientPeptideReport peptideReport,
+	                                   boolean publicMgfFiles, boolean publicSearchFiles, int previousSearchRunId) {
+		this.searchTitle = searchTitle;
+		this.user = user;
+		this.outputFolder = outputFolder;
+		this.paramSet = paramSet;
+		this.inputFiles = inputFiles;
+		this.clientSpectrumQa = spectrumQa;
+		this.clientPeptideReport = peptideReport;
+		this.publicMgfFiles = publicMgfFiles;
+		this.publicSearchFiles = publicSearchFiles;
+		this.previousSearchRunId = previousSearchRunId;
+		this.fromScratch = false;
+	}
+
+	public String getSearchTitle() {
+		return searchTitle;
+	}
+
+	public ClientUser getUser() {
+		return user;
+	}
+
+	public String getOutputFolder() {
+		return outputFolder;
+	}
+
+	public List<ClientFileSearch> getInputFiles() {
+		return inputFiles;
+	}
+
+	public ClientSpectrumQa getSpectrumQa() {
+		return clientSpectrumQa;
+	}
+
+	public ClientPeptideReport getPeptideReport() {
+		return clientPeptideReport;
+	}
+
+	public int getPreviousSearchRunId() {
+		return previousSearchRunId;
+	}
+
+	public ClientParamSet getParamSet() {
+		return paramSet;
+	}
+
+	public boolean isPublicMgfFiles() {
+		return publicMgfFiles;
+	}
+
+	public boolean isPublicSearchFiles() {
+		return publicSearchFiles;
+	}
+
+	public boolean isFromScratch() {
+		return fromScratch;
+	}
+
+	public void setFromScratch(boolean fromScratch) {
+		this.fromScratch = fromScratch;
+	}
+}
+

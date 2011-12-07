@@ -1,0 +1,104 @@
+package edu.mayo.mprc.xtandem;
+
+import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.config.DaemonConfig;
+import edu.mayo.mprc.config.DependencyResolver;
+import edu.mayo.mprc.config.ResourceConfig;
+import edu.mayo.mprc.config.ui.ServiceUiFactory;
+import edu.mayo.mprc.config.ui.UiBuilder;
+import edu.mayo.mprc.daemon.Worker;
+import edu.mayo.mprc.daemon.WorkerFactoryBase;
+import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.enginedeployment.DeploymentRequest;
+import edu.mayo.mprc.enginedeployment.DeploymentResult;
+import edu.mayo.mprc.enginedeployment.DeploymentService;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * This is a dummy class provided only to keep the logic same for all search engine types.
+ * There is no database deployment needed for X!Tandem.
+ */
+public final class XTandemDeploymentService extends DeploymentService<DeploymentResult> {
+
+	private static final Logger LOGGER = Logger.getLogger(XTandemDeploymentService.class);
+	public static final String TYPE = "tandemDeployer";
+	public static final String NAME = "X!Tandem DB Deployer";
+	public static final String DESC = "X!Tandem does not require database deployment, but this module is needed anyway to make the search engines more uniform.";
+
+	public XTandemDeploymentService() {
+
+	}
+
+	public synchronized DeploymentResult performDeployment(DeploymentRequest request) {
+		DeploymentResult result = new DeploymentResult();
+
+		File curationFile = request.getCurationFile();
+
+		LOGGER.info("XTandem deployment services started. Deployment file [" + curationFile.getAbsolutePath() + "]");
+
+		if (!curationFile.exists()) {
+			MprcException mprcException = new MprcException("The file passed in the curation didn't exist: " + curationFile.getAbsolutePath());
+			LOGGER.error(mprcException.getMessage());
+			throw mprcException;
+		}
+
+		result.setDeployedFile(curationFile);
+
+		LOGGER.info("XTandem deployment services completed. Deployment file [" + curationFile.getAbsolutePath() + "]");
+
+		return result;
+	}
+
+	@Override
+	public DeploymentResult performUndeployment(DeploymentRequest request) {
+		LOGGER.info("XTandem undeployment of database " + request.getShortName() + " completed successfully.");
+		return new DeploymentResult();
+	}
+
+	private static final Map<String, List<ProgressReporter>> CO_DEPLOYMENTS = new HashMap<String, List<ProgressReporter>>();
+
+	public Map<String, List<ProgressReporter>> getCoDeployments() {
+		return CO_DEPLOYMENTS;
+	}
+
+	/**
+	 * Configuration for the factory
+	 */
+	public static final class Config implements ResourceConfig {
+		public Config() {
+		}
+
+		public Map<String, String> save(DependencyResolver resolver) {
+			return new TreeMap<String, String>();
+		}
+
+		public void load(Map<String, String> values, DependencyResolver resolver) {
+		}
+
+		@Override
+		public int getPriority() {
+			return 0;
+		}
+	}
+
+	/**
+	 * A factory capable of creating the worker
+	 */
+	public static final class Factory extends WorkerFactoryBase<Config> {
+		@Override
+		public Worker create(Config config, DependencyResolver dependencies) {
+			return new XTandemDeploymentService();
+		}
+	}
+
+	public static final class Ui implements ServiceUiFactory {
+		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		}
+	}
+}

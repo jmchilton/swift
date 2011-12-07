@@ -1,0 +1,97 @@
+<!DOCTYPE web-app PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+    <display-name>Swift</display-name>
+    <servlet>
+        <servlet-name>SwiftAppService</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.ui.server.ServiceImpl</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>ReportUpdate</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.ReportUpdate</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfigurationService</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.configuration.server.ConfigurationServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FileUploadServlet</servlet-name>
+        <servlet-class>edu.mayo.mprc.dbcurator.server.FASTAFileUploadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CommonDataRequester</servlet-name>
+        <servlet-class>edu.mayo.mprc.dbcurator.server.CommonDataRequesterImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Feed</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.RssStatusFeeder</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Status</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.JsonStatusFeeder</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>DirectoryService</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.ui.server.FileDirectoryServiceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TimeReport</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.TimeReportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Benchmark</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.benchmark.Benchmark</servlet-class>
+    </servlet>
+    <!--inserted manually -->
+    <servlet-mapping>
+        <servlet-name>SwiftAppService</servlet-name>
+        <url-pattern>/start/Service</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReportUpdate</servlet-name>
+        <url-pattern>/report/reportupdate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfigurationService</servlet-name>
+        <url-pattern>/configuration/ConfigurationService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileUploadServlet</servlet-name>
+        <url-pattern>/start/FileUploadServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CommonDataRequester</servlet-name>
+        <url-pattern>/start/CommonDataRequester</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Feed</servlet-name>
+        <url-pattern>/feed</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Status</servlet-name>
+        <url-pattern>/status/searches</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DirectoryService</servlet-name>
+        <url-pattern>/start/DirectoryService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TimeReport</servlet-name>
+        <url-pattern>/time-report</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Benchmark</servlet-name>
+        <url-pattern>/benchmark</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+</web-app>

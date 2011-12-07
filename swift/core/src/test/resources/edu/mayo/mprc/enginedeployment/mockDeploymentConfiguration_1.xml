@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Swift 2.0 environment configuration file -->
+<environment>
+	<install>
+		<sharedSpacePath>/fake/shared/path</sharedSpacePath>
+	</install>
+</environment>

@@ -1,0 +1,13 @@
+TurboSEQUEST - PVM Master v.27 (rev. 12), (c) 1998-2005
+Molecular Biotechnology, Univ. of Washington, J.Eng/S.Morgan/J.Yates
+Licensed to Thermo Electron Corp.
+
+NumHosts = 6, NumArch = 1
+
+  Arch:LINUX64  CPU:1  Tid:40000  Name:geneva
+  Arch:LINUX64  CPU:2  Tid:80000  Name:node001
+  Arch:LINUX64  CPU:2  Tid:c0000  Name:node002
+  Arch:LINUX64  CPU:2  Tid:100000  Name:node003
+  Arch:LINUX64  CPU:2  Tid:140000  Name:node004
+  Arch:LINUX64  CPU:2  Tid:180000  Name:node005
+

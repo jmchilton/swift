@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.mayo.mprc.swift.params2">
+    <class name="StarredProteins" table="starred_proteins" lazy="false">
+        <id name="id" column="starred_proteins_id" type="int">
+            <generator class="native"/>
+        </id>
+
+        <property name="starred" column="starred" type="text"/>
+        <property name="delimiter" column="protein_delimiter" type="string" length="20"/>
+        <property name="regularExpression" column="regular_expression" type="boolean"/>
+        <property name="matchName" column="match_name" type="boolean"/>
+    </class>
+</hibernate-mapping>

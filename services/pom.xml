@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>edu.mayo.mprc</groupId>
+    <artifactId>services</artifactId>
+    <packaging>pom</packaging>
+    <version>3.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>edu.mayo.mprc</groupId>
+        <artifactId>mprc</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../mprc/pom.xml</relativePath>
+    </parent>
+
+    <name>MPRC Services</name>
+    <description>MPRC services - daemons providing various functions that can be combined into specific solutions
+    </description>
+
+    <modules>
+        <module>db-undeploy</module>
+        <module>mascot</module>
+        <module>mgf2mgf</module>
+        <module>msmseval</module>
+        <module>myrimatch</module>
+        <module>omssa</module>
+        <module>peaks-online</module>
+        <module>qa</module>
+        <module>qstat</module>
+        <module>raw2mgf</module>
+        <module>scaffold</module>
+        <module>scaffold3</module>
+        <module>search-db</module>
+        <module>sequest</module>
+        <module>swift-db</module>
+        <module>swift-search</module>
+        <module>xtandem</module>
+    </modules>
+</project>

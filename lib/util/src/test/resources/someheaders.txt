@@ -1,0 +1,7 @@
+>P31946|1433B_HUMAN 14-3-3 protein beta/alpha - Homo sapiens (Human)
+>P62258|1433E_HUMAN 14-3-3 protein epsilon - Homo sapiens (Human)
+>Q04917|1433F_HUMAN 14-3-3 protein eta - Homo sapiens (Human)
+>P61981|1433G_HUMAN 14-3-3 protein gamma - Homo sapiens (Human)
+>P31947|1433S_HUMAN 14-3-3 protein sigma - Homo sapiens (Human)
+>P27348|1433T_HUMAN 14-3-3 protein theta - Homo sapiens (Human)
+>P63104|1433Z_HUMAN 14-3-3 protein zeta/delta - Homo sapiens (Human)

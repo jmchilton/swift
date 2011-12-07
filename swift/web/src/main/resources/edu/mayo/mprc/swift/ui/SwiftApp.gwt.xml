@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="start">
+    <!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name="com.google.gwt.user.User"/>
+    <inherits name="edu.mayo.mprc.dbcurator.DBCurator"/>
+
+    <!-- Specify the app entry point class.                   -->
+    <entry-point class="edu.mayo.mprc.swift.ui.client.SwiftApp"/>
+
+    <servlet path="/Service" class="edu.mayo.mprc.swift.ui.server.ServiceImpl"/>
+    <servlet path="/DirectoryService" class="edu.mayo.mprc.swift.ui.server.FileDirectoryServiceServlet"/>
+
+    <!--<set-property name="user.agent" value="ie6"/>-->
+    <!--<set-property name="user.agent" value="gecko1_8"/>-->
+</module>

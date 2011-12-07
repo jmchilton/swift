@@ -1,0 +1,55 @@
+test1, Spectrum report created on 03/16/2010
+Experiment: test1
+	Peak List Generator: Unspecified
+		Version: Unspecified
+		Charge States Calculated: unknown
+		Deisotoped: unknown
+		Textual Annotation:
+	Database Set: 2 Databases
+		Database Name: the yeast17 database
+			Version: unknown
+			Taxonomy: All Entries
+			Number of Proteins: 13234
+		Database Name: the yeast17 database
+			Version: unknown
+			Taxonomy: All Entries
+			Number of Proteins: 13234
+	Search Engine Set: 3 Search Engines
+		Search Engine: Mascot
+			Version: Mascot
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 10.0 PPM (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the yeast17 database (unknown version, 13234 entries)
+			Digestion Enzyme: Trypsin
+			Max Missed Cleavages: 2
+		Search Engine: Sequest
+			Version: 27, rev. 12
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 0.022 Da (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the yeast17 database (unknown version, 13234 entries)
+			Digestion Enzyme: Trypsin
+			Max Missed Cleavages: 2
+		Search Engine: X! Tandem
+			Version: 2006.09.15.3
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 10.0 PPM (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the yeast17 database (unknown version, 13234 entries)
+			Digestion Enzyme: SemiTrypsin
+			Max Missed Cleavages: 2
+	Scaffold Version: Scaffold_2.06.00-mayo
+		Peptide Thresholds: 1.0% minimum
+		Protein Thresholds: 1.0% minimum and 1 peptides minimum
+
+Experiment name	Protein accession numbers	Spectrum name	Peptide sequence	Peptide mass	Starred	Hidden
+test1	ALBU_HUMAN	test1.10.10.3.dta	ABCDEF	1,123.456		FALSE	FALSE
+test1	TRYP_PIG	test1.2.2.3.dta	GH,IJ	20,123.333		FALSE	FALSE
+END OF FILE

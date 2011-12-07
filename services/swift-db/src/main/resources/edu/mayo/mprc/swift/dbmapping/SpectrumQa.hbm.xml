@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.mayo.mprc.swift.dbmapping">
+    <class name="SpectrumQa" table="spectrum_qa" lazy="false">
+        <id name="id" column="spectrum_qa_id" type="int">
+            <generator class="native"/>
+        </id>
+        <property name="engine" type="string" length="15" column="engine"/>
+        <property name="paramFilePath" column="param_file_path"/>
+    </class>
+</hibernate-mapping>

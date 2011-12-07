@@ -1,0 +1,11 @@
+<module>
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.allen_sauer.gwt.dnd.gwt-dnd"/>
+    <inherits name="edu.mayo.mprc.common.Common"/>
+
+    <entry-point class="edu.mayo.mprc.dbcurator.client.CurationEditorApp"/>
+
+    <servlet path="/CommonDataRequester"
+             class="edu.mayo.mprc.dbcurator.server.CommonDataRequesterImpl"/>
+</module>

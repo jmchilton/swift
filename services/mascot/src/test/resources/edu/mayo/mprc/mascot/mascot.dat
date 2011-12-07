@@ -1,0 +1,630 @@
+# Database definitions use 14 parameters:  
+#  1. unique database name
+#  2. path to local FASTA file. Must use forward slashes and include wild card
+#  3. AA for amino acid, NA for nucleic acid
+#  4. approximate numbers of entries (not used)
+#  5. unique integer ID (not used)
+#  6. 1 for memory map, 0 otherwise 
+#  7. number of blocks 
+#  8. number of threads
+#  9. 1 for lock in memory, 0 otherwise
+# 10. 1 for local reference file, 0 otherwise
+# 11. index of parse rule for accession number from FASTA
+# 12. index of parse rule for description from FASTA
+# 13. index of parse rule for accession number from local reference file
+# 14. index of taxonomy block, 0 if no taxonomy 
+#
+Databases
+MSDB	/usr/local/mascot/sequence/MSDB/current/MSDB_*.fasta	AA	1234	0	1	1	1	1	1	17	18	19	7
+# EST_human	/usr/local/mascot/sequence/EST_human/current/EST_human_*.fasta	NA	1234	1	1	1	10	0	0	6	7	0	0
+# EST_mouse	/usr/local/mascot/sequence/EST_mouse/current/EST_mouse_*.fasta	NA	1234	2	1	1	10	0	0	6	7	0	0
+# EST_others	/usr/local/mascot/sequence/EST_others/current/EST_others_*.fasta	NA	1234	3	1	1	10	0	0	6	7	0	9
+# Trembl	/usr/local/mascot/sequence/Trembl/current/Trembl_*.fasta	AA	1234	4	1	1	10	0	1	12	13	15	5
+# IPI_human	/usr/local/mascot/sequence/IPI_human/current/IPI_human_*.fasta	AA	1234	5	1	1	10	0	1	21	7	15	0
+# IPI_mouse	/usr/local/mascot/sequence/IPI_mouse/current/IPI_mouse_*.fasta	AA	1234	6	1	1	10	0	1	21	7	15	0
+
+human_meas_bov	/usr/local/mascot/sequence/human_meas_bov*.fasta	AA	1234	7	1	1	1	0	0	6	7	0	8
+test_001	src/test/resources/edu/mayo/mprc/mascot/testfasta/Test_*.fasta	AA	1234	8	1	1	1	0	1	12	13	15	5
+test_002	foo/bar.fasta	AA	1234	8	1	1	1	0	1	12	13	15	5
+test_002	foo/baz.fasta	AA	1234	8	1	1	1	0	1	12	13	15	5
+Sprot_20050104	/usr/local/mascot/sequence/Sprot20050104/current/Sprot_*.fasta	AA	1234	8	1	1	1	0	1	12	13	15	5
+NCBInr_20050110	/usr/local/mascot/sequence/NCBInr20050110/current/NCBInr_*.fasta	AA	1234	9	1	1	1	0	0	6	7	0	8
+Sprot_20050802	/usr/local/mascot/sequence/Sprot20050802/current/Sprot_*.fasta	AA	1234	10	1	1	1	0	1	12	13	15	5
+NCBInr_20050805	/usr/local/mascot/sequence/NCBInr20050805/current/NCBInr_*.fasta	AA	1234	11	1	1	1	0	0	6	7	0	8
+Sprot_20050818	/usr/local/mascot/sequence/Sprot20050818/current/Sprot_*.fasta	AA	1234	12	1	1	1	0	1	12	13	15	5
+NCBInr_20050819	/usr/local/mascot/sequence/NCBInr20050819/current/NCBInr_*.fasta	AA	1234	13	1	1	1	0	0	6	7	0	8
+# UniRef100	###ROOT###/sequence/uniref100/current/uniref100_*.fasta	AA	1234	14	1	###BLOCKS###	###THREADS###	0	0	30	13	0	12
+Sprot_20060307	/usr/local/mascot/sequence/Sprot_20060307/current/Sprot_*.fasta	AA	1234	14	1	1	1	0	1	12	13	15	5
+NCBInr_20060319	/usr/local/mascot/sequence/NCBInr_20060319/current/NCBInr_*.fasta	AA	1234	33	1	1	1	0	0	6	7	0	8
+NCBInr_20061205	/usr/local/mascot/sequence/NCBInr_20061205/current/NCBInr_*.fasta	AA	1234	15	1	1	1	0	0	6	7	0	8
+Sprot_20060321	/usr/local/mascot/sequence/Sprot_20060321/current/Sprot_*.fasta	AA	1234	34	1	1	1	0	1	12	13	15	5
+Sprot_20060905	/usr/local/mascot/sequence/Sprot_20060905/current/Sprot_*.fasta	AA	1234	35	1	1	1	0	1	12	13	15	5
+Sprot_20070109	/usr/local/mascot/sequence/Sprot_20070109/Sprot_*.fasta	AA	1234	36	1	1	1	0	1	33	34	15	5
+Sprot_20070109_humr	/usr/local/mascot/sequence/Sprot_20070109_human_r/Sprot_*.fasta	AA	1234	29	1	1	1	0	0	12	13	0	0
+Trembl_20070123	/usr/local/mascot/sequence/Trembl_20070123/Trembl_*.fasta	AA	1234	19	1	1	1	0	1	33	34	15	5
+SprotTrmbl_20070123	/usr/local/mascot/sequence/Trembl_20070123/SprotTrembl_*.fasta	AA	1234	20	1	1	1	0	1	33	34	15	5
+Sua_Sprot_20060321	/usr/local/mascot/sequence/Sua_Sprot/Sua_Sprot_*.fasta	AA	1234	21	1	1	1	0	0	12	13	0	3
+Lysc_Sprot_20060321	/usr/local/mascot/sequence/Lysc_Sprot_20060321/Lysc_Sprot_20060321*.fasta	AA	1234	18	1	1	1	0	0	12	13	0	3
+humanKBMS5_20050302	/usr/local/mascot/sequence/humanKBMS5_20050302/current/human_KBMS5.0.20050302*.fasta	AA	1234	22	1	1	1	0	0	31	32	0	3
+humanKBMS3_20040121	/usr/local/mascot/sequence/humanKBMS3_20040121/current/human_KBMS3.0.20040121*.fasta	AA	1234	16	1	1	1	0	0	31	32	0	3
+ipi_mouse_20060906	/usr/local/mascot/sequence/ipi_mouse_20060906/current/ipi.MOUSE.*.fasta	AA	1234	23	1	1	10	0	0	21	7	15	0
+ipi_human_20060906	/usr/local/mascot/sequence/ipi_human_20060906/current/ipi.HUMAN.*.fasta	AA	1234	24	1	1	10	0	0	21	7	15	0
+ipi_20061102_human	/usr/local/mascot/sequence/ipi_20061102_human/current/ipi_*_human.fasta	AA	1234	25	1	1	10	0	0	21	35	15	0
+ipi_20070117_humanr	/usr/local/mascot/sequence/ipi_20070117/ipi_*_human_r.fasta	AA	1234	37	0	1	10	0	0	12	13	28	0
+ipi_20070714_humanx	/usr/local/mascot/sequence/ipi_20070714_human/ipi_*.fasta	AA	1234	37	0	1	10	0	0	12	13	28	0
+Sprot_20060905_hump	/usr/local/mascot/sequence/Sprot_20060905_humanplus/current/Sprot_*.fasta	AA	1234	30	1	1	1	0	0	12	13	0	0
+ipi_20070714_mousex	/usr/local/mascot/sequence/ipi_20070714_mouse/ipi_*.fasta	AA	1234	37	0	1	10	0	0	12	13	28	0
+klj_5protmix	/usr/local/mascot/sequence/Sprot_20070109_5protmix/Sprot_*.fasta	AA	1234	31	1	1	1	0	0	12	13	0	0
+ABRF_PRG_2007	/usr/local/mascot/sequence/ABRF_PRG_2007/ABRF_PRG_2007*.fasta	AA	1234	27	1	1	1	0	0	12	13	0	0
+dogan_ttr_2007	/usr/local/mascot/sequence/dogan_ttr/dogan_ttr_*.fasta	AA	1234	28	1	1	1	0	0	12	13	0	0
+KleeEKunified	/usr/local/mascot/sequence/KleeEKprot/KleeEKunified*.fasta	AA	1234	17	1	1	1	0	0	12	13	0	0
+humbovvac_20070117	/usr/local/mascot/sequence/humbovvac_20070117/humbovvac_*_x.fasta	AA	1234	26	1	1	1	0	0	12	13	0	0
+dogan_ttr_20070514	/usr/local/mascot/sequence/dogan_ttr_20070514/dogan_ttr_*.fasta	AA	1234	38	1	1	1	0	0	12	13	15	0
+Sprot_20070320	/usr/local/mascot/sequence/Sprot_20070320/Sprot_*.fasta	AA	1234	35	1	1	1	0	1	12	13	15	5
+Sprot_20070320_humr	/usr/local/mascot/sequence/Sprot_20070320_humanr/Sprot_20070320*.fasta	AA	1234	32	1	1	1	0	0	12	13	0	0
+Sprot_20070320_x	/usr/local/mascot/sequence/Sprot_20070320_x/Sprot_*.fasta	AA	1234	32	1	1	1	0	0	12	13	0	0
+Sprot_20070529_humx	/usr/local/mascot/sequence/Sprot_20070529_humanx/Sprot_*.fasta	AA	1234	32	1	1	1	0	0	12	13	0	0
+Sprot_20070529	/usr/local/mascot/sequence/Sprot_20070529/Sprot_*.fasta	AA	1234	35	1	1	1	0	1	12	13	15	5
+NCBInr_20070609	/usr/local/mascot/sequence/NCBInr_20070609/NCBInr_*.fasta	AA	1234	15	1	1	1	0	0	6	7	0	8
+PlagAltSp_20070529 	/usr/local/mascot/sequence/PlagerAltSp_20070529/PlagerAltSp_*.fasta	AA	1234	30	1	1	1	0	0	12	13	0	0
+end
+#
+# Basic regular expressions for parsing sequence files
+#
+PARSE
+# For OWL 3.1r2 accession e.g. >owl||100K_RAT This is a protein
+RULE_1	">owl[^ ]*|\([^ ]*\)"
+#
+# For OWL 3.1r2 description e.g. >owl||100K_RAT This is a protein
+RULE_2	">owl[^ ]*|[^ ]*[ ]\(.*\)"
+#
+# For OWL 3.1 and later .ref file e.g. >P1;100K_RAT
+RULE_3	">[A-Z][0-9];\([^ ]*\)"
+#
+# For OWL 3.1r0 and earlier accession e.g. >100K_RAT This is a protein
+RULE_4	">\([^ ]*\)"
+#
+# For OWL 3.1r0 and earlier  description
+RULE_5	">[^ ]* \(.*\)"
+#
+# For NCBI accession e.g. 
+RULE_6	">\(gi|[0-9]*\)"
+#
+# For NCBI description - everything after the first space
+RULE_7	">[^ ]* \(.*\)"
+#
+# Sequence string for all databases from ms-getseq.exe
+RULE_8	"\*\(.*\)>"
+#
+# Report text for Owl or MSDB from ms-getseq.exe
+RULE_9	"\*.*\(>[A-Z][0-9];.*\)"
+#
+# Report text from NCBI Entrez excluding sequence (used for AA entries)
+RULE_10	"\(LOCUS .*\)ORIGIN "
+#
+# Report text from NCBI Entrez including sequence (used for NA entries)
+RULE_11	"\(LOCUS .*\)"
+#
+# SwissProt ID e.g. >104K_THEPA (P15711) 104 KD MICRO
+RULE_12	">\([^ ]*\)"
+#
+# SwissProt description e.g. >104K_THEPA (P15711) 104 KD MICRO
+RULE_13	">[^ ]* \(.*\)"
+#
+# SwissProt report text from SRS wgetz including sequence
+RULE_14	"<pre>\(.*\)</pre>"
+#
+# For SwissProt .dat file. ID followed by three spaces, then up to next space 
+RULE_15	"^ID   \([^ ]*\)"
+#
+# Report text for local Swiss prot ref file from ms-getseq.exe, ID only
+RULE_16	"\*.*\(ID   [A-Z0-9]*_[A-Z0-9]* .*\)"
+#
+# For MSDB accession e.g. >100K_RAT This is a protein
+RULE_17	">\([^ ]*\)"
+#
+# For MSDB description e.g. >100K_RAT This is a protein
+RULE_18	">[^ ]* \(.*\)"
+#
+# For MSDB reference file. Extract accession e.g. >P1;100K_RAT
+RULE_19	">[A-Z][0-9];\([^ ]*\)[ ]*"
+#
+# Everything after >
+RULE_20	">\(.*\)"
+#
+# IPI accession from Fasta
+RULE_21	">IPI:\([^| .]*\)"
+#
+# IPI full text from ms-getseq.exe
+RULE_22	"\*.*\(ID   IPI[0-9]* .*\)"
+#
+# Everything
+RULE_23	"\(.*\)"
+#
+# Report text for local Sprot / Trembl DAT file from ms-getseq.exe
+RULE_24	"\*.*\(ID   [-A-Z0-9_].*\)"
+#
+# AC from Swiss-Prot Fasta
+RULE_25	">[^(]*.\([^)]*\)"
+#
+#For parsing AC-accession string from SwissProt dat-file
+RULE_26	"^AC   \([^ ;]*\)"
+#
+# Report text for local Swiss prot ref file from ms-getseq.exe
+RULE_27	"\*.*\(AC   [A-Z0-9]*;.*\)"
+#
+# IPI accession from local dat file
+RULE_28	"^ID   \([^ .]*\)"
+#
+# IPI full text from ms-getseq.exe
+RULE_29	"\*.*\(ID   IPI[0-9.]* .*\)"
+#
+# UniRef100 accession from Fasta
+RULE_30	">UniRef100_\([^ ]*\)"
+#
+# humanKBMS5 Id >/:spt|P67870| Casein kinase II beta subunit (CK II beta) (Phosvitin) (G5a) //:
+RULE_31	">/:\([^ ]*|[^ ]*\)| "
+#
+# humanKBMS5 Desc
+RULE_32	"| \(.*\) //"
+#
+# SwissProt ID e.g. >104K_THEPA (P15711) 104 KD MICRO
+RULE_33	">[^|]*|\([^ ]*\)"
+#
+# SwissProt description e.g. >104K_THEPA (P15711) 104 KD MICRO
+RULE_34	">[^ ]* \(.*\)"
+# IPI
+RULE_35	">[^ ]* Tax_Id=[^ ]* \(.*\)"
+#
+end
+#
+# Sources for sequence reports
+#
+WWW
+NCBInr20050805_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr20050805 #ACCESSION# seq"
+NCBInr20050805_REP	"10"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&tool=mascot&id=#ACCESSION#"
+EST_human_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe EST_human #ACCESSION# seq #FRAME#"
+EST_human_REP	"11"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gb&retmode=text&db=nucleotide&tool=mascot&id=#ACCESSION#"
+EST_mouse_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe EST_mouse #ACCESSION# seq #FRAME#"
+EST_mouse_REP	"11"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gb&retmode=text&db=nucleotide&tool=mascot&id=#ACCESSION#"
+EST_others_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe EST_others #ACCESSION# seq #FRAME#"
+EST_others_REP	"11"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gb&retmode=text&db=nucleotide&tool=mascot&id=#ACCESSION#"
+Sprot20050802_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050802 #ACCESSION# seq"
+Sprot20050802_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050802 #ACCESSION# all"
+Trembl_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Trembl #ACCESSION# seq"
+Trembl_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Trembl #ACCESSION# all"
+MSDB_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe MSDB #ACCESSION# seq"
+MSDB_REP	"9"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe MSDB #ACCESSION# all"
+ipi_human_20060906_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_human_20060906 #ACCESSION# seq"
+ipi_human_20060906_REP	"29"	"localhost"	"80"	"/usr/local/mascot//x-cgi/ms-getseq.exe ipi_human_20060906 #ACCESSION# all"
+ipi_20061102_human_SEQ	"29"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_20061102_human #ACCESSION# seq"
+ipi_20061102_human_REP	"8"	"srs.ebi.ac.uk"	"80"	"/srsbin/cgi-bin/wgetz?[ipi-AccNumber:#ACCESSION#]+-e"
+ipi_20070117_humanr_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_20070117_humanr #ACCESSION# seq"
+ipi_20070117_humanr_REP	"14"	"srs.ebi.ac.uk"	"80"	"/srs6bin/cgi-bin/wgetz?-e+[IPI-acc:#ACCESSION#]+-vn+2"
+ipi_20070714_humanx_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_20070714_humanx #ACCESSION# seq"
+ipi_20070714_humanx_REP	"14"	"srs.ebi.ac.uk"	"80"	"/srs6bin/cgi-bin/wgetz?-e+[IPI-acc:#ACCESSION#]+-vn+2"
+ipi_20070714_mousex_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_20070714_mousex #ACCESSION# seq"
+ipi_20070714_mousex_REP	"14"	"srs.ebi.ac.uk"	"80"	"/srs6bin/cgi-bin/wgetz?-e+[IPI-acc:#ACCESSION#]+-vn+2"
+ipi_mouse_20060906_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ipi_mouse_20060906 #ACCESSION# seq"
+ipi_mouse_20060906_REP	"29"	"localhost"	"80"	"/usr/local/mascot//x-cgi/ms-getseq.exe ipi_mouse_20060906 #ACCESSION# all"
+UniRef100_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe UniRef100 #ACCESSION# seq"
+UniRef100_REP	"23"	"srs.ebi.ac.uk"	"80"	"/srsbin/cgi-bin/wgetz?-e+[uniprot-AccNumber:#ACCESSION#]+-e"
+human_meas_bov_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr #ACCESSION# seq"
+human_mease_bov_REP	"10"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&tool=mascot&id=#ACCESSION#"
+human_meas_bov_REP	"10"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&tool=mascot&id=#ACCESSION#"
+Sprot20050104_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050104 #ACCESSION# seq"
+Sprot20050104_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050104 #ACCESSION# all"
+NCBInr20050110_REP	"10"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&tool=mascot&id=#ACCESSION#"
+NCBInr20050110_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr20050110 #ACCESSION# seq"
+Sprot20050818_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050818 #ACCESSION# all"
+Sprot20050818_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot20050818 #ACCESSION# seq"
+NCBInr20050819_REP	"10"	"eutils.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&tool=mascot&id=#ACCESSION#"
+NCBInr20050819_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr20050819 #ACCESSION# seq"
+Sprot_20050104_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20050104 #ACCESSION# seq"
+NCBInr_20050110_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20050110 #ACCESSION# seq"
+Sprot_20050802_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20050802 #ACCESSION# seq"
+NCBInr_20050805_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20050805 #ACCESSION# seq"
+Sprot_20050818_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20050818 #ACCESSION# seq"
+NCBInr_20050819_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20050819 #ACCESSION# seq"
+Sprot_20060307_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060307 #ACCESSION# all"
+Sprot_20060307_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060307 #ACCESSION# seq"
+NCBInr_20060319_REP	"10"	"www.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&id=#ACCESSION#"
+NCBInr_20060319_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20060319 #ACCESSION# seq"
+NCBInr_20061205_REP	"10"	"www.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&id=#ACCESSION#"
+NCBInr_20061205_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20061205 #ACCESSION# seq"
+Sprot_20060321_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060321 #ACCESSION# all"
+Sprot_20060321_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060321 #ACCESSION# seq"
+Sprot_20060905_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905 #ACCESSION# all"
+Sprot_20060905_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905 #ACCESSION# seq"
+Sprot_20070109_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070109 #ACCESSION# all"
+Sprot_20070109_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070109 #ACCESSION# seq"
+Sprot_20070109_humr_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070109_humr #ACCESSION# all"
+Sprot_20070109_humr_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070109_humr #ACCESSION# seq"
+Sprot_20070320_humr_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070320_humr #ACCESSION# seq"
+Sprot_20070529_humx_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070529_humx #ACCESSION# seq"
+Sprot_20070320_x_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070320_x #ACCESSION# seq"
+Trembl_20070123_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Trembl_20070123 #ACCESSION# all"
+Trembl_20070123_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Trembl_20070123 #ACCESSION# seq"
+SprotTrembl_20070123_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe SprotTrembl_20070123 #ACCESSION# all"
+SprotTrembl_20070123_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe SprotTrembl_20070123 #ACCESSION# seq"
+Sprot_20060905_humpls_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905_humpls #ACCESSION# all"
+Sprot_20060905_humpls_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905_humpls #ACCESSION# seq"
+Sua_Sprot_20060321_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sua_Sprot_20060321 #ACCESSION# seq"
+humanKBMS5_20050302_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humanKBMS5_20050302 #ACCESSION# seq"
+humanKBMS3_20040121_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humanKBMS3_20040121 #ACCESSION# seq"
+Sprot_20060905_hump_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905_hump #ACCESSION# all"
+Sprot_20060905_hump_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20060905_hump #ACCESSION# seq"
+KleeEKunified_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe KleeEKunified #ACCESSION# all"
+KleeEKunified_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe KleeEKunified #ACCESSION# seq"
+#humbovvac_20070117_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humbovvac_20070117 #ACCESSION# all"
+#humbovvac_20070117_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humbovvac_20070117 #ACCESSION# seq"
+humbovvac_20070117_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humbovvac_20070117 #ACCESSION# all"
+humbovvac_20070117_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe humbovvac_20070117 #ACCESSION# seq"
+dogan_ttr_2007_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe dogan_ttr_2007 #ACCESSION# seq"
+dogan_ttr_20070514_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe dogan_ttr_20070514 #ACCESSION# seq"
+SprotTrmbl_20070123_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe SprotTrmbl_20070123 #ACCESSION# seq"
+Lysc_Sprot_20060321_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Lysc_Sprot_20060321 #ACCESSION# seq"
+ABRF_PRG_2007_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe ABRF_PRG_2007 #ACCESSION# seq"
+klj_5protmix_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe klj_5protmix #ACCESSION# seq"
+Sprot_20070320_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070320 #ACCESSION# all"
+Sprot_20070320_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070320 #ACCESSION# seq"
+PlagAltSp_20070529_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe PlagAltSp_20070529 #ACCESSION# all"
+PlagAltSp_20070529_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe PlagAltSp_20070529 #ACCESSION# seq"
+NCBInr_20070609_REP	"10"	"www.ncbi.nlm.nih.gov"	"80"	"/entrez/eutils/efetch.fcgi?rettype=gp&retmode=text&db=protein&id=#ACCESSION#"
+NCBInr_20070609_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe NCBInr_20070609 #ACCESSION# seq"
+Sprot_20070529_REP	"24"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070529 #ACCESSION# all"
+Sprot_20070529_SEQ	"8"	"localhost"	"80"	"/usr/local/mascot/x-cgi/ms-getseq.exe Sprot_20070529 #ACCESSION# seq"
+end
+#
+#
+# TAXONOMY FOR NCBInr type databases
+Taxonomy_1
+Identifier          Obsolete
+Enabled             1   # 0 to disable it 
+FromRefFile         0
+ErrorLevel          0
+DescriptionLineSep  1   # ctrl a - hex code '1'. For multiple descriptions per entry
+SrcDatabaseRule     "gi|[^|]*|\([^|]*\)"    # To find e.g. if from SwissProt, PIR
+SpeciesFiles        NCBI:names.dmp, SWISSPROT:speclist.txt, PDB:pdbeast.txt
+NodesFiles          NCBI:nodes.dmp
+RULE_gb             NCBI,      CHOP:  ".*\[\(.*\)\]"    # genbank - anything in square brackets
+RULE_dbj            NCBI,      CHOP:  ".*\[\(.*\)\]"    # DNA database of Japan. Anything in last []
+RULE_sp             SWISSPROT, CHOP:  "_\([^ _]*\)"     # Swissprot
+RULE_pir            NCBI,      CHOP:W ".*- \([^(=]*\)"  # PIR anything after the last  - 
+RULE_bbs            NCBI,      CHOP:  ".*\[\([^],=]*\)" # bbs - last bracket contents up to comma or =
+RULE_pdb            PDB,       CHOP:  "pdb|\([^|]*\)"  # Brookhaven - after pdb| before next |
+DefaultRule         NCBI,      CHOP:  ".*\[\(.*\)\]"    # Others - anything in square brackets
+end
+#
+#
+# TAXONOMY FOR OWL
+Taxonomy_2
+Identifier          OWL REF
+Enabled             1   # 0 to disable it 
+FromRefFile         1
+ErrorLevel          0
+DescriptionLineSep  44   # 44 is a comma
+NoBreakDescLineIf   clone, clone_lib, cloned, clones, subclone,strain, LRV1, from, with
+NoBreakDescLineIf   sample, sibling, library, isolated, isolate, expression, clone:p38N
+NoBreakDescLineIf   (see, passed, proviral, PCR, genomic, cell, cell-line, (library, (clone
+NoBreakDescLineIf   (strain, strains, wild-type, salivary, 3-day-old, mesenteric, haplotype
+NoBreakDescLineIf   anti-influenza, chromosomal, (passed, satellite
+NoBreakDescLineIf   Philippine, Portugal, Whitney, Davis, Mather, Nebraska, Austria
+NoBreakDescLineIf   intestine, pancreas, spleen, stage, unopened, de-petiolated, complete
+NoBreakDescLineIf   Hobart, Type, cDNA, DNA, mRNA, fetal, sub_clone, brain, adult
+NoBreakDescLineIf   via, derivative, subtype, passaged, serotype, grown, (from
+NoBreakDescLineIf   PCR-derived, direct, directly, unintegrated, infectious, derived,
+NoBreakDescLineIf   LRV1, AnMNPV, MbMNPV, HaSNPV, WMV, SBWMV, UmV-H1, UmV-P1, cosmid, pVCK219
+NoBreakDescLineIf   non-B, [2], kaposi, (WYMV), SBWMV, tum-, SF13, pDR1996, ATCC, NCK88, NEC14, CP4
+NoBreakDescLineIf   pJL2/3, pKDL243, pNKV, pBac, pBad, ppyrB9(wt), pyrB554, pyrB730, MC4100, pSR9, p48n
+SpeciesFiles        NCBI:names.dmp, NCBI:owl.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         NCBI, CHOP:WP   "\(.*\)"    # Everything!
+PrefixRemoves       C;Species: and mitochondrion chloroplast plastid endogenous
+SuffixRemoves       
+QuickRefSearch      C;Species:
+end
+#
+#
+# TAXONOMY FOR SwissProt from the fasta file
+Taxonomy_3
+Identifier          Swiss-prot FASTA
+Enabled             1   # 0 to disable it 
+FromRefFile         0
+DescriptionLineSep  0   # ctrl a - hex code '1'. For multiple descriptions per entry
+SpeciesFiles        NCBI:names.dmp, SWISSPROT:speclist.txt
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         SWISSPROT, CHOP: ">[^_]*_\([^ ]*\) "    # Anything after _ before space
+PrefixRemoves       
+SuffixRemoves       
+QuickRefSearch      
+end
+#
+#
+# TAXONOMY FOR NCBI dbEST
+Taxonomy_4          
+Identifier          Obsolete
+Enabled             1   # 0 to disable it 
+ErrorLevel          0
+FromRefFile         0
+DescriptionLineSep  1   # ctrl a - hex code '1'. For multiple descriptions per entry
+SpeciesFiles        NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+StrStrFiles         NCBI:est.dmp
+DefaultRule         NCBI, CHOP: ".*\[\(.*\)\]"         # Anything in square brackets
+STRSTRRULE          NCBI, CHOP:S "gi|[^ ]* \(.*\)"     # Anything after first space
+SuffixRemoves       similar
+GencodeFiles        NCBI:gencode.dmp
+MitochondrialTranslation 0
+end
+#
+#
+# TAXONOMY FOR SwissProt from the .dat file
+Taxonomy_5
+Identifier          Swiss-prot DAT
+Enabled             1   # 0 to disable it 
+FromRefFile         1
+ConcatRefFileLines  1
+ErrorLevel          2
+DescriptionLineSep  44   # 44 is a comma
+SpeciesFiles        NCBI:names.dmp, SWISSPROT:speclist.txt
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         NCBI, CHOP:WP "\(.*\)" 
+PrefixRemoves       OS and
+SuffixRemoves       
+QuickRefSearch      "OS   "
+end
+#
+#
+# TAXONOMY FOR MSDB
+Taxonomy_6
+Identifier          MSDB REF (pre 20000621)
+Enabled             1   # 0 to disable it 
+FromRefFile         1
+ErrorLevel          0
+DescriptionLineSep  44   # 44 is a comma
+ConcatRefFileLines  0
+NoBreakDescLineIf   clone, clone_lib, cloned, clones, subclone,strain, LRV1, from, with
+NoBreakDescLineIf   sample, sibling, library, isolated, isolate, expression, clone:p38N
+NoBreakDescLineIf   (see, passed, proviral, PCR, genomic, cell, cell-line, (library, (clone
+NoBreakDescLineIf   (strain, strains, wild-type, salivary, 3-day-old, mesenteric, haplotype
+NoBreakDescLineIf   anti-influenza, chromosomal, (passed, satellite
+NoBreakDescLineIf   Philippine, Portugal, Whitney, Davis, Mather, Nebraska, Austria
+NoBreakDescLineIf   intestine, pancreas, spleen, stage, unopened, de-petiolated, complete
+NoBreakDescLineIf   Hobart, Type, cDNA, DNA, mRNA, fetal, sub_clone, brain, adult
+NoBreakDescLineIf   via, derivative, subtype, passaged, serotype, grown, (from
+NoBreakDescLineIf   PCR-derived, direct, directly, unintegrated, infectious, derived,
+NoBreakDescLineIf   LRV1, AnMNPV, MbMNPV, HaSNPV, WMV, SBWMV, UmV-H1, UmV-P1, cosmid, pVCK219
+NoBreakDescLineIf   non-B, [2], kaposi, (WYMV), SBWMV, tum-, SF13, pDR1996, ATCC, NCK88, NEC14, CP4
+NoBreakDescLineIf   pJL2/3, pKDL243, pNKV, pBac, pBad, ppyrB9(wt), pyrB554, pyrB730, MC4100, pSR9, p48n
+SpeciesFiles        NCBI:names.dmp, NCBI:owl.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         NCBI, CHOP:WP   "\(.*\)"    # Everything!
+PrefixRemoves       C;Species: and mitochondrion chloroplast plastid endogenous
+SuffixRemoves       
+QuickRefSearch      C;Species:
+end
+#
+#
+# TAXONOMY FOR MSDB_20000621 or later
+Taxonomy_7
+Identifier          MSDB REF
+Enabled             1   # 0 to disable it 
+FromRefFile         1
+ErrorLevel          0
+DescriptionLineSep  44   # 44 is a comma
+ConcatRefFileLines  0
+SpeciesFiles        NCBI:names.dmp, NCBI:owl.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         NCBI, CHOP:WP   "\(.*\)"    # Everything!
+PrefixRemoves       C;Species and mitochondrion chloroplast plastid endogenous
+SuffixRemoves       
+QuickRefSearch      C;Species
+DoThisRuleFirst     "C;Species .*:\(.*\)"  # Everything after TNU23504:
+AccFromSpeciesLine  "C;Species \([^:]*\)"
+end
+#
+#
+# TAXONOMY FOR NCBInr using GI2TAXID
+Taxonomy_8
+Enabled             1   # 0 to disable it 
+FromRefFile         0
+ErrorLevel          0
+DescriptionLineSep  1   # ctrl a - hex code '1'. For multiple descriptions per entry
+SpeciesFiles        GI2TAXID:gi_taxid_prot.dmp, NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         GI2TAXID,      CHOP:  "gi|\([0-9]*\)"   #The gi number
+Identifier          NCBI nr FASTA using GI2TAXID
+AccFromSpeciesLine  "\(gi|[0-9]*\)"
+end
+#
+#
+# TAXONOMY FOR dbEST using GI2TAXID
+Taxonomy_9
+Enabled             1   # 0 to disable it 
+FromRefFile         0
+ErrorLevel          0
+DescriptionLineSep  1   # ctrl a - hex code '1'. For multiple descriptions per entry
+SpeciesFiles        GI2TAXID:gi_taxid_nucl.dmp, NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         GI2TAXID,      CHOP:  "gi|\([0-9]*\)"   #The gi number
+Identifier          dbEST FASTA using GI2TAXID
+GencodeFiles        NCBI:gencode.dmp
+AccFromSpeciesLine  "\(gi|[0-9]*\)"
+MitochondrialTranslation 0
+end
+#
+#
+# TAXONOMY FOR EST_human with TaxID
+Taxonomy_10
+Enabled             1   # 0 to disable it 
+SpeciesFiles        NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+Identifier          EST_human FASTA with TaxID
+GencodeFiles        NCBI:gencode.dmp
+MitochondrialTranslation 0
+TaxID		    9606
+end
+#
+#
+# TAXONOMY FOR EST_mouse with TaxID
+Taxonomy_11
+Enabled             1   # 0 to disable it 
+SpeciesFiles        NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+Identifier          EST_mouse FASTA with TaxID
+GencodeFiles        NCBI:gencode.dmp
+MitochondrialTranslation 0
+TaxID		    10090
+end
+#
+#
+# TAXONOMY FOR UniRef
+Taxonomy_12
+Identifier          UniRef
+Enabled             1   # 0 to disable it 
+FromRefFile         0
+ErrorLevel          0
+SpeciesFiles        NCBI:names.dmp
+NodesFiles          NCBI:nodes.dmp
+DefaultRule         NCBI,      CHOP:W  ".*\[\(.*\)\]"    # anything in square brackets
+end
+#
+Cluster
+#
+# Enable (1) or disable (0) cluster mode
+Enabled 1
+#
+# MasterComputerName must be the hostname
+MasterComputerName mascot
+#
+# Node defaults
+DefaultNodeOS Linux
+DefaultNodeHomeDir /usr/local/mascot/node
+#
+# Following line must be commented out UNLESS this is a homogeneous cluster of NT systems. 
+# DefaultNodeHomeDirFromMaster \\<host_name>\d_drive\MascotNode
+#
+# Following line must be commented out WHEN this is a homogeneous cluster of NT systems.
+MascotNodeScript        /usr/local/mascot/bin/load_node.pl
+#
+# Sub-cluster definition
+# Syntax is SubClusterSet X Y where X is the sub-cluster number 
+# and Y is the maximum number of CPUs to use within the given sub-cluster.
+#
+SubClusterSet 0 10
+# SubClusterSet 1 50
+#
+# Time outs, log files
+IPCTimeout              15                  # seconds with no response before timeout
+IPCLogging              0                  # no logging = 0, minimal = 1, verbose = 2
+IPCLogfile              ../logs/ipc.log    # relative path
+CheckNodesAliveFreq     30                 # seconds between node health checks
+SecsToWaitForNodeAtStartup  30             # seconds to wait for node to come on-line 
+#
+end
+#
+# UniGene
+#
+# UniGene index files defined by
+# species path
+# Option to cluster results from searching sequence database defined by
+# name species [[species] ... [species]]
+#
+UniGene
+# human /usr/local/mascot/unigene/human/current/Hs.data
+# mouse /usr/local/mascot/unigene/mouse/current/Mm.data
+# mosquito /usr/local/mascot/unigene/mosquito/current/Aga.data
+# arabidopsis /usr/local/mascot/unigene/arabidopsis/current/At.data
+# maize /usr/local/mascot/unigene/maize/current/Zm.data
+# bovine /usr/local/mascot/unigene/bovine/current/Bt.data
+# drosophila /usr/local/mascot/unigene/drosophila/current/Dm.data
+# zebrafish /usr/local/mascot/unigene/zebrafish/current/Dr.data
+# barley /usr/local/mascot/unigene/barley/current/Hv.data
+# rice /usr/local/mascot/unigene/rice/current/Os.data
+# rat /usr/local/mascot/unigene/rat/current/Rn.data
+# wheat /usr/local/mascot/unigene/wheat/current/Ta.data
+# xenopus /usr/local/mascot/unigene/xenopus/current/Xl.data
+# EST_human human
+# EST_mouse mouse
+# EST_others mosquito arabidopsis maize bovine drosophila zebrafish barley rice rat wheat xenopus
+end
+#
+# Options
+#
+Options
+SaveLastQueryAsc 1
+SaveEveryLastQueryAsc 0
+LastQueryAscFile ../logs/lastquery.asc
+InterFileBasePath /usr/local/mascot/data
+InterFileRelPath ../data
+ResultsPerlScript ../cgi/master_results.pl
+ResultsFullURL http://mascot/mascot/cgi/master_results.pl
+NoResultsScript ../cgi/master_results.pl
+TestDirectory ../data/test
+MascotCmdLine ../cgi/nph-mascot.exe
+MascotControlFile ../data/mascot.control
+MascotNodeControlFile ../data/mascotnode.control
+MascotJobIdFile ../data/mascot.job
+GetSeqJobIdFile ../data/getseq.job
+UniqueJobStartNumber 1234
+TaxBrowserUrl http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?lvl=0&id=#TAXID#
+MassDecimalPlaces 4
+IonsDecimalPlaces 4
+IntensitySigFigs 4
+MinPepLenInPepSummary 5
+EmailUsersEnabled 0
+EmailErrorsEnabled 0
+EmailService your_service
+EmailProfile your_profile
+EmailFromUser your_id
+EmailFromTextName your_domain
+EmailPassword your_password
+EmailTimeOutPeriod 120
+sendmailPath /usr/lib/sendmail
+MailTempFile /var/tmp/MXXXXXX
+ErrMessageEmailTo Mason.Christopher@mayo.edu
+MailTransport 0
+MonitorEmailCheckFreq 300
+MonitorTestTimeout 1200
+LogoImageFile ../images/88x31_logo_white.gif
+ErrorLogFile ../logs/errorlog.txt
+SearchLogFile ../logs/searches.log
+MonitorLogFile ../logs/monitor.log
+NTMonitorGroup Administrators
+NTIUserGroup Guests
+ForkForUnixApache 1
+IgnoreIonsScoreBelow 0
+MaxSequenceLen 50000
+MaxConcurrentSearches 10
+CentroidWidth 0.25
+FormVersion 1.01
+ReportNumberChoices AUTO,5,10,20,30,50,100,200
+ShowSubSets 0
+RequireBoldRed 0
+ReviewColWidths 7,8,8,27,30,100,32,25,6,13,2,4,6,16,7
+SplitNumberOfQueries 1000
+SplitDataFileSize 10000000
+Mudpit 1000
+MaxQueries 1000000
+IgnoreDupeAccessions EST_others
+MinPepLenInSearch 5
+AutoSelectCharge 1
+PrecursorCutOut -1,-1
+#MaxAccessionLen 16
+#SearchControlSaveE 0
+# TaxBrowserUrl ../x-cgi/ms-gettaxonomy.exe?4+#DATABASE#+#ACCESSION#
+# proxy_server myserver
+# proxy_username myusername
+# proxy_password mypassword
+end
+#
+# Cron Emulator
+#
+Cron
+CronEnable 1
+30	0	1-31	*	*	perl /usr/local/mascot/bin/mirror.pl
+0	1	*	*	0	perl /usr/local/mascot/bin/db_update.pl MSDB_from_EBI
+0	3	*	*	0	perl /usr/local/mascot/bin/db_update.pl NCBInr_from_NCBI
+0	4	*	*	0	perl /usr/local/mascot/bin/db_update.pl Sprot_complete_from_Expasy
+end

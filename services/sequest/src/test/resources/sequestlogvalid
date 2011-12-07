@@ -1,0 +1,38 @@
+TurboSEQUEST - PVM Master v.27 (rev. 12), (c) 1998-2005
+Molecular Biotechnology, Univ. of Washington, J.Eng/S.Morgan/J.Yates
+Licensed to Thermo Electron Corp.
+
+NumHosts = 6, NumArch = 1
+
+  Arch:LINUX64  CPU:1  Tid:40000  Name:geneva
+  Arch:LINUX64  CPU:2  Tid:80000  Name:node001
+  Arch:LINUX64  CPU:2  Tid:c0000  Name:node002
+  Arch:LINUX64  CPU:2  Tid:100000  Name:node003
+  Arch:LINUX64  CPU:2  Tid:140000  Name:node004
+  Arch:LINUX64  CPU:2  Tid:180000  Name:node005
+
+Starting the SEQUEST task on 6 node(s)
+
+  Could not start up the SEQUEST slave process on geneva
+  Spawned the SEQUEST slave process [8025d] on node001
+  Spawned the SEQUEST slave process [8025e] on node001
+  Spawned the SEQUEST slave process [c0004] on node002
+
+Waiting for ready messages from 3 node(s)
+
+   1.  received ready messsage from node001.mprc.mayo.edu(8025d)
+   2.  received ready messsage from node001.mprc.mayo.edu(8025e)
+   3.  received ready messsage from node002.mprc.mayo.edu(c0004)
+
+Spawned 3 slave processes
+
+Search run on geneva using 3 node(s)
+Params file = /mnt/raid1/test/gel_spots/gb_carrie_20070402/raw/Test_2007121806/params/Orbitrap_Sprot_Latest_CarbC_OxM/sequest.params.replaced
+Peptide tol = 10.00 PPM, fragment tol = 1.0000, MONO/MONO
+ion series nABY ABCDVWXYZ: 0 1 1 0.0 1.0 0.0 0.0 0.0 0.0 0.0 1.0 0.0
+Display top = 10/5, ion % = 0.0, CODE = 001040
+Protein database = /mnt/raid1/databases/dbcurator/SprotRev071204E/SprotRev071204E_Orbitrap_Sprot_Latest_CarbC_OxM.fasta.hdr, index /mnt/raid1/databases/dbcurator/SprotRev071204E/SprotRev071204E
+_Orbitrap_Sprot_Latest_CarbC_OxM.fasta.hdr
+(M* +15.9949) (C# +57.0215)
+
+Processing 3 dta's on 3 node(s)
