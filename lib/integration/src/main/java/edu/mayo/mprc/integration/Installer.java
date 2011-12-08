@@ -28,8 +28,8 @@ import java.util.zip.ZipFile;
  */
 public class Installer {
 	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
-	private static final String RESOURCE_MD5 = "3d88e7f26d9c4422d24666af75b154bc";
-	private static final long RESOURCE_LENGTH = 34000593;
+	private static final String RESOURCE_MD5 = "36631126f367adde38510b8c127822ad";
+	private static final long RESOURCE_LENGTH = 34000584;
 
 	private static Date lastChecked = null;
 
