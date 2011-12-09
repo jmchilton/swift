@@ -332,7 +332,7 @@ public class Installer {
 
 			final long actualLength = resource.length();
 			if (RESOURCE_LENGTH != actualLength) {
-				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected size: expected {2}, got {2} bytes", resource.getAbsolutePath(), RESOURCE_LENGTH, actualLength));
+				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected size: expected {2}, got {3} bytes", resource.getAbsolutePath(), RESOURCE_LENGTH, actualLength));
 			}
 
 			final String checksum = StringUtilities.toHex(checksum(resource), "" );
