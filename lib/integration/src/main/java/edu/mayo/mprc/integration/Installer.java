@@ -28,8 +28,9 @@ import java.util.zip.ZipFile;
  */
 public class Installer {
 	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
-	private static final String RESOURCE_MD5 = "21e01309aac104f33a5964c08062a919";
-	private static final long RESOURCE_LENGTH = 33302832;
+	private static final String RESOURCE_MD5 = "4a96b0517fa528234f0e630d63c64653";
+	private static final long RESOURCE_LENGTH = 33578126;
+	private static final String ROOT = "integration-resources";
 
 	private static Date lastChecked = null;
 
@@ -167,7 +168,6 @@ public class Installer {
 
 	private static final int EXECUTABLE = 0x1ed; // 0755
 	private static final String DIGEST_INSTANCE = "MD5";
-	private static final String ROOT = "resources";
 
 	/**
 	 * Install a given list of files into given folder.
