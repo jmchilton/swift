@@ -58,8 +58,15 @@ Now copy your compiled files over the existing swift-install ones.
 	VERSION=3.0-SNAPSHOT
 	TARGET=swift-install/bin/swift
 
-	cp swift/launcher/target/launcher-${VERSION}-all.jar ${TARGET}/launcher.jar
-	cp swift/sore/target/swift-core-${VERSION}-all.jar ${TARGET}/swift.jar
-	cp swift/web/target/swift-ui.war ${TARGET}/swift.war
+	cp swift/swift/launcher/target/launcher-${VERSION}-all.jar ${TARGET}/launcher.jar
+	cp swift/swift/core/target/swift-core-${VERSION}-all.jar ${TARGET}/swift.jar
+	cp swift/swift/web/target/swift-ui.war ${TARGET}/swift.war
 
-TODO: We would like to simplify this to be ran directly with one maven command.
+(TODO: We would like to simplify this to be ran directly with one maven command.)
+
+Congratulations! You obtained a swift-install folder that you can now distribute and install Swift from. Please see
+
+	swift-install/INSTALL.txt
+
+for more information on installing Swift.
+
