@@ -44,9 +44,9 @@ public class TestTandem {
 	public void setup() throws IOException {
 		tempRootDir = FileUtilities.createTempFolder();
 		inputMgfFolder = Installer.mgfFiles(null, Installer.Action.INSTALL);
-		inputMgfFile = new File(inputMgfFolder, "test.mgf");
+		inputMgfFile = new File(inputMgfFolder, "test.mgf" );
 		fastaFolder = Installer.yeastFastaFiles(null, Installer.Action.INSTALL);
-		fastaFile = new File(fastaFolder, DATABASE_SHORT_NAME + ".fasta");
+		fastaFile = new File(fastaFolder, DATABASE_SHORT_NAME + ".fasta" );
 		tandemInstallFolder = Installer.tandem(null, Installer.Action.INSTALL);
 	}
 
@@ -55,33 +55,30 @@ public class TestTandem {
 		FileUtilities.cleanupTempFile(tempRootDir);
 		Installer.mgfFiles(inputMgfFolder, Installer.Action.UNINSTALL);
 		Installer.yeastFastaFiles(fastaFolder, Installer.Action.UNINSTALL);
-		Installer.tandem(tandemInstallFolder, Installer.Action.UNINSTALL);
+		if (tandemInstallFolder != null) {
+			Installer.tandem(tandemInstallFolder, Installer.Action.UNINSTALL);
+		}
 	}
 
 	@Test
 	public void runTandemWorker() {
+		if (tandemInstallFolder == null) {
+			return;
+		}
 		try {
-			tandemTemp = new File(tempRootDir, "tandem");
+			tandemTemp = new File(tempRootDir, "tandem" );
 			FileUtilities.ensureFolderExists(tandemTemp);
 
-			File tandemOut = new File(tandemTemp, "out");
+			File tandemOut = new File(tandemTemp, "out" );
 			FileUtilities.ensureFolderExists(tandemOut);
 
 
 			File tandemParamFile = getTandemParams();
 
-			String tandemExecutable = null;
-			if (FileUtilities.isWindowsPlatform()) {
-				tandemExecutable = new File(tandemInstallFolder, "tandem.exe").getAbsolutePath();
-			} else if (FileUtilities.isLinuxPlatform()) {
-				tandemExecutable = new File(tandemInstallFolder, "tandem.exe").getAbsolutePath();
-			} else {
-				Assert.fail("Unsupported platform to test X!Tandem on");
-				return;
-			}
+			String tandemExecutable = new File(tandemInstallFolder, "tandem.exe" ).getAbsolutePath();
 
 			if (!new File(tandemExecutable).exists()) {
-				LOGGER.warn("Could not find tandem executable in " + tandemExecutable + ", trying Tandem on the path.");
+				LOGGER.warn("Could not find tandem executable in " + tandemExecutable + ", trying Tandem on the path." );
 				tandemExecutable = "tandem.exe";
 			}
 
@@ -90,14 +87,14 @@ public class TestTandem {
 			final XTandemWorker.Factory factory = new XTandemWorker.Factory();
 			Worker worker = factory.create(tandemConfig, null);
 
-			final File resultFile = new File(tandemOut, "tandemResult.xml");
+			final File resultFile = new File(tandemOut, "tandemResult.xml" );
 
 			XTandemWorkPacket workPacket = new XTandemWorkPacket(inputMgfFile, tandemParamFile, resultFile, tandemOut, fastaFile, false, "0", false);
 			WorkPacketBase.simulateTransfer(workPacket);
 
 			worker.processRequest(workPacket, new ProgressReporter() {
 				public void reportStart() {
-					LOGGER.info("Started processing");
+					LOGGER.info("Started processing" );
 				}
 
 				public void reportProgress(ProgressInfo progressInfo) {
@@ -105,7 +102,7 @@ public class TestTandem {
 				}
 
 				public void reportSuccess() {
-					Assert.assertTrue(resultFile.length() > 0, "Tandem result file is empty.");
+					Assert.assertTrue(resultFile.length() > 0, "Tandem result file is empty." );
 				}
 
 				public void reportFailure(Throwable t) {
@@ -127,7 +124,7 @@ public class TestTandem {
 		MappingContext context = new TestMappingContextBase(new MockParamsInfo());
 
 		// TODO: Excercise all mappings
-		mapping.mapEnzymeToNative(context, new Protease("Trypsin (allow P)", "KR", ""));
+		mapping.mapEnzymeToNative(context, new Protease("Trypsin (allow P)", "KR", "" ));
 		mapping.mapInstrumentToNative(context, Instrument.ORBITRAP);
 		mapping.mapMissedCleavagesToNative(context, 2);
 		mapping.mapPeptideToleranceToNative(context, new Tolerance(10, MassUnit.Ppm));

@@ -28,8 +28,8 @@ import java.util.zip.ZipFile;
  */
 public class Installer {
 	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
-	private static final String RESOURCE_MD5 = "36631126f367adde38510b8c127822ad";
-	private static final long RESOURCE_LENGTH = 34000584;
+	private static final String RESOURCE_MD5 = "21e01309aac104f33a5964c08062a919";
+	private static final long RESOURCE_LENGTH = 33302832;
 
 	private static Date lastChecked = null;
 
@@ -73,16 +73,11 @@ public class Installer {
 	);
 
 	private static final List<String> TANDEM_LINUX = Arrays.asList(
-			"!/tandem/linux_redhat_tandem/tandem.exe"
+			"!/tandem/tandem-linux-10-12-01-1/bin/tandem.exe"
 	);
 
 	private static final List<String> TANDEM_WINDOWS = Arrays.asList(
-			"/tandem/win32_tandem/tandem.exe"
-	);
-
-	private static final List<String> TANDEM_MAC = Arrays.asList(
-			"!/tandem/osx_intel_tandem/tandem",
-			"!/tandem/osx_intel_tandem/p3"
+			"/tandem/tandem-win32-10-12-01-1/bin/tandem.exe"
 	);
 
 	private static final List<String> MSMSEVAL_WINDOWS = Arrays.asList(
@@ -353,7 +348,7 @@ public class Installer {
 
 	private static List<String> getTandemFiles() {
 		if (FileUtilities.isMacPlatform()) {
-			return TANDEM_MAC;
+			return null;
 		}
 		return FileUtilities.isWindowsPlatform() ? TANDEM_WINDOWS : TANDEM_LINUX;
 	}
