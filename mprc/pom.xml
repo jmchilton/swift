@@ -6,11 +6,18 @@
     <packaging>pom</packaging>
     <version>3.0-SNAPSHOT</version>
     <name>MPRC Project Parent</name>
-    <url>http://delphi.mayo.edu</url>
     <organization>
         <name>Mayo Proteomics Core</name>
         <url>http://mayoresearch.mayo.edu/mayo/research/proteomics-core/</url>
     </organization>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <build>
         <plugins>
@@ -348,10 +355,10 @@
         <url>http://bsu-ci/</url>
     </ciManagement>
 
-    <!-- Issue Management - internal for now -->
+    <!-- Issue Management -->
     <issueManagement>
-        <system>Trac</system>
-        <url>http://delphi.mayo.edu/wiki/</url>
+        <system>github</system>
+        <url>https://github.com/romanzenka/swift/issues</url>
     </issueManagement>
 
     <!-- Reporting -->

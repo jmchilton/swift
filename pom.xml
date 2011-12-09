@@ -7,7 +7,9 @@
     <packaging>pom</packaging>
     <version>3.0-SNAPSHOT</version>
     <name>Swift Aggregator Project</name>
-    <url>http://swift.mayo.edu</url>
+    <url>http://github.com/romanzenka/swift</url>
+    <inceptionYear>2007</inceptionYear>
+
     <parent>
         <groupId>edu.mayo.mprc</groupId>
         <artifactId>mprc</artifactId>
