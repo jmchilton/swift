@@ -35,10 +35,10 @@ Once you have Java and Maven setup, you can build Swift as follows:
 
 	# Make launcher.jar for launching Swift's web interface
 	# swift.war is already built by the swift/web project
-	mvn -f swift/launcher/pom.xml assembly:assembly -DskipTests
+	mvn -f swift/swift/launcher/pom.xml assembly:assembly -DskipTests
 
 	# Make swift.jar that contains all Swift's functionality
-	mvn -f swift/core/pom.xml assembly:assembly -DskipTests
+	mvn -f swift/swift/core/pom.xml assembly:assembly -DskipTests
 
 In order to make your own installable package from Swift, you need additional scripts and data Swift depends on.
 
@@ -55,8 +55,8 @@ Unzip the package
 
 Now copy your compiled files over the existing swift-install ones.
 
-	VERSION = 3.0-SNAPSHOT
-	TARGET = swift-install/bin/swift
+	VERSION=3.0-SNAPSHOT
+	TARGET=swift-install/bin/swift
 
 	cp swift/launcher/target/launcher-${VERSION}-all.jar ${TARGET}/launcher.jar
 	cp swift/sore/target/swift-core-${VERSION}-all.jar ${TARGET}/swift.jar
