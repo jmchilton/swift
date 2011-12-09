@@ -22,11 +22,11 @@ To build Swift, the following is required:
 
 Once you have Java and Maven setup, you can build Swift as follows:
 
-1) Get Swift from github
+#### Get Swift from github
 
 	git clone git://github.com/romanzenka/swift.git
 
-2) Create Swift's binaries
+#### Create Swift's binaries
 
 	cd swift
 
@@ -42,18 +42,18 @@ Once you have Java and Maven setup, you can build Swift as follows:
 
 In order to make your own installable package from Swift, you need additional scripts and data Swift depends on.
 
-Download the swift-install.zip package from GitHub.
+#### Download the swift-install.zip package from GitHub.
 
 	# Get out of the "swift" folder you created
 	cd ..
 
 	wget --no-check-certificate https://github.com/downloads/romanzenka/swift/swift-install.zip
 
-Unzip the package
+#### Unzip the package
 
 	unzip swift-install.zip
 
-Now copy your compiled files over the existing swift-install ones.
+#### Copy your compiled files over the existing swift-install ones
 
 	VERSION=3.0-SNAPSHOT
 	TARGET=swift-install/bin/swift
@@ -64,7 +64,9 @@ Now copy your compiled files over the existing swift-install ones.
 
 (TODO: We would like to simplify this to be ran directly with one maven command.)
 
-Congratulations! You obtained a swift-install folder that you can now distribute and install Swift from. Please see
+#### Congratulations!
+
+You obtained a swift-install folder that you can now distribute and install Swift from. Please see
 
 	swift-install/INSTALL.txt
 
