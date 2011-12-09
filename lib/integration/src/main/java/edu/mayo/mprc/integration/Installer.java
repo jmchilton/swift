@@ -5,6 +5,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.HttpClientUtility;
 import edu.mayo.mprc.utilities.StringUtilities;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.zip.ZipFile;
  * is potentially huge and contains entire software packages.
  */
 public class Installer {
+	private static final Logger LOGGER = Logger.getLogger(Installer.class);
 	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
 	private static final String RESOURCE_MD5 = "4a96b0517fa528234f0e630d63c64653";
 	private static final long RESOURCE_LENGTH = 33578126;
@@ -327,6 +329,7 @@ public class Installer {
 
 		if (lastChecked == null) {
 			if (!resource.exists()) {
+				LOGGER.info("Downloading integration data from " + RESOURCE_URL + ", expected length " + RESOURCE_LENGTH + " bytes" );
 				HttpClientUtility.downloadUrlHttps(RESOURCE_URL, resource);
 			}
 
