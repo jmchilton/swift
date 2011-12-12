@@ -6,7 +6,6 @@ import edu.mayo.mprc.swift.params2.*;
 import edu.mayo.mprc.swift.params2.mapping.MappingContext;
 import edu.mayo.mprc.swift.params2.mapping.Mappings;
 import edu.mayo.mprc.unimod.ModSet;
-import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.xml.XMLUtilities;
 import org.w3c.dom.Document;
@@ -20,18 +19,18 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class OmssaMappings implements Mappings {
 	private static final String DATABASE = "db";
 	private static final String PEP_TOL = "peptol";
 	private static final String FRAG_TOL = "msmstol";
-	private static final String VAR_MODS = "variable";
 	private static final String MISSED_CLEAVAGES = "missedcleave";
-	private static final String FIXED_MODS = "fixed";
 
 	private final Map<String, Node> nativeParams = new HashMap<String, Node>();
 	private Document nativeParamsDocument;
@@ -81,10 +80,6 @@ public final class OmssaMappings implements Mappings {
 		nativeParams.get(name).setTextContent(value);
 	}
 
-	public Tolerance mapPeptideToleranceFromNative(MappingContext context) {
-		return null;
-	}
-
 	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
 		if (!MassUnit.Da.equals(peptideTolerance.getUnit()) && !MassUnit.Ppm.equals(peptideTolerance.getUnit())) {
 			//the user is trying to use ppm or an unsupported unit
@@ -108,24 +103,6 @@ public final class OmssaMappings implements Mappings {
 		return value;
 	}
 
-	/**
-	 * OMSSA currently only supports units in Daltons (Da), we are told a future release will be able to support ppm
-	 * so if the user selects ppm we will have to have a conversion and display a warning.
-	 */
-	public Tolerance mapFragmentToleranceFromNative(MappingContext context) {
-
-		double d = 0.0;
-
-		String it = getNativeParam(FRAG_TOL);
-		try {
-			d = Double.parseDouble(it);
-		} catch (Exception t) {
-			throw new MprcException("Can't understand number " + it, t);
-		}
-
-		return new Tolerance(d, MassUnit.Da);
-	}
-
 	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
 		if (!fragmentTolerance.getUnit().equals(MassUnit.Da)) {
 			//the user is trying to use ppm or an unsupported unit
@@ -135,35 +112,6 @@ public final class OmssaMappings implements Mappings {
 		//we can have a nice straight-forward conversion to Da from mmu
 		double value = convertToDalton(context, false, fragmentTolerance);
 		setNativeParam(FRAG_TOL, String.valueOf(value));
-	}
-
-	public ModSet mapVariableModsFromNative(MappingContext context) {
-		Unimod unimod = context.getAbstractParamsInfo().getUnimod();
-		ModSet modspecs = new ModSet();
-
-		Element elemFixedMods = (Element) nativeParams.get(VAR_MODS);
-
-		//get all of the user defined mods
-
-		NodeList msModSpecs = getMsModSpecs();
-
-		//create a map so we can look up elements by the id of the modification quickly
-		Map<String, Element> msModSpecLookup = new HashMap<String, Element>();
-		for (int i = 0; i < msModSpecs.getLength(); i++) {
-			final String id = ((Element) ((Element) msModSpecs.item(i)).getElementsByTagName("MSModSpec_mod").item(0)).getElementsByTagName("MSMod").item(0).getTextContent().trim();
-			msModSpecLookup.put(id, (Element) msModSpecs.item(i));
-		}
-		//get all of the selected fixed mods
-
-		NodeList selectedMods = elemFixedMods.getElementsByTagName("MSMod");
-
-		for (int i = 0; i < selectedMods.getLength(); i++) {
-			String modId = selectedMods.item(i).getTextContent().trim();
-			//convert the element into a ModSpecicity, this call will perform alot of work to find the specificity we want.
-			modspecs.add(converter.convertToModSpecificity(msModSpecLookup.get(modId), unimod));
-		}
-
-		return modspecs;
 	}
 
 	private NodeList getMsModSpecs() {
@@ -179,39 +127,6 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public ModSet mapFixedModsFromNative(MappingContext context) {
-		Unimod unimod = context.getAbstractParamsInfo().getUnimod();
-		ModSet modspecs = new ModSet();
-
-		Element elemFixedMods = (Element) nativeParams.get(FIXED_MODS);
-		try {
-
-			//get all of the user defined mods
-			NodeList msModSpecs = getMsModSpecs();
-
-			//create a map so we can look up elements by the id of the modification quickly
-			Map<String, Element> msModSpecLookup = new HashMap<String, Element>();
-			for (int i = 0; i < msModSpecs.getLength(); i++) {
-				final String id = ((Element) ((Element) msModSpecs.item(i)).getElementsByTagName("MSModSpec_mod").item(0)).getElementsByTagName("MSMod").item(0).getTextContent();
-				msModSpecLookup.put(id, (Element) msModSpecs.item(i));
-			}
-			//get all of the selected fixed mods
-
-			NodeList selectedMods = elemFixedMods.getElementsByTagName("MSMod");
-
-			for (int i = 0; i < selectedMods.getLength(); i++) {
-				String modId = selectedMods.item(i).getTextContent().trim();
-				//convert the element into a ModSpecicity, this call will perform alot of work to find the specificity we want.
-				modspecs.add(converter.convertToModSpecificity(msModSpecLookup.get(modId), unimod));
-			}
-
-		} catch (Exception t) {
-			context.reportWarning(t.getMessage());
-		}
-
-		return modspecs;
-	}
-
 	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
 		//this converter will insert necessary into the document
 		try {
@@ -221,61 +136,8 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public String mapSequenceDatabaseFromNative(MappingContext context) {
-		return getNativeParam(DATABASE);
-	}
-
 	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
 		setNativeParam(DATABASE, "${DB:" + shortDatabaseName + "}");
-	}
-
-	public Protease mapEnzymeFromNative(MappingContext context) {
-		Iterable<Protease> proteases = context.getAbstractParamsInfo().getEnzymeAllowedValues();
-		Protease selectedProtease = null;
-
-		Element elemEnzymes = (Element) nativeParams.get(ENZYME);
-
-		List<String> selectedIds = new ArrayList<String>();
-
-		final NodeList enzymes = elemEnzymes.getElementsByTagName("MSEnzymes");
-		for (int i = 0; i < enzymes.getLength(); i++) {
-			if (enzymes.item(i) instanceof Element) {
-				Element selectedEnzyme = (Element) enzymes.item(i);
-				selectedIds.add(selectedEnzyme.getTextContent().trim());
-			}
-
-		}
-
-
-		String abstractEnzymeName = null;
-		if (selectedIds.size() == 1) {
-			abstractEnzymeName = EnzymeLookup.mapEnzymeOmssaToAbstract(selectedIds.get(0));
-		} else if (selectedIds.size() > 1) {
-
-			//it is convention that they are delimitted by '+' and the enzymes that are combined are ascending
-			Collections.sort(selectedIds, new StringAsIntegerComparator());
-			StringBuilder compositeEnzyme = new StringBuilder();
-			for (String selectedId : selectedIds) {
-				compositeEnzyme.append(selectedId);
-				compositeEnzyme.append("+");
-			}
-			//removing extra + at the end
-			compositeEnzyme.setLength(compositeEnzyme.length() - 1);
-			abstractEnzymeName = EnzymeLookup.mapEnzymeOmssaToAbstract(compositeEnzyme.toString());
-
-		} else {
-			throw new MprcException("There were no enzymes selected.");
-		}
-
-		if (abstractEnzymeName != null) {
-			for (Protease protease : proteases) {
-				if (protease.getName().equals(abstractEnzymeName)) {
-					selectedProtease = protease;
-				}
-			}
-		}
-
-		return selectedProtease;
 	}
 
 	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
@@ -308,21 +170,6 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public Integer mapMissedCleavagesFromNative(MappingContext context) {
-		Integer value = null;
-		String it = getNativeParam(MISSED_CLEAVAGES);
-		try {
-			//if we were given null then we dont' want to change the value
-			if (it != null) {
-				value = Integer.parseInt(it);
-			}
-		} catch (Exception t) {
-			throw new MprcException("Can't understand OMSSA missed cleavages " + it, t);
-		}
-
-		return value;
-	}
-
 	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
 		String value = null;
 		try {
@@ -331,53 +178,6 @@ public final class OmssaMappings implements Mappings {
 		} catch (Exception t) {
 			throw new MprcException("Can't understand OMSSA missed cleavages " + missedCleavages + " using " + value, t);
 		}
-	}
-
-	public Instrument mapInstrumentFromNative(MappingContext context) {
-		Map<String, Instrument> instruments = context.getAbstractParamsInfo().getInstruments();
-		//		def ionseries = tree.getData()['ionseries']
-		Instrument matchingInstrument = null;
-		List<String> specifiedIons = null;
-
-		try {
-			Element elemToSearch = (Element) nativeParams.get("ionstosearch");
-			//get the ions that are presented, should contain a,b,c,x,y,x for example
-
-			NodeList specNodeList = elemToSearch.getElementsByTagName("MSIonType");
-
-			specifiedIons = new ArrayList<String>(specNodeList.getLength());
-			for (int i = 0; i < specNodeList.getLength(); i++) {
-				String ionIndex = specNodeList.item(i).getTextContent();
-				specifiedIons.add(IonLookup.lookupIon(ionIndex));
-			}
-
-			//look for instruments that contain all specified ions. Since OMSSA does not support all ions, there can be multiple matches.
-			List<Instrument> matchingInstruments = new ArrayList<Instrument>();
-			for (Instrument inst : instruments.values()) {
-				List<String> instrumentIons = new ArrayList<String>();
-				for (IonSeries series : inst.getSeries()) {
-					instrumentIons.add(series.getName());
-				}
-				if (instrumentIons.containsAll(specifiedIons)) {
-					matchingInstruments.add(inst);
-				}
-			}
-
-			// If more than one document matches, give up
-			if (matchingInstruments.size() > 1) {
-				return null;
-			}
-			matchingInstrument = matchingInstruments.get(0);
-		} catch (Exception t) {
-			StringBuilder msg = new StringBuilder("Could not find an instrument that matched this ion series in OMSSA.");
-			msg.append("\n\tIons specified:");
-			if (specifiedIons != null) {
-				msg.append(Joiner.on(", ").join(specifiedIons));
-			}
-			context.reportError(msg.toString(), t);
-		}
-
-		return matchingInstrument;
 	}
 
 	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
@@ -406,14 +206,6 @@ public final class OmssaMappings implements Mappings {
 			Element newIon = doc.createElement("MSIonType");
 			newIon.setTextContent(id);
 			elemIons.appendChild(newIon);
-		}
-	}
-
-	private static final class StringAsIntegerComparator implements Comparator<String>, Serializable {
-		private static final long serialVersionUID = 20101221L;
-
-		public int compare(String o1, String o2) {
-			return (Integer.valueOf(o1).compareTo(Integer.valueOf(o2)));
 		}
 	}
 }

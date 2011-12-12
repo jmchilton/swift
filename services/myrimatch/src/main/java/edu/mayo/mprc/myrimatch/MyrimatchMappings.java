@@ -159,11 +159,6 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public Tolerance mapPeptideToleranceFromNative(MappingContext context) {
-		return null;
-	}
-
-	@Override
 	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE, String.valueOf(peptideTolerance.getValue()));
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE_UNITS, massUnitToMyrimatch(peptideTolerance));
@@ -180,20 +175,10 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public Tolerance mapFragmentToleranceFromNative(MappingContext context) {
-		return null;
-	}
-
-	@Override
 	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
 		final String tolerance = massUnitToMyrimatch(fragmentTolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE, fragmentTolerance.getValue() + " " + tolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE_UNITS, tolerance);
-	}
-
-	@Override
-	public ModSet mapVariableModsFromNative(MappingContext context) {
-		return null;
 	}
 
 	@Override
@@ -242,11 +227,6 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public ModSet mapFixedModsFromNative(MappingContext context) {
-		return null;
-	}
-
-	@Override
 	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
 		nativeParams.put(STATIC_MODS, fixedModsToString(fixedMods));
 	}
@@ -267,18 +247,8 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public String mapSequenceDatabaseFromNative(MappingContext context) {
-		return null;
-	}
-
-	@Override
 	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
 		// The database is not set in the config
-	}
-
-	@Override
-	public Protease mapEnzymeFromNative(MappingContext context) {
-		return null;
 	}
 
 	@Override
@@ -341,18 +311,8 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public Integer mapMissedCleavagesFromNative(MappingContext context) {
-		return null;
-	}
-
-	@Override
 	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
 		nativeParams.put(NUM_MAX_MISSED_CLEAVAGES, String.valueOf(missedCleavages));
-	}
-
-	@Override
-	public Instrument mapInstrumentFromNative(MappingContext context) {
-		return null;
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package edu.mayo.mprc.mascot;
 import com.google.common.collect.ImmutableMap;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.swift.params2.Instrument;
-import edu.mayo.mprc.swift.params2.MassUnit;
 import edu.mayo.mprc.swift.params2.Protease;
 import edu.mayo.mprc.swift.params2.Tolerance;
 import edu.mayo.mprc.swift.params2.mapping.MappingContext;
@@ -11,7 +10,6 @@ import edu.mayo.mprc.swift.params2.mapping.Mappings;
 import edu.mayo.mprc.swift.params2.mapping.ParamsInfo;
 import edu.mayo.mprc.unimod.ModSet;
 import edu.mayo.mprc.unimod.ModSpecificity;
-import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 
@@ -194,24 +192,12 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	public Tolerance mapPeptideToleranceFromNative(MappingContext context) {
-		return mapToleranceFromNative(context, false, PEP_TOL_VALUE, PEP_TOL_UNIT);
-	}
-
 	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
 		mapToleranceToNative(context, peptideTolerance, PEP_TOL_VALUE, PEP_TOL_UNIT);
 	}
 
-	public Tolerance mapFragmentToleranceFromNative(MappingContext context) {
-		return mapToleranceFromNative(context, true, FRAG_TOL_VALUE, FRAG_TOL_UNIT);
-	}
-
 	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
 		mapToleranceToNative(context, fragmentTolerance, FRAG_TOL_VALUE, FRAG_TOL_UNIT);
-	}
-
-	public ModSet mapVariableModsFromNative(MappingContext context) {
-		return mapModsFromNative(context, VAR_MODS);
 	}
 
 	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
@@ -235,10 +221,6 @@ public final class MascotMappings implements Mappings {
 		}
 
 		setNativeMods(context, VAR_MODS, mods);
-	}
-
-	public ModSet mapFixedModsFromNative(MappingContext context) {
-		return mapModsFromNative(context, FIXED_MODS);
 	}
 
 	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
@@ -266,30 +248,11 @@ public final class MascotMappings implements Mappings {
 		nativeParams.put(name, value);
 	}
 
-	public String mapSequenceDatabaseFromNative(MappingContext context) {
-
-		final String database = getNativeParam(DATABASE);
-		if (database.startsWith("${DB:")) {
-			return database.substring("${DB:".length(), database.length() - 1);
-		}
-		return database;
-	}
-
 	/**
 	 * The short db name matches directly the db name in Mascot.
 	 */
 	public void mapSequenceDatabaseToNative(MappingContext context, String shortName) {
 		setNativeParam(DATABASE, shortName);
-	}
-
-	public Protease mapEnzymeFromNative(MappingContext context) {
-		String it = getNativeParam(ENZYME);
-		if (enzymesByMascotName != null && !enzymesByMascotName.containsKey(it)) {
-			context.reportError("Protease " + it + " is not supported", null);
-			return null;
-		}
-
-		return enzymesByMascotName != null ? enzymesByMascotName.get(it) : null;
 	}
 
 	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
@@ -304,62 +267,15 @@ public final class MascotMappings implements Mappings {
 		setNativeParam(ENZYME, cle);
 	}
 
-	public Integer mapMissedCleavagesFromNative(MappingContext context) {
-		String it = getNativeParam(MISSED_CLEAVAGES);
-		try {
-			return Integer.parseInt(it);
-		} catch (Exception t) {
-			throw new MprcException("Can't understand Mascot missed cleavages " + it, t);
-		}
-	}
-
 	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
 		if (missedCleavages != null) {
 			setNativeParam(MISSED_CLEAVAGES, String.valueOf(missedCleavages));
 		}
 	}
 
-	public Instrument mapInstrumentFromNative(MappingContext context) {
-		String it = getNativeParam(INSTRUMENT);
-
-		for (Instrument instrument : context.getAbstractParamsInfo().getInstrumentAllowedValues()) {
-			if (instrument.getMascotName().equalsIgnoreCase(it)) {
-				return instrument;
-			}
-		}
-
-		context.reportWarning("Mascot instrument " + it + " not supported");
-		return null;
-	}
-
 	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
 		String instName = instrument.getMascotName();
 		setNativeParam(INSTRUMENT, instName);
-	}
-
-	private ModSet mapModsFromNative(MappingContext context, String nativeParamName) {
-		final ParamsInfo info = context.getAbstractParamsInfo();
-		Unimod unimod = info.getUnimod();
-
-		ModSet modSpecificities = new ModSet();
-
-		String it = getNativeParam(nativeParamName);
-		try {
-			String[] mods = COMMA_SPLIT.split(it);
-			for (String name : mods) {
-				if ("".equals(name.trim())) {
-					break;
-				}
-				List<ModSpecificity> spec = unimod.getSpecificitiesByMascotName(name);
-				for (ModSpecificity ms : spec) {
-					modSpecificities.add(ms);
-				}
-			}
-		} catch (Exception t) {
-			context.reportError("Error mapping modifications", t);
-		}
-
-		return modSpecificities;
 	}
 
 	private void setNativeMods(MappingContext context, String nativeParamName, Set<String> mods) {
@@ -434,32 +350,6 @@ public final class MascotMappings implements Mappings {
 			setNativeParam(tolName, String.valueOf(unit.getValue()));
 			setNativeParam(tolUnitName, unit.getUnit().getCode());
 		}
-	}
-
-	private Tolerance mapToleranceFromNative(MappingContext context, boolean fragment, String tolName, String tolUnitName) {
-		MassUnit u = null;
-		double d = 0;
-		String it = "";
-
-		try {
-			it = getNativeParam(tolUnitName);
-			u = MassUnit.getUnitForName(it);
-		} catch (Exception t) {
-			context.reportError("Can't understand unit " + it + ", allowed units are " + MassUnit.getOptions(), t);
-		}
-
-		if (fragment && MassUnit.Ppm.equals(u)) {
-			context.reportError("Mascot does not support ppm for fragment tolerance", null);
-		}
-
-		try {
-			it = getNativeParam(tolName);
-			d = Double.parseDouble(it);
-		} catch (Exception t) {
-			context.reportError("Can't understand number " + it, t);
-		}
-
-		return context.noErrors() ? new Tolerance(d, u) : null;
 	}
 
 	private Map<String, Protease> getEnzymesByName(Map<String, Protease> allowedHash, Map<String, String> namesHash) {
