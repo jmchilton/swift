@@ -10,24 +10,6 @@ import java.io.IOException;
 
 public class TestInstaller {
 	@Test
-	public static void shouldCalculateChecksum() throws IOException {
-		File file = File.createTempFile("checksum", ".txt" );
-		try {
-			FileUtilities.writeStringToFile(file, "A test message to checksum - 0123456789\n", true);
-			final byte[] checksum = Installer.checksum(file);
-			final String checksumString = StringUtilities.toHex(checksum, "" );
-			Assert.assertEquals(checksumString, "03c334af89cb0986372b38c94b392c2a" );
-		} finally {
-			FileUtilities.cleanupTempFile(file);
-		}
-	}
-
-	@Test
-	public static void shouldDownload() {
-		Assert.assertNotNull(Installer.getIntegrationArchive());
-	}
-
-	@Test(dependsOnMethods = {"shouldDownload"})
 	public static void shouldInstallExtractMsn() {
 		File folder = Installer.extractMsn(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "extract_msn folder does not exist" );
@@ -35,7 +17,7 @@ public class TestInstaller {
 		Installer.extractMsn(folder, Installer.Action.UNINSTALL);
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallOmssa() {
 		File folder = Installer.omssa(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "Omssa folder does not exist" );
@@ -49,7 +31,7 @@ public class TestInstaller {
 		Installer.omssa(folder, Installer.Action.UNINSTALL);
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallFormatDb() {
 		File folder = Installer.formatDb(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "formatdb folder does not exist" );
@@ -63,7 +45,7 @@ public class TestInstaller {
 		Installer.formatDb(folder, Installer.Action.UNINSTALL);
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallTandem() {
 		File folder = Installer.tandem(null, Installer.Action.INSTALL);
 		if (FileUtilities.isMacPlatform()) {
@@ -82,7 +64,7 @@ public class TestInstaller {
 		Installer.tandem(folder, Installer.Action.UNINSTALL);
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallXvfbWrapper() {
 		File wrapper = Installer.xvfbWrapper(null, Installer.Action.INSTALL);
 		Assert.assertTrue(wrapper.exists() && wrapper.isFile(), "Wrapper must be a file" );
@@ -90,7 +72,7 @@ public class TestInstaller {
 		Assert.assertTrue(!wrapper.exists(), "File must be deleted" );
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallTestFasta() {
 		File folder = Installer.testFastaFiles(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "Fasta file folder must exist" );
@@ -98,7 +80,7 @@ public class TestInstaller {
 		Assert.assertTrue(!folder.exists(), "Folder must be deleted" );
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallYeastFasta() {
 		File folder = Installer.yeastFastaFiles(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "Fasta file folder must exist" );
@@ -106,7 +88,7 @@ public class TestInstaller {
 		Assert.assertTrue(!folder.exists(), "Folder must be deleted" );
 	}
 
-	@Test(dependsOnMethods = {"shouldDownload"})
+	@Test
 	public static void shouldInstallTestMgf() {
 		File folder = Installer.mgfFiles(null, Installer.Action.INSTALL);
 		Assert.assertTrue(folder.exists(), "MGF folder must exist" );

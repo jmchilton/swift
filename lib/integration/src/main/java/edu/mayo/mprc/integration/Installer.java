@@ -1,23 +1,14 @@
 package edu.mayo.mprc.integration;
 
-import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
-import edu.mayo.mprc.utilities.HttpClientUtility;
-import edu.mayo.mprc.utilities.StringUtilities;
-import org.apache.log4j.Logger;
+import edu.mayo.mprc.utilities.TestingUtilities;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Can install a required environment for testing purposes, using a given folder.
@@ -28,14 +19,6 @@ import java.util.zip.ZipFile;
  * is potentially huge and contains entire software packages.
  */
 public class Installer {
-	private static final Logger LOGGER = Logger.getLogger(Installer.class);
-	private static final String RESOURCE_URL = "https://github.com/downloads/romanzenka/swift/integration-resources.zip";
-	private static final String RESOURCE_MD5 = "4a96b0517fa528234f0e630d63c64653";
-	private static final long RESOURCE_LENGTH = 33578126;
-	private static final String ROOT = "integration-resources";
-
-	private static Date lastChecked = null;
-
 	private static final String UNKNOWN_INSTALL_ACTION = "Unknown install action {0}";
 
 	public enum Action {
@@ -182,41 +165,18 @@ public class Installer {
 	private static File installList(File folder, String defaultFolder, Collection<String> files) {
 		folder = folderOrDefault(folder, defaultFolder);
 
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(getIntegrationArchive());
-		} catch (IOException e) {
-			throw new MprcException("Could not open integration test archive", e);
-		}
-
-		try {
-			return installList(folder, files, zipFile);
-		} finally {
-			try {
-				zipFile.close();
-			} catch (IOException ignore) {
-				// SWALLOWED: we do not care at this point
-			}
-		}
-	}
-
-	private static File installList(File folder, Collection<String> files, ZipFile zipFile) {
 		for (String file : files) {
 			try {
 				boolean makeExecutable = false;
-				if (file.startsWith("!" )) {
+				if (file.startsWith("!")) {
 					file = file.substring(1);
 					makeExecutable = true;
 				}
-				final ZipEntry entry = zipFile.getEntry(ROOT + file);
-				if (entry == null) {
-					throw new MprcException(MessageFormat.format("Could not decompress entry {0} from integration test archive", ROOT + file));
-				}
 
-				final File actualFile = new File(folder, new File(file).getName());
-				FileUtilities.writeStreamToFile(zipFile.getInputStream(entry), actualFile);
+				final File resultingFile = TestingUtilities.getNamedFileFromResource(file, folder);
+
 				if (makeExecutable) {
-					FileUtilities.chmod(actualFile, EXECUTABLE, '+', false);
+					FileUtilities.chmod(resultingFile, EXECUTABLE, '+', false);
 				}
 			} catch (Exception e) {
 				throw new MprcException("Could not install file: " + file + " to " + folder.getAbsolutePath(), e);
@@ -239,7 +199,7 @@ public class Installer {
 		}
 		FileUtilities.quietDelete(folder);
 		if (folder.exists()) {
-			throw new MprcException("Could not uninstall files - the folder " + folder.getAbsolutePath() + " is not empty." );
+			throw new MprcException("Could not uninstall files - the folder " + folder.getAbsolutePath() + " is not empty.");
 		}
 	}
 
@@ -259,6 +219,7 @@ public class Installer {
 	 * Install extract_msn in a given folder.
 	 *
 	 * @param folder Folder to install extract_msn into. If null, temp folder is created.
+	 * @param action {@link Action#INSTALL} to install or {@link Action#UNINSTALL} to uninstall
 	 * @return Folder where extract_msn got installed.
 	 */
 	public static File extractMsn(File folder, Action action) {
@@ -307,46 +268,6 @@ public class Installer {
 
 	public static File rawFiles(File folder, Action action) {
 		return processList(folder, "raw", RAW_FILES, action);
-	}
-
-	public static byte[] checksum(File file) {
-		try {
-			return Files.getDigest(file, MessageDigest.getInstance(DIGEST_INSTANCE));
-		} catch (IOException e) {
-			throw new MprcException(MessageFormat.format("Cannot calculate {0} digest for file {1}", DIGEST_INSTANCE, file.getAbsolutePath()), e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new MprcException(MessageFormat.format("Not supported message digest method {0}", DIGEST_INSTANCE), e);
-		}
-	}
-
-	/**
-	 * Download the integration resource archive.
-	 *
-	 * @return Path to the file containing the integration data.
-	 */
-	public static File getIntegrationArchive() {
-		File resource = new File(FileUtilities.getDefaultTempDirectory(), "integration-" + RESOURCE_MD5 + ".zip" );
-
-		if (lastChecked == null) {
-			if (!resource.exists()) {
-				LOGGER.info("Downloading integration data from " + RESOURCE_URL + ", expected length " + RESOURCE_LENGTH + " bytes" );
-				HttpClientUtility.downloadUrlHttps(RESOURCE_URL, resource);
-			}
-
-			final long actualLength = resource.length();
-			if (RESOURCE_LENGTH != actualLength) {
-				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected size: expected {1}, got {2} bytes", resource.getAbsolutePath(), RESOURCE_LENGTH, actualLength));
-			}
-
-			final String checksum = StringUtilities.toHex(checksum(resource), "" );
-			if (!RESOURCE_MD5.equals(checksum)) {
-				throw new MprcException(MessageFormat.format("The downloaded integration file [{0}] does not have the expected {1} checksum {2}", resource.getAbsolutePath(), DIGEST_INSTANCE, RESOURCE_MD5));
-			}
-
-			lastChecked = new Date();
-		}
-
-		return resource;
 	}
 
 	private static List<String> getTandemFiles() {
