@@ -140,38 +140,6 @@ public final class XTandemMappings implements Mappings {
 		nativeParams.put(name, value);
 	}
 
-	public Tolerance mapPeptideToleranceFromNative(MappingContext context) {
-		MassUnit u = null;
-		double plusValue = 0;
-
-		String unit = getNativeParam(PEP_TOL_UNIT);
-		try {
-			u = MassUnit.getUnitForName(unit);
-		} catch (Exception t) {
-			context.reportError("Can't understand unit " + unit + ", allowed units are " + MassUnit.getOptions(), t);
-		}
-
-		String plus = getNativeParam(PEP_TOL_PLUS);
-		try {
-			plusValue = Double.parseDouble(plus);
-		} catch (Exception t) {
-			context.reportError("Can't understand number " + plus, t);
-		}
-		String minus = getNativeParam(PEP_TOL_MINUS);
-		try {
-			Double minusValue = Double.parseDouble(minus);
-			if (!minusValue.equals(plusValue)) {
-				throw new MprcException("+" + plusValue + " -" + minusValue);
-			}
-
-		} catch (Exception ignore) {
-			// SWALLOWED
-			context.reportWarning("Tandem peptide tolerance has different values for plus and minus, using " + plusValue + " " + u);
-		}
-
-		return new Tolerance(plusValue, u);
-	}
-
 	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
 		double value = peptideTolerance.getValue();
 		String unit = peptideTolerance.getUnit().getCode();
@@ -181,26 +149,6 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(PEP_TOL_PLUS, String.valueOf(value));
 		setNativeParam(PEP_TOL_MINUS, String.valueOf(value));
 		setNativeParam(PEP_TOL_UNIT, unit);
-	}
-
-	public Tolerance mapFragmentToleranceFromNative(MappingContext context) {
-		MassUnit u = null;
-		String unitName = getNativeParam(FRAG_TOL_UNIT);
-		try {
-			u = MassUnit.getUnitForName(unitName);
-		} catch (Exception t) {
-			context.reportError("Can't understand unit " + unitName + ", allowed units are " + MassUnit.getOptions(), t);
-		}
-
-		double d = 0.0;
-		String toleranceValue = getNativeParam(FRAG_TOL_VALUE);
-		try {
-			d = Double.parseDouble(toleranceValue);
-		} catch (Exception t) {
-			context.reportError("Can't understand number " + toleranceValue, t);
-		}
-
-		return new Tolerance(d, u);
 	}
 
 	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
@@ -214,22 +162,8 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(FRAG_TOL_UNIT, DALTONS);
 	}
 
-	/**
-	 * We give up - mapping variable mods is complicated.
-	 */
-	public ModSet mapVariableModsFromNative(MappingContext context) {
-		return null;
-	}
-
 	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
 		mapModsToNative(context, variableMods, VAR_MODS);
-	}
-
-	/**
-	 * We give up - tandem reverse mapping is complicated.
-	 */
-	public ModSet mapFixedModsFromNative(MappingContext context) {
-		return null;
 	}
 
 	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
@@ -273,69 +207,11 @@ public final class XTandemMappings implements Mappings {
 		return Joiner.on(",").join(modsArray);
 	}
 
-	public String mapSequenceDatabaseFromNative(MappingContext context) {
-		// The database is just a pointer to taxonomy.xml file
-		return null;
-	}
-
 	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
 		setNativeParam(DATABASE, DATABASE_TAXON);
 	}
 
 	private static final Pattern TANDEM_MOD = Pattern.compile("\\s*([\\[\\{])([A-Z]*)[\\]\\}]\\|([\\[\\{])([A-Z]*)[\\]\\}]\\s*");
-
-	/**
-	 * "The first characters in brackets represent residues N-terminal to the bond - the '|' pipe -
-	 * and the second set of characters represent residues C-terminal to the
-	 * bond. The characters must be in square brackets (denoting that only
-	 * these residues are allowed for a cleavage) or french brackets (denoting
-	 * that these residues cannot be in that position). Use UPPERCASE characters.
-	 * To denote cleavage at any residue, use [X]|[X] and reset the
-	 * scoring, maximum missed cleavage site parameter (see below) to something like 50."
-	 */
-	public Protease mapEnzymeFromNative(MappingContext context) {
-		String rnminus1;
-		Iterable<Protease> proteases = context.getAbstractParamsInfo().getEnzymeAllowedValues();
-		String rn;
-
-		String it = getNativeParam(ENZYME);
-
-		Matcher matcher = TANDEM_MOD.matcher(it);
-		if (!matcher.matches()) {
-			throw new MprcException("Can't understand Tandem modification " + it);
-		}
-		rnminus1 = matcher.group(2);
-		if ("{".equals(matcher.group(1))) {
-			rnminus1 = "!" + rnminus1;
-		}
-
-		rn = matcher.group(4);
-		if ("{".equals(matcher.group(3))) {
-			rn = "!" + rn;
-		}
-
-		if ("X".equals(rnminus1)) {
-			rnminus1 = "";
-		}
-		if ("X".equals(rn)) {
-			rn = "";
-		}
-
-		Protease p = null;
-
-		for (Protease protease : proteases) {
-			if (protease.getRn().equals(rn) && protease.getRnminus1().equals(rnminus1)) {
-				if (p != null) {
-					throw new MprcException("Multiple enzymes match Sequest enzyme_info rnminus1=" + rnminus1 + ", rn=" + rn);
-				}
-				p = protease;
-			}
-		}
-		if (p == null) {
-			throw new MprcException("Unknown Tandem enzyme rnminus1=" + rnminus1 + ", rn=" + rn);
-		}
-		return p;
-	}
 
 	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
 		String cle = null;
@@ -371,24 +247,6 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(ENZYME, cle);
 	}
 
-	public Integer mapMissedCleavagesFromNative(MappingContext context) {
-		Integer value = 0;
-
-		String it = getNativeParam(MISSED_CLEAVAGES);
-		try {
-			//if we were given null then we dont' want to change the value
-			if (it == null) {
-				value = null;
-			} else {
-				value = Integer.parseInt(it);
-			}
-		} catch (Exception t) {
-			throw new MprcException("Can't understand tandem missed cleavages " + value, t);
-		}
-
-		return value;
-	}
-
 	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
 		String value = null;
 
@@ -405,46 +263,6 @@ public final class XTandemMappings implements Mappings {
 		if (value != null) {
 			setNativeParam(MISSED_CLEAVAGES, value);
 		}
-	}
-
-	public Instrument mapInstrumentFromNative(MappingContext context) {
-		Map<String, IonSeries> ionseries = context.getAbstractParamsInfo().getIons();
-		String pp = null;
-
-		//	<note type="input" label="scoring, x ions">no</note>
-
-		HashSet<IonSeries> hasseries = new HashSet<IonSeries>();
-		for (String p : nativeParams.keySet()) {
-			Matcher matcher = IONS_PATTERN.matcher(p);
-			if (matcher.matches()) {
-				if (pp == null) {
-					pp = p;
-				}
-				String seriesName = matcher.group(1);
-
-				if (!ionseries.containsKey(seriesName)) {
-					context.reportWarning("Tandem has unknown ion series " + seriesName);
-				}
-				if (getNativeParam(p).contains("yes")) {
-					hasseries.add(ionseries.get(seriesName));
-				}
-			}
-		}
-
-		if (hasseries.size() == 2
-				&& hasseries.contains(ionseries.get("y"))
-				&& hasseries.contains(ionseries.get("b"))) {
-			// We cannot determine which instrument it is, give up
-			return null;
-		}
-
-		Instrument instrument = Instrument.findInstrumentMatchingSeries(hasseries, context.getAbstractParamsInfo().getInstrumentAllowedValues());
-		if (instrument == null) {
-			String seriesnames = Joiner.on(" ").join(hasseries);
-			throw new MprcException("Can't find instrument matching tandem ion series " + seriesnames);
-		}
-
-		return instrument;
 	}
 
 	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
