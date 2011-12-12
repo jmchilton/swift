@@ -21,8 +21,15 @@ public final class SequestMappings implements Mappings, Cloneable {
 	private static final String PEP_TOL_UNIT = "peptide_mass_units";
 	private static final String PEP_TOL_VALUE = "peptide_mass_tolerance";
 	private static final String FRAG_TOL_VALUE = "fragment_ion_tolerance";
-	private static final String VAR_MODS = "diff_search_options";
-	private static final String VAR_MODS_OPTIONS = "term_diff_search_options";
+	/**
+	 * Variable modifications parameter.
+	 */
+	static final String VAR_MODS = "diff_search_options";
+
+	/**
+	 * C and N-terminus modifications parameter.
+	 */
+	static final String VAR_MODS_TERMINUS = "term_diff_search_options";
 	private static final String DATABASE = "first_database_name";
 	private static final String ENZYME = "enzyme_info";
 	private static final String MISSED_CLEAVAGES = "max_num_internal_cleavage_sites";
@@ -205,36 +212,47 @@ public final class SequestMappings implements Mappings, Cloneable {
 
 		int i = 0;
 
+		StringBuilder skippedMods = new StringBuilder(20);
+		StringBuilder skippedNterm = new StringBuilder(20);
+		StringBuilder skippedCterm = new StringBuilder(20);
+		boolean proteinSpecificMod = false;
+
 		for (ModSpecificity ms : set) {
 			String title = ms.toString();
 			double mass = ms.getModification().getMassMono();
 
 			if (notSupportedMod(ms)) {
-				context.reportWarning("Sequest does not support variable modification with position '" +
-						ms.getTerm() + "' and site '" + ms.getSite() + "', dropping " + title);
+				context.reportWarning("Sequest does not support variable modification with specific site '" +
+						ms.getSite() + "' limited to " + ms.getTerm() + ", skipping " + title);
 
 			} else if (ms.isPositionNTerminus()) {
 				if (nterm != null) {
-					context.reportWarning("Sequest does not support multiple N-terminal variable modifications, dropping " + title);
+					appendCommaSeparated(skippedNterm, title);
 				} else {
 					nterm = mass;
+					if (ms.isPositionProteinSpecific()) {
+						proteinSpecificMod = true;
+					}
 				}
 			} else if (ms.isPositionCTerminus()) {
 				if (cterm != null) {
-					context.reportWarning("Sequest does not support multiple C-terminal variable modifications, dropping " + title);
+					appendCommaSeparated(skippedCterm, title);
 				} else {
 					cterm = mass;
+					if (ms.isPositionProteinSpecific()) {
+						proteinSpecificMod = true;
+					}
 				}
 			} else {
 				i++;
 				if (i > 6) {
-					context.reportWarning("Sequest supports up to 6 variable modifications, skipping " + title);
-					return;
+					appendCommaSeparated(skippedMods, title);
+				} else {
+					if (sb.length() != 0) {
+						sb.append(" ");
+					}
+					sb.append(mass).append(' ').append(ms.getSite());
 				}
-				if (sb.length() != 0) {
-					sb.append(" ");
-				}
-				sb.append(mass).append(' ').append(ms.getSite());
 			}
 		}
 		while (i < 6) {
@@ -243,18 +261,46 @@ public final class SequestMappings implements Mappings, Cloneable {
 		}
 
 		setNativeParam(VAR_MODS, sb.toString());
-		setNativeParam(VAR_MODS_OPTIONS, (cterm == null ? "0.0" : cterm) + " " + (nterm == null ? "0.0" : nterm));
+		setNativeParam(VAR_MODS_TERMINUS, (cterm == null ? "0.0" : cterm) + " " + (nterm == null ? "0.0" : nterm));
+		if (skippedMods.length() != 0) {
+			context.reportWarning("Sequest supports up to 6 variable modifications, skipping " + skippedMods);
+		}
+
+		if (skippedNterm.length() != 0) {
+			context.reportWarning("Sequest does not support multiple variable modifications at N-terminal, skipping " + skippedNterm);
+		}
+
+		if (skippedCterm.length() != 0) {
+			context.reportWarning("Sequest does not support multiple variable modifications at C-terminal, skipping " + skippedCterm);
+		}
+
+		if (proteinSpecificMod) {
+			context.reportWarning("Sequest does not support variable modifications specific only to protein terminus. These mods will be used for peptide terminii as well.");
+		}
+
+	}
+
+	/**
+	 * @param builder Builder to append next string to.
+	 * @param text    String to append. Strings are separated by {@code ", "}
+	 */
+	private void appendCommaSeparated(StringBuilder builder, String text) {
+		if (builder.length() > 0) {
+			builder.append(", ");
+		}
+		builder.append(text);
 	}
 
 	/**
 	 * Sequest does not support modification with specific amino acid at the protein terminus (we can do only
 	 * amino acid anywhere, or anything at the terminus).
 	 *
+	 * @param ms Mod specificity to check
 	 * @return true if Sequest supports given mod.
 	 */
 	private boolean notSupportedMod(ModSpecificity ms) {
 		// we can't support specific amino acids at N or C terminus of peptide or protein.
-		return (ms.isSiteAminoAcid() && (!ms.isPositionAnywhere() || ms.isProteinOnly()));
+		return ms.isSiteAminoAcid() && (!ms.isPositionAnywhere() || ms.isProteinOnly());
 	}
 
 	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
