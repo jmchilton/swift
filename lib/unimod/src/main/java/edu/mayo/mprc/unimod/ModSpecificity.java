@@ -7,9 +7,11 @@ import edu.mayo.mprc.utilities.ComparisonChain;
 import java.util.*;
 
 /**
- * Specifies where in a peptide a Modification is permitted (eg at an amino acid, on the N-, or C-terminus, etc).
+ * Specifies where in a peptide a {@link Mod} is permitted (eg at an amino acid, on the N-, or C-terminus, etc).
  * <p/>
  * Once created, specificity is immutable (the only one to call the setters is hibernate).
+ *
+ * @author Roman Zenka
  */
 public class ModSpecificity extends PersistableBase implements Comparable<ModSpecificity> {
 	/**

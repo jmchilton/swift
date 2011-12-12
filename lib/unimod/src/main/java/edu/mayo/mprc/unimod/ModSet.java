@@ -9,6 +9,14 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * A set of {@link ModSpecificity}. Is peristable via Hibernate and can be compared to other modification sets.
+ * <p/>
+ * Obtain one by creating an empty set, then getting the {@link ModSpecificity} objects using for example
+ * {@link Unimod#getSpecificitiesByMascotName(String)}.
+ *
+ * @author Roman Zenka
+ */
 public class ModSet extends PersistableBase implements Comparable<ModSet> {
 	/**
 	 * all modification in this set
@@ -16,11 +24,8 @@ public class ModSet extends PersistableBase implements Comparable<ModSet> {
 	protected Set<ModSpecificity> modifications = new TreeSet<ModSpecificity>();
 
 	/**
-	 * A unique key for this set allowing to retrieve it quickly.
-	 *
-	 * @return
+	 * @return A set of all modifications.
 	 */
-
 	public Set<ModSpecificity> getModifications() {
 		return modifications;
 	}
@@ -74,7 +79,7 @@ public class ModSet extends PersistableBase implements Comparable<ModSet> {
 		if (this.getModifications().size() > tt.getModifications().size()) {
 			return 1;
 		}
-		for (Iterator<ModSpecificity> i = this.getModifications().iterator(), j = tt.getModifications().iterator(); i.hasNext();) {
+		for (Iterator<ModSpecificity> i = this.getModifications().iterator(), j = tt.getModifications().iterator(); i.hasNext(); ) {
 			int ret = i.next().compareTo(j.next());
 			if (ret != 0) {
 				return ret;
