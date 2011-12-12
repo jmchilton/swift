@@ -11,7 +11,9 @@ import org.testng.annotations.Test;
 /**
  * @author Roman Zenka
  */
-public class TestSequestVariableMods {
+public final class TestSequestVariableMods {
+	private static final String ACETYL_MASS = "42.010565";
+	private static final String AMIDATED_MASS = "-0.984016";
 	private SequestMappings sequestMappings;
 	private SequestContext context;
 	private ModSet variableMods;
@@ -31,7 +33,7 @@ public class TestSequestVariableMods {
 	 */
 	@BeforeMethod
 	public void reset() {
-		context.setExpectedWarning(null);
+		context.setExpectedWarnings();
 		resetMappings();
 		variableMods = new ModSet();
 	}
@@ -50,10 +52,6 @@ public class TestSequestVariableMods {
 		Assert.assertEquals(getVariableMods(), "164.060231 S 258.085186 E 15.994915 P 0.0000 X 0.0000 X 0.0000 X");
 	}
 
-	private String getVariableMods() {
-		return sequestMappings.getNativeParam(SequestMappings.VAR_MODS);
-	}
-
 	/**
 	 * Take seven phosphorylation mods, see that we get a warning + only six get mapped.
 	 */
@@ -62,7 +60,7 @@ public class TestSequestVariableMods {
 		addMods(variableMods, "Phospho(C)", "Phospho(D)", "Phospho(H)", "Phospho(R)", "Phospho(S)", "Phospho(T)", "Phospho(Y)");
 
 		// Last mod (lexicographically) will get skipped
-		context.setExpectedWarning("Sequest supports up to 6 variable modifications, skipping Phospho (Y)");
+		context.setExpectedWarnings("Sequest supports up to 6 variable modifications, skipping Phospho (Y)");
 		sequestMappings.mapVariableModsToNative(context, variableMods);
 
 		Assert.assertEquals(getVariableMods(), "79.966331 C 79.966331 D 79.966331 H 79.966331 R 79.966331 S 79.966331 T");
@@ -76,10 +74,35 @@ public class TestSequestVariableMods {
 		addMods(variableMods, "Oxidation(M)", "Phospho(C)", "Phospho(D)", "Phospho(H)", "Phospho(R)", "Phospho(S)", "Phospho(T)", "Phospho(Y)");
 
 		// Last mod (lexicographically) will get skipped
-		context.setExpectedWarning("Sequest supports up to 6 variable modifications, skipping Phospho (T), Phospho (Y)");
+		context.setExpectedWarnings("Sequest supports up to 6 variable modifications, skipping Phospho (T), Phospho (Y)");
 		sequestMappings.mapVariableModsToNative(context, variableMods);
 
 		Assert.assertEquals(getVariableMods(), "15.994915 M 79.966331 C 79.966331 D 79.966331 H 79.966331 R 79.966331 S");
+	}
+
+	/**
+	 * Try C and N-terminal mods for both protein and peptides
+	 */
+	@Test
+	public void proteinPeptideTerminalMods() {
+		addMods(variableMods,
+				"Acetyl (Protein N-term)",
+				"Amidated (Protein C-term)",
+				"Cation:Na (C-term)",
+				"Deamidated (Protein N-term F)",
+				"Formyl (N-term)");
+
+		context.setExpectedWarnings(
+				"Sequest does not support variable modification with specific site 'F' limited to Nterm, skipping Deamidated (Protein N-term F)",
+				"Sequest does not support multiple variable modifications at N-terminal, skipping Formyl (N-term)",
+				"Sequest does not support multiple variable modifications at C-terminal, skipping Cation:Na (C-term)",
+				"Sequest does not support variable modifications specific only to protein terminus. These mods will be used for peptide terminii as well."
+		);
+		sequestMappings.mapVariableModsToNative(context, variableMods);
+
+		// These must not influence the variable mods
+		Assert.assertEquals(getVariableMods(), "0.0000 X 0.0000 X 0.0000 X 0.0000 X 0.0000 X 0.0000 X");
+		Assert.assertEquals(getProteinTermVarMods(), AMIDATED_MASS + " " + ACETYL_MASS); // Amidated on C, acetyl on N
 	}
 
 	private void resetMappings() {
@@ -96,11 +119,22 @@ public class TestSequestVariableMods {
 		}
 	}
 
-	public static final class SequestContext extends TestMappingContextBase {
-		private String expectedWarning;
+	private String getVariableMods() {
+		return sequestMappings.getNativeParam(SequestMappings.VAR_MODS);
+	}
 
-		public void setExpectedWarning(String expectedWarning) {
-			this.expectedWarning = expectedWarning;
+	private String getProteinTermVarMods() {
+		return sequestMappings.getNativeParam(SequestMappings.VAR_MODS_TERMINUS);
+	}
+
+
+	private static final class SequestContext extends TestMappingContextBase {
+		private String[] expectedWarnings;
+		int index;
+
+		public void setExpectedWarnings(String... expectedWarnings) {
+			this.expectedWarnings = expectedWarnings;
+			index = 0;
 		}
 
 		/**
@@ -112,7 +146,8 @@ public class TestSequestVariableMods {
 
 		@Override
 		public void reportWarning(String message) {
-			Assert.assertEquals(message, expectedWarning, "Got unexpected warning");
+			Assert.assertEquals(message, expectedWarnings[index], "Got unexpected warning");
+			index++;
 		}
 	}
 }
