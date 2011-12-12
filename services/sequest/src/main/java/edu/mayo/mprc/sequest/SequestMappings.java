@@ -24,8 +24,15 @@ public final class SequestMappings implements Mappings, Cloneable {
 	private static final String PEP_TOL_UNIT = "peptide_mass_units";
 	private static final String PEP_TOL_VALUE = "peptide_mass_tolerance";
 	private static final String FRAG_TOL_VALUE = "fragment_ion_tolerance";
-	private static final String VAR_MODS = "diff_search_options";
-	private static final String VAR_MODS_OPTIONS = "term_diff_search_options";
+	/**
+	 * Variable modifications parameter.
+	 */
+	static final String VAR_MODS = "diff_search_options";
+
+	/**
+	 * C and N-terminus modifications parameter.
+	 */
+	static final String VAR_MODS_TERMINUS = "term_diff_search_options";
 	private static final String DATABASE = "first_database_name";
 	private static final String ENZYME = "enzyme_info";
 	private static final String MISSED_CLEAVAGES = "max_num_internal_cleavage_sites";
@@ -277,7 +284,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 			throw new MprcException("Can't understand Sequest diff_search_options " + mods);
 		}
 
-		String options = getNativeParam(VAR_MODS_OPTIONS);
+		String options = getNativeParam(VAR_MODS_TERMINUS);
 		// cterm nterm
 		Matcher m2 = OPTION.matcher(options);
 		if (!m2.matches()) {
@@ -307,6 +314,10 @@ public final class SequestMappings implements Mappings, Cloneable {
 
 		int i = 0;
 
+		StringBuilder skippedMods = new StringBuilder(20);
+		StringBuilder skippedNterm = new StringBuilder(20);
+		StringBuilder skippedCterm = new StringBuilder(20);
+
 		for (ModSpecificity ms : set) {
 			String title = ms.toString();
 			double mass = ms.getModification().getMassMono();
@@ -317,26 +328,26 @@ public final class SequestMappings implements Mappings, Cloneable {
 
 			} else if (ms.isPositionNTerminus()) {
 				if (nterm != null) {
-					context.reportWarning("Sequest does not support multiple N-terminal variable modifications, dropping " + title);
+					appendCommaSeparated(skippedNterm, title);
 				} else {
 					nterm = mass;
 				}
 			} else if (ms.isPositionCTerminus()) {
 				if (cterm != null) {
-					context.reportWarning("Sequest does not support multiple C-terminal variable modifications, dropping " + title);
+					appendCommaSeparated(skippedCterm, title);
 				} else {
 					cterm = mass;
 				}
 			} else {
 				i++;
 				if (i > 6) {
-					context.reportWarning("Sequest supports up to 6 variable modifications, skipping " + title);
-					return;
+					appendCommaSeparated(skippedMods, title);
+				} else {
+					if (sb.length() != 0) {
+						sb.append(" ");
+					}
+					sb.append(mass).append(' ').append(ms.getSite());
 				}
-				if (sb.length() != 0) {
-					sb.append(" ");
-				}
-				sb.append(mass).append(' ').append(ms.getSite());
 			}
 		}
 		while (i < 6) {
@@ -345,7 +356,30 @@ public final class SequestMappings implements Mappings, Cloneable {
 		}
 
 		setNativeParam(VAR_MODS, sb.toString());
-		setNativeParam(VAR_MODS_OPTIONS, (cterm == null ? "0.0" : cterm) + " " + (nterm == null ? "0.0" : nterm));
+		setNativeParam(VAR_MODS_TERMINUS, (cterm == null ? "0.0" : cterm) + " " + (nterm == null ? "0.0" : nterm));
+		if (skippedMods.length() != 0) {
+			context.reportWarning("Sequest supports up to 6 variable modifications, skipping " + skippedMods);
+		}
+
+		if (skippedNterm.length() != 0) {
+			context.reportWarning("Sequest does not support multiple N-terminal variable modifications, skipping " + skippedNterm);
+		}
+
+		if (skippedCterm.length() != 0) {
+			context.reportWarning("Sequest does not support multiple C-terminal variable modifications, skipping " + skippedCterm);
+		}
+
+	}
+
+	/**
+	 * @param builder Builder to append next string to.
+	 * @param text    String to append. Strings are separated by {@code ", "}
+	 */
+	private void appendCommaSeparated(StringBuilder builder, String text) {
+		if (builder.length() > 0) {
+			builder.append(", ");
+		}
+		builder.append(text);
 	}
 
 	/**
