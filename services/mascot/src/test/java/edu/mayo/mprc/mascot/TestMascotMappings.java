@@ -17,7 +17,7 @@ public final class TestMascotMappings {
 
 	@Test
 	public void shouldSupportPhosphoST() {
-		ParamsInfo abstractParamsInfo = getAbsctractParamsInfo();
+		ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
 		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
@@ -41,7 +41,7 @@ public final class TestMascotMappings {
 
 	@Test
 	public void shouldSupportDeamidatedNTerm() {
-		ParamsInfo abstractParamsInfo = getAbsctractParamsInfo();
+		ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
 		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
@@ -59,7 +59,7 @@ public final class TestMascotMappings {
 		Assert.assertTrue(output.contains("MODS=Deamidated (Protein N-term F)\n"), "The mods do not match");
 	}
 
-	public static ParamsInfo getAbsctractParamsInfo() {
+	public static ParamsInfo getAbstractParamsInfo() {
 		CurationDao curationDao = new MockCurationDao();
 		UnimodDao unimodDao = new MockUnimodDao();
 		ParamsDao paramsDao = new MockParamsDao();
