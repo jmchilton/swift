@@ -51,7 +51,6 @@ public final class SequestMappings implements Mappings, Cloneable {
 	 * Also, just because of the converter, we store all native parameters, not just those that map to abstract params.
 	 */
 	private LinkedHashMap<String, String> nativeParams = new LinkedHashMap<String, String>();
-	private static final double MMU_TO_DA = 0.001;
 
 	public SequestMappings() {
 	}
@@ -205,8 +204,6 @@ public final class SequestMappings implements Mappings, Cloneable {
 	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
 		StringBuilder sb = new StringBuilder();
 
-		Double cterm = null;
-		Double nterm = null;
 		List<ModSpecificity> set = new ArrayList<ModSpecificity>(variableMods.getModifications());
 		Collections.sort(set);
 
@@ -216,6 +213,8 @@ public final class SequestMappings implements Mappings, Cloneable {
 		StringBuilder skippedNterm = new StringBuilder(20);
 		StringBuilder skippedCterm = new StringBuilder(20);
 		boolean proteinSpecificMod = false;
+		Double cterm = null;
+		Double nterm = null;
 
 		for (ModSpecificity ms : set) {
 			String title = ms.toString();
@@ -354,13 +353,11 @@ public final class SequestMappings implements Mappings, Cloneable {
 		setNativeParam(DATABASE, "${DB:" + shortDatabaseName + "}");
 	}
 
-	private static final Pattern PROTEASE = Pattern.compile("^(.*) (\\d) (\\d) ([A-Z\\-]+) ([A-Z\\-]+)$");
-
 	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
 
 		String name = enzyme.getName().replaceAll("\\s", "_");
-		String firstDigit = "1";
-		String secondDigit = "1";
+		String firstDigit = "1"; // 0 - non-specific, 1-specific (?)
+		String secondDigit = "1"; // Forward (cut C-terminus from the residue) or reverse (cut N-terminus)
 		String rn = enzyme.getRn();
 		String rnminus1 = enzyme.getRnminus1();
 
