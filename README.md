@@ -16,9 +16,9 @@ Build
 
 To build Swift, the following is required:
 
-1) Java Development Kit 6 ( http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u27-oth-JPR )
-2) Maven 3.0.3 ( http://maven.apache.org/download.html )
-3) git (optional) to obtain the source
+* Java Development Kit 6 ( http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u27-oth-JPR )
+* Maven 3.0.3 ( http://maven.apache.org/download.html )
+* git (optional) to obtain the source
 
 Once you have Java and Maven setup, you can build Swift as follows:
 
