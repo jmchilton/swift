@@ -75,20 +75,20 @@ public final class MyrimatchTest {
 		ModSet mods = new ModSet();
 		final Unimod unimod = UNIMOD_DAO.load();
 
-		mappings.mapFixedModsToNative(mappingContext, mods);
+		mappings.setFixedMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.STATIC_MODS), "", "Should report no mods" );
 
 		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.99, 16.0, 'M', null, null, null);
 		// final ModSpecificity oxidationMethionine = unimod.getSpecificitiesByMascotName("Oxidation (M)").get(0);
 		Assert.assertNotNull(oxidationMethionine, "Not found Oxidation(M)" );
 		mods.add(oxidationMethionine);
-		mappings.mapFixedModsToNative(mappingContext, mods);
+		mappings.setFixedMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.STATIC_MODS), "M 15.994915", "Should report Methionine modification" );
 
 		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.0, 57.05, 'C', null, null, null);
 		Assert.assertNotNull(carbamidomethyl, "Not found Carbamidomethyl(C)" );
 		mods.add(carbamidomethyl);
-		mappings.mapFixedModsToNative(mappingContext, mods);
+		mappings.setFixedMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.STATIC_MODS), "C 57.021464 M 15.994915", "Should report two mods" );
 	}
 
@@ -99,32 +99,32 @@ public final class MyrimatchTest {
 		ModSet mods = new ModSet();
 		final Unimod unimod = UNIMOD_DAO.load();
 
-		mappings.mapVariableModsToNative(mappingContext, mods);
+		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "", "Should report no mods" );
 
 		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.99, 16.0, 'M', null, null, null);
 		// final ModSpecificity oxidationMethionine = unimod.getSpecificitiesByMascotName("Oxidation (M)").get(0);
 		Assert.assertNotNull(oxidationMethionine, "Not found Oxidation(M)" );
 		mods.add(oxidationMethionine);
-		mappings.mapVariableModsToNative(mappingContext, mods);
+		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "M * 15.994915", "Should report Methionine modification" );
 
 		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.0, 57.05, 'C', null, null, null);
 		Assert.assertNotNull(carbamidomethyl, "Not found Carbamidomethyl(C)" );
 		mods.add(carbamidomethyl);
-		mappings.mapVariableModsToNative(mappingContext, mods);
+		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "C * 57.021464 M ^ 15.994915", "Should report two mods" );
 
 		final ModSpecificity dimethyl = unimod.findSingleMatchingModificationSet(28.031, 28.032, 'P', null, null, null);
 		Assert.assertNotNull(dimethyl, "Not found Dimethyl(Protein N-term P)" );
 		mods.add(dimethyl);
-		mappings.mapVariableModsToNative(mappingContext, mods);
+		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "C * 57.021464 (P ^ 28.0313 M @ 15.994915", "Should report three mods" );
 
 		final ModSpecificity homoserine = unimod.findSingleMatchingModificationSet(-29.9929, -29.9928, 'M', Terminus.Cterm, false, null);
 		Assert.assertNotNull(homoserine, "Not found Homoserine(C-term M)" );
 		mods.add(homoserine);
-		mappings.mapVariableModsToNative(mappingContext, mods);
+		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "C * 57.021464 (P ^ 28.0313 M) @ -29.992806 M % 15.994915", "Should report four mods" );
 	}
 
@@ -156,11 +156,11 @@ public final class MyrimatchTest {
 		final MyrimatchMappings mappings = createMappings();
 		MappingContext mappingContext = createMappingContext();
 
-		mappings.mapPeptideToleranceToNative(mappingContext, new Tolerance("2.3 Da" ));
+		mappings.setPeptideTolerance(mappingContext, new Tolerance("2.3 Da"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.PRECURSOR_MZ_TOLERANCE), "2.3" );
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.PRECURSOR_MZ_TOLERANCE_UNITS), "daltons" );
 
-		mappings.mapPeptideToleranceToNative(mappingContext, new Tolerance("10 ppm" ));
+		mappings.setPeptideTolerance(mappingContext, new Tolerance("10 ppm"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.PRECURSOR_MZ_TOLERANCE), "10.0" );
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.PRECURSOR_MZ_TOLERANCE_UNITS), "ppm" );
 	}
@@ -170,11 +170,11 @@ public final class MyrimatchTest {
 		final MyrimatchMappings mappings = createMappings();
 		MappingContext mappingContext = createMappingContext();
 
-		mappings.mapFragmentToleranceToNative(mappingContext, new Tolerance("10.37 Da" ));
+		mappings.setFragmentTolerance(mappingContext, new Tolerance("10.37 Da"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.FRAGMENT_MZ_TOLERANCE), "10.37 daltons" );
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.FRAGMENT_MZ_TOLERANCE_UNITS), "daltons" );
 
-		mappings.mapFragmentToleranceToNative(mappingContext, new Tolerance("0.12 ppm" ));
+		mappings.setFragmentTolerance(mappingContext, new Tolerance("0.12 ppm"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.FRAGMENT_MZ_TOLERANCE), "0.12 ppm" );
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.FRAGMENT_MZ_TOLERANCE_UNITS), "ppm" );
 	}
@@ -184,7 +184,7 @@ public final class MyrimatchTest {
 		final MyrimatchMappings mappings = createMappings();
 		MappingContext mappingContext = createMappingContext();
 
-		mappings.mapInstrumentToNative(mappingContext, Instrument.ORBITRAP);
+		mappings.setInstrument(mappingContext, Instrument.ORBITRAP);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.USE_AVG_MASS_OF_SEQUENCES), "false", "Orbitrap uses monoisotopic mass" );
 	}
 
@@ -192,7 +192,7 @@ public final class MyrimatchTest {
 	public final void shouldMapMissedCleavages() {
 		final MyrimatchMappings mappings = createMappings();
 		MappingContext mappingContext = createMappingContext();
-		mappings.mapMissedCleavagesToNative(mappingContext, 3);
+		mappings.setMissedCleavages(mappingContext, 3);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.NUM_MAX_MISSED_CLEAVAGES), "3", "Missed cleavages do not match" );
 	}
 
@@ -203,7 +203,7 @@ public final class MyrimatchTest {
 		compareMappingsToBase(mappings, null, null);
 
 		MappingContext mappingContext = createMappingContext();
-		mappings.mapEnzymeToNative(mappingContext, new Protease("Lys-C (restrict P)", "K", "!P" ));
+		mappings.setProtease(mappingContext, new Protease("Lys-C (restrict P)", "K", "!P"));
 		compareMappingsToBase(mappings, "CleavageRules = Trypsin/P", "CleavageRules = (?<=K)(?!P)" );
 	}
 
@@ -216,8 +216,8 @@ public final class MyrimatchTest {
 			final MyrimatchMappings mappings = createMappings();
 			MappingContext mappingContext = createMappingContext();
 			mappings.read(mappings.baseSettings());
-			mappings.mapEnzymeToNative(mappingContext, new Protease("Trypsin (allow P)", "KR", "" ));
-			mappings.mapMissedCleavagesToNative(mappingContext, 2);
+			mappings.setProtease(mappingContext, new Protease("Trypsin (allow P)", "KR", ""));
+			mappings.setMissedCleavages(mappingContext, 2);
 
 			File configFile = new File(tempFolder, "myrimatch.cfg" );
 			FileWriter writer = new FileWriter(configFile);

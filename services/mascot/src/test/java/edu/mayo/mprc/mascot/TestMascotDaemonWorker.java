@@ -104,7 +104,7 @@ public final class TestMascotDaemonWorker {
 		MappingContext context = new TestMappingContextBase(paramsInfo);
 
 		mapping.read(mapping.baseSettings());
-		mapping.mapSequenceDatabaseToNative(context, TEST_MASCOT_DB);
+		mapping.setSequenceDatabase(context, TEST_MASCOT_DB);
 
 		File result = new File(mascotTemp, factory.getCanonicalParamFileName());
 		mapping.write(mapping.baseSettings(), Files.newWriter(result, Charsets.UTF_8));

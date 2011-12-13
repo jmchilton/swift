@@ -183,7 +183,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 		nativeParams.put(name, value);
 	}
 
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		setNativeParam(PEP_TOL_VALUE, String.valueOf(peptideTolerance.getValue()));
 		if (MassUnit.Da.equals(peptideTolerance.getUnit())) {
 			setNativeParam(PEP_TOL_UNIT, "0");
@@ -193,7 +193,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 		}
 	}
 
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		if (!MassUnit.Da.equals(fragmentTolerance.getUnit())) {
 			setNativeParam(FRAG_TOL_VALUE, "1");
 			context.reportWarning("Sequest does not support '" + fragmentTolerance.getUnit() + "' fragment tolerances; using 1 Da instead.");
@@ -201,7 +201,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 		setNativeParam(FRAG_TOL_VALUE, String.valueOf(fragmentTolerance.getValue()));
 	}
 
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		StringBuilder sb = new StringBuilder();
 
 		List<ModSpecificity> set = new ArrayList<ModSpecificity>(variableMods.getModifications());
@@ -302,7 +302,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 		return ms.isSiteAminoAcid() && (!ms.isPositionAnywhere() || ms.isProteinOnly());
 	}
 
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 		// The key is in form [AA|Cterm|Nterm]_[protein|peptide]
 		// We sum all the fixed mod contributions
 		Map<String, Double> masses = new HashMap<String, Double>();
@@ -349,20 +349,20 @@ public final class SequestMappings implements Mappings, Cloneable {
 		}
 	}
 
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
 		setNativeParam(DATABASE, "${DB:" + shortDatabaseName + "}");
 	}
 
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
+	public void setProtease(MappingContext context, Protease protease) {
 
-		String name = enzyme.getName().replaceAll("\\s", "_");
+		String name = protease.getName().replaceAll("\\s", "_");
 		String firstDigit = "1"; // 0 - non-specific, 1-specific (?)
 		String secondDigit = "1"; // Forward (cut C-terminus from the residue) or reverse (cut N-terminus)
-		String rn = enzyme.getRn();
-		String rnminus1 = enzyme.getRnminus1();
+		String rn = protease.getRn();
+		String rnminus1 = protease.getRnminus1();
 
 		// how do we recognize sense == 0 (ie inverted match)?
-		if ("Non-Specific".equals(enzyme.getName())) {
+		if ("Non-Specific".equals(protease.getName())) {
 			firstDigit = "0";
 			secondDigit = "0";
 		} else if (rnminus1.length() == 0) {
@@ -375,7 +375,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 			rn = rn.substring(1);
 		} else if (rn.length() != 0) { // RN.length = 0 is fine, allowed
 			// can't deal with this enzyme
-			throw new MprcException("Enzyme " + enzyme.getName() + " cannot be used by Sequest");
+			throw new MprcException("Enzyme " + protease.getName() + " cannot be used by Sequest");
 		}
 
 		setNativeParam(ENZYME,
@@ -384,7 +384,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 						(rn.equals("") ? "-" : rn));
 	}
 
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		String value = String.valueOf(missedCleavages);
 		if (missedCleavages > 12) {
 			value = "12";
@@ -397,7 +397,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 	private static final String[] INSTRUMENT_SERIES = "a      b      y      a           b           c           d           v           w           x           y           z".split("\\s+");
 	private static final Pattern R = Pattern.compile("(\\d+) (\\d+) (\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+) (\\d+.\\d+)");
 
-	public void mapInstrumentToNative(MappingContext context, Instrument it) {
+	public void setInstrument(MappingContext context, Instrument it) {
 		Map<String, IonSeries> hasseries = new HashMap<String, IonSeries>();
 		StringBuilder sb = new StringBuilder();
 

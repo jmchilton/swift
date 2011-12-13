@@ -124,11 +124,11 @@ public class TestTandem {
 		MappingContext context = new TestMappingContextBase(new MockParamsInfo());
 
 		// TODO: Excercise all mappings
-		mapping.mapEnzymeToNative(context, new Protease("Trypsin (allow P)", "KR", "" ));
-		mapping.mapInstrumentToNative(context, Instrument.ORBITRAP);
-		mapping.mapMissedCleavagesToNative(context, 2);
-		mapping.mapPeptideToleranceToNative(context, new Tolerance(10, MassUnit.Ppm));
-		mapping.mapFragmentToleranceToNative(context, new Tolerance(0.5, MassUnit.Da));
+		mapping.setProtease(context, new Protease("Trypsin (allow P)", "KR", ""));
+		mapping.setInstrument(context, Instrument.ORBITRAP);
+		mapping.setMissedCleavages(context, 2);
+		mapping.setPeptideTolerance(context, new Tolerance(10, MassUnit.Ppm));
+		mapping.setFragmentTolerance(context, new Tolerance(0.5, MassUnit.Da));
 
 		File paramFile = new File(tandemTemp, mappingFactory.getCanonicalParamFileName());
 		mapping.write(mapping.baseSettings(), Files.newWriter(paramFile, Charsets.UTF_8));

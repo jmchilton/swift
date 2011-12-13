@@ -192,15 +192,15 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		mapToleranceToNative(context, peptideTolerance, PEP_TOL_VALUE, PEP_TOL_UNIT);
 	}
 
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		mapToleranceToNative(context, fragmentTolerance, FRAG_TOL_VALUE, FRAG_TOL_UNIT);
 	}
 
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		TreeSet<String> mods = new TreeSet<String>();
 		int i = 0;
 		StringBuilder droppedMods = new StringBuilder();
@@ -223,7 +223,7 @@ public final class MascotMappings implements Mappings {
 		setNativeMods(context, VAR_MODS, mods);
 	}
 
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 		TreeSet<String> mods = new TreeSet<String>();
 
 		// we first loop through the mods and stuff their string reps into a hashset;
@@ -251,29 +251,29 @@ public final class MascotMappings implements Mappings {
 	/**
 	 * The short db name matches directly the db name in Mascot.
 	 */
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortName) {
+	public void setSequenceDatabase(MappingContext context, String shortName) {
 		setNativeParam(DATABASE, shortName);
 	}
 
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
+	public void setProtease(MappingContext context, Protease protease) {
 		String cle;
-		if (!mascotNamesByEnzyme.containsKey(enzyme)) {
+		if (!mascotNamesByEnzyme.containsKey(protease)) {
 			cle = "Trypsin/P";
-			context.reportWarning("Mascot doesn't support " + (enzyme == null ? "null enzyme" : enzyme.getName()) + ", using Trypsin (allow P)");
+			context.reportWarning("Mascot doesn't support " + (protease == null ? "null enzyme" : protease.getName()) + ", using Trypsin (allow P)");
 		} else {
-			cle = mascotNamesByEnzyme.get(enzyme);
+			cle = mascotNamesByEnzyme.get(protease);
 		}
 
 		setNativeParam(ENZYME, cle);
 	}
 
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		if (missedCleavages != null) {
 			setNativeParam(MISSED_CLEAVAGES, String.valueOf(missedCleavages));
 		}
 	}
 
-	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
+	public void setInstrument(MappingContext context, Instrument instrument) {
 		String instName = instrument.getMascotName();
 		setNativeParam(INSTRUMENT, instName);
 	}

@@ -80,7 +80,7 @@ public final class OmssaMappings implements Mappings {
 		nativeParams.get(name).setTextContent(value);
 	}
 
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		if (!MassUnit.Da.equals(peptideTolerance.getUnit()) && !MassUnit.Ppm.equals(peptideTolerance.getUnit())) {
 			//the user is trying to use ppm or an unsupported unit
 			setNativeParam(PEP_TOL, "1");
@@ -103,7 +103,7 @@ public final class OmssaMappings implements Mappings {
 		return value;
 	}
 
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		if (!fragmentTolerance.getUnit().equals(MassUnit.Da)) {
 			//the user is trying to use ppm or an unsupported unit
 			setNativeParam(FRAG_TOL, "1");
@@ -118,7 +118,7 @@ public final class OmssaMappings implements Mappings {
 		return ((Element) ((Element) nativeParams.get("usermods")).getElementsByTagName("MSModSpecSet").item(0)).getElementsByTagName("MSModSpec");
 	}
 
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		Document doc = nativeParamsDocument;
 		try {
 			converter.convertUnimodToOmssa(/*fixed*/ false, variableMods.getModifications(), doc);
@@ -127,7 +127,7 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 		//this converter will insert necessary into the document
 		try {
 			converter.convertUnimodToOmssa(/*fixed*/ true, fixedMods.getModifications(), nativeParamsDocument);
@@ -136,15 +136,15 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
 		setNativeParam(DATABASE, "${DB:" + shortDatabaseName + "}");
 	}
 
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
-		String omssaId = EnzymeLookup.mapEnzymeAbstractToOmssa(enzyme.getName());
+	public void setProtease(MappingContext context, Protease protease) {
+		String omssaId = EnzymeLookup.mapEnzymeAbstractToOmssa(protease.getName());
 
 		if (omssaId == null) {
-			context.reportWarning("OMSSA cannot support the enzyme " + enzyme.getName() + " so please disable OMSSA if you want this enzyme.");
+			context.reportWarning("OMSSA cannot support the enzyme " + protease.getName() + " so please disable OMSSA if you want this enzyme.");
 			return; //don't change the enzyme
 		}
 
@@ -170,7 +170,7 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		String value = null;
 		try {
 			value = String.valueOf(missedCleavages);
@@ -180,7 +180,7 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
+	public void setInstrument(MappingContext context, Instrument instrument) {
 		Document doc = nativeParamsDocument;
 		List<String> ionSeriesIds = new ArrayList<String>();
 

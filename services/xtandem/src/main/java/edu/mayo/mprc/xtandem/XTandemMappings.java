@@ -140,7 +140,7 @@ public final class XTandemMappings implements Mappings {
 		nativeParams.put(name, value);
 	}
 
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		double value = peptideTolerance.getValue();
 		String unit = peptideTolerance.getUnit().getCode();
 		if (peptideTolerance.getUnit().equals(MassUnit.Da)) {
@@ -151,7 +151,7 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(PEP_TOL_UNIT, unit);
 	}
 
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		if (!MassUnit.Da.equals(fragmentTolerance.getUnit())) {
 			setNativeParam(FRAG_TOL_VALUE, "1");
 			setNativeParam(FRAG_TOL_UNIT, DALTONS);
@@ -162,11 +162,11 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(FRAG_TOL_UNIT, DALTONS);
 	}
 
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		mapModsToNative(context, variableMods, VAR_MODS);
 	}
 
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 		mapModsToNative(context, fixedMods, FIXED_MODS);
 	}
 
@@ -207,16 +207,16 @@ public final class XTandemMappings implements Mappings {
 		return Joiner.on(",").join(modsArray);
 	}
 
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
 		setNativeParam(DATABASE, DATABASE_TAXON);
 	}
 
 	private static final Pattern TANDEM_MOD = Pattern.compile("\\s*([\\[\\{])([A-Z]*)[\\]\\}]\\|([\\[\\{])([A-Z]*)[\\]\\}]\\s*");
 
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
+	public void setProtease(MappingContext context, Protease protease) {
 		String cle = null;
-		String rnminus1 = enzyme.getRnminus1();
-		String rn = enzyme.getRn();
+		String rnminus1 = protease.getRnminus1();
+		String rn = protease.getRn();
 
 		if (rn.length() == 0 && rnminus1.length() == 0) {
 			rnminus1 = "X";
@@ -247,7 +247,7 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(ENZYME, cle);
 	}
 
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		String value = null;
 
 		try {
@@ -265,7 +265,7 @@ public final class XTandemMappings implements Mappings {
 		}
 	}
 
-	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
+	public void setInstrument(MappingContext context, Instrument instrument) {
 		Map<String, IonSeries> hasSeries = new HashMap<String, IonSeries>();
 		for (IonSeries is : instrument.getSeries()) {
 			hasSeries.put(is.getName(), is);

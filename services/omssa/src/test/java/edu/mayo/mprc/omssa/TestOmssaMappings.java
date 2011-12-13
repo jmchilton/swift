@@ -40,7 +40,7 @@ public final class TestOmssaMappings {
 		for (ModSpecificity modSpecificity : allSpecs) {
 			ModSet set = new ModSet();
 			set.add(modSpecificity);
-			mapping.mapFixedModsToNative(context, set);
+			mapping.setFixedMods(context, set);
 			i++;
 			if (i >= 50) {
 				break;

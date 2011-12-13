@@ -159,7 +159,7 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE, String.valueOf(peptideTolerance.getValue()));
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE_UNITS, massUnitToMyrimatch(peptideTolerance));
 	}
@@ -175,14 +175,14 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		final String tolerance = massUnitToMyrimatch(fragmentTolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE, fragmentTolerance.getValue() + " " + tolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE_UNITS, tolerance);
 	}
 
 	@Override
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		nativeParams.put(DYNAMIC_MODS, variableModsToString(context, variableMods));
 	}
 
@@ -227,7 +227,7 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 		nativeParams.put(STATIC_MODS, fixedModsToString(fixedMods));
 	}
 
@@ -247,7 +247,7 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
 		// The database is not set in the config
 	}
 
@@ -263,8 +263,8 @@ public final class MyrimatchMappings implements Mappings {
 	 *
 	 * Example: Trypsin <pre>(?<=[KR])(?!P)</pre>
 	 */
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
-		nativeParams.put(CLEAVAGE_RULES, enzymeToString(enzyme));
+	public void setProtease(MappingContext context, Protease protease) {
+		nativeParams.put(CLEAVAGE_RULES, enzymeToString(protease));
 	}
 
 	static String enzymeToString(Protease enzyme) {
@@ -311,12 +311,12 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		nativeParams.put(NUM_MAX_MISSED_CLEAVAGES, String.valueOf(missedCleavages));
 	}
 
 	@Override
-	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
+	public void setInstrument(MappingContext context, Instrument instrument) {
 		// Only Orbitrap is precise enough to use the monoisotopic mass
 		// Is that true?
 		nativeParams.put(USE_AVG_MASS_OF_SEQUENCES, Instrument.ORBITRAP.equals(instrument) ? "false" : "true");

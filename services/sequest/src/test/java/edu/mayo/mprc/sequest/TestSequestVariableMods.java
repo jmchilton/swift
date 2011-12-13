@@ -47,7 +47,7 @@ public final class TestSequestVariableMods {
 
 		addMods(variableMods, "Diisopropylphosphate(S)", "GluGlu(E)", "Oxidation(P)");
 
-		sequestMappings.mapVariableModsToNative(context, variableMods);
+		sequestMappings.setVariableMods(context, variableMods);
 
 		Assert.assertEquals(getVariableMods(), "164.060231 S 258.085186 E 15.994915 P 0.0000 X 0.0000 X 0.0000 X");
 	}
@@ -61,7 +61,7 @@ public final class TestSequestVariableMods {
 
 		// Last mod (lexicographically) will get skipped
 		context.setExpectedWarnings("Sequest supports up to 6 variable modifications, skipping Phospho (Y)");
-		sequestMappings.mapVariableModsToNative(context, variableMods);
+		sequestMappings.setVariableMods(context, variableMods);
 
 		Assert.assertEquals(getVariableMods(), "79.966331 C 79.966331 D 79.966331 H 79.966331 R 79.966331 S 79.966331 T");
 	}
@@ -75,7 +75,7 @@ public final class TestSequestVariableMods {
 
 		// Last mod (lexicographically) will get skipped
 		context.setExpectedWarnings("Sequest supports up to 6 variable modifications, skipping Phospho (T), Phospho (Y)");
-		sequestMappings.mapVariableModsToNative(context, variableMods);
+		sequestMappings.setVariableMods(context, variableMods);
 
 		Assert.assertEquals(getVariableMods(), "15.994915 M 79.966331 C 79.966331 D 79.966331 H 79.966331 R 79.966331 S");
 	}
@@ -98,7 +98,7 @@ public final class TestSequestVariableMods {
 				"Sequest does not support multiple variable modifications at C-terminal, skipping Cation:Na (C-term)",
 				"Sequest does not support variable modifications specific only to protein terminus. These mods will be used for peptide terminii as well."
 		);
-		sequestMappings.mapVariableModsToNative(context, variableMods);
+		sequestMappings.setVariableMods(context, variableMods);
 
 		// These must not influence the variable mods
 		Assert.assertEquals(getVariableMods(), "0.0000 X 0.0000 X 0.0000 X 0.0000 X 0.0000 X 0.0000 X");

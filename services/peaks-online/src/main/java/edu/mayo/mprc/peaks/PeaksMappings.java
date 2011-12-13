@@ -113,7 +113,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_PARENTTOLERANCE, String.valueOf(peptideTolerance.getValue()));
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_PARENTTOLERANCEUNIT, peptideTolerance.getUnit().getCode());
 	}
@@ -122,7 +122,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_FRAGMENTTOLERANCE,
 				fragmentTolerance.getUnit().equals(MassUnit.Ppm) ? String.valueOf(convertToDalton(context, fragmentTolerance)) : String.valueOf(fragmentTolerance.getValue()));
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_FRAGMENTTOLERANCEUNIT, "Da");
@@ -144,7 +144,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapVariableModsToNative(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		//If a fix modification is specific to a protein, the modification is changed to be variable and specific to a peptide. Therefore this
 		//value may be already set to those modifications.
 		String currentValue = parameters.get(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES);
@@ -156,7 +156,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapFixedModsToNative(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(MappingContext context, ModSet fixedMods) {
 
 		ModSet proteinMods = new ModSet();
 		ModSet nonProteinMods = new ModSet();
@@ -171,7 +171,7 @@ public final class PeaksMappings implements Mappings {
 		}
 
 		if (proteinMods.size() > 0) {
-			mapVariableModsToNative(context, proteinMods);
+			setVariableMods(context, proteinMods);
 		}
 
 		String parsedMods = getInputModifications(context, nonProteinMods, null);
@@ -182,7 +182,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_DATABASE, shortDatabaseName);
 	}
 
@@ -190,12 +190,12 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapEnzymeToNative(MappingContext context, Protease enzyme) {
-		String enzymeName = ensymeMapping.get(enzyme.getName());
+	public void setProtease(MappingContext context, Protease protease) {
+		String enzymeName = ensymeMapping.get(protease.getName());
 
 		if (enzymeName == null) {
-			context.reportWarning("Enzyme " + enzyme.toString() + " is not defiend by default in Peaks. Create enzyme with same name '" + enzyme.getName() + "' in Peaks if it does not already exist.");
-			setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME, enzyme.getName());
+			context.reportWarning("Enzyme " + protease.toString() + " is not defiend by default in Peaks. Create enzyme with same name '" + protease.getName() + "' in Peaks if it does not already exist.");
+			setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME, protease.getName());
 		} else {
 			setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME, enzymeName);
 		}
@@ -205,7 +205,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_MISSCLEAVAGE, missedCleavages.toString());
 	}
 
@@ -213,7 +213,7 @@ public final class PeaksMappings implements Mappings {
 		return null;
 	}
 
-	public void mapInstrumentToNative(MappingContext context, Instrument instrument) {
+	public void setInstrument(MappingContext context, Instrument instrument) {
 		String instrumentName = instrumentMapping.get(instrument.getName());
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INSTRUMENT, instrumentName);
 	}

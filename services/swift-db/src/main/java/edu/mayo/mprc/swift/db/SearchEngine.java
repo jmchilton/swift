@@ -2,10 +2,8 @@ package edu.mayo.mprc.swift.db;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.swift.params2.*;
 import edu.mayo.mprc.swift.params2.mapping.*;
-import edu.mayo.mprc.unimod.ModSet;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
 
@@ -158,28 +156,28 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 
 		// Map each parameter
 		context.startMapping(ParamName.PeptideTolerance);
-		mapping.mapPeptideToleranceToNative(context, params.getPeptideTolerance());
+		mapping.setPeptideTolerance(context, params.getPeptideTolerance());
 
 		context.startMapping(ParamName.FragmentTolerance);
-		mapping.mapFragmentToleranceToNative(context, params.getFragmentTolerance());
+		mapping.setFragmentTolerance(context, params.getFragmentTolerance());
 
 		context.startMapping(ParamName.MissedCleavages);
-		mapping.mapMissedCleavagesToNative(context, params.getMissedCleavages());
+		mapping.setMissedCleavages(context, params.getMissedCleavages());
 
 		context.startMapping(ParamName.Database);
-		mapping.mapSequenceDatabaseToNative(context, params.getDatabase().getShortName());
+		mapping.setSequenceDatabase(context, params.getDatabase().getShortName());
 
 		context.startMapping(ParamName.Enzyme);
-		mapping.mapEnzymeToNative(context, params.getProtease());
+		mapping.setProtease(context, params.getProtease());
 
 		context.startMapping(ParamName.FixedMods);
-		mapping.mapFixedModsToNative(context, params.getFixedModifications());
+		mapping.setFixedMods(context, params.getFixedModifications());
 
 		context.startMapping(ParamName.VariableMods);
-		mapping.mapVariableModsToNative(context, params.getVariableModifications());
+		mapping.setVariableMods(context, params.getVariableModifications());
 
 		context.startMapping(ParamName.Instrument);
-		mapping.mapInstrumentToNative(context, params.getInstrument());
+		mapping.setInstrument(context, params.getInstrument());
 
 		if (!context.noErrors()) {
 			// Errors detected with this parameter set.

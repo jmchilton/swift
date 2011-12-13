@@ -28,11 +28,11 @@ public final class TestMascotMappings {
 		final ModSpecificity phosphoS = unimod.getSpecificitiesByMascotName("Phospho (S)").get(0);
 		ModSet set = new ModSet();
 		set.add(phosphoS);
-		mapping.mapFixedModsToNative(context, set);
+		mapping.setFixedMods(context, set);
 
 		final ModSpecificity phosphoT = unimod.getSpecificitiesByMascotName("Phospho (T)").get(0);
 		set.add(phosphoT);
-		mapping.mapFixedModsToNative(context, set);
+		mapping.setFixedMods(context, set);
 
 		final String output = mappingsToString(mapping);
 
@@ -52,7 +52,7 @@ public final class TestMascotMappings {
 		final ModSpecificity deamidated = unimod.getSpecificitiesByMascotName("Deamidated (Protein N-term F)").get(0);
 		final ModSet modSet = new ModSet();
 		modSet.add(deamidated);
-		mapping.mapFixedModsToNative(context, modSet);
+		mapping.setFixedMods(context, modSet);
 
 		final String output = mappingsToString(mapping);
 

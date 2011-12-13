@@ -14,8 +14,8 @@ import java.io.Writer;
  * The mappings class wraps a parameter set (stored in a parameter file, e. g. {@code mascot.params})
  * and allows the user to read and write the values using high-level access methods.
  * <p/>
- * For instance, mascot might store peptide tolerance as TOL and TOLU settings, but the method {@link #mapPeptideToleranceToNative}
- * takes only a single {@link #mapPeptideToleranceToNative} call to map the {@link Tolerance} back to the TOL, TOLU pair.
+ * For instance, mascot might store peptide tolerance as TOL and TOLU settings, but the method {@link #setPeptideTolerance}
+ * takes only a single {@link #setPeptideTolerance} call to map the {@link Tolerance} back to the TOL, TOLU pair.
  * <p/>
  * The parameters should be validated as they are read/written. If all validations pass, the modified parameter set is saved
  * to disk using the {@link #write} method. This method gets the original parameter file as its input, so it can preserve
@@ -40,8 +40,8 @@ public interface Mappings {
 
 	/**
 	 * This method is given the original native params file (same one that was used for {@link #read}
-	 * and an output stream. The method should modify the original params file to reflect changes performed using {@code toNative}
-	 * methods, such as {@link #mapEnzymeToNative}. The method should retain formatting and comments of the original
+	 * and an output stream. The method should modify the original params file to reflect changes performed using mapping
+	 * methods, such as {@link #setProtease}. The method should retain formatting and comments of the original
 	 * params file, and retain all parameters that are not recognized.
 	 * <p/>
 	 * The resulting native param file is written into a given output stream.
@@ -51,21 +51,75 @@ public interface Mappings {
 	 */
 	void write(Reader oldParams, Writer out);
 
-	void mapPeptideToleranceToNative(MappingContext context, Tolerance peptideTolerance);
+	/**
+	 * Set peptide tolerance - maximum difference between the precursor mass and the theoretical peptide mass.
+	 *
+	 * @param context          See {@link MappingContext}
+	 * @param peptideTolerance The new peptide tolerance to set.
+	 */
+	void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance);
 
-	void mapFragmentToleranceToNative(MappingContext context, Tolerance fragmentTolerance);
+	/**
+	 * Set fragment tolerance - maximum difference between a peak in the MS/MS spectrum and the
+	 * theoretical mass of the fragment.
+	 *
+	 * @param context           See {@link MappingContext}
+	 * @param fragmentTolerance new fragment tolerance to set.
+	 */
+	void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance);
 
-	void mapVariableModsToNative(MappingContext context, ModSet variableMods);
+	/**
+	 * Set a list of variable modifications. Variable modifications are optional.
+	 * Setting a lot of variable mods expands the search space exponentially.
+	 *
+	 * @param context      See {@link MappingContext}
+	 * @param variableMods A list of variable modifications to set.
+	 */
+	void setVariableMods(MappingContext context, ModSet variableMods);
 
-	void mapFixedModsToNative(MappingContext context, ModSet fixedMods);
+	/**
+	 * Set a list of fixed modifications. These modifications are always "on".
+	 * Fixed mods do not incur a search penalty.
+	 *
+	 * @param context   See {@link MappingContext}
+	 * @param fixedMods A list of fixed modifications to set.
+	 */
+	void setFixedMods(MappingContext context, ModSet fixedMods);
 
-	void mapSequenceDatabaseToNative(MappingContext context, String shortDatabaseName);
+	/**
+	 * Set a name of a sequence database. The short database name is usually a placeholder that
+	 * will have to be replaced later, since at the time when the parameter file is generated, information
+	 * from a database deployer is not yet available.
+	 *
+	 * @param context           See {@link MappingContext}
+	 * @param shortDatabaseName A short string uniquely describing the FASTA database. E.g. for Mascot, this is used directly.
+	 */
+	void setSequenceDatabase(MappingContext context, String shortDatabaseName);
 
-	void mapEnzymeToNative(MappingContext context, Protease enzyme);
+	/**
+	 * Set a {@link Protease} to in-silico digest the proteins into peptides.
+	 *
+	 * @param context  See {@link MappingContext}
+	 * @param protease Protease used for digesting the proteins.
+	 */
+	void setProtease(MappingContext context, Protease protease);
 
-	void mapMissedCleavagesToNative(MappingContext context, Integer missedCleavages);
+	/**
+	 * Set the maximum number of missed cleavages. A missed cleavage occurs when a protease fails
+	 * to cleave at a particular site. The number of this events increases the search space.
+	 *
+	 * @param context         See {@link MappingContext}
+	 * @param missedCleavages Maximum number of allowed missed cleavages.
+	 */
+	void setMissedCleavages(MappingContext context, Integer missedCleavages);
 
-	void mapInstrumentToNative(MappingContext context, Instrument instrument);
+	/**
+	 * The instrument parameter currently specifies which ions are likely to be seen in the MS/MS spectra.
+	 *
+	 * @param context    See {@link MappingContext}
+	 * @param instrument Instrument to use for searching
+	 */
+	void setInstrument(MappingContext context, Instrument instrument);
 
 	/**
 	 * Used for testing purposes. Lets the user obtain a different native param value.

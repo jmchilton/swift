@@ -93,7 +93,7 @@ public final class PeaksMappingsTest {
 		addMod(variableMods, 400.0, "G", ModSpecificity.POSITION_ANY_C_TERM);
 		addMod(variableMods, 400.0, "G", ModSpecificity.POSITION_ANYWHERE);
 
-		peaksMappings.mapVariableModsToNative(context, variableMods);
+		peaksMappings.setVariableMods(context, variableMods);
 
 		String peaksParameterValue = "123.5@DL:A,123.5@NY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@G:C";
 
@@ -116,7 +116,7 @@ public final class PeaksMappingsTest {
 		addMod(fixedMods, 400.0, "Q", ModSpecificity.POSITION_PROTEIN_C_TERM);
 		addMod(fixedMods, 400.0, "E", ModSpecificity.POSITION_PROTEIN_C_TERM);
 
-		peaksMappings.mapFixedModsToNative(context, fixedMods);
+		peaksMappings.setFixedMods(context, fixedMods);
 
 		String fixed = "123.5@Y:C,123.5@AGW:N,200.5@ACDEFGHIKLMNPQRSTVWY:C,200.5@A:N,400.0@G:C";
 
