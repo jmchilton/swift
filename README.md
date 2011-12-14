@@ -26,49 +26,24 @@ Once you have Java and Maven setup, you can build Swift as follows:
 
 	git clone git://github.com/romanzenka/swift.git
 
-#### Create Swift's binaries
+#### Create swift-3.0-install.zip
 
 	cd swift
+	mvn package -DskipTests
+	cd target
+	ls
+	# You should see swift-3.0-install.zip
 
-	# First run an install on all. If you want to see the unit tests performance, remove the -DskipTests
-	mvn install -DskipTests
+* If you want to run all the unit tests, feel free to omit the -DskipTests clause!
 
-	# Make launcher.jar for launching Swift's web interface
-	# swift.war is already built by the swift/web project
-	mvn -f swift/swift/launcher/pom.xml assembly:assembly -DskipTests
-
-	# Make swift.jar that contains all Swift's functionality
-	mvn -f swift/swift/core/pom.xml assembly:assembly -DskipTests
-
-In order to make your own installable package from Swift, you need additional scripts and data Swift depends on.
-
-#### Download the swift-install.zip package from GitHub.
-
-	# Get out of the "swift" folder you created
-	cd ..
-
-	wget --no-check-certificate https://github.com/downloads/romanzenka/swift/swift-install.zip
-
-#### Unzip the package
-
-	unzip swift-install.zip
-
-#### Copy your compiled files over the existing swift-install ones
-
-	VERSION=3.0-SNAPSHOT
-	TARGET=swift-install/bin/swift
-
-	cp swift/swift/launcher/target/launcher-${VERSION}-all.jar ${TARGET}/launcher.jar
-	cp swift/swift/core/target/swift-core-${VERSION}-all.jar ${TARGET}/swift.jar
-	cp swift/swift/web/target/swift-ui.war ${TARGET}/swift.war
-
-(TODO: We would like to simplify this to be ran directly with one maven command.)
 
 #### Congratulations!
 
-You obtained a swift-install folder that you can now distribute and install Swift from. Please see
+You are ready to install Swift.
 
+* Copy the target/swift-3.0-install.zip to your target machine.
+* Unzip it
+* Install instructions are in
 	swift-install/INSTALL.txt
 
-for more information on installing Swift.
-
+Please mail zenka.roman@mayo.edu if you have any problems!
