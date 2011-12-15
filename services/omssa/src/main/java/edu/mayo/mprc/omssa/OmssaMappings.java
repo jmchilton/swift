@@ -114,10 +114,6 @@ public final class OmssaMappings implements Mappings {
 		setNativeParam(FRAG_TOL, String.valueOf(value));
 	}
 
-	private NodeList getMsModSpecs() {
-		return ((Element) ((Element) nativeParams.get("usermods")).getElementsByTagName("MSModSpecSet").item(0)).getElementsByTagName("MSModSpec");
-	}
-
 	public void setVariableMods(MappingContext context, ModSet variableMods) {
 		Document doc = nativeParamsDocument;
 		try {
