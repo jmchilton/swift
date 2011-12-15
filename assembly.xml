@@ -4,6 +4,7 @@
     <id>install</id>
     <formats>
         <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>swift-3.0</baseDirectory>
@@ -13,11 +14,13 @@
             <source>swift/launcher/target/launcher-3.0-SNAPSHOT-all.jar</source>
             <outputDirectory>bin/swift</outputDirectory>
             <destName>launcher.jar</destName>
+            <fileMode>755</fileMode>
         </file>
         <file>
             <source>swift/core/target/swift-core-3.0-SNAPSHOT-all.jar</source>
             <outputDirectory>bin/swift</outputDirectory>
             <destName>swift.jar</destName>
+            <fileMode>755</fileMode>
         </file>
         <file>
             <source>swift/web/target/swift-ui.war</source>
@@ -29,9 +32,21 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <unpack>true</unpack>
+            <fileMode>644</fileMode>
+            <directoryMode>755</directoryMode>
             <outputDirectory></outputDirectory>
             <includes>
                 <include>edu.mayo.mprc:install:jar:3.0-SNAPSHOT</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>true</unpack>
+            <fileMode>755</fileMode>
+            <directoryMode>755</directoryMode>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>edu.mayo.mprc:install-exe:jar:3.0-SNAPSHOT</include>
             </includes>
         </dependencySet>
     </dependencySets>
