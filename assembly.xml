@@ -32,6 +32,16 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <unpack>true</unpack>
+            <fileMode>755</fileMode>
+            <directoryMode>755</directoryMode>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>edu.mayo.mprc:swift-scripts:jar:3.0-SNAPSHOT</include>
+            </includes>
+        </dependencySet>    
+       <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>true</unpack>
             <fileMode>644</fileMode>
             <directoryMode>755</directoryMode>
             <outputDirectory></outputDirectory>
