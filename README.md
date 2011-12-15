@@ -44,6 +44,6 @@ You are ready to install Swift.
 * Copy the target/swift-3.0-install.zip to your target machine.
 * Unzip it
 * Install instructions are in
-	swift-install/INSTALL.txt
+	swift-3.0/INSTALL.txt
 
 Please mail zenka.roman@mayo.edu if you have any problems!
