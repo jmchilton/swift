@@ -54,7 +54,11 @@ import java.util.*;
 /**
  * Multi-factory for all modules that are defined in Swift.
  * <p/>
- * The UI counterparts of the resources are defined in ResourceTableUIs
+ * The UI counterparts of the resources are defined in ResourceTableUIs.
+ * <p/>
+ * TODO: This should discover the modules automatically, current setup is too painful to keep up to date.
+ *
+ * @author Roman Zenka
  */
 public final class ResourceTable extends FactoryBase<ResourceConfig, Object> implements MultiFactory {
 	public static final String SERVICE = "service";
