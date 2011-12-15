@@ -54,22 +54,22 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 	/**
 	 * the parameters that should go after the fasta file in the mascot.dat file, these are parameters that shouldn't change
 	 */
-	private String datParameters;
+	private final String datParameters;
 
 	/**
 	 * holds the line that goes in the WWW section of the mascot.dat file with _REP suffix
 	 */
-	private String repLine;
+	private final String repLine;
 
 	/**
 	 * holds the line that goes in the WWW section of the mascot.dat file with _SEQ suffix
 	 */
-	private String seqLine;
+	private final String seqLine;
 
 	/**
 	 * Mascot database maintenance url
 	 */
-	private URI dbMaintenanceUri;
+	private final URI dbMaintenanceUri;
 
 	/**
 	 * Mascot database maintenance web interface.
@@ -101,22 +101,32 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 	public static final List<String> DF_EXTENTIONS = Arrays.asList("a00", "i00", "s00", "stats");
 
 	/**
-	 * CTor that does basic setup including settup of the logger to be used by this object
+	 * Create a new deployment service.
+	 *
+	 * @param seqLine          holds the line that goes in the WWW section of the mascot.dat file with _SEQ suffix
+	 * @param repLine          holds the line that goes in the WWW section of the mascot.dat file with _REP suffix
+	 * @param datParameters    the parameters that should go after the fasta file in the mascot.dat file, these are parameters that shouldn't change
+	 * @param dbMaintenanceUri Mascot database maintenance uri
 	 */
-	public MascotDeploymentService() {
-		super();
+	public MascotDeploymentService(String seqLine, String repLine, String datParameters, URI dbMaintenanceUri) {
+		this.seqLine = seqLine;
+		this.repLine = repLine;
+		this.datParameters = datParameters;
+		this.dbMaintenanceUri = dbMaintenanceUri;
 	}
 
 	/**
 	 * this should be used for testing purposes alone
 	 */
 	public static MascotDeploymentService createForTesting(File datFile, File logFile) {
-		MascotDeploymentService service = new MascotDeploymentService();
+		MascotDeploymentService service = new MascotDeploymentService(
+				"%shortname%_SEQ%tab%\"8\"%tab%\"localhost\"%tab%\"80\"%tab%\"${mascotDeployer.mascotDir}/x-cgi/ms-getseq.exe %shortname% #ACCESSION# seq\"",
+				"%shortname%_REP%tab%\"24\"%tab%\"localhost\"%tab%\"80\"%tab%\"${mascotDeployer.mascotDir}/x-cgi/ms-getseq.exe %shortname% #ACCESSION# all\"",
+				"AA 1234 32 1 1 1 0 0 12 13 0 0",
+				null
+		);
 		service.datFile = datFile;
 		service.logFile = logFile;
-		service.datParameters = "AA 1234 32 1 1 1 0 0 12 13 0 0";
-		service.repLine = "%shortname%_REP%tab%\"24\"%tab%\"localhost\"%tab%\"80\"%tab%\"${mascotDeployer.mascotDir}/x-cgi/ms-getseq.exe %shortname% #ACCESSION# all\"";
-		service.seqLine = "%shortname%_SEQ%tab%\"8\"%tab%\"localhost\"%tab%\"80\"%tab%\"${mascotDeployer.mascotDir}/x-cgi/ms-getseq.exe %shortname% #ACCESSION# seq\"";
 
 		service.setEngineVersion("2.2");
 
@@ -144,7 +154,7 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 	 * Looks in the mascot.dat file to see if the database has already been deployed.
 	 *
 	 * @param request    the unique name that might appear in the mascot.dat file
-	 * @param reportInto
+	 * @param reportInto Deployment result to set a message on if deployment was already done.
 	 * @return true if the mascot.dat file already contains this entry else false.
 	 * @link super#wasCurationPreviouslyDeployed(String)
 	 */
@@ -536,38 +546,6 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 		return sb.toString();
 	}
 
-	public String getSeqLine() {
-		return seqLine;
-	}
-
-	public void setSeqLine(String seqLine) {
-		this.seqLine = seqLine;
-	}
-
-	public String getRepLine() {
-		return repLine;
-	}
-
-	public void setRepLine(String repLine) {
-		this.repLine = repLine;
-	}
-
-	public URI getDbMaintenanceUri() {
-		return dbMaintenanceUri;
-	}
-
-	public void setDbMaintenanceUri(URI dbMaintenanceUri) {
-		this.dbMaintenanceUri = dbMaintenanceUri;
-	}
-
-	public String getDatParameters() {
-		return datParameters;
-	}
-
-	public void setDatParameters(String datParameters) {
-		this.datParameters = datParameters;
-	}
-
 	private static final Map<String, List<ProgressReporter>> CO_DEPLOYMENTS = new HashMap<String, List<ProgressReporter>>();
 
 	public Map<String, List<ProgressReporter>> getCoDeployments() {
@@ -865,6 +843,8 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 		private String seqLine;
 		private String mascotDatabaseMaintenanceUriPostfix;
 
+		private static final Pattern MASCOT_ROOT_PATTERN = Pattern.compile("MASCOT-INSTALLATION-ROOT");
+
 		public String getEngineVersion() {
 			return engineVersion;
 		}
@@ -917,25 +897,26 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 		public Worker create(Config config, DependencyResolver dependencies) {
 			MascotDeploymentService worker = null;
 			try {
-				worker = new MascotDeploymentService();
-				worker.setRepLine(getRepLine().replaceAll(Pattern.compile("MASCOT-INSTALLATION-ROOT").pattern(), new File(config.getEngineRootFolder()).getAbsolutePath()));
-				worker.setSeqLine(getSeqLine().replaceAll(Pattern.compile("MASCOT-INSTALLATION-ROOT").pattern(), new File(config.getEngineRootFolder()).getAbsolutePath()));
-				worker.setDatParameters(getDatParameters());
+				final URI dbMaintenanceUri;
+				if (config.getMascotDbMaintenanceUri().indexOf(mascotDatabaseMaintenanceUriPostfix) != -1) {
+					dbMaintenanceUri = new URI(config.getMascotDbMaintenanceUri());
+				} else {
+					if (config.getMascotDbMaintenanceUri().endsWith("/")) {
+						dbMaintenanceUri = new URI(config.getMascotDbMaintenanceUri() + mascotDatabaseMaintenanceUriPostfix);
+					} else {
+						dbMaintenanceUri = new URI(config.getMascotDbMaintenanceUri() + "/" + mascotDatabaseMaintenanceUriPostfix);
+					}
+				}
+				final String mascotInstallationRoot = new File(config.getEngineRootFolder()).getAbsolutePath();
+				worker = new MascotDeploymentService(
+						getSeqLine().replaceAll(MASCOT_ROOT_PATTERN.pattern(), mascotInstallationRoot),
+						getRepLine().replaceAll(MASCOT_ROOT_PATTERN.pattern(), mascotInstallationRoot),
+						getDatParameters(),
+						dbMaintenanceUri
+				);
 				worker.setDeployableDbFolder(new File(config.getDeployableDbFolder()).getAbsoluteFile());
 				worker.setEngineVersion(getEngineVersion());
 				worker.setEngineRootFolder(new File(config.getEngineRootFolder()).getAbsoluteFile());
-				worker.setDatParameters(getDatParameters());
-
-				if (config.getMascotDbMaintenanceUri().indexOf(mascotDatabaseMaintenanceUriPostfix) != -1) {
-					worker.setDbMaintenanceUri(new URI(config.getMascotDbMaintenanceUri()));
-				} else {
-					if (config.getMascotDbMaintenanceUri().endsWith("/")) {
-						worker.setDbMaintenanceUri(new URI(config.getMascotDbMaintenanceUri() + mascotDatabaseMaintenanceUriPostfix));
-					} else {
-						worker.setDbMaintenanceUri(new URI(config.getMascotDbMaintenanceUri() + "/" + mascotDatabaseMaintenanceUriPostfix));
-					}
-				}
-
 			} catch (Exception e) {
 				throw new MprcException("Mascot deployment service worker could not be created.", e);
 			}
