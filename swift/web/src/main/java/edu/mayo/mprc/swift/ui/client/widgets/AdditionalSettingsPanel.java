@@ -15,6 +15,12 @@ public class AdditionalSettingsPanel extends HorizontalPanel {
 		this(false, false);
 	}
 
+	/**
+	 * Panel constructor.
+	 *
+	 * @param publicMgfs        True if .mgfs should be made public.
+	 * @param publicSearchFiles True if search files should be made public.
+	 */
 	public AdditionalSettingsPanel(boolean publicMgfs, boolean publicSearchFiles) {
 		this.publicMgfs = new CheckBox("Provide .mgf files");
 		this.publicMgfs.setChecked(publicMgfs);
@@ -29,10 +35,16 @@ public class AdditionalSettingsPanel extends HorizontalPanel {
 		this.add(this.fromScratch);
 	}
 
+	/**
+	 * @param publicMgfs True if .mgf files should be made public (not kept in cache).
+	 */
 	public void setPublicMgfs(boolean publicMgfs) {
 		this.publicMgfs.setChecked(publicMgfs);
 	}
 
+	/**
+	 * @return True if .mgf file should be made public (not kept in cache).
+	 */
 	public boolean isPublicMgfs() {
 		return publicMgfs.isChecked();
 	}

@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Daemon thread runs a {@link Worker}. The worker has {@link Worker#processRequest} method,
  * that gets executed over and over, until it either throws an exception or indicates it is done with processing. Then the
  * daemon starts processing the next request.
+ *
+ * @author Roman Zenka
  */
 public abstract class AbstractRunner {
 

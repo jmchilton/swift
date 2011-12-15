@@ -6,6 +6,8 @@ import edu.mayo.mprc.dbcurator.client.curatorstubs.CurationStepStub;
 /**
  * The abstract step mainPanel that will be implemented by the Panels that will contain the step specific infromation entry
  * and display.
+ *
+ * @author Roman Zenka
  */
 public abstract class AbstractStepPanel extends Composite {
 // ------------------------------ FIELDS ------------------------------
