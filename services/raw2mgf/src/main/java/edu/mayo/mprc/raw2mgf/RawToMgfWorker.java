@@ -195,12 +195,16 @@ public final class RawToMgfWorker implements Worker {
 		return null;
 	}
 
+	/**
+	 * Omit all parameters defining the first and last spectrum.
+	 *
+	 * @param params Parameter list to clean from -F and -L
+	 * @return Cleaned up parameter list.
+	 */
 	static String cleanupFromToParams(String params) {
 		StringBuilder result = new StringBuilder(params.length());
 		for (String parameter : Splitter.on(" ").omitEmptyStrings().trimResults().split(params)) {
-			if (FIRST_LAST_SPECTRUM.matcher(parameter).matches()) {
-				// Skip this parameter
-			} else {
+			if (!FIRST_LAST_SPECTRUM.matcher(parameter).matches()) {
 				if (result.length() > 0) {
 					result.append(' ');
 				}
