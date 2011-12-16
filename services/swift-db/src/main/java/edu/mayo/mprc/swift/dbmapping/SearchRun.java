@@ -3,7 +3,6 @@ package edu.mayo.mprc.swift.dbmapping;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.workspace.User;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,10 +18,6 @@ public class SearchRun extends PersistableBase implements Serializable {
 	private String title;
 	// Duplicate of {@link SwiftSearchDefinition}.user to prevent loading of a complex table
 	private User submittingUser;
-	/**
-	 * @deprecated Replaced by {@link #swiftSearch}
-	 */
-	private File xmlDefFile;
 	private Integer swiftSearch;
 	private Date startTimestamp;
 	private Date endTimestamp;
@@ -72,20 +67,18 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return submittingUser;
 	}
 
+	/**
+	 * ID of the {@link SwiftSearchDefinition} describing this search run. A hack to optimize loading of the objects.
+	 */
 	public Integer getSwiftSearch() {
 		return swiftSearch;
 	}
 
+	/**
+	 * @param swiftSearch ID of related {@link SwiftSearchDefinition}.
+	 */
 	public void setSwiftSearch(Integer swiftSearch) {
 		this.swiftSearch = swiftSearch;
-	}
-
-	public void setXmlDefFile(File xmlDefFile) {
-		this.xmlDefFile = xmlDefFile;
-	}
-
-	public File getXmlDefFile() {
-		return xmlDefFile;
 	}
 
 	public void setStartTimestamp(Date startTimestamp) {

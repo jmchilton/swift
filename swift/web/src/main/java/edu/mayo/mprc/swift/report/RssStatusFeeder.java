@@ -166,12 +166,9 @@ public final class RssStatusFeeder extends HttpServlet {
 	 * @return
 	 */
 	private static SyndContent getContentFor(SearchRun data) {
-		StringBuilder content = new StringBuilder();
+		StringBuilder content = new StringBuilder(200);
 
 		//todo: implement this, currently just does something stupid
-
-		content.append("Search XML definition:\n");
-		content.append("\t").append(data.getXmlDefFile()).append("\n\n");
 
 		content.append("  Out of ").append(data.getNumTasks()).append(" tasks, ");
 		if (data.getTasksCompleted() > 0) {
