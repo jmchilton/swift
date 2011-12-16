@@ -2,7 +2,6 @@ package edu.mayo.mprc.scaffoldparser;
 
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
-import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,9 +9,6 @@ import java.io.File;
 import java.io.IOException;
 
 public final class TestScaffoldParser {
-
-	private static final Logger LOGGER = Logger.getLogger(TestScaffoldParser.class);
-
 	@Test
 	public void testSpectrumParser() {
 		Assert.assertEquals(SpectrumAnalysisIdentification.getSpectrumNumber("test1 scan 92 92 (test1.92.92.2.dta)"),
