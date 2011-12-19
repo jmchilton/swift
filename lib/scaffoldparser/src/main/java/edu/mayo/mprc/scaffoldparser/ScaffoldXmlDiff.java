@@ -1,7 +1,7 @@
-package edu.mayo.mprc.utilities;
+package edu.mayo.mprc.scaffoldparser;
 
 import edu.mayo.mprc.MprcException;
-import org.apache.log4j.Logger;
+import edu.mayo.mprc.utilities.FileUtilities;
 import org.custommonkey.xmlunit.*;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -13,44 +13,39 @@ import java.util.List;
 
 /**
  * A method that can compare two scaffold report .xml files and see if they are similar enough disregarding some unimportant differences
+ *
+ * @author Eric Winter
  */
-public final class ScaffoldXmlComparer {
-	private static final Logger LOGGER = Logger.getLogger(ScaffoldXmlComparer.class);
+public final class ScaffoldXmlDiff {
+	private DetailedDiff lastComparisonDetails;
 
 	/**
 	 * Checks to see if two XML files are "equivalent" meaning all elements and attributes have the comparable values
 	 * This comparison can ignore the order of elements and actually navigates the document tree.  This comparison goes
 	 * a step further and if any "differences" are detected they are validated since some detected differences may not be
-	 * signficant with regards to what scaffold uses.
+	 * significant with regards to what scaffold uses.
 	 * <p/>
 	 * This is set to ignore the analysis date attribute as well as any node difference that can be attributed to floating
-	 * point arithmetic issues.
-	 * <p/>
-	 * <p/>
-	 * This method depends on XMLUnit so that needs to be installed
+	 * point arithmetic issues. See {@link ScaffoldXMLDifferenceListener} for more details.
 	 *
 	 * @param f1 the xml we want to compare two to
-	 * @param f2 the comaring xml file
-	 * @return true if they are deamed "comparable" else return false or if either were null return false
-	 * @throws java.io.FileNotFoundException if either of the files passed in are not equal
+	 * @param f2 the comparing xml file
+	 * @return true if they are deemed "comparable" else return false or if either were null return false
+	 * @throws FileNotFoundException if either of the files passed in are not equal
 	 */
 	public boolean areSimilarScaffoldXMLFiles(File f1, File f2) throws FileNotFoundException {
 		if (f1 == null || f2 == null) {
 			return false;
 		}
 
-		//if they are the same object or have the same path
-		if (f1 == f2 || f1.equals(f2)) {
+		//if they have the same path
+		if (f1.equals(f2)) {
 			return true;
 		}
 
 		//check to see if the files exist and if not then throw a fit
-		if (!f1.exists()) {
-			throw new FileNotFoundException("File not found: " + f1.getAbsolutePath());
-		}
-		if (!f2.exists()) {
-			throw new FileNotFoundException("File not found: " + f2.getAbsolutePath());
-		}
+		checkExistence(f1);
+		checkExistence(f2);
 
 		//setup the diff
 		FileInputStream s1 = null;
@@ -59,7 +54,7 @@ public final class ScaffoldXmlComparer {
 		try {
 			s1 = new FileInputStream(f1);
 			s2 = new FileInputStream(f2);
-			return this.compareScafml(s1, s2);
+			return this.compareScaffoldXml(s1, s2);
 		} catch (Exception e) {
 			throw new MprcException("Error creating Diff", e);
 		} finally {
@@ -68,15 +63,19 @@ public final class ScaffoldXmlComparer {
 		}
 	}
 
+	private void checkExistence(File file) throws FileNotFoundException {
+		if (!file.exists()) {
+			throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+		}
+	}
 
-	private DetailedDiff lastComparisonDetails;
-
-	public boolean compareScafml(InputStream s1, InputStream s2) throws IOException, ParserConfigurationException, SAXException {
+	public boolean compareScaffoldXml(InputStream s1, InputStream s2) throws IOException, ParserConfigurationException, SAXException {
 
 		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 		XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 		XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
 		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
 
 		InputSource source1 = new InputSource(s1);
 		InputSource source2 = new InputSource(s2);
@@ -86,15 +85,11 @@ public final class ScaffoldXmlComparer {
 
 		diff.overrideDifferenceListener(new ScaffoldXMLDifferenceListener());
 
+
 		diff.overrideElementQualifier(new ElementQualifier() {
 
 			public boolean qualifyForComparison(Element e1, Element e2) {
-				if (!e1.getNodeName().equals(e2.getNodeName())) {
-					return false;
-				}
-				String id1 = e1.getAttribute("id");
-				String id2 = e2.getAttribute("id");
-				return id1.equals(id2);
+				return e1.getNodeName().equals(e2.getNodeName());
 			}
 		});
 
@@ -103,7 +98,7 @@ public final class ScaffoldXmlComparer {
 
 		lastComparisonDetails = new DetailedDiff(diff);
 
-		return (areSimilar || areIdentical);
+		return areSimilar || areIdentical;
 	}
 
 	public List<Difference> getLastDiffDetails() {
@@ -117,8 +112,8 @@ public final class ScaffoldXmlComparer {
 	public String getDifferenceString() {
 		StringBuilder sb = new StringBuilder();
 		for (Difference diff : getLastDiffDetails()) {
-			if (!diff.isRecoverable()) { //if is not a simularity
-				sb.append("Difference at Xpath location: ").append(diff.getControlNodeDetail().getXpathLocation()).append("\n");
+			if (!diff.isRecoverable()) { //if is not a similarity
+				sb.append(diff.getDescription()).append(" at\n\t").append(diff.getControlNodeDetail().getXpathLocation()).append("\n");
 			}
 		}
 		return sb.toString();

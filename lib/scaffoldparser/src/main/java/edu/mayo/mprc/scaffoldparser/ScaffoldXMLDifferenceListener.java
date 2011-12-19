@@ -1,4 +1,4 @@
-package edu.mayo.mprc.utilities;
+package edu.mayo.mprc.scaffoldparser;
 
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
@@ -8,21 +8,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * We ignore the "id" values as our current saver can mess those up. This means that we could accidentally
+ * consider two files similar while they differ in how the nodes are referenced. In practice, this should never
+ * be the case.
+ * <p/>
+ * Floating point values that are within {@link #DOUBLE_PRECISION} are considered identical.
+ * <p/>
+ * The .xml file version, the date when it was created, and the experiment names are ignored as well.
+ *
+ * @author Eric Winter
  */
 public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	private static final double DOUBLE_PRECISION = 0.001;
+	private static final Pattern FLOATING_POINT = Pattern.compile("[-+]?\\d*(?:\\.\\d*)?(?:[eE][+-]?\\d+)?");
 
 	/**
 	 * Determines if a difference that has been detected is an actual difference or if it should be ignored.
 	 *
-	 * @param difference
+	 * @param difference XMLUnit difference between two XML files.
 	 * @return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR if the difference was not significent else RETURN_ACCEPT_DIFFERENCE
 	 */
 	public int differenceFound(Difference difference) {
 		if (isIgnoredDifference(difference)) {
-			return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
+			return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
 		} else {
-			return RETURN_ACCEPT_DIFFERENCE;
+			return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
 		}
 	}
 
@@ -44,14 +54,27 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	 */
 	private boolean isIgnoredDifference(Difference difference) {
 		try {
-			return isAnalysisDateDifference(difference)
+			return isIdDifference(difference)
+					|| isAnalysisDateDifference(difference)
 					|| isAcceptableFloatingPointDifference(difference)
 					|| isExperimentNameDifference(difference)
-					|| isCompatibleVersionDifference(difference);
+					|| isCompatibleVersionDifference(difference)
+					|| isIdMissing(difference);
 		} catch (Exception ignore) {
 			//SWALLOWED there was something in there that was null so will just say there was a difference.
 			return false;
 		}
+	}
+
+	private boolean isIdDifference(Difference difference) {
+		final String nodeName = difference.getControlNodeDetail().getNode().getNodeName();
+		return "id".equals(nodeName) || "reference".equals(nodeName);
+	}
+
+	private boolean isIdMissing(Difference difference) {
+		final Node id1 = difference.getControlNodeDetail().getNode().getAttributes().getNamedItem("id");
+		final Node id2 = difference.getTestNodeDetail().getNode().getAttributes().getNamedItem("id");
+		return (id1 == null) != (id2 == null);
 	}
 
 	private boolean isAnalysisDateDifference(Difference difference) {
@@ -67,10 +90,9 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	}
 
 	private boolean isAcceptableFloatingPointDifference(Difference difference) {
-		Pattern p = Pattern.compile("[-+]?\\d*(?:\\.\\d*)?(?:[eE][+-]?\\d+)?");
-		Matcher m = p.matcher(difference.getControlNodeDetail().getValue());
+		Matcher matcher = FLOATING_POINT.matcher(difference.getControlNodeDetail().getValue());
 		try {
-			if (m.matches()) {
+			if (matcher.matches()) {
 				String value1 = difference.getControlNodeDetail().getValue();
 				String value2 = difference.getTestNodeDetail().getValue();
 
@@ -79,7 +101,8 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 
 				return similarNumbers(double1, double2);
 			}
-		} catch (Exception e) {
+		} catch (Exception ignore) {
+			// SWALLOWED - we could not parse, consider it a difference
 			return false;
 		}
 

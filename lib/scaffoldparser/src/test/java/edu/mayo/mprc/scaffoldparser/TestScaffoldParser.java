@@ -2,13 +2,18 @@ package edu.mayo.mprc.scaffoldparser;
 
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
+import edu.mayo.mprc.utilities.TestingUtilities;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class TestScaffoldParser {
+	private static final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger.getLogger(TestScaffoldParser.class);
+
 	@Test
 	public void testSpectrumParser() {
 		Assert.assertEquals(SpectrumAnalysisIdentification.getSpectrumNumber("test1 scan 92 92 (test1.92.92.2.dta)"),
@@ -25,11 +30,32 @@ public final class TestScaffoldParser {
 
 	}
 
+	/**
+	 * Load Scaffold .xml file, save it, check that it matches the original.
+	 *
+	 * @throws IOException  When load fails
+	 * @throws SAXException When scaffold parse fails
+	 */
 	@Test
-	public void testRoundtrip() {
-
+	public void testRoundtrip() throws IOException, SAXException {
 		final Scaffold scaffold = ScaffoldParser.loadScaffoldXml(ResourceUtilities.getStream("classpath:test.xml", TestScaffoldParser.class));
-		scaffold.toString();
+		File expected = TestingUtilities.getTempFileFromResource("/test.xml", false, null);
+
+		final File output = TestingUtilities.getUniqueTempFile(true, null, ".xml");
+		try {
+			final FileOutputStream outputStream = FileUtilities.getOutputStream(output);
+			ScaffoldParser.saveScaffoldXml(scaffold, outputStream);
+			outputStream.close();
+			ScaffoldXmlDiff diff = new ScaffoldXmlDiff();
+			final boolean similar = diff.areSimilarScaffoldXMLFiles(output, expected);
+			if (!similar) {
+				LOGGER.error("Scaffold files different: " + diff.getDifferenceString());
+				Assert.fail();
+			}
+		} finally {
+			FileUtilities.cleanupTempFile(output);
+			FileUtilities.cleanupTempFile(expected);
+		}
 	}
 
 	@Test

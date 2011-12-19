@@ -38,15 +38,15 @@ public final class PeptideAnalysisIdentification {
 	@XStreamImplicit
 	private List<Modification> modifications;
 
-	@XStreamAlias("SpectrumAnalysisIdentification")
-	private SpectrumAnalysisIdentification spectrumAnalysisIdentification;
-
 	@XStreamAlias("X_TandemScore")
 	private List<Score> tandemScore;
 	@XStreamAlias("MascotScore")
 	private List<Score> mascotScore;
 	@XStreamAlias("SequestScore")
 	private List<Score> sequestScore;
+
+	@XStreamAlias("SpectrumAnalysisIdentification")
+	private SpectrumAnalysisIdentification spectrumAnalysisIdentification;
 
 	public PeptideAnalysisIdentification() {
 	}

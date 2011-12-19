@@ -39,12 +39,6 @@
             <version>2.8.1</version>
         </dependency>
 
-        <!-- XmlUnit for testing that two XML files are identical -->
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
