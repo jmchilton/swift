@@ -309,12 +309,26 @@ final class PvmUtilities {
 	 * and user
 	 */
 	public static long findProcessIDforExe(String userName, String exe) {
-		List<String> psArgs = Arrays.asList("ps", "-auwx");
-		List<String> grepArgs = Arrays.asList("grep", userName);
-		List<String> psResult = processPipedCommand(psArgs, grepArgs);
+		List<String> psResult = listAllProcessesByUser(userName);
 		// find the pvm process id on the node
 
 		return parseProcessListforPid(psResult, exe, userName);
+	}
+
+	/**
+	 * TODO: Do this without grep and pipe. ps can do it on its own.
+	 * <p/>
+	 * Equivalent to doing:
+	 * <p/>
+	 * {@code ps auwx | grep $username}
+	 *
+	 * @param userName Name of the user whose processes to list
+	 * @return List of processes (in the ps format)
+	 */
+	private static List<String> listAllProcessesByUser(String userName) {
+		List<String> psArgs = Arrays.asList("ps", "auwx");
+		List<String> grepArgs = Arrays.asList("grep", userName);
+		return processPipedCommand(psArgs, grepArgs);
 	}
 
 	/**
@@ -474,12 +488,8 @@ final class PvmUtilities {
 	 * @param nodeTempFolder - location of the temp folder for pvm on the slaves (usually '/tmp)
 	 */
 	public static void killPVMonMasterNode(String userName, String pvmdName, String nodeTempFolder) {
-		List<String> psArgs = Arrays.asList("ps", "-auwx");
-		List<String> grepArgs = Arrays.asList("grep", userName);
+		List<String> psResult = listAllProcessesByUser(userName);
 
-		List<String> psResult = processPipedCommand(psArgs, grepArgs);
-
-		// want call of <"ps -auwx | grep $username">
 		List<String> processes = new ArrayList<String>();
 		getProcessesForUser(processes, psResult, userName);
 		// find the sequest27_ pid and kill it
