@@ -36,14 +36,15 @@ public final class TestingUtilities {
 	}
 
 	/**
-	 * @param autoDelete set to true if you want to have the file cleaned up on JVM exit, no guareentee but...
-	 * @param suffix
+	 * @param autoDelete   set to true if you want to have the file cleaned up on JVM exit, no guareentee but...
+	 * @param parentFolder Where to create the file. When null, uses default temp folder.
+	 * @param suffix       Suffix for the file.
 	 * @return A temporary file.
 	 * @throws IOException The file could not be created.
 	 */
 	public static File getUniqueTempFile(final boolean autoDelete, File parentFolder, String suffix) throws IOException {
 		File tmpFile = File.createTempFile(
-				"test_" + (new SimpleDateFormat("ddMMMyyyy-HHmmss").format(new Date())),
+				"test_" + new SimpleDateFormat("ddMMMyyyy-HHmmss").format(new Date()),
 				suffix,
 				parentFolder);
 		if (autoDelete) {
