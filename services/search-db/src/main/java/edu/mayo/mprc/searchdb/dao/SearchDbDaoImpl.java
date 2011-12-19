@@ -4,8 +4,8 @@ import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.swift.db.SwiftDao;
+import org.hibernate.criterion.Restrictions;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,31 +29,23 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 
 	@Override
 	public ProteinSequence addProteinSequence(String sequence) {
-		return null; //TODO: implement me
+		ProteinSequence proteinSequence = new ProteinSequence(sequence);
+		return save(proteinSequence, Restrictions.eq("sequence", sequence), false);
 	}
 
 	@Override
 	public ProteinSequence getProteinSequence(int proteinId) {
-		return null; //TODO: implement me
+		return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
 	}
 
 	@Override
 	public PeptideSequence addPeptideSequence(String sequence) {
-		return null; //TODO: implement me
+		PeptideSequence peptideSequence = new PeptideSequence(sequence);
+		return save(peptideSequence, Restrictions.eq("sequence", sequence), false);
 	}
 
 	@Override
 	public PeptideSequence getPeptideSequence(int peptideId) {
-		return null; //TODO: implement me
-	}
-
-	@Override
-	public List<Integer> getPeptidesForProtein(int proteinId) {
-		return null; //TODO: implement me
-	}
-
-	@Override
-	public List<Integer> getProteinsForPeptide(int peptideId) {
-		return null; //TODO: implement me
+		return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
 	}
 }

@@ -57,6 +57,9 @@
                 <value>edu/mayo/mprc/dbcurator/model/curationsteps/DataSource.hbm.xml</value>
                 <value>edu/mayo/mprc/dbcurator/model/curationsteps/HeaderTransform.hbm.xml</value>
 
+                <value>edu/mayo/mprc/searchdb/PeptideSequence.hbm.xml</value>
+                <value>edu/mayo/mprc/searchdb/ProteinSequence.hbm.xml</value>
+
                 <value>edu/mayo/mprc/swift/dbmapping/EnabledEngines.hbm.xml</value>
                 <value>edu/mayo/mprc/swift/dbmapping/FileSearch.hbm.xml</value>
                 <value>edu/mayo/mprc/swift/dbmapping/PeptideReport.hbm.xml</value>
