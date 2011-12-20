@@ -3,6 +3,7 @@ package edu.mayo.mprc.scaffoldparser;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
@@ -12,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class TestScaffoldParser {
-	private static final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger.getLogger(TestScaffoldParser.class);
+	private static final Logger LOGGER = Logger.getLogger(TestScaffoldParser.class);
 
 	@Test
 	public void testSpectrumParser() {
