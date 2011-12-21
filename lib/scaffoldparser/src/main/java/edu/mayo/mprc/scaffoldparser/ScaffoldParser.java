@@ -50,7 +50,11 @@ public final class ScaffoldParser {
 			protected MapperWrapper wrapMapper(MapperWrapper next) {
 				return new MapperWrapper(next) {
 					public boolean shouldSerializeMember(Class definedIn, String fieldName) {
-						return (!Object.class.equals(definedIn) || realClass(fieldName) != null) && super.shouldSerializeMember(definedIn, fieldName);
+						try {
+							return (!Object.class.equals(definedIn) || realClass(fieldName) != null) && super.shouldSerializeMember(definedIn, fieldName);
+						} catch (Exception ignore) {
+							return false;
+						}
 					}
 				};
 			}
