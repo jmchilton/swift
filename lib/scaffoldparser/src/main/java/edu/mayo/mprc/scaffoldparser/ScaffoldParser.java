@@ -9,8 +9,19 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Loads and saves Scaffold's .xml format. This format was extensively used by MPRC in the past as a way
+ * of getting at Scaffold's data. Since Scaffold 3 version broke the internal .XML format and made it much less useful,
+ * we stopped relying on this method - it is provided for backwards reading of large datasets we already own.
+ *
+ * @author Roman Zenka
+ */
 public final class ScaffoldParser {
+	/**
+	 * We need to retain underscores in class names when serializing without escaping them.
+	 */
 	static final XmlFriendlyReplacer KEEP_UNDERSCORES = new XmlFriendlyReplacer("-_", "_");
+
 	private static final Class[] SCAFFOLD_CLASSES = new Class[]{
 			BiologicalSample.class,
 			DisplayThresholds.class,
