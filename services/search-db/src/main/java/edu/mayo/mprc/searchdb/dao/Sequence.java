@@ -5,6 +5,8 @@ import edu.mayo.mprc.database.PersistableBase;
 
 /**
  * A sequence of amino acids.
+ *
+ * @author Roman Zenka
  */
 public abstract class Sequence extends PersistableBase {
 	private String sequence;
@@ -13,6 +15,9 @@ public abstract class Sequence extends PersistableBase {
 	 */
 	private Double mass;
 
+	/**
+	 * Empty constructor for Hibernate.
+	 */
 	public Sequence() {
 	}
 
@@ -42,11 +47,11 @@ public abstract class Sequence extends PersistableBase {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof ProteinSequence)) {
+		if (!(o instanceof Sequence)) {
 			return false;
 		}
 
-		ProteinSequence that = (ProteinSequence) o;
+		Sequence that = (Sequence) o;
 
 		if (!getSequence().equals(that.getSequence())) {
 			return false;
