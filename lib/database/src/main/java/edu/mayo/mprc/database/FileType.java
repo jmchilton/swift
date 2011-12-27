@@ -27,7 +27,7 @@ public final class FileType implements UserType {
 	}
 
 	public int[] sqlTypes() {
-		return new int[]{Hibernate.STRING.sqlType()};
+		return new int[]{Types.VARCHAR};
 	}
 
 	public Class returnedClass() {
