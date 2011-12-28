@@ -1,7 +1,6 @@
 package edu.mayo.mprc.database;
 
 import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
@@ -27,7 +26,7 @@ public final class FileType implements UserType {
 	}
 
 	public int[] sqlTypes() {
-		return new int[]{Hibernate.STRING.sqlType()};
+		return new int[]{Types.VARCHAR};
 	}
 
 	public Class returnedClass() {
