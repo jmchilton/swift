@@ -27,11 +27,11 @@ import java.util.Locale;
  * The information presented has following levels:
  * <p/>
  * <ol>
- * <li>{@link edu.mayo.mprc.searchdb.dao.Analysis} - for the entire invocation of Scaffold. Mostly to provide Scaffold version</li>
- * <li>{@link edu.mayo.mprc.searchdb.dao.BiologicalSample} - A biological sample denotes what goes together. It is important to know, because
+ * <li>{@link Analysis} - for the entire invocation of Scaffold. Mostly to provide Scaffold version</li>
+ * <li>{@link BiologicalSample} - A biological sample denotes what goes together. It is important to know, because
  * protein-level calculations and thresholds are done per sample.</li>
- * <li>{@link edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySearchResult}</li> - search results for a particular mass spec sample from one run on the instrument.
- * <li>{@link edu.mayo.mprc.searchdb.dao.PeptideIdentification} - Each mass spec sample has multiple peptides identified. Provide total count of spectra for given peptide+modification combination.</li>
+ * <li>{@link TandemMassSpectrometrySearchResult}</li> - search results for a particular mass spec sample from one run on the instrument.
+ * <li>{@link PeptideIdentification} - Each mass spec sample has multiple peptides identified. Provide total count of spectra for given peptide+modification combination.</li>
  * </ol>
  *
  * @author Roman Zenka
@@ -42,17 +42,17 @@ public class ScaffoldXmlExtractor {
 	private static final int TYPICAL_PEPTIDE_IDS_PER_SAMPLE = 100;
 	private static final String FRACTION_NAME_EXTENSION = ".tar.gz";
 
+	/**
+	 * An object capable of extracting information from mass spec files. This object would
+	 * be typically dependent on the context of a particular search, because names of files will be typically provided
+	 * without absolute paths.
+	 */
 	private MassSpecDataExtractor dataExtractor;
 
 	public MassSpecDataExtractor getDataExtractor() {
 		return dataExtractor;
 	}
 
-	/**
-	 * @param dataExtractor An object capable of extracting information from mass spec files. This object would
-	 *                      be typically dependent on the context of a particular search, because names of files will be typically provided
-	 *                      without absolute paths.
-	 */
 	public void setDataExtractor(MassSpecDataExtractor dataExtractor) {
 		this.dataExtractor = dataExtractor;
 	}
@@ -129,14 +129,14 @@ public class ScaffoldXmlExtractor {
 	 * @param fractionName Fraction name as specified in the Scaffold .xml file.
 	 * @return The standalone name that can be matched against an input file.
 	 */
-	private String extractFractionName(String fractionName) {
+	private static String extractFractionName(String fractionName) {
 		if (fractionName.endsWith(FRACTION_NAME_EXTENSION)) {
 			return fractionName.substring(0, fractionName.length() - FRACTION_NAME_EXTENSION.length());
 		}
 		return fractionName;
 	}
 
-	private Date getAnalysisDate(Experiment experiment) {
+	private static Date getAnalysisDate(Experiment experiment) {
 		try {
 			final DateFormat dateFormat = getDateFormat();
 			return dateFormat.parse(experiment.getAnalysisDate());
@@ -151,7 +151,7 @@ public class ScaffoldXmlExtractor {
 	 *
 	 * @return Date format used to parse Scaffold's dates.
 	 */
-	private DateFormat getDateFormat() {
+	private static DateFormat getDateFormat() {
 		return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
 	}
 }
