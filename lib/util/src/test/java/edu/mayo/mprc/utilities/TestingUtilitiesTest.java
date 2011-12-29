@@ -6,6 +6,9 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 @Test(sequential = true)
 public final class TestingUtilitiesTest {
@@ -40,6 +43,13 @@ public final class TestingUtilitiesTest {
 		Assert.assertEquals(TestingUtilities.compareFilesByLine(f1, f2), "First file line and second file line differences:\n" +
 				"[A simple file to compare.]\n" +
 				"[A second simple file to compare]");
+	}
+
+	@Test
+	public void shouldCreateDate() {
+		final Date date = TestingUtilities.getDate(2011, 1, 13);
+		DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.US);
+		Assert.assertEquals(format.format(date), "Jan 13, 2011 12:00:00 AM");
 	}
 
 
