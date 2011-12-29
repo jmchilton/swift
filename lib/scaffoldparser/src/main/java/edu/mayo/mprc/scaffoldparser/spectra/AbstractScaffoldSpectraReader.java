@@ -24,7 +24,7 @@ public abstract class AbstractScaffoldSpectraReader {
 	/**
 	 * Name of the Scaffold spectra data source being loaded for exception handling (typically the filename).
 	 */
-	private final String dataSourceName;
+	private String dataSourceName;
 
 	// Scaffold files are terminated with this marker
 	private static final String END_OF_FILE = "END OF FILE";
@@ -77,12 +77,18 @@ public abstract class AbstractScaffoldSpectraReader {
 	private static final String FIRST_HEADER_COLUMN = EXPERIMENT_NAME;
 
 	/**
+	 * Initializes the reader.
+	 */
+	protected AbstractScaffoldSpectraReader() {
+	}
+
+	/**
 	 * Start loading scaffold spectra file.
 	 *
 	 * @param scaffoldSpectraFile Spectrum file to load.
 	 * @param scaffoldVersion     {@link #scaffoldVersion}
 	 */
-	public AbstractScaffoldSpectraReader(File scaffoldSpectraFile, String scaffoldVersion) {
+	public void load(File scaffoldSpectraFile, String scaffoldVersion) {
 		dataSourceName = scaffoldSpectraFile.getAbsolutePath();
 		this.scaffoldVersion = scaffoldVersion;
 		FileReader fileReader = null;
@@ -103,7 +109,7 @@ public abstract class AbstractScaffoldSpectraReader {
 	 * @param dataSourceName  Information about where the spectra data came from - displayed when throwing exceptions.
 	 * @param scaffoldVersion {@link #scaffoldVersion}
 	 */
-	public AbstractScaffoldSpectraReader(Reader reader, String dataSourceName, String scaffoldVersion) {
+	public void load(Reader reader, String dataSourceName, String scaffoldVersion) {
 		this.dataSourceName = dataSourceName;
 		this.scaffoldVersion = scaffoldVersion;
 		try {

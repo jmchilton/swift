@@ -5,7 +5,6 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.io.KeyedTsvReader;
 import edu.mayo.mprc.utilities.StringUtilities;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,10 +21,10 @@ public final class ScaffoldSpectraReader extends AbstractScaffoldSpectraReader i
 	private String[] header;
 	private String emptyLine;
 	private int spectrumNameColumn;
-	private StringBuilder sb = new StringBuilder(1000);
+	private final StringBuilder sb;
 
-	public ScaffoldSpectraReader(File scaffoldSpectraFile, String scaffoldVersion) {
-		super(scaffoldSpectraFile, scaffoldVersion);
+	public ScaffoldSpectraReader() {
+		sb = new StringBuilder(1000);
 	}
 
 	/**
