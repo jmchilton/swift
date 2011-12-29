@@ -27,6 +27,11 @@ public final class ScaffoldSpectraReader extends AbstractScaffoldSpectraReader i
 		sb = new StringBuilder(1000);
 	}
 
+	@Override
+	public void processMetadata(String key, String value) {
+		// We do not care about metadata.
+	}
+
 	/**
 	 * Fills in the spectrum column that is to be skipped.
 	 */
@@ -51,7 +56,7 @@ public final class ScaffoldSpectraReader extends AbstractScaffoldSpectraReader i
 			header[i - columnOffset] = tempHeader[i];
 		}
 		if (spectrumNameColumn == 0) {
-			throw new MprcException("Wrong Scaffold spectra file format for file [" + getDataSourceName() + "] - header column missing [" + SPECTRUM_NAME + "].");
+			throw new MprcException("Wrong Scaffold spectra file format - header column missing [" + SPECTRUM_NAME + "].");
 		}
 	}
 
@@ -80,10 +85,6 @@ public final class ScaffoldSpectraReader extends AbstractScaffoldSpectraReader i
 			}
 		}
 		mapSpectrumNameToScaffoldSpectraInfo.put(spectrumName, fixCommaSeparatedThousands(sb.toString()));
-	}
-
-	private String fixCommaSeparatedThousands(String s) {
-		return s.replaceAll(",(\\d\\d\\d)", "$1");
 	}
 
 	/**

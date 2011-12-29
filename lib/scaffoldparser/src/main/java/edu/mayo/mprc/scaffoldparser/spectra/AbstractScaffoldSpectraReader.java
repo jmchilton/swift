@@ -4,9 +4,12 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 
 import java.io.*;
+import java.util.regex.Pattern;
 
 /**
  * An abstract class for reading Scaffold's spectrum report. Calls abstract methods that provide the actual functionality.
+ * This class is supposed to be used to load a file only once - after the {@link #load} method was called, you should
+ * retrieve results and dispose of the class.
  *
  * @author Roman Zenka
  */
@@ -25,6 +28,11 @@ public abstract class AbstractScaffoldSpectraReader {
 	 * Name of the Scaffold spectra data source being loaded for exception handling (typically the filename).
 	 */
 	private String dataSourceName;
+
+	/**
+	 * Current line number for exception handling.
+	 */
+	private int lineNumber;
 
 	// Scaffold files are terminated with this marker
 	private static final String END_OF_FILE = "END OF FILE";
@@ -75,6 +83,7 @@ public abstract class AbstractScaffoldSpectraReader {
 	 * How to tell the header of the file.
 	 */
 	private static final String FIRST_HEADER_COLUMN = EXPERIMENT_NAME;
+	private static final Pattern THOUSANDS_REGEX = Pattern.compile(",(\\d\\d\\d)");
 
 	/**
 	 * Initializes the reader.
@@ -96,7 +105,7 @@ public abstract class AbstractScaffoldSpectraReader {
 			fileReader = new FileReader(scaffoldSpectraFile);
 			processReader(fileReader);
 		} catch (Exception t) {
-			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "].", t);
+			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
 		} finally {
 			FileUtilities.closeQuietly(fileReader);
 		}
@@ -115,7 +124,7 @@ public abstract class AbstractScaffoldSpectraReader {
 		try {
 			processReader(reader);
 		} catch (Exception t) {
-			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "].", t);
+			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
 		} finally {
 			FileUtilities.closeQuietly(reader);
 		}
@@ -129,9 +138,20 @@ public abstract class AbstractScaffoldSpectraReader {
 			String line;
 			while (true) {
 				line = br.readLine();
+				lineNumber++;
 				if (line == null) {
-					throw new MprcException("End of file reached before we could find the header line in Scaffold spectra file [" + dataSourceName + "].");
+					throw new MprcException("End of file reached before we could find the header line");
 				}
+
+				int colonPos = line.indexOf(':');
+				if (colonPos >= 0) {
+					final String key = line.substring(0, colonPos);
+					final String value = line.substring(colonPos + 1);
+					processMetadata(key.trim(), value.trim());
+				} else {
+					processMetadata(null, line.trim());
+				}
+
 				if (line.startsWith(FIRST_HEADER_COLUMN + "\t")) {
 					break;
 				}
@@ -139,12 +159,18 @@ public abstract class AbstractScaffoldSpectraReader {
 
 			processHeader(line);
 			loadContents(br);
-		} catch (Exception e) {
-			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "].", e);
 		} finally {
 			FileUtilities.closeQuietly(br);
 		}
 	}
+
+	/**
+	 * Returns a parsed metadata value from the header of the file.
+	 *
+	 * @param key   The key (before colon). Null if no colon present.
+	 * @param value Value (after colon). Entire line if no colon present.
+	 */
+	public abstract void processMetadata(String key, String value);
 
 	/**
 	 * Process the Scaffold spectra file header.
@@ -163,8 +189,9 @@ public abstract class AbstractScaffoldSpectraReader {
 	private void loadContents(BufferedReader reader) throws IOException {
 		while (true) {
 			String line = reader.readLine();
+			lineNumber++;
 			if (line == null) {
-				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker [" + dataSourceName + "].");
+				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker.");
 			}
 			if (END_OF_FILE.equals(line)) {
 				break;
@@ -181,7 +208,11 @@ public abstract class AbstractScaffoldSpectraReader {
 		return scaffoldVersion;
 	}
 
-	public String getDataSourceName() {
-		return dataSourceName;
+	/**
+	 * @param s String with commas denoting thousands.
+	 * @return String without the commas.
+	 */
+	public static String fixCommaSeparatedThousands(String s) {
+		return THOUSANDS_REGEX.matcher(s).replaceAll("$1");
 	}
 }
