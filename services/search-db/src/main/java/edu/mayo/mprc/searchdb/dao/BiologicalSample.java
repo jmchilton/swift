@@ -9,6 +9,12 @@ import java.util.List;
  * <p/>
  * The spectrum IDs need to be separated on sample by
  * sample basis.
+ * <p/>
+ * The followign Scaffold spectrum report columns are parsed to form this object:
+ * <ul>
+ * <li>Biological sample category</li>
+ * <li>Biological sample name</li>
+ * </ul>
  *
  * @author Roman Zenka
  */
