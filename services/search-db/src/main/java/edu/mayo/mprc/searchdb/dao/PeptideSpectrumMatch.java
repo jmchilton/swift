@@ -126,4 +126,131 @@ public class PeptideSpectrumMatch extends PersistableBase {
 	 */
 	private int numberOfIdentified4HSpectra;
 
+	public IdentifiedPeptide getPeptide() {
+		return peptide;
+	}
+
+	public void setPeptide(IdentifiedPeptide peptide) {
+		this.peptide = peptide;
+	}
+
+	public char getPreviousAminoAcid() {
+		return previousAminoAcid;
+	}
+
+	public void setPreviousAminoAcid(char previousAminoAcid) {
+		this.previousAminoAcid = previousAminoAcid;
+	}
+
+	public char getNextAminoAcid() {
+		return nextAminoAcid;
+	}
+
+	public void setNextAminoAcid(char nextAminoAcid) {
+		this.nextAminoAcid = nextAminoAcid;
+	}
+
+	public int getNumberOfEnzymaticTerminii() {
+		return numberOfEnzymaticTerminii;
+	}
+
+	public void setNumberOfEnzymaticTerminii(int numberOfEnzymaticTerminii) {
+		this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
+	}
+
+	public double getBestPeptideIdentificationProbability() {
+		return bestPeptideIdentificationProbability;
+	}
+
+	public void setBestPeptideIdentificationProbability(double bestPeptideIdentificationProbability) {
+		this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
+	}
+
+	public double getBestSequestXcorrScore() {
+		return bestSequestXcorrScore;
+	}
+
+	public void setBestSequestXcorrScore(double bestSequestXcorrScore) {
+		this.bestSequestXcorrScore = bestSequestXcorrScore;
+	}
+
+	public double getBestSequestDcnScore() {
+		return bestSequestDcnScore;
+	}
+
+	public void setBestSequestDcnScore(double bestSequestDcnScore) {
+		this.bestSequestDcnScore = bestSequestDcnScore;
+	}
+
+	public double getBestMascotIonScore() {
+		return bestMascotIonScore;
+	}
+
+	public void setBestMascotIonScore(double bestMascotIonScore) {
+		this.bestMascotIonScore = bestMascotIonScore;
+	}
+
+	public double getBestMascotIdentityScore() {
+		return bestMascotIdentityScore;
+	}
+
+	public void setBestMascotIdentityScore(double bestMascotIdentityScore) {
+		this.bestMascotIdentityScore = bestMascotIdentityScore;
+	}
+
+	public double getBestMascotDeltaIonScore() {
+		return bestMascotDeltaIonScore;
+	}
+
+	public void setBestMascotDeltaIonScore(double bestMascotDeltaIonScore) {
+		this.bestMascotDeltaIonScore = bestMascotDeltaIonScore;
+	}
+
+	public double getBestXTandemLogEScore() {
+		return bestXTandemLogEScore;
+	}
+
+	public void setBestXTandemLogEScore(double bestXTandemLogEScore) {
+		this.bestXTandemLogEScore = bestXTandemLogEScore;
+	}
+
+	public int getNumberOfIdentifiedSpectra() {
+		return numberOfIdentifiedSpectra;
+	}
+
+	public void setNumberOfIdentifiedSpectra(int numberOfIdentifiedSpectra) {
+		this.numberOfIdentifiedSpectra = numberOfIdentifiedSpectra;
+	}
+
+	public int getNumberOfIdentified1HSpectra() {
+		return numberOfIdentified1HSpectra;
+	}
+
+	public void setNumberOfIdentified1HSpectra(int numberOfIdentified1HSpectra) {
+		this.numberOfIdentified1HSpectra = numberOfIdentified1HSpectra;
+	}
+
+	public int getNumberOfIdentified2HSpectra() {
+		return numberOfIdentified2HSpectra;
+	}
+
+	public void setNumberOfIdentified2HSpectra(int numberOfIdentified2HSpectra) {
+		this.numberOfIdentified2HSpectra = numberOfIdentified2HSpectra;
+	}
+
+	public int getNumberOfIdentified3HSpectra() {
+		return numberOfIdentified3HSpectra;
+	}
+
+	public void setNumberOfIdentified3HSpectra(int numberOfIdentified3HSpectra) {
+		this.numberOfIdentified3HSpectra = numberOfIdentified3HSpectra;
+	}
+
+	public int getNumberOfIdentified4HSpectra() {
+		return numberOfIdentified4HSpectra;
+	}
+
+	public void setNumberOfIdentified4HSpectra(int numberOfIdentified4HSpectra) {
+		this.numberOfIdentified4HSpectra = numberOfIdentified4HSpectra;
+	}
 }

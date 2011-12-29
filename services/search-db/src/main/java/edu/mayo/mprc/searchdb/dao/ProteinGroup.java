@@ -30,7 +30,7 @@ public class ProteinGroup extends PersistableBase {
 	private List<PeptideSpectrumMatch> peptideSpectrumMatches;
 
 	/**
-	 * Scaffold?s calculated probability that the protein identification is correct. 
+	 * Scaffold?s calculated probability that the protein identification is correct. 100% probability is stored as 1.0
 	 */
 	private double proteinIdentificationProbability;
 
@@ -60,4 +60,68 @@ public class ProteinGroup extends PersistableBase {
 	 * How many percent of the protein sequence were covered by identified peptides? 100% is stored as 1.0
 	 */
 	private double percentageSequenceCoverage;
+
+	public List<ProteinSequence> getProteinSequences() {
+		return proteinSequences;
+	}
+
+	public void setProteinSequences(List<ProteinSequence> proteinSequences) {
+		this.proteinSequences = proteinSequences;
+	}
+
+	public List<PeptideSpectrumMatch> getPeptideSpectrumMatches() {
+		return peptideSpectrumMatches;
+	}
+
+	public void setPeptideSpectrumMatches(List<PeptideSpectrumMatch> peptideSpectrumMatches) {
+		this.peptideSpectrumMatches = peptideSpectrumMatches;
+	}
+
+	public double getProteinIdentificationProbability() {
+		return proteinIdentificationProbability;
+	}
+
+	public void setProteinIdentificationProbability(double proteinIdentificationProbability) {
+		this.proteinIdentificationProbability = proteinIdentificationProbability;
+	}
+
+	public int getNumberOfUniquePeptides() {
+		return numberOfUniquePeptides;
+	}
+
+	public void setNumberOfUniquePeptides(int numberOfUniquePeptides) {
+		this.numberOfUniquePeptides = numberOfUniquePeptides;
+	}
+
+	public int getNumberOfUniqueSpectra() {
+		return numberOfUniqueSpectra;
+	}
+
+	public void setNumberOfUniqueSpectra(int numberOfUniqueSpectra) {
+		this.numberOfUniqueSpectra = numberOfUniqueSpectra;
+	}
+
+	public int getNumberOfTotalSpectra() {
+		return numberOfTotalSpectra;
+	}
+
+	public void setNumberOfTotalSpectra(int numberOfTotalSpectra) {
+		this.numberOfTotalSpectra = numberOfTotalSpectra;
+	}
+
+	public double getPercentageOfTotalSpectra() {
+		return percentageOfTotalSpectra;
+	}
+
+	public void setPercentageOfTotalSpectra(double percentageOfTotalSpectra) {
+		this.percentageOfTotalSpectra = percentageOfTotalSpectra;
+	}
+
+	public double getPercentageSequenceCoverage() {
+		return percentageSequenceCoverage;
+	}
+
+	public void setPercentageSequenceCoverage(double percentageSequenceCoverage) {
+		this.percentageSequenceCoverage = percentageSequenceCoverage;
+	}
 }

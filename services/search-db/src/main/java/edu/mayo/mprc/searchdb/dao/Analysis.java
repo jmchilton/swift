@@ -2,7 +2,6 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
 
-import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 
@@ -41,17 +40,27 @@ public final class Analysis extends PersistableBase {
 		this.biologicalSamples = biologicalSamples;
 	}
 
-	@Nullable
 	public String getScaffoldVersion() {
 		return scaffoldVersion;
 	}
 
-	@Nullable
+	public void setScaffoldVersion(String scaffoldVersion) {
+		this.scaffoldVersion = scaffoldVersion;
+	}
+
 	public Date getAnalysisDate() {
 		return analysisDate;
 	}
 
+	public void setAnalysisDate(Date analysisDate) {
+		this.analysisDate = analysisDate;
+	}
+
 	public List<BiologicalSample> getBiologicalSamples() {
 		return biologicalSamples;
+	}
+
+	public void setBiologicalSamples(List<BiologicalSample> biologicalSamples) {
+		this.biologicalSamples = biologicalSamples;
 	}
 }
