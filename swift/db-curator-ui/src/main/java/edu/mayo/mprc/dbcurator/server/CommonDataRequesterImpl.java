@@ -1,5 +1,6 @@
 package edu.mayo.mprc.dbcurator.server;
 
+import com.google.common.base.Supplier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.mayo.mprc.GWTServiceExceptionFactory;
 import edu.mayo.mprc.MprcException;
@@ -20,6 +21,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @author Eric Winter
  */
@@ -28,11 +31,26 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 
 	private static final Logger LOGGER = Logger.getLogger(CommonDataRequesterImpl.class);
 
-	private static CurationDao curationDao = CurationWebContext.getCurationDAO();
+	private CurationDao curationDao;
+	
+	private Supplier<HttpSession> sessionSupplier = new Supplier<HttpSession>() {
+		public HttpSession get() {
+			return getThreadLocalRequest().getSession();
+		}
+	};
 
 	public CommonDataRequesterImpl() {
+		this(CurationWebContext.getCurationDAO());
+	}
+	
+	public CommonDataRequesterImpl(CurationDao curationDao) {
+		this.curationDao = curationDao;
 	}
 
+	public void setSessionSupplier(final Supplier<HttpSession> sessionSupplier) {
+		this.sessionSupplier = sessionSupplier;
+	}
+	
 	public List<HeaderTransformStub> getHeaderTransformers() {
 		List<HeaderTransform> transforms;
 		if (curationDao == null) {
@@ -98,7 +116,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	private static Boolean isShortnameUniqueBody(String toCheck) {
+	private Boolean isShortnameUniqueBody(String toCheck) {
 		return (0 == curationDao.getCurationsByShortname(toCheck, /*ignoreCase*/true).size());
 	}
 
@@ -113,7 +131,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	public CurationStub performUpdate(CurationStub toUpdate) {
 		curationDao.begin();
 		try {
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			CurationHandlerI handler = getHandler();
 			final CurationStub curationStub = handler.syncCuration(toUpdate);
 			curationDao.commit();
 			return curationStub;
@@ -163,8 +181,8 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	private CurationHandler getHandler() {
-		return CurationHandler.getInstance(getThreadLocalRequest().getSession());
+	private CurationHandlerI getHandler() {
+		return CurationHandler.getInstance(sessionSupplier.get());
 	}
 
 	/**
@@ -198,7 +216,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	public List<CurationStub> getMatches(CurationStub toMatch, Date earliestRun, Date latestRun) {
 		curationDao.begin();
 		try {
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			CurationHandlerI handler = getHandler();
 			final List<CurationStub> curations = handler.getMatchingCurations(toMatch, earliestRun, latestRun);
 			curationDao.commit();
 			return curations;
@@ -224,7 +242,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 				return toRun;
 			}
 
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			CurationHandlerI handler = getHandler();
 			final CurationStub curationStub = handler.executeCuration(toRun);
 			curationDao.commit();
 			return curationStub;
@@ -333,16 +351,15 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	}
 
 	protected synchronized void clearResults() {
-		this.getThreadLocalRequest().getSession().setAttribute("results", null);
+		this.sessionSupplier.get().setAttribute("results", null);
 	}
 
 	protected synchronized void addResult(String result) {
 		List<String> results;
-		Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
-
+		Object o = this.sessionSupplier.get().getAttribute("results");
 		if (o == null) {
 			results = new ArrayList<String>();
-			this.getThreadLocalRequest().getSession().setAttribute("results", results);
+			this.sessionSupplier.get().setAttribute("results", results);
 		} else {
 			results = (List<String>) o;
 		}
@@ -353,11 +370,10 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	public synchronized String[] getResults() throws GWTServiceException {
 		try {
 			List<String> results;
-			Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
-
+			Object o = this.sessionSupplier.get().getAttribute("results");
 			if (o == null) {
 				results = new ArrayList<String>();
-				this.getThreadLocalRequest().getSession().setAttribute("results", results);
+				this.sessionSupplier.get().setAttribute("results", results);
 			} else {
 				results = (List<String>) o;
 			}
@@ -376,7 +392,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 
 	public void setCancelMessage(boolean cancelMessage) throws GWTServiceException {
 		try {
-			this.getThreadLocalRequest().getSession().setAttribute("cancelRequest", (cancelMessage ? true : null));
+			this.sessionSupplier.get().setAttribute("cancelRequest", (cancelMessage ? true : null));
 		} catch (Exception t) {
 			LOGGER.error("Could not cancel request", t);
 			throw GWTServiceExceptionFactory.createException("Could not cancel request", t);
@@ -384,7 +400,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	}
 
 	protected boolean getCancelMessage() {
-		return !(this.getThreadLocalRequest().getSession().getAttribute("cancelRequest") == null);
+		return !(this.sessionSupplier.get().getAttribute("cancelRequest") == null);
 	}
 
 	private SortedMap<Integer, Long> getCurrentPositionMap(String filePath, String pattern) {
@@ -410,11 +426,11 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	}
 
 	private Map<String, SortedMap<Integer, Long>> getPositionMaps() {
-		final Object attribute = this.getThreadLocalRequest().getSession().getAttribute("FileLineMap");
+		final Object attribute = this.sessionSupplier.get().getAttribute("FileLineMap");
 		Map<String, SortedMap<Integer, Long>> positionMap = (Map<String, SortedMap<Integer, Long>>) attribute;
 		if (positionMap == null) {
 			positionMap = new HashMap<String, SortedMap<Integer, Long>>();
-			this.getThreadLocalRequest().getSession().setAttribute("FileLineMap", positionMap);
+			this.sessionSupplier.get().setAttribute("FileLineMap", positionMap);
 		}
 		return positionMap;
 	}
