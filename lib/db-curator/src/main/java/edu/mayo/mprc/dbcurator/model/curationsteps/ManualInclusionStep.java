@@ -17,12 +17,8 @@ import java.io.IOException;
  *
  * @author Eric J. Winter Date: Apr 10, 2007 Time: 11:46:11 AM
  */
-public class ManualInclusionStep implements CurationStep {
+public class ManualInclusionStep extends CurationStepBase {
 	private static final long serialVersionUID = 20071220L;
-	/**
-	 * a unqiue identifier for this step
-	 */
-	protected Integer id;
 
 	/**
 	 * the header of the sequence (may be null if no valid header was detected
@@ -164,31 +160,6 @@ public class ManualInclusionStep implements CurationStep {
 
 	public void setSequence(String sequence) {
 		this.sequence = sequence;
-	}
-
-	/**
-	 * the id of this object that can uniquly identify the step
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-
-	/**
-	 * the number of sequences that were present in the curation after this step was last run
-	 */
-	private Integer lastRunCompletionCount = null;
-
-	public Integer getLastRunCompletionCount() {
-		return this.lastRunCompletionCount;
-	}
-
-	public void setLastRunCompletionCount(Integer count) {
-		this.lastRunCompletionCount = count;
 	}
 
 	public String simpleDescription() {

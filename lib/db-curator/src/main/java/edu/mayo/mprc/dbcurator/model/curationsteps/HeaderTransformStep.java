@@ -1,5 +1,6 @@
 package edu.mayo.mprc.dbcurator.model.curationsteps;
 
+import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.dbcurator.model.CurationExecutor;
 import edu.mayo.mprc.dbcurator.model.CurationStatus;
 import edu.mayo.mprc.dbcurator.model.CurationStep;
@@ -21,14 +22,11 @@ import java.util.regex.PatternSyntaxException;
  *
  * @author Eric Winter
  */
-public class HeaderTransformStep implements CurationStep {
+public class HeaderTransformStep extends CurationStepBase {
 	private static final long serialVersionUID = 20071220L;
 
 	private static final Logger LOGGER = Logger.getLogger(HeaderTransformStep.class);
-	/**
-	 * the persistence id for lookup in database
-	 */
-	private Integer id = null;
+
 	/**
 	 * a description on what the subsitution does
 	 */
@@ -42,10 +40,6 @@ public class HeaderTransformStep implements CurationStep {
 	 */
 	private String substitutionPattern = null;
 
-	/**
-	 * the number of sequences in the stream the last time this step was run
-	 */
-	private Integer lastRunCompletionCount = null;
 	/**
 	 * the compiled pattern
 	 */
@@ -169,22 +163,6 @@ public class HeaderTransformStep implements CurationStep {
 		copy.setMatchPattern(this.getMatchPattern());
 		copy.setSubstitutionPattern(this.getSubstitutionPattern());
 		return copy;
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getLastRunCompletionCount() {
-		return this.lastRunCompletionCount;
-	}
-
-	public void setLastRunCompletionCount(Integer count) {
-		this.lastRunCompletionCount = count;
 	}
 
 	/**

@@ -16,13 +16,8 @@ import java.util.Arrays;
 /**
  * @author Eric Winter
  */
-public class DatabaseUploadStep implements CurationStep {
+public class DatabaseUploadStep extends CurationStepBase {
 	private static final long serialVersionUID = 20071220L;
-
-	/**
-	 * the id for persisence purposes
-	 */
-	private Integer id;
 
 	/**
 	 * where on the server can the file be found
@@ -33,11 +28,6 @@ public class DatabaseUploadStep implements CurationStep {
 	 * the name of the file that was selected by the user to be shown when the curation is displayed again
 	 */
 	private String fileName;
-
-	/**
-	 * the number of sequences present when this step was last run
-	 */
-	private Integer lastRunCompletionCount;
 
 	/**
 	 * the validation that was created the last time this step was run
@@ -148,22 +138,6 @@ public class DatabaseUploadStep implements CurationStep {
 		copy.setPathToUploadedFile(this.pathToUploadedFile);
 		copy.setFileName(this.getFileName());
 		return copy;
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getLastRunCompletionCount() {
-		return this.lastRunCompletionCount;
-	}
-
-	public void setLastRunCompletionCount(Integer count) {
-		this.lastRunCompletionCount = count;
 	}
 
 	/**
