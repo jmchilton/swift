@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -243,5 +244,18 @@ public final class TestingUtilities {
 				LOGGER.debug("Failed to delete file " + name);
 			}
 		}
+	}
+
+	/**
+	 * @param year  Year
+	 * @param month Month (January=1)
+	 * @param day   Day of month
+	 * @return Date at midnight.
+	 */
+	public static Date getDate(int year, int month, int day) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(0);
+		calendar.set(year, month - 1, day, 0, 0, 0);
+		return calendar.getTime();
 	}
 }

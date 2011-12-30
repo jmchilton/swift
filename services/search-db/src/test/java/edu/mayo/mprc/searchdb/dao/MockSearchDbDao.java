@@ -3,8 +3,6 @@ package edu.mayo.mprc.searchdb.dao;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.List;
-
 public final class MockSearchDbDao implements SearchDbDao {
 	private BiMap<Integer, String> proteinSequences = HashBiMap.create();
 	private BiMap<Integer, String> peptideSequences = HashBiMap.create();
@@ -72,15 +70,5 @@ public final class MockSearchDbDao implements SearchDbDao {
 			return peptideSequence(peptideId, sequence);
 		}
 		return null;
-	}
-
-	@Override
-	public List<Integer> getPeptidesForProtein(int proteinId) {
-		return null; //TODO: implement me
-	}
-
-	@Override
-	public List<Integer> getProteinsForPeptide(int peptideId) {
-		return null; //TODO: implement me
 	}
 }

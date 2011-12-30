@@ -33,8 +33,8 @@ public final class SpectrumInfoJoinerTest {
 
 			File outputFile = new File(tempFolder, "output.tsv");
 
-
-			ScaffoldSpectraReader spectra = new ScaffoldSpectraReader(scaffoldSpectra, "2");
+			ScaffoldSpectraReader spectra = new ScaffoldSpectraReader();
+			spectra.load(scaffoldSpectra, "2");
 			RawDumpReader rawDumpReader = new RawDumpReader(rawDumpFile);
 			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(msmsEvalFile);
 

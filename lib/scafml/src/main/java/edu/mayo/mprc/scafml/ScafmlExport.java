@@ -58,9 +58,11 @@ public final class ScafmlExport extends FileHolder {
 						"minimumNTT=\"" + minimumNonTrypticTerminii + "\" " +
 						"useCharge=\"true,true,true\" " +
 						"useMergedPeptideProbability=\"true\">" +
-						"</DisplayThresholds>\n")
-				.append(indent)
-				.append("<Export type=\"scaffoldxml\" thresholds=\"thresh\" path=\"").append(scaffoldOutputDir.getAbsolutePath()).append("\"/>\n")
+						"</DisplayThresholds>\n");
+
+		appendScaffoldXmlExport(result, indent);
+
+		result
 				.append(indent)
 				.append("<Export type=\"sfd\" thresholds=\"thresh\" path=\"")
 				.append(scaffoldOutputDir.getAbsolutePath()).append("\"")
@@ -95,6 +97,19 @@ public final class ScafmlExport extends FileHolder {
 		}
 
 		result.append("\n");
+	}
+
+	/**
+	 * Appends an export for Scaffold's internal "scaffoldxml" format. This format is XStream-based
+	 * dump of Scaffold internals.
+	 *
+	 * @param result Resulting XML to append the export to.
+	 * @param indent How much to indent the XML.
+	 */
+	private void appendScaffoldXmlExport(StringBuilder result, String indent) {
+		result
+				.append(indent)
+				.append("<Export type=\"scaffoldxml\" thresholds=\"thresh\" path=\"").append(scaffoldOutputDir.getAbsolutePath()).append("\"/>\n");
 	}
 }
 

@@ -159,7 +159,8 @@ public final class QaWorker implements Worker {
 
 			LOGGER.info("Generating output file [" + outputFile.getAbsolutePath() + "]");
 
-			ScaffoldSpectraReader scaffoldParser = new ScaffoldSpectraReader(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion());
+			ScaffoldSpectraReader scaffoldParser = new ScaffoldSpectraReader();
+			scaffoldParser.load(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion());
 			RawDumpReader rawDumpReader = new RawDumpReader(qaFiles.getRawSpectraFile());
 			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(qaFiles.getMsmsEvalOutputFile());
 			final String rawInputFile = qaFiles.getRawInputFile() != null ? qaFiles.getRawInputFile().getAbsolutePath() : null;

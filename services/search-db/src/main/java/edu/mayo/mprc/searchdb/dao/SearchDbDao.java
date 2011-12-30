@@ -2,8 +2,11 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
 
-import java.util.List;
-
+/**
+ * This dao should be implemented in an efficient manner. Typically a large amount of queries (10000x per input file)
+ * is going to be run when adding peptide/protein sequences. Many of those queries will be hitting identical objects.
+ * Since all the entries are immutable, it makes sense to cache them in an indexed form to prevent extra database hits.
+ */
 public interface SearchDbDao extends Dao {
 	/**
 	 * Look up given protein sequence in the database. Return an object containing the sequence ID to be referenced.
@@ -38,20 +41,4 @@ public interface SearchDbDao extends Dao {
 	 * @return Sequence from the database.
 	 */
 	PeptideSequence getPeptideSequence(int peptideId);
-
-	/**
-	 * Return all the peptide sequences we have ever seen for a particular protein.
-	 *
-	 * @param proteinId Id of the protein.
-	 * @return List of peptide sequence ids belonging to the protein.
-	 */
-	List<Integer> getPeptidesForProtein(int proteinId);
-
-	/**
-	 * Return all the protein sequences that contain a particular peptide.
-	 *
-	 * @param peptideId Id of the peptide.
-	 * @return List of protein sequence ids containing the peptide.
-	 */
-	List<Integer> getProteinsForPeptide(int peptideId);
 }

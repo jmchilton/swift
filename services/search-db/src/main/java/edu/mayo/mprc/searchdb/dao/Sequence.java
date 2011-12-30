@@ -5,20 +5,29 @@ import edu.mayo.mprc.database.PersistableBase;
 
 /**
  * A sequence of amino acids.
+ *
+ * @author Roman Zenka
  */
 public abstract class Sequence extends PersistableBase {
 	private String sequence;
 	/**
-	 * Monoisotopic mass of the sequence.
+	 * Monoisotopic mass of the sequence. Can be null if the mass was not determined.
 	 */
 	private Double mass;
 
+	/**
+	 * Empty constructor for Hibernate.
+	 */
 	public Sequence() {
 	}
 
 	public Sequence(String sequence) {
 		setSequence(sequence);
-		setMass(AminoAcidSet.DEFAULT.getMonoisotopicMass(sequence));
+		if (sequence == null) {
+			setMass(null);
+		} else {
+			setMass(AminoAcidSet.DEFAULT.getMonoisotopicMass(sequence));
+		}
 	}
 
 	public String getSequence() {
@@ -42,11 +51,11 @@ public abstract class Sequence extends PersistableBase {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof ProteinSequence)) {
+		if (!(o instanceof Sequence)) {
 			return false;
 		}
 
-		ProteinSequence that = (ProteinSequence) o;
+		Sequence that = (Sequence) o;
 
 		if (!getSequence().equals(that.getSequence())) {
 			return false;

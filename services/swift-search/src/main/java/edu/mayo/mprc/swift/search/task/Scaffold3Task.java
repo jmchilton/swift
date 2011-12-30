@@ -6,7 +6,7 @@ import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.scaffold3.Scaffold3WorkPacket;
-import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
+import edu.mayo.mprc.scaffoldparser.spectra.AbstractScaffoldSpectraReader;
 import edu.mayo.mprc.scafml.ScafmlScaffold;
 import edu.mayo.mprc.swift.dbmapping.FileSearch;
 import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
@@ -128,7 +128,7 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 
 	@Override
 	public File getScaffoldSpectraFile() {
-		return new File(outputFolder, experiment + ScaffoldSpectraReader.EXTENSION);
+		return new File(outputFolder, experiment + AbstractScaffoldSpectraReader.EXTENSION);
 	}
 
 	public void onSuccess() {
