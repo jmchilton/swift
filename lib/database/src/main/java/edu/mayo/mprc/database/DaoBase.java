@@ -133,8 +133,8 @@ public abstract class DaoBase implements Dao {
 	}
 
 	/**
-	 * Adds a simple set object, making sure we do not store the same set twice. A set may contain only its elements,
-	 * two sets are considered equal if all their elements are equal.
+	 * Adds a simple set object, making sure we do not store the same set twice.
+	 * Two sets are considered equal if all their elements are equal.
 	 *
 	 * @param owner    The owner object to be added to the database.
 	 * @param set      The set of elements the owner object contains. Two owners are considered identical if they contain
@@ -195,7 +195,7 @@ public abstract class DaoBase implements Dao {
 	 * @param item             The item to create (in database)
 	 * @param change           What change is this save related to.
 	 * @param equalityCriteria Criteria to find identical, already existing item. Do not need to check for the item class and deletion.
-	 * @param createNew        New object must be created.
+	 * @param createNew        New object must be created, otherwise exception is thrown.
 	 */
 	protected <T extends Evolvable> T save(T item, Change change, Criterion equalityCriteria, boolean createNew) {
 		Session session = getSession();
