@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -215,9 +214,8 @@ public final class CommonDataRequesterImplTest {
 	@BeforeMethod
 	public void initRequester() {
 		curationDao = new InstrumentedCurationDao();
-		requester = new CommonDataRequesterImpl(curationDao);
 		mockSession = Mockito.mock(HttpSession.class);
-		requester.setSessionSupplier(Suppliers.ofInstance(mockSession));
+		requester = new CommonDataRequesterImpl(curationDao, Suppliers.ofInstance(mockSession));
 		mockHandler = Mockito.mock(CurationHandlerI.class);
 		Mockito.when(mockSession.getAttribute("curationHandler")).thenReturn(mockHandler);
 		testSharedFile = null;
@@ -265,7 +263,7 @@ public final class CommonDataRequesterImplTest {
 	}
 	
 	@Test
-	public void testGetFTPDataSources() {
+	public void testGetFTPDataSources() throws GWTServiceException {
 		final FastaSource fastaSource = new FastaSource();
 		fastaSource.setName(TEST_FASTA_SOURCE_NAME);
 		fastaSource.setUrl(TEST_FASTA_SOUCE_URL);
