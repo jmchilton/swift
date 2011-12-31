@@ -4,7 +4,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.io.mgf.MGFPeakListReader;
 import edu.mayo.mprc.msmseval.MSMSEvalOutputReader;
 import edu.mayo.mprc.myrimatch.MyrimatchPepXmlReader;
-import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
+import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldQaSpectraReader;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
 import org.proteomecommons.io.mgf.MascotGenericFormatPeakList;
@@ -49,7 +49,7 @@ public final class SpectrumInfoJoiner {
 	 * @param rawFileName
 	 * @return Number of rows in output file, not including the column headers.
 	 */
-	public static int joinSpectrumData(File mgfFile, ScaffoldSpectraReader scaffold, RawDumpReader rawDumpReader, MSMSEvalOutputReader msmsEvalReader, MyrimatchPepXmlReader myrimatchReader, File outputFile, String rawFileName) {
+	public static int joinSpectrumData(File mgfFile, ScaffoldQaSpectraReader scaffold, RawDumpReader rawDumpReader, MSMSEvalOutputReader msmsEvalReader, MyrimatchPepXmlReader myrimatchReader, File outputFile, String rawFileName) {
 		FileWriter fileWriter = null;
 
 		int rowCount = 0;
@@ -138,7 +138,7 @@ public final class SpectrumInfoJoiner {
 		return rowCount;
 	}
 
-	private static int writeMgfWithScaffoldInfos(ScaffoldSpectraReader scaffold, FileWriter fileWriter, int rowCount, MSMSEvalOutputReader msmsEvalReader, RawDumpReader rawDumpReader, MyrimatchPepXmlReader myrimatchReader, String scanId, MgfSpectrum mgfSpectrum, String rawFileName) throws IOException {
+	private static int writeMgfWithScaffoldInfos(ScaffoldQaSpectraReader scaffold, FileWriter fileWriter, int rowCount, MSMSEvalOutputReader msmsEvalReader, RawDumpReader rawDumpReader, MyrimatchPepXmlReader myrimatchReader, String scanId, MgfSpectrum mgfSpectrum, String rawFileName) throws IOException {
 		final String scaffoldVersion = scaffold == null ? null : scaffold.getScaffoldVersion();
 		if (mgfSpectrum.getScaffoldInfos() == null || mgfSpectrum.getScaffoldInfos().size() == 0) {
 			writeSpectrumLine(
@@ -224,7 +224,7 @@ public final class SpectrumInfoJoiner {
 	 * @param mgfSpectrumMap      Map from spectrum name (when usingSpectrumNameAsKey is set) or from spectrum ID to Ms2Data
 	 * @param spectrumNameAsKey   If true, the map is indexed by full spectrum name, not just spectrum ID.
 	 */
-	public static void addScaffoldInformation(ScaffoldSpectraReader scaffoldSpectraInfo, Map<String, MgfSpectrum> mgfSpectrumMap, boolean spectrumNameAsKey) {
+	public static void addScaffoldInformation(ScaffoldQaSpectraReader scaffoldSpectraInfo, Map<String, MgfSpectrum> mgfSpectrumMap, boolean spectrumNameAsKey) {
 
 		LOGGER.debug("Matching with scaffold spectra file.");
 		for (String spectrumName : scaffoldSpectraInfo) {

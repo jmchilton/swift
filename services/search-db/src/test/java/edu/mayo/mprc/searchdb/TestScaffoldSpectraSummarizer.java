@@ -3,7 +3,9 @@ package edu.mayo.mprc.searchdb;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.BiologicalSample;
 import edu.mayo.mprc.searchdb.dao.ProteinGroup;
-import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySearchResult;
+import edu.mayo.mprc.searchdb.dao.SearchResult;
+import edu.mayo.mprc.unimod.MockUnimodDao;
+import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
@@ -29,7 +31,9 @@ public class TestScaffoldSpectraSummarizer {
 	public void shouldLoadSingleReport() {
 		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 		try {
-			ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer();
+			MockUnimodDao mockUnimodDao = new MockUnimodDao();
+			final Unimod unimod = mockUnimodDao.load();
+			ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod);
 			summarizer.load(reader, SINGLE, "3");
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), TestingUtilities.getDate(2011, 12, 16), "Report date");
@@ -41,7 +45,7 @@ public class TestScaffoldSpectraSummarizer {
 			Assert.assertEquals(biologicalSample.getSampleName(), "test1", "Sample name");
 			Assert.assertEquals(biologicalSample.getSearchResults().size(), 1, "Total msms searches");
 
-			final TandemMassSpectrometrySearchResult searchResult = biologicalSample.getSearchResults().get(0);
+			final SearchResult searchResult = biologicalSample.getSearchResults().get(0);
 			Assert.assertEquals(searchResult.getProteinGroups().size(), 5, "Total protein groups");
 			final ProteinGroup teraBovinGroup = searchResult.getProteinGroups().get(3);
 			Assert.assertEquals(teraBovinGroup.getNumberOfTotalSpectra(), 26, "Total spectra");

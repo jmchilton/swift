@@ -1,6 +1,8 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
+import edu.mayo.mprc.searchdb.ScaffoldModificationFormat;
+import edu.mayo.mprc.unimod.IndexedModSet;
 
 import java.util.List;
 
@@ -23,9 +25,9 @@ public class IdentifiedPeptide extends PersistableBase {
 	private PeptideSequence sequence;
 
 	/**
-	 * A list of modifications + their positions.
+	 * A list of modifications + their positions. Canonicalized by {@link ScaffoldModificationFormat} parser.
 	 */
-	private List<ModificationPosition> modifications;
+	private List<LocalizedModification> modifications;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -33,11 +35,51 @@ public class IdentifiedPeptide extends PersistableBase {
 	public IdentifiedPeptide() {
 	}
 
+	/**
+	 * @param sequence              Peptide sequence
+	 * @param fixedModifications    {@link ScaffoldModificationFormat} fixed mods.
+	 * @param variableModifications {@link ScaffoldModificationFormat} variable mods.
+	 * @param modSet                Set of modifications for the {@link ScaffoldModificationFormat} to use.
+	 */
+	public IdentifiedPeptide(
+			PeptideSequence sequence,
+			String fixedModifications,
+			String variableModifications,
+			IndexedModSet modSet) {
+		this.sequence = sequence;
+		this.modifications = ScaffoldModificationFormat.parseModifications(sequence.getSequence(), fixedModifications, variableModifications, modSet);
+	}
+
+	public IdentifiedPeptide(PeptideSequence sequence, List<LocalizedModification> modifications) {
+		this.sequence = sequence;
+		this.modifications = modifications;
+	}
+
 	public PeptideSequence getSequence() {
 		return sequence;
 	}
 
-	public List<ModificationPosition> getModifications() {
+	public List<LocalizedModification> getModifications() {
 		return modifications;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		IdentifiedPeptide that = (IdentifiedPeptide) o;
+
+		if (!modifications.equals(that.modifications)) return false;
+		if (!sequence.equals(that.sequence)) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = sequence.hashCode();
+		result = 31 * result + modifications.hashCode();
+		return result;
 	}
 }

@@ -1,122 +1,226 @@
 package edu.mayo.mprc.scaffoldparser.spectra;
 
-import com.google.common.base.Joiner;
 import edu.mayo.mprc.MprcException;
-import edu.mayo.mprc.io.KeyedTsvReader;
-import edu.mayo.mprc.utilities.StringUtilities;
+import edu.mayo.mprc.utilities.FileUtilities;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.*;
+import java.util.regex.Pattern;
 
 /**
- * A parser for Scaffold spectrum report - tab separated file with a line for each spectrum.
- * Loads all the data into memory so the access can be sped up.
+ * An abstract class for reading Scaffold's spectrum report. Calls abstract methods that provide the actual functionality.
+ * This class is supposed to be used to load a file only once - after the {@link #load} method was called, you should
+ * retrieve results and dispose of the class.
  *
  * @author Roman Zenka
  */
-public final class ScaffoldSpectraReader extends AbstractScaffoldSpectraReader implements Iterable<String>, KeyedTsvReader {
+public abstract class ScaffoldSpectraReader {
+	/**
+	 * Default extension - as Scaffold produces it.
+	 */
+	public static final String EXTENSION = ".spectra.txt";
 
-	private Map<String/*spectrumName*/, String/*entire line about spectrum except spectrumName*/> mapSpectrumNameToScaffoldSpectraInfo = new HashMap<String, String>();
-	private String[] header;
-	private String emptyLine;
-	private int spectrumNameColumn;
-	private final StringBuilder sb;
+	/**
+	 * Version of Scaffold that produced the report (Currently "2" for Scaffold 2 or "3" for Scaffold 3).
+	 */
+	private String scaffoldVersion;
 
-	public ScaffoldSpectraReader() {
-		sb = new StringBuilder(1000);
-	}
+	/**
+	 * Name of the Scaffold spectra data source being loaded for exception handling (typically the filename).
+	 */
+	private String dataSourceName;
 
-	@Override
-	public void processMetadata(String key, String value) {
-		// We do not care about metadata.
+	/**
+	 * Current line number for exception handling.
+	 */
+	private int lineNumber;
+
+	// Scaffold files are terminated with this marker
+	private static final String END_OF_FILE = "END OF FILE";
+
+	public static final String EXPERIMENT_NAME = "Experiment name";
+	public static final String BIOLOGICAL_SAMPLE_CATEGORY = "Biological sample category";
+	public static final String BIOLOGICAL_SAMPLE_NAME = "Biological sample name";
+	public static final String MS_MS_SAMPLE_NAME = "MS/MS sample name";
+	public static final String PROTEIN_NAME = "Protein name";
+	public static final String PROTEIN_ACCESSION_NUMBERS = "Protein accession numbers";
+	public static final String DATABASE_SOURCES = "Database sources";
+	public static final String PROTEIN_MOLECULAR_WEIGHT_DA = "Protein molecular weight (Da)";
+	public static final String PROTEIN_ID_PROBABILITY = "Protein identification probability";
+	public static final String NUMBER_OF_UNIQUE_PEPTIDES = "Number of unique peptides";
+	public static final String NUMBER_OF_UNIQUE_SPECTRA = "Number of unique spectra";
+	public static final String NUMBER_OF_TOTAL_SPECTRA = "Number of total spectra";
+	public static final String PERCENTAGE_OF_TOTAL_SPECTRA = "Percentage of total spectra";
+	public static final String PERCENTAGE_SEQUENCE_COVERAGE = "Percentage sequence coverage";
+	public static final String MANUAL_VALIDATION = "Manual validation";
+	public static final String ASSIGNED = "Assigned";
+	public static final String SPECTRUM_NAME = "Spectrum name";
+	public static final String PEPTIDE_SEQUENCE = "Peptide sequence";
+	public static final String PREVIOUS_AMINO_ACID = "Previous amino acid";
+	public static final String NEXT_AMINO_ACID = "Next amino acid";
+	public static final String PEPTIDE_ID_PROBABILITY = "Peptide identification probability";
+
+	public static final String SEQUEST_XCORR_SCORE = "Sequest XCorr";
+	public static final String SEQUEST_DCN_SCORE = "Sequest deltaCn";
+	public static final String SEQUEST_SP = "Sequest Sp";
+	public static final String SEQUEST_SP_RANK = "Sequest SpRank";
+	public static final String SEQUEST_PEPTIDES_MATCHED = "Sequest Peptides Matched";
+	public static final String MASCOT_ION_SCORE = "Mascot Ion score";
+	public static final String MASCOT_IDENTITY_SCORE = "Mascot Identity score";
+	public static final String MASCOT_HOMOLOGY_SCORE = "Mascot Homology Score";
+	public static final String MASCOT_DELTA_ION_SCORE = "Mascot Delta Ion Score";
+	public static final String X_TANDEM_HYPER_SCORE = "X! Tandem Hyper Score";
+	public static final String X_TANDEM_LADDER_SCORE = "X! Tandem Ladder Score";
+
+
+	public static final String NUMBER_OF_ENZYMATIC_TERMINII = "Number of enzymatic termini";
+	public static final String FIXED_MODIFICATIONS = "Fixed modifications identified by spectrum";
+	public static final String VARIABLE_MODIFICATIONS = "Variable modifications identified by spectrum";
+	public static final String OBSERVED_MZ = "Observed m/z";
+	public static final String ACTUAL_PEPTIDE_MASS_AMU = "Actual peptide mass (AMU)";
+	public static final String CALCULATED_1H_PEPTIDE_MASS_AMU = "Calculated +1H Peptide Mass (AMU)";
+	public static final String SPECTRUM_CHARGE = "Spectrum charge";
+	public static final String PEPTIDE_DELTA_AMU = "Actual minus calculated peptide mass (AMU)";
+	public static final String PEPTIDE_DELTA_PPM = "Actual minus calculated peptide mass (PPM)";
+	public static final String PEPTIDE_START_INDEX = "Peptide start index";
+	public static final String PEPTIDE_STOP_INDEX = "Peptide stop index";
+	public static final String EXCLUSIVE = "Exclusive";
+	public static final String OTHER_PROTEINS = "Other Proteins";
+	public static final String STARRED = "Starred";
+
+	/**
+	 * How to tell the header of the file.
+	 */
+	private static final String FIRST_HEADER_COLUMN = EXPERIMENT_NAME;
+	private static final Pattern THOUSANDS_REGEX = Pattern.compile(",(\\d\\d\\d)");
+
+	/**
+	 * Initializes the reader.
+	 */
+	protected ScaffoldSpectraReader() {
 	}
 
 	/**
-	 * Fills in the spectrum column that is to be skipped.
+	 * Start loading scaffold spectra file.
+	 *
+	 * @param scaffoldSpectraFile Spectrum file to load.
+	 * @param scaffoldVersion     {@link #scaffoldVersion}
 	 */
-	public void processHeader(String line) {
-		// Extract everything except the spectrum column name
-		String[] tempHeader = line.split("\t");
-		// Scaffold 2.06.01 has a bug - one column is added extra before the last starred/hidden. We give this column an explicit name "Blank Column"
-		header = new String[tempHeader.length];
-		emptyLine = null;
-		spectrumNameColumn = 0;
-		int columnOffset = 0;
-		for (int i = 0; i < tempHeader.length; i++) {
-			if (SPECTRUM_NAME.equals(tempHeader[i])) {
-				spectrumNameColumn = i;
-				columnOffset++; // We are skipping this column
-				continue;
-			}
-			if (STARRED.equals(tempHeader[i])) {
-				header[i - columnOffset] = "Blank Column";
-				columnOffset--; // We are inserting a "Blank Column"
-			}
-			header[i - columnOffset] = tempHeader[i];
-		}
-		if (spectrumNameColumn == 0) {
-			throw new MprcException("Wrong Scaffold spectra file format - header column missing [" + SPECTRUM_NAME + "].");
+	public void load(File scaffoldSpectraFile, String scaffoldVersion) {
+		dataSourceName = scaffoldSpectraFile.getAbsolutePath();
+		this.scaffoldVersion = scaffoldVersion;
+		FileReader fileReader = null;
+		try {
+			fileReader = new FileReader(scaffoldSpectraFile);
+			processReader(fileReader);
+		} catch (Exception t) {
+			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
+		} finally {
+			FileUtilities.closeQuietly(fileReader);
 		}
 	}
 
-	public void processRow(String line) {
-		sb.setLength(0);
-		int columnNumber = 0;
-		int spectrumNameStart = 0;
-		String spectrumName = null;
-		for (int i = 0; i < line.length(); i++) {
-			if (line.charAt(i) == '\t') {
-				columnNumber++;
-				if (columnNumber == spectrumNameColumn) {
-					// This is the column we are skipping
-					// Append everything till now to the output
-					sb.append(line, 0, i);
-					spectrumNameStart = i + 1;
-				} else if (columnNumber == spectrumNameColumn + 1) {
-					// We are past the column to skip
-					// Spectrum name is in between
-					spectrumName = line.substring(spectrumNameStart, i);
+	/**
+	 * Start loading scaffold spectra file from a given reader.
+	 *
+	 * @param reader          Reader to load from. Will be closed upon load.
+	 * @param dataSourceName  Information about where the spectra data came from - displayed when throwing exceptions.
+	 * @param scaffoldVersion {@link #scaffoldVersion}
+	 */
+	public void load(Reader reader, String dataSourceName, String scaffoldVersion) {
+		this.dataSourceName = dataSourceName;
+		this.scaffoldVersion = scaffoldVersion;
+		try {
+			processReader(reader);
+		} catch (Exception t) {
+			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
+		} finally {
+			FileUtilities.closeQuietly(reader);
+		}
+	}
 
-					// Append everything from here to the end of the string (including the tab)
-					sb.append(line, i, line.length());
+	private void processReader(Reader reader) throws IOException {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(reader);
+			// Skip the header portion of the file, process the header line
+			String line;
+			while (true) {
+				line = br.readLine();
+				lineNumber++;
+				if (line == null) {
+					throw new MprcException("End of file reached before we could find the header line");
+				}
+
+				int colonPos = line.indexOf(':');
+				if (colonPos >= 0) {
+					final String key = line.substring(0, colonPos);
+					final String value = line.substring(colonPos + 1);
+					processMetadata(key.trim(), value.trim());
+				} else {
+					processMetadata(null, line.trim());
+				}
+
+				if (line.startsWith(FIRST_HEADER_COLUMN + "\t")) {
 					break;
 				}
 			}
+
+			processHeader(line);
+			loadContents(br);
+		} finally {
+			FileUtilities.closeQuietly(br);
 		}
-		mapSpectrumNameToScaffoldSpectraInfo.put(spectrumName, fixCommaSeparatedThousands(sb.toString()));
 	}
 
 	/**
-	 * @return Tab-separated header line for all the data provided. The header does not include spectrumName.
+	 * Returns a parsed metadata value from the header of the file.
+	 *
+	 * @param key   The key (before colon). Null if no colon present.
+	 * @param value Value (after colon). Entire line if no colon present.
 	 */
-	@Override
-	public String getHeaderLine() {
-		return Joiner.on("\t").join(header);
-	}
+	public abstract void processMetadata(String key, String value);
 
 	/**
-	 * @return A sequence of tabs that matches the length of the header-1. Used to output missing information.
+	 * Process the Scaffold spectra file header.
+	 *
+	 * @param line Scaffold spectra file header, defining all the data columns. The header is tab-separated.
 	 */
-	@Override
-	public String getEmptyLine() {
-		if (emptyLine == null) {
-			emptyLine = StringUtilities.repeat('\t', header.length - 1);
+	public abstract void processHeader(String line);
+
+	/**
+	 * Process one row from the spectra file.
+	 *
+	 * @param line Scaffold spectra row, tab-separated, format matches the header supplied by {@link #processHeader(String)}.
+	 */
+	public abstract void processRow(String line);
+
+	private void loadContents(BufferedReader reader) throws IOException {
+		while (true) {
+			String line = reader.readLine();
+			lineNumber++;
+			if (line == null) {
+				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker.");
+			}
+			if (END_OF_FILE.equals(line)) {
+				break;
+			}
+			processRow(line);
 		}
-		return emptyLine;
+	}
+
+
+	/**
+	 * @return Version of Scaffold used to generate information for these spectra.
+	 */
+	public String getScaffoldVersion() {
+		return scaffoldVersion;
 	}
 
 	/**
-	 * @param key Name of the .dta file. This corresponds to Scaffolds 'spectrum' attribute in the PepXML export.
-	 * @return Information for given spectrum, tab-separated. The <code>spectrumName</code> itself is not included.
+	 * @param s String with commas denoting thousands.
+	 * @return String without the commas.
 	 */
-	@Override
-	public String getLineForKey(String key) {
-		return mapSpectrumNameToScaffoldSpectraInfo.get(key);
-	}
-
-	@Override
-	public Iterator<String> iterator() {
-		return mapSpectrumNameToScaffoldSpectraInfo.keySet().iterator();
+	public static String fixCommaSeparatedThousands(String s) {
+		return THOUSANDS_REGEX.matcher(s).replaceAll("$1");
 	}
 }

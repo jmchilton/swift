@@ -13,7 +13,7 @@ import edu.mayo.mprc.daemon.progress.PercentDone;
 import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.msmseval.MSMSEvalOutputReader;
 import edu.mayo.mprc.myrimatch.MyrimatchPepXmlReader;
-import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
+import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldQaSpectraReader;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ProcessCaller;
 import org.apache.log4j.Logger;
@@ -159,7 +159,7 @@ public final class QaWorker implements Worker {
 
 			LOGGER.info("Generating output file [" + outputFile.getAbsolutePath() + "]");
 
-			ScaffoldSpectraReader scaffoldParser = new ScaffoldSpectraReader();
+			ScaffoldQaSpectraReader scaffoldParser = new ScaffoldQaSpectraReader();
 			scaffoldParser.load(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion());
 			RawDumpReader rawDumpReader = new RawDumpReader(qaFiles.getRawSpectraFile());
 			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(qaFiles.getMsmsEvalOutputFile());

@@ -14,17 +14,9 @@ import edu.mayo.mprc.database.PersistableBase;
  * These statistics are calculated from the spectra:
  * <ul>
  * <li>Best Peptide identification probability</li>
- * <li>Best SEQUEST XCorr score</li>
- * <li>Best SEQUEST DCn score</li>
- * <li>Best Mascot Ion score</li>
- * <li>Best Mascot Identity score</li>
- * <li>Best Mascot Delta Ion Score</li>
- * <li>Best X! Tandem -log(e) score</li>
- * <li>Number of identified spectra (total, not unique)</li>
- * <li>Number of identified +1H spectra</li>
- * <li>Number of identified +2H spectra</li>
- * <li>Number of identified +3H spectra</li>
- * <li>Number of identified +4H spectra</li>
+ * <li>{@link #bestPeptideIdentificationProbability}</li>
+ * <li>{@link SearchEngineScores}</li>
+ * <li>{@link SpectrumIdentificationCounts}</li>
  * </ul>
  * These fields are not stored directly, but are read to calculate statistics or map to peptide information:
  * <ul>
@@ -61,70 +53,25 @@ public class PeptideSpectrumMatch extends PersistableBase {
 	private char nextAminoAcid;
 
 	/**
-	 * Number of enzymatic termini - to distinguish missed cleavage hits from enzymatic. Can be 0-2.
-	 */
-	private int numberOfEnzymaticTerminii;
-
-	/**
-	 * Best Peptide identification probability - maximum over all matched spectra.
+	 * Peptide identification probability - the best one over all the spectra.
 	 * Probability of 100% is stored as 1.0
 	 */
 	private double bestPeptideIdentificationProbability;
 
 	/**
-	 * Best SEQUEST XCorr score - maximum over all matched  spectra.
+	 * Best search engine scores encountered so far. Each component is maximized separately.
 	 */
-	private double bestSequestXcorrScore;
+	private SearchEngineScores bestSearchEngineScores = new SearchEngineScores();
 
 	/**
-	 * Best SEQUEST DCn score - maximum over all matched spectra.
+	 * How many spectra have we seen so far for different charge states.
 	 */
-	private double bestSequestDcnScore;
+	private SpectrumIdentificationCounts spectrumIdentificationCounts = new SpectrumIdentificationCounts();
 
 	/**
-	 * Best Mascot Ion score - maximum over all matched spectra.
+	 * Number of enzymatic termini - to distinguish missed cleavage hits from enzymatic. Can be 0-2.
 	 */
-	private double bestMascotIonScore;
-
-	/**
-	 * Best Mascot Identity score - maximum over all matched spectra.
-	 */
-	private double bestMascotIdentityScore;
-
-	/**
-	 * Best Mascot Delta Ion Score - maximum over all matched spectra.
-	 */
-	private double bestMascotDeltaIonScore;
-
-	/**
-	 * Best X! Tandem -log(e) score - maximum over all matched spectra
-	 */
-	private double bestXTandemLogEScore;
-
-	/**
-	 * Number of identified spectra (total, not unique)
-	 */
-	private int numberOfIdentifiedSpectra;
-
-	/**
-	 * Number of identified +1H spectra
-	 */
-	private int numberOfIdentified1HSpectra;
-
-	/**
-	 * Number of identified +2H spectra
-	 */
-	private int numberOfIdentified2HSpectra;
-
-	/**
-	 * Number of identified +3H spectra
-	 */
-	private int numberOfIdentified3HSpectra;
-
-	/**
-	 * Number of identified +4H spectra
-	 */
-	private int numberOfIdentified4HSpectra;
+	private int numberOfEnzymaticTerminii;
 
 	public IdentifiedPeptide getPeptide() {
 		return peptide;
@@ -166,91 +113,41 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
 	}
 
-	public double getBestSequestXcorrScore() {
-		return bestSequestXcorrScore;
+	public SearchEngineScores getBestSearchEngineScores() {
+		return bestSearchEngineScores;
 	}
 
-	public void setBestSequestXcorrScore(double bestSequestXcorrScore) {
-		this.bestSequestXcorrScore = bestSequestXcorrScore;
+	public void setBestSearchEngineScores(SearchEngineScores bestSearchEngineScores) {
+		this.bestSearchEngineScores = bestSearchEngineScores;
 	}
 
-	public double getBestSequestDcnScore() {
-		return bestSequestDcnScore;
+	public SpectrumIdentificationCounts getSpectrumIdentificationCounts() {
+		return spectrumIdentificationCounts;
 	}
 
-	public void setBestSequestDcnScore(double bestSequestDcnScore) {
-		this.bestSequestDcnScore = bestSequestDcnScore;
+	public void setSpectrumIdentificationCounts(SpectrumIdentificationCounts spectrumIdentificationCounts) {
+		this.spectrumIdentificationCounts = spectrumIdentificationCounts;
 	}
 
-	public double getBestMascotIonScore() {
-		return bestMascotIonScore;
+	/**
+	 * Bump up best scores based on a new bunch.
+	 *
+	 * @param peptideIdentificationProbability
+	 *               Potentially better ID probability.
+	 * @param scores Potentially better search engine scores
+	 */
+	public void updateScores(double peptideIdentificationProbability,
+	                         SearchEngineScores scores) {
+		bestPeptideIdentificationProbability = Math.max(bestPeptideIdentificationProbability, peptideIdentificationProbability);
+		bestSearchEngineScores.setMax(scores);
 	}
 
-	public void setBestMascotIonScore(double bestMascotIonScore) {
-		this.bestMascotIonScore = bestMascotIonScore;
-	}
-
-	public double getBestMascotIdentityScore() {
-		return bestMascotIdentityScore;
-	}
-
-	public void setBestMascotIdentityScore(double bestMascotIdentityScore) {
-		this.bestMascotIdentityScore = bestMascotIdentityScore;
-	}
-
-	public double getBestMascotDeltaIonScore() {
-		return bestMascotDeltaIonScore;
-	}
-
-	public void setBestMascotDeltaIonScore(double bestMascotDeltaIonScore) {
-		this.bestMascotDeltaIonScore = bestMascotDeltaIonScore;
-	}
-
-	public double getBestXTandemLogEScore() {
-		return bestXTandemLogEScore;
-	}
-
-	public void setBestXTandemLogEScore(double bestXTandemLogEScore) {
-		this.bestXTandemLogEScore = bestXTandemLogEScore;
-	}
-
-	public int getNumberOfIdentifiedSpectra() {
-		return numberOfIdentifiedSpectra;
-	}
-
-	public void setNumberOfIdentifiedSpectra(int numberOfIdentifiedSpectra) {
-		this.numberOfIdentifiedSpectra = numberOfIdentifiedSpectra;
-	}
-
-	public int getNumberOfIdentified1HSpectra() {
-		return numberOfIdentified1HSpectra;
-	}
-
-	public void setNumberOfIdentified1HSpectra(int numberOfIdentified1HSpectra) {
-		this.numberOfIdentified1HSpectra = numberOfIdentified1HSpectra;
-	}
-
-	public int getNumberOfIdentified2HSpectra() {
-		return numberOfIdentified2HSpectra;
-	}
-
-	public void setNumberOfIdentified2HSpectra(int numberOfIdentified2HSpectra) {
-		this.numberOfIdentified2HSpectra = numberOfIdentified2HSpectra;
-	}
-
-	public int getNumberOfIdentified3HSpectra() {
-		return numberOfIdentified3HSpectra;
-	}
-
-	public void setNumberOfIdentified3HSpectra(int numberOfIdentified3HSpectra) {
-		this.numberOfIdentified3HSpectra = numberOfIdentified3HSpectra;
-	}
-
-	public int getNumberOfIdentified4HSpectra() {
-		return numberOfIdentified4HSpectra;
-	}
-
-	public void setNumberOfIdentified4HSpectra(int numberOfIdentified4HSpectra) {
-		this.numberOfIdentified4HSpectra = numberOfIdentified4HSpectra;
+	/**
+	 * Count another spectrum towards the PSM.
+	 *
+	 * @param spectrumCharge Charge of the new spectrum.
+	 */
+	public void addSpectrum(int spectrumCharge) {
+		spectrumIdentificationCounts.addSpectrum(spectrumCharge);
 	}
 }

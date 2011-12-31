@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Roman Zenka
  */
-public class TandemMassSpectrometrySearchResult extends PersistableBase {
+public class SearchResult extends PersistableBase {
 	/**
 	 * The mass spec sample.
 	 */
@@ -28,10 +28,10 @@ public class TandemMassSpectrometrySearchResult extends PersistableBase {
 	/**
 	 * Empty constructor for Hibernate.
 	 */
-	public TandemMassSpectrometrySearchResult() {
+	public SearchResult() {
 	}
 
-	public TandemMassSpectrometrySearchResult(TandemMassSpectrometrySample massSpecSample, List<ProteinGroup> proteinGroups) {
+	public SearchResult(TandemMassSpectrometrySample massSpecSample, List<ProteinGroup> proteinGroups) {
 		this.massSpecSample = massSpecSample;
 		this.proteinGroups = proteinGroups;
 	}

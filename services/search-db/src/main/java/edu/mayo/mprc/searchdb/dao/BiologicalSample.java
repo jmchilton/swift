@@ -33,7 +33,7 @@ public class BiologicalSample extends PersistableBase {
 	 * Results of protein searches for this particular biological sample. Would usually contain only one mass
 	 * spec sample.
 	 */
-	private List<TandemMassSpectrometrySearchResult> searchResults;
+	private List<SearchResult> searchResults;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -41,7 +41,7 @@ public class BiologicalSample extends PersistableBase {
 	public BiologicalSample() {
 	}
 
-	public BiologicalSample(String sampleName, String category, List<TandemMassSpectrometrySearchResult> searchResults) {
+	public BiologicalSample(String sampleName, String category, List<SearchResult> searchResults) {
 		this.sampleName = sampleName;
 		this.category = category;
 		this.searchResults = searchResults;
@@ -55,7 +55,7 @@ public class BiologicalSample extends PersistableBase {
 		return category;
 	}
 
-	public List<TandemMassSpectrometrySearchResult> getSearchResults() {
+	public List<SearchResult> getSearchResults() {
 		return searchResults;
 	}
 }
