@@ -213,6 +213,8 @@ final class SummarizerCache {
 			newMatch.setPreviousAminoAcid(previousAminoAcid);
 			newMatch.setNextAminoAcid(nextAminoAcid);
 			newMatch.setNumberOfEnzymaticTerminii(numberOfEnzymaticTerminii);
+			peptideSpectrumMatches.put(key, newMatch);
+			proteinGroup.getPeptideSpectrumMatches().add(newMatch);
 			return newMatch;
 		}
 		return match;

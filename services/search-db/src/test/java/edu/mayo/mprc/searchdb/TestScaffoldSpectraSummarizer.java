@@ -1,9 +1,6 @@
 package edu.mayo.mprc.searchdb;
 
-import edu.mayo.mprc.searchdb.dao.Analysis;
-import edu.mayo.mprc.searchdb.dao.BiologicalSample;
-import edu.mayo.mprc.searchdb.dao.ProteinGroup;
-import edu.mayo.mprc.searchdb.dao.SearchResult;
+import edu.mayo.mprc.searchdb.dao.*;
 import edu.mayo.mprc.unimod.MockUnimodDao;
 import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.utilities.FileUtilities;
@@ -54,7 +51,19 @@ public class TestScaffoldSpectraSummarizer {
 			assertNear(teraBovinGroup.getPercentageSequenceCoverage(), 0.145, "Sequence coverage");
 			assertNear(teraBovinGroup.getPercentageOfTotalSpectra(), 0.351, "Percentage total");
 			assertNear(teraBovinGroup.getProteinIdentificationProbability(), 1.0, "Id probability");
+			Assert.assertEquals(teraBovinGroup.getProteinSequences().size(), 1, "One protein only");
+			Assert.assertEquals(teraBovinGroup.getPeptideSpectrumMatches().size(), 10, "Peptides assigned to protein");
+			final PeptideSpectrumMatch firstPsm = teraBovinGroup.getPeptideSpectrumMatches().get(0);
+			Assert.assertEquals(firstPsm.getPeptide().getSequence().getSequence(), "AHVIVMAATNRPNSIDPALR");
+			Assert.assertEquals(firstPsm.getPeptide().getModifications().size(), 0);
+			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentifiedSpectra(), 3);
+			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentified1HSpectra(), 0);
+			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentified2HSpectra(), 1);
+			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentified3HSpectra(), 2);
+			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentified4HSpectra(), 0);
 
+			final String s = analysis.peptideReport();
+			// TODO check against proper report
 		} finally {
 			FileUtilities.closeQuietly(reader);
 		}
