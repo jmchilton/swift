@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Reads testUniMod.xml
+ * Indexed set of modifications corresponding to the unimod database.
+ * <p/>
+ * Contains methods for parsing the unimod.xml file format that matches Mascot's configuration.
  */
 public final class Unimod extends IndexedModSet {
 
@@ -39,8 +41,8 @@ public final class Unimod extends IndexedModSet {
 	 * It is the responsibility of the caller to close the stream.
 	 *
 	 * @param xmlStream a stream of xml
-	 * @throws java.io.IOException      if there was a problem parsing the xmlStream
-	 * @throws org.xml.sax.SAXException if we couldn't get SAXParser to work
+	 * @throws IOException  if there was a problem parsing the xmlStream
+	 * @throws SAXException if we couldn't get SAXParser to work
 	 */
 	public void parseUnimodXML(InputStream xmlStream) throws IOException, SAXException {
 		XMLReader parser = getParser(/*preferedParser*/"org.apache.xerces.parsers.SAXParser");

@@ -71,7 +71,7 @@ public final class AminoAcidSet {
 	}
 
 	/**
-	 * Return amino acid corresponding to givem single letter code.
+	 * Return amino acid corresponding to given single letter code.
 	 *
 	 * @param code One letter code to look up.
 	 * @return Null if such amino acid does not exist.
@@ -108,5 +108,4 @@ public final class AminoAcidSet {
 
 		return names;
 	}
-
 }
