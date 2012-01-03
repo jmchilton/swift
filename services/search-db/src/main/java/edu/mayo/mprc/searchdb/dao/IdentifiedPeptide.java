@@ -2,7 +2,6 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.searchdb.ScaffoldModificationFormat;
-import edu.mayo.mprc.unimod.IndexedModSet;
 
 import java.util.List;
 
@@ -39,15 +38,15 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param sequence              Peptide sequence
 	 * @param fixedModifications    {@link ScaffoldModificationFormat} fixed mods.
 	 * @param variableModifications {@link ScaffoldModificationFormat} variable mods.
-	 * @param modSet                Set of modifications for the {@link ScaffoldModificationFormat} to use.
+	 * @param format                {@link ScaffoldModificationFormat} that can parse the Scaffold's mods.
 	 */
 	public IdentifiedPeptide(
 			PeptideSequence sequence,
 			String fixedModifications,
 			String variableModifications,
-			IndexedModSet modSet) {
+			ScaffoldModificationFormat format) {
 		this.sequence = sequence;
-		this.modifications = ScaffoldModificationFormat.parseModifications(sequence.getSequence(), fixedModifications, variableModifications, modSet);
+		this.modifications = format.parseModifications(sequence.getSequence(), fixedModifications, variableModifications);
 	}
 
 	public IdentifiedPeptide(PeptideSequence sequence, List<LocalizedModification> modifications) {

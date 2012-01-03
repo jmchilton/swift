@@ -12,6 +12,15 @@ import java.util.List;
  * @author Roman Zenka
  */
 public final class ScaffoldModificationFormat {
+	private IndexedModSet modSet;
+
+	/**
+	 * @param modSet A set of modifications that are recognized. Usually loaded from unimod.
+	 */
+	public ScaffoldModificationFormat(IndexedModSet modSet) {
+		this.modSet = modSet;
+	}
+
 	/**
 	 * Parse a given list of modification in Scaffold Spectrum report format into a canonical form.
 	 * <p/>
@@ -28,10 +37,9 @@ public final class ScaffoldModificationFormat {
 	 * @param sequence              The sequence being modified. This is not being stored, it is used to check that the parse worked correctly.
 	 * @param fixedModifications    Scaffold-like list of fixed modifications.
 	 * @param variableModifications Scaffold-like list of variable modifications.
-	 * @param modSet                The set of known modifications to translate the parsed mods against.
 	 * @return Parsed list of localized modifications.
 	 */
-	public static List<LocalizedModification> parseModifications(String sequence, String fixedModifications, String variableModifications, IndexedModSet modSet) {
+	public List<LocalizedModification> parseModifications(String sequence, String fixedModifications, String variableModifications) {
 		final ArrayList<LocalizedModification> localizedModifications = new ArrayList<LocalizedModification>(1);
 		return localizedModifications;
 	}

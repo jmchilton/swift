@@ -30,9 +30,9 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	private static final AminoAcidSet SUPPORTED_AMINO_ACIDS = AminoAcidSet.DEFAULT;
 
 	/**
-	 * A set of modifications to parse Scaffold-reported mods.
+	 * To parse Scaffold-reported mods.
 	 */
-	private IndexedModSet modSet;
+	private ScaffoldModificationFormat format;
 	private Analysis analysis;
 	private SummarizerCache cache;
 
@@ -75,7 +75,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 
 	public ScaffoldSpectraSummarizer(IndexedModSet modSet) {
 		analysis = new Analysis();
-		this.modSet = modSet;
+		format = new ScaffoldModificationFormat(modSet);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 
 		// Prepare for loading all the data
 		analysis.setBiologicalSamples(new ArrayList<BiologicalSample>(5));
-		cache = new SummarizerCache(modSet);
+		cache = new SummarizerCache(format);
 	}
 
 	private int getColumn(HashMap<String, Integer> columnPositions, String columnName) {

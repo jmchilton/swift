@@ -6,7 +6,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.*;
-import edu.mayo.mprc.unimod.IndexedModSet;
 
 import java.util.*;
 
@@ -25,9 +24,9 @@ final class SummarizerCache {
 	private static final int EXPECTED_PEPTIDES_PER_PROTEIN = 5;
 
 	/**
-	 * Indexed set of modifications to translate the Scaffold mods into actual Mod objects
+	 * To translate the Scaffold mods into actual Mod objects
 	 */
-	private IndexedModSet modSet;
+	private ScaffoldModificationFormat format;
 
 	private LinkedHashMap</*Biological sample name*/String, BiologicalSample> biologicalSamples = new LinkedHashMap<String, BiologicalSample>(5);
 	private Map<SearchResultKey, SearchResult> searchResults = new HashMap<SearchResultKey, SearchResult>(5);
@@ -38,8 +37,8 @@ final class SummarizerCache {
 	private Map</*Peptide sequence*/String, PeptideSequence> peptideSequences = new HashMap<String, PeptideSequence>(1000);
 	private Map<LocalizedModification, LocalizedModification> localizedModifications = new HashMap<LocalizedModification, LocalizedModification>(100);
 
-	SummarizerCache(IndexedModSet modSet) {
-		this.modSet = modSet;
+	SummarizerCache(ScaffoldModificationFormat format) {
+		this.format = format;
 	}
 
 	/**
@@ -232,7 +231,7 @@ final class SummarizerCache {
 			PeptideSequence peptideSequence,
 			String fixedModifications,
 			String variableModifications) {
-		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, fixedModifications, variableModifications, modSet);
+		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, fixedModifications, variableModifications, format);
 		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
 		if (peptide == null) {
 			identifiedPeptides.put(key, key);
