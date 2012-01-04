@@ -1,7 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
-import edu.mayo.mprc.unimod.Mod;
+import edu.mayo.mprc.unimod.ModSpecificity;
 
 /**
  * A modification at a particular position.
@@ -10,10 +10,10 @@ import edu.mayo.mprc.unimod.Mod;
  */
 public class LocalizedModification extends PersistableBase {
 	/**
-	 * Observed modification. Keep in mind that what the software reports does not have to be
+	 * Observed modification specificity. Keep in mind that what the software reports does not have to be
 	 * what actually happened - it can be a different mod with the same mass.
 	 */
-	private Mod modification;
+	private ModSpecificity modSpecificity;
 
 	/**
 	 * Position where the modification was observed. The numbering starts from 0 corresponding to the
@@ -32,14 +32,14 @@ public class LocalizedModification extends PersistableBase {
 	public LocalizedModification() {
 	}
 
-	public LocalizedModification(Mod modification, int position, char residue) {
-		this.modification = modification;
+	public LocalizedModification(ModSpecificity modSpecificity, int position, char residue) {
+		this.modSpecificity = modSpecificity;
 		this.position = position;
 		this.residue = residue;
 	}
 
-	public Mod getModification() {
-		return modification;
+	public ModSpecificity getModSpecificity() {
+		return modSpecificity;
 	}
 
 	public int getPosition() {
@@ -59,14 +59,14 @@ public class LocalizedModification extends PersistableBase {
 
 		if (position != that.position) return false;
 		if (residue != that.residue) return false;
-		if (!modification.equals(that.modification)) return false;
+		if (!modSpecificity.equals(that.modSpecificity)) return false;
 
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = modification.hashCode();
+		int result = modSpecificity.hashCode();
 		result = 31 * result + position;
 		result = 31 * result + (int) residue;
 		return result;

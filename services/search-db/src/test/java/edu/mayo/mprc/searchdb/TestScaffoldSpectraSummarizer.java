@@ -69,7 +69,7 @@ public class TestScaffoldSpectraSummarizer {
 		}
 	}
 
-	private static void assertNear(double d1, double d2, String message) {
+	public static void assertNear(double d1, double d2, String message) {
 		final double delta = d1 - d2;
 		Assert.assertTrue(-EPSILON < delta && delta < EPSILON, message);
 	}
