@@ -10,9 +10,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -50,7 +48,7 @@ public final class UnimodDaoTest {
 	}
 
 	@Test
-	public void shouldDoInitialInstall() throws IOException, SAXException {
+	public void shouldDoInitialInstall() {
 		// Get fresh unimod
 		Unimod unimod = new Unimod();
 		unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod.xml", UnimodDaoTest.class));
@@ -94,7 +92,7 @@ public final class UnimodDaoTest {
 	}
 
 	@Test
-	public void shouldStoreUpdates() throws IOException, SAXException {
+	public void shouldStoreUpdates() {
 		// Get fresh unimod
 		Unimod unimod = new Unimod();
 		unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod.xml", UnimodDaoTest.class));

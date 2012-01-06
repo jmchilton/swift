@@ -7,8 +7,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * @author Roman Zenka
  */
-class UnimodContentHandler extends DefaultHandler {
-	private static final Logger LOGGER = Logger.getLogger(UnimodContentHandler.class);
+class Unimod2Handler extends DefaultHandler {
+	private static final Logger LOGGER = Logger.getLogger(Unimod2Handler.class);
+	private static final int TYPICAL_ALT_NAME = 100;
 	private final Unimod into;
 
 	private ModBuilder currentMod;
@@ -23,40 +24,8 @@ class UnimodContentHandler extends DefaultHandler {
 
 	private StringBuilder tagScanner = new StringBuilder();
 
-	public UnimodContentHandler(final Unimod into) {
+	public Unimod2Handler(final Unimod into) {
 		this.into = into;
-	}
-
-	public static Double getDoubleValue(Attributes attr, String attrName) {
-		Double value = null;
-		try {
-			value = new Double(attr.getValue("", attrName));
-		} catch (Exception ignore) {
-			//SWALLOWED: just allow null to be returned
-		}
-		return value;
-	}
-
-	public static Boolean getBooleanValue(Attributes attr, String attrName) {
-		Boolean value = null;
-		try {
-			String strValue = attr.getValue("", attrName);
-			value = (!strValue.equals("0"));
-		} catch (Exception ignore) {
-			//SWALLOWED: allow null return;
-		}
-		return value;
-	}
-
-	public static Integer getIntegerValue(Attributes attr, String attrName) {
-		Integer value = null;
-		try {
-			String strValue = attr.getValue("", attrName);
-			value = Integer.valueOf(strValue);
-		} catch (Exception ignore) {
-			// SWALLOWED: allow null return;
-		}
-		return value;
 	}
 
 	@Override
@@ -65,21 +34,21 @@ class UnimodContentHandler extends DefaultHandler {
 			currentMod = new ModBuilder();
 			currentMod.setTitle(attr.getValue("", "title"));
 			currentMod.setFullName(attr.getValue("", "full_name"));
-			currentMod.setRecordID(getIntegerValue(attr, "record_id"));
+			currentMod.setRecordID(UnimodHandler.getIntegerValue(attr, "record_id"));
 
 		} else if (localName.equals("alt_name")) {
-			tagScanner = new StringBuilder();
+			tagScanner = new StringBuilder(TYPICAL_ALT_NAME);
 		} else if (localName.equals("specificity")) {
 			// We are working on a new specificity
 			currentSpecificity = currentMod.addSpecificityFromUnimod(
 					attr.getValue("", "site"),
 					attr.getValue("", "position"),
-					getBooleanValue(attr, "hidden"),
+					UnimodHandler.getBooleanValue(attr, "hidden"),
 					attr.getValue("", "classification"),
-					getIntegerValue(attr, "spec_group"));
+					UnimodHandler.getIntegerValue(attr, "spec_group"));
 		} else if (localName.equals("delta")) {
-			currentMassMono = getDoubleValue(attr, "mono_mass");
-			currentMassAverage = getDoubleValue(attr, "avge_mass");
+			currentMassMono = UnimodHandler.getDoubleValue(attr, "mono_mass");
+			currentMassAverage = UnimodHandler.getDoubleValue(attr, "avge_mass");
 			currentComposition = attr.getValue("", "composition");
 		} else if (localName.equals("unimod")) {
 			into.setMajorVersion(attr.getValue("majorVersion"));

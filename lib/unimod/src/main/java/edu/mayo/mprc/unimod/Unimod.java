@@ -1,8 +1,7 @@
 package edu.mayo.mprc.unimod;
 
+import com.google.common.base.Joiner;
 import edu.mayo.mprc.MprcException;
-import org.apache.log4j.Logger;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -10,14 +9,14 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Reads testUniMod.xml
  */
 public final class Unimod extends IndexedModSet {
-
-	private static final Logger LOGGER = Logger.getLogger(Unimod.class);
-
+	private static final int EXPECTED_BYTES_PER_DUMP_LINE = 50;
 	/**
 	 * the unimod major version
 	 */
@@ -40,33 +39,25 @@ public final class Unimod extends IndexedModSet {
 	 * It is the responsibility of the caller to close the stream.
 	 *
 	 * @param xmlStream a stream of xml
-	 * @throws java.io.IOException      if there was a problem parsing the xmlStream
-	 * @throws org.xml.sax.SAXException if we couldn't get SAXParser to work
 	 */
-	public void parseUnimodXML(InputStream xmlStream) throws IOException, SAXException {
-		parseUsingHandler(xmlStream, new UnimodContentHandler(this));
-	}
+	public void parseUnimodXML(InputStream xmlStream) {
 
-	/**
-	 * Parses unimod.xml in the format as provided by Scaffold. (Unimod 1.0)
-	 *
-	 * @param xmlStream Scaffold's unimod.xml
-	 */
-	public void parseUnimod1XML(InputStream xmlStream) {
+		XMLReader parser = null;
 		try {
-			parseUsingHandler(xmlStream, new Unimod1ContentHandler(this));
-		} catch (Exception e) {
-			throw new MprcException("Could not parse Scaffold's unimod.xml", e);
+			parser = getParser(/*preferedParser*/"org.apache.xerces.parsers.SAXParser");
+		} catch (SAXException e) {
+			throw new MprcException("Could not obtain XML parser to parse unimod.xml", e);
 		}
-	}
 
-	private void parseUsingHandler(InputStream xmlStream, ContentHandler contentHandler) throws SAXException, IOException {
-		XMLReader parser = getParser(/*preferedParser*/"org.apache.xerces.parsers.SAXParser");
-
-		parser.setContentHandler(contentHandler);
-
-		InputSource source = new InputSource(xmlStream);
-		parser.parse(source);
+		try {
+			parser.setContentHandler(new UnimodHandler(this));
+			InputSource source = new InputSource(xmlStream);
+			parser.parse(source);
+		} catch (IOException e) {
+			throw new MprcException("Could not read unimod.xml stream", e);
+		} catch (SAXException e) {
+			throw new MprcException("Could not parse unimod.xml stream", e);
+		}
 		setName("Unimod " + getMajorVersion() + "." + getMinorVersion());
 	}
 
@@ -107,6 +98,56 @@ public final class Unimod extends IndexedModSet {
 	 */
 	public String toString() {
 		return "Unimod " + getMajorVersion() + "." + getMinorVersion();
+	}
+
+	/**
+	 * @return A string containing all information from the unimod set for testing purposes.
+	 */
+	public String debugDump() {
+		StringBuilder builder = new StringBuilder(EXPECTED_BYTES_PER_DUMP_LINE * size());
+
+		final Set<ModSpecificity> specificitySet = getAllSpecificities(true);
+		final ModSpecificity[] specificities = specificitySet.toArray(new ModSpecificity[specificitySet.size()]);
+		Arrays.sort(specificities);
+
+		builder.append("Modification Record ID\tModification Title\tModification Full Name\tModification Mono Mass\tModification Average Mass\tModification Alt Names\t" +
+				"Modification Composition\tSpecificity Site\tSpecificity Terminus\tSpecificity Protein Only\tSpecificity Classification\tSpecificity Hidden\tSpecificity Group\tSpecificity Comments\n");
+		for (ModSpecificity specificity : specificities) {
+			final Mod mod = specificity.getModification();
+			builder
+					.append(mod.getRecordID())
+					.append('\t')
+					.append(mod.getTitle())
+					.append('\t')
+					.append(mod.getFullName())
+					.append('\t')
+					.append(mod.getMassMono())
+					.append('\t')
+					.append(mod.getMassAverage())
+					.append('\t');
+
+			Joiner.on(',').appendTo(builder, mod.getAltNames());
+
+			builder
+					.append('\t')
+					.append(mod.getComposition())
+					.append('\t')
+					.append(specificity.getSite())
+					.append('\t')
+					.append(specificity.getTerm())
+					.append('\t')
+					.append(specificity.isProteinOnly())
+					.append('\t')
+					.append(specificity.getClassification())
+					.append('\t')
+					.append(specificity.getHidden())
+					.append('\t')
+					.append(specificity.getSpecificityGroup())
+					.append('\t')
+					.append(specificity.getComments())
+					.append('\n');
+		}
+		return builder.toString();
 	}
 
 	@Override

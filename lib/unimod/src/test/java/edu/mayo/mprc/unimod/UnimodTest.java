@@ -1,9 +1,11 @@
 package edu.mayo.mprc.unimod;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
-import org.apache.log4j.Logger;
+import edu.mayo.mprc.utilities.TestingUtilities;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
@@ -18,8 +20,6 @@ import java.util.Set;
  */
 @Test(sequential = true)
 public final class UnimodTest {
-	private static final Logger LOGGER = Logger.getLogger(UnimodTest.class);
-
 	private Unimod umodSet;
 
 	private static Unimod defaultUnimod;
@@ -43,7 +43,7 @@ public final class UnimodTest {
 	}
 
 	/**
-	 *
+	 * Make sure the unimod file parses properly and matches expected values.
 	 */
 	@Test(enabled = true)
 	public void testUnimodParsing() throws IOException, SAXException {
@@ -51,6 +51,7 @@ public final class UnimodTest {
 		umodSet = new Unimod();
 		umodSet.parseUnimodXML(umodStream);
 		FileUtilities.closeQuietly(umodStream);
+		checkUnimodMatches(umodSet, "/expectedTestUniMod.txt");
 	}
 
 	@Test(dependsOnMethods = {"testUnimodParsing"}, enabled = true)
@@ -113,10 +114,26 @@ public final class UnimodTest {
 	}
 
 	@Test
-	void shouldLoadScaffoldUnimod() {
-		Unimod scaffoldUnimod = new Unimod();
-		scaffoldUnimod.parseUnimod1XML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/scaffold_unimod.xml", UnimodTest.class));
-		Assert.assertEquals(scaffoldUnimod.getMajorVersion(), "1");
-		Assert.assertEquals(scaffoldUnimod.getAllTitles().size(), 362);
+	void shouldLoadScaffoldUnimod() throws IOException, SAXException {
+		final Unimod unimod = new Unimod();
+		unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/scaffold_unimod.xml", UnimodTest.class));
+		Assert.assertEquals(unimod.getMajorVersion(), "1");
+		Assert.assertEquals(unimod.getAllTitles().size(), 362);
+		Assert.assertEquals(unimod.getAllSpecificities(true).size(), 591);
+		checkUnimodMatches(unimod, "/edu/mayo/mprc/unimod/expected_scaffold_unimod.txt");
+	}
+
+	@Test
+	void shouldConvertUnimod1Composition() {
+		Assert.assertEquals(Unimod1Handler.convertComposition("H(-1) H2(3) C(2) O"), "H(-1) 2H(3) C(2) O");
+		Assert.assertEquals(Unimod1Handler.convertComposition("H(-1) N(-1) O18"), "H(-1) N(-1) 18O");
+		Assert.assertEquals(Unimod1Handler.convertComposition("H(24) C(19) N(8) O(15) P(2) S(3) Cu Mo"), "H(24) C(19) N(8) O(15) P(2) S(3) Cu Mo");
+		Assert.assertEquals(Unimod1Handler.convertComposition(""), "");
+	}
+
+	private void checkUnimodMatches(Unimod unimod, String expectedDumpResource) throws IOException {
+		String dump = unimod.debugDump();
+		final String expected = Resources.toString(Resources.getResource(UnimodTest.class, expectedDumpResource), Charsets.ISO_8859_1);
+		Assert.assertEquals(TestingUtilities.compareStringsByLine(dump, expected, true), null, "The unimod parse does not match");
 	}
 }

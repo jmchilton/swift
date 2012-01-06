@@ -1,6 +1,7 @@
 package edu.mayo.mprc.utilities;
 
 import com.google.common.base.Preconditions;
+import edu.mayo.mprc.MprcException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -176,12 +177,11 @@ public final class TestingUtilities {
 
 	/**
 	 * @param firstFile  the first file to compare
-	 * @param secondFile the file to compare <code>firstFile</code> to
+	 * @param secondFile the file to compare {@code firstFile} to
 	 * @param trim       If true lines are trimmed before being compared.
 	 * @return returns null if files are equal; otherwise, returns first different lines found.
-	 * @throws NullPointerException if either of the passed in files are null
 	 */
-	public static String compareFilesByLine(File firstFile, File secondFile, boolean trim) throws IOException {
+	public static String compareFilesByLine(File firstFile, File secondFile, boolean trim) {
 
 		Preconditions.checkNotNull(firstFile, "Cannot compare a null file");
 		Preconditions.checkNotNull(secondFile, "Cannot compare a null file");
@@ -192,36 +192,81 @@ public final class TestingUtilities {
 			br1 = new BufferedReader(new FileReader(firstFile));
 			br2 = new BufferedReader(new FileReader(secondFile));
 
-			String line1 = null;
-			String line2 = null;
-			boolean different = false;
+			return compareByLine(trim, br1, br2);
 
-			while (true) {
-				line1 = br1.readLine();
-				line2 = br2.readLine();
-				if (line1 == null || line2 == null) {
-					break;
-				}
-				if (trim) {
-					line1 = line1.trim();
-					line2 = line2.trim();
-				}
-				if (!line1.equals(line2)) {
-					different = true;
-					break;
-				}
-			}
+		} catch (FileNotFoundException e) {
+			throw new MprcException("Could not compare files", e);
+		} finally {
+			FileUtilities.closeQuietly(br1);
+			FileUtilities.closeQuietly(br2);
+		}
+	}
 
-			if (different || (line1 != null || line2 != null)) {
-				return "First file line and second file line differences:\n[" + line1 + "]\n[" + line2 + "]";
-			}
+	/**
+	 * Compares two strings by separating each into lines.
+	 *
+	 * @param s1
+	 * @param s2
+	 * @param trim
+	 * @return null if files are equal; otherwise, returns first different lines found.
+	 * @throws IOException
+	 */
+	public static String compareStringsByLine(String s1, String s2, boolean trim) {
+		BufferedReader br1 = null;
+		BufferedReader br2 = null;
+		try {
+
+			br1 = new BufferedReader(new StringReader(s1));
+			br2 = new BufferedReader(new StringReader(s2));
+
+			return compareByLine(trim, br1, br2);
 
 		} finally {
 			FileUtilities.closeQuietly(br1);
 			FileUtilities.closeQuietly(br2);
 		}
+	}
 
-		return null;
+	/**
+	 * Performs the actual comparison.
+	 *
+	 * @param trim If true, lines are trimmed before compare runs.
+	 * @param br1  First reader.
+	 * @param br2  Second reader.
+	 * @return First line that differs or null if files are the same.
+	 */
+	private static String compareByLine(boolean trim, BufferedReader br1, BufferedReader br2) {
+		String line1 = null;
+		String line2 = null;
+		boolean different = false;
+		int lineNumber = 0;
+
+		while (true) {
+			try {
+				line1 = br1.readLine();
+				line2 = br2.readLine();
+			} catch (IOException e) {
+				throw new MprcException("Read for comparison failed", e);
+			}
+			lineNumber++;
+			if (line1 == null || line2 == null) {
+				break;
+			}
+			if (trim) {
+				line1 = line1.trim();
+				line2 = line2.trim();
+			}
+			if (!line1.equals(line2)) {
+				different = true;
+				break;
+			}
+		}
+
+		if (different || (line1 != null || line2 != null)) {
+			return "Difference in line #" + lineNumber + ":\n[" + line1 + "]\n[" + line2 + "]";
+		} else {
+			return null;
+		}
 	}
 
 	/**
