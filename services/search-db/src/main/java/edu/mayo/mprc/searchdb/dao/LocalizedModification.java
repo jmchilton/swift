@@ -2,13 +2,17 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.unimod.ModSpecificity;
+import edu.mayo.mprc.utilities.ComparisonChain;
 
 /**
  * A modification at a particular position.
+ * <p/>
+ * * To return a list of localized modifications in a canonical order (to make database matching easier),
+ * we define ordering on localized modifications. See {@link #compareTo} for more information.
  *
  * @author Roman Zenka
  */
-public class LocalizedModification extends PersistableBase {
+public class LocalizedModification extends PersistableBase implements Comparable<LocalizedModification> {
 	/**
 	 * Observed modification specificity. Keep in mind that what the software reports does not have to be
 	 * what actually happened - it can be a different mod with the same mass.
@@ -70,5 +74,25 @@ public class LocalizedModification extends PersistableBase {
 		result = 31 * result + position;
 		result = 31 * result + (int) residue;
 		return result;
+	}
+
+	/**
+	 * <p/>
+	 * The mods are ordered by:
+	 * <ol>
+	 * <li>position, ascending</li>
+	 * <li>modSpecificity.modification.title, ascending</li>
+	 * </ol>
+	 *
+	 * @param o Other modification to compare to.
+	 * @return compareTo result (-1=less than, 0=identical, 1=greater than the other mod)
+	 */
+	@Override
+	public int compareTo(LocalizedModification o) {
+		return ComparisonChain
+				.start()
+				.compare(position, o.position)
+				.compare(modSpecificity.getModification().getTitle(), o.modSpecificity.getModification().getTitle())
+				.result();
 	}
 }

@@ -93,6 +93,16 @@ public final class TestScaffoldModificationFormat {
 		}
 	}
 
+	/**
+	 * Scaffold tends to report Pyro-cmC instead of Pyro-Glu due to a bug in its unimod parser code.
+	 */
+	@Test
+	public void shouldFixPyroCmc() {
+		checkSingleMod(
+				format.parseModifications("QSVEADINGLR", "n-term: Pyro-cmC (-17.03)", ""),
+				"Carbamidomethyl", 57.02, 17, 'C');
+	}
+
 	private void checkSingleMod(List<LocalizedModification> mods, String name, double expectedMass, int position, char residue) {
 		Assert.assertEquals(mods.size(), 1, "one mod expected");
 		final LocalizedModification localizedModification = mods.get(0);

@@ -7,6 +7,7 @@ import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -47,16 +48,17 @@ public final class ScaffoldModificationFormat {
 	 * <p/>
 	 * {@code m17: Oxidation (+15.99)} - oxidation of Methionine at position 17 (numbered from 1)
 	 *
-	 * @param sequence              The sequence being modified. This is not being stored, it is used to check that the parse worked correctly.
-	 * @param fixedModifications    Scaffold-like list of fixed modifications.
-	 * @param variableModifications Scaffold-like list of variable modifications.
+	 * @param sequence     The sequence being modified. This is not being stored, it is used to check that the parse worked correctly.
+	 * @param fixedMods    Scaffold-like list of fixed modifications.
+	 * @param variableMods Scaffold-like list of variable modifications.
 	 * @return Parsed list of localized modifications.
 	 */
-	public List<LocalizedModification> parseModifications(String sequence, String fixedModifications, String variableModifications) {
+	public List<LocalizedModification> parseModifications(String sequence, String fixedMods, String variableMods) {
 		final ArrayList<LocalizedModification> localizedModifications = new ArrayList<LocalizedModification>(1);
 
-		addModifications(fixedModifications.trim(), localizedModifications, sequence);
-		addModifications(variableModifications.trim(), localizedModifications, sequence);
+		addModifications(fixedMods.trim(), localizedModifications, sequence);
+		addModifications(variableMods.trim(), localizedModifications, sequence);
+		Collections.sort(localizedModifications);
 
 		return localizedModifications;
 	}
