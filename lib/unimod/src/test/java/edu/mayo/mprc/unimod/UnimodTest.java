@@ -107,8 +107,16 @@ public final class UnimodTest {
 
 	@Test
 	public void testGetDefaultSet() {
-		final Unimod unimod = UnimodTest.getDefaultUnimodSet();
+		final Unimod unimod = getDefaultUnimodSet();
 		final Map<String, Double> massMap = unimod.getFullNameToMonoisotopicMassMap();
 		Assert.assertEquals(massMap.size(), 1276, "Wrong amount of unimod modifications");
+	}
+
+	@Test
+	void shouldLoadScaffoldUnimod() {
+		Unimod scaffoldUnimod = new Unimod();
+		scaffoldUnimod.parseUnimod1XML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/scaffold_unimod.xml", UnimodTest.class));
+		Assert.assertEquals(scaffoldUnimod.getMajorVersion(), "1");
+		Assert.assertEquals(scaffoldUnimod.getAllTitles().size(), 362);
 	}
 }
