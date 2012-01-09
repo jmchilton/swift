@@ -47,29 +47,6 @@ public final class MyrimatchMappings implements Mappings {
 
 	@Override
 	public void read(Reader isr) {
-		nativeParams = initNativeParams();
-		final BufferedReader bufferedReader = new BufferedReader(isr);
-		try {
-			while (true) {
-				final String s = bufferedReader.readLine();
-				if (s == null) {
-					break;
-				}
-				final String row = stripComment(s);
-				final int equalSignPos = row.indexOf('=');
-				if (equalSignPos >= 0) {
-					final String key = row.substring(0, equalSignPos).trim();
-					final String value = row.substring(equalSignPos + 1).trim();
-					if (nativeParams.containsKey(key)) {
-						nativeParams.put(key, value);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new MprcException("Cannot load base Myrimatch configuration", e);
-		} finally {
-			FileUtilities.closeQuietly(bufferedReader);
-		}
 	}
 
 	/**

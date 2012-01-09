@@ -37,8 +37,6 @@ public final class SequestMappings implements Mappings, Cloneable {
 
 	private static final Pattern FIXED = Pattern.compile("^add_([A-Z]|Nterm|Cterm)_(.*)");
 
-	private static final Pattern SEQUEST_HEADER = Pattern.compile("\\[((?:SEQUEST)|(?:MAKEDB))\\]");
-
 	private static final Pattern WHITESPACE = Pattern.compile("^\\s*$");
 	private static final Pattern COMMENT = Pattern.compile("^\\s*(;.*)$");
 	private static final Pattern EQUALS = Pattern.compile("^.*\\=.*$");
@@ -61,48 +59,6 @@ public final class SequestMappings implements Mappings, Cloneable {
 	}
 
 	public void read(Reader isr) {
-		BufferedReader reader = new BufferedReader(isr);
-		try {
-			String header = reader.readLine();
-			Matcher m = SEQUEST_HEADER.matcher(header);
-			if ((header == null) || (header.length() == 0) || (!m.lookingAt())) {
-				throw new MprcException("Not a sequest params file");
-			}
-			while (true) {
-				String it = reader.readLine();
-				if (it == null) {
-					break;
-				}
-
-				if (WHITESPACE.matcher(it).matches() || COMMENT.matcher(it).matches()) {
-					// Comment, ignore
-					continue;
-				}
-
-				if (EQUALS.matcher(it).matches()) {
-					// basically, we want to match: a keyword followed by equals followed by an optional value
-					// followed by optional whitespace and comment.
-					Matcher matcher = PARSE_LINE.matcher(it);
-					if (!matcher.matches()) {
-						throw new MprcException("Can't understand '" + it + "'");
-					}
-					String id = matcher.group(1);
-					String value = matcher.group(2);
-					if (value == null) {
-						value = "";
-					}
-
-					// We store absolutely all parameters, because makedb depends on it
-					nativeParams.put(id, value);
-				} else {
-					throw new MprcException("Can't understand '" + it + "'");
-				}
-			}
-		} catch (Exception t) {
-			throw new MprcException("Failure reading sequest parameter collection", t);
-		} finally {
-			FileUtilities.closeQuietly(reader);
-		}
 	}
 
 	public void write(Reader oldParams, Writer out) {
@@ -117,9 +73,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 					break;
 				}
 
-				if (WHITESPACE.matcher(it).matches()) {
-					pw.println(it);
-				} else if (COMMENT.matcher(it).matches()) {
+				if (WHITESPACE.matcher(it).matches() || COMMENT.matcher(it).matches()) {
 					pw.println(it);
 				} else if (EQUALS.matcher(it).matches()) {
 					// basically, we want to match: a keyword followed by equals followed by an optional value

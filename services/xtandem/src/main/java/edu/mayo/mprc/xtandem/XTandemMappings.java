@@ -43,20 +43,6 @@ public final class XTandemMappings implements Mappings {
 
 	private static final Pattern IONS_PATTERN = Pattern.compile("^scoring, (.*) ions");
 
-	/**
-	 * We recognize all following params plus anything that matches {@link #IONS_PATTERN}.
-	 */
-	private static final Set<String> PARSED_PARAMS = new HashSet<String>(Arrays.asList(PEP_TOL_PLUS,
-			PEP_TOL_MINUS,
-			PEP_TOL_UNIT,
-			FRAG_TOL_VALUE,
-			FRAG_TOL_UNIT,
-			DATABASE,
-			VAR_MODS,
-			FIXED_MODS,
-			ENZYME,
-			MISSED_CLEAVAGES));
-
 	private Map<String, String> nativeParams = new HashMap<String, String>();
 	private static final int ALLOW_NON_SPECIFIC_CLEAVAGES = 50;
 	private static final String DALTONS = "Daltons";
@@ -70,28 +56,6 @@ public final class XTandemMappings implements Mappings {
 	}
 
 	public void read(Reader isr) {
-		Document bioml;
-		try {
-			bioml = XMLUtilities.loadDocument(isr);
-
-			Element doc = bioml.getDocumentElement();
-			NodeList notes = doc.getElementsByTagName("note");
-			for (int i = 0; i < notes.getLength(); i++) {
-				Node it = notes.item(i);
-				if (it.hasAttributes() && it.getAttributes().getNamedItem("type") != null &&
-						"input".equals(it.getAttributes().getNamedItem("type").getTextContent())) {
-
-					// TODO if the nextSibling has no type attribute, use it as the comment.
-					final String id = it.getAttributes().getNamedItem("label").getTextContent();
-					if (PARSED_PARAMS.contains(id) || IONS_PATTERN.matcher(id).matches()) {
-						final String value = it.getTextContent();
-						nativeParams.put(id, value);
-					}
-				}
-			}
-		} catch (Exception t) {
-			throw new MprcException("Error reading X!Tandem parameter set", t);
-		}
 	}
 
 	public void write(Reader oldParams, Writer out) {

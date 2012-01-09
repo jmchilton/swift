@@ -22,19 +22,19 @@ import java.util.*;
 
 /**
  * Mapping class for Peaks. Since we will never use it for mapping from the native parameters,
- * all the <code>mapXXXFromNative</code> methods can return <code>null</code>.
+ * all the {@code mapXXXFromNative} methods can return {@code null}.
  */
 public final class PeaksMappings implements Mappings {
 	private static final String commentsBeginningCharacter = "#";
 	private static final String nameValueDelimiter = "=";
 
 	private Map<String, String> parameters;
-	private Map<String, String> ensymeMapping;
+	private Map<String, String> proteaseMapping;
 	private Map<String, String> instrumentMapping;
 
-	public PeaksMappings(Map<String, String> ensymeMapping, Map<String, String> instrumentMapping) {
+	public PeaksMappings(Map<String, String> proteaseMapping, Map<String, String> instrumentMapping) {
 		parameters = new HashMap<String, String>();
-		this.ensymeMapping = ensymeMapping;
+		this.proteaseMapping = proteaseMapping;
 		this.instrumentMapping = instrumentMapping;
 	}
 
@@ -44,30 +44,6 @@ public final class PeaksMappings implements Mappings {
 	}
 
 	public void read(Reader isr) {
-		BufferedReader bufferedReader = null;
-
-		try {
-			bufferedReader = new BufferedReader(isr);
-			String line = null;
-			String paramaterName = null;
-			String paramaterValue = null;
-			int delimieterIndex = 0;
-
-			while ((line = bufferedReader.readLine()) != null) {
-				if (!line.startsWith(commentsBeginningCharacter)) {
-					delimieterIndex = line.indexOf(nameValueDelimiter);
-					paramaterName = line.substring(0, delimieterIndex);
-					paramaterValue = line.substring(delimieterIndex + 1);
-
-					parameters.put(paramaterName, paramaterValue);
-				}
-			}
-
-		} catch (Exception e) {
-			throw new MprcException("Error reading Peaks paramater file.", e);
-		} finally {
-			FileUtilities.closeQuietly(bufferedReader);
-		}
 	}
 
 	public void write(Reader oldParams, Writer out) {
@@ -191,7 +167,7 @@ public final class PeaksMappings implements Mappings {
 	}
 
 	public void setProtease(MappingContext context, Protease protease) {
-		String enzymeName = ensymeMapping.get(protease.getName());
+		String enzymeName = proteaseMapping.get(protease.getName());
 
 		if (enzymeName == null) {
 			context.reportWarning("Enzyme " + protease.toString() + " is not defiend by default in Peaks. Create enzyme with same name '" + protease.getName() + "' in Peaks if it does not already exist.");
