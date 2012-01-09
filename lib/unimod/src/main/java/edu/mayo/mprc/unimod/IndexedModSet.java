@@ -61,6 +61,21 @@ public class IndexedModSet implements Set<Mod> {
 		return titleIndex.get(title);
 	}
 
+	/**
+	 * Return a mod by record ID.
+	 *
+	 * @param recordId ID of the mod.
+	 * @return Mod of a given id, or null if none found.
+	 */
+	public Mod getByRecordId(int recordId) {
+		for (Mod mod : modifications) {
+			if (recordId == mod.getRecordID()) {
+				return mod;
+			}
+		}
+		return null;
+	}
+
 	public static final class MascotNameParts {
 		private String title;
 		private String protein;
@@ -171,7 +186,7 @@ public class IndexedModSet implements Set<Mod> {
 	 *
 	 * @param minMass     the minimum mass
 	 * @param maxMass     the maximum mass
-	 * @param site        the specificity site
+	 * @param site        the specificity site. If null, we do not care. The site can be more specific than the actual mod and still match. E.g. we ask for Q, but the mod allows "anywhere".
 	 * @param terminus    the specificity terminus
 	 * @param proteinOnly if terminus is set, specify if it has to be protein terminus
 	 * @param hidden      whether the modification is hidden or not
@@ -189,7 +204,7 @@ public class IndexedModSet implements Set<Mod> {
 
 		Set<ModSpecificity> matchingModSpecificities = new HashSet<ModSpecificity>();
 		for (ModSpecificity sp : modsInMassRange) {
-			if (site != null && !sp.getSite().equals(site)) {
+			if (site != null && !siteMatches(site, sp)) {
 				continue;
 			}
 			if (terminus != null && !sp.getTerm().equals(terminus)) {
@@ -204,6 +219,17 @@ public class IndexedModSet implements Set<Mod> {
 			matchingModSpecificities.add(sp);
 		}
 		return matchingModSpecificities;
+	}
+
+	/**
+	 * Either we have an exact match, or the mod specificity allows any site.
+	 *
+	 * @param expectedSite Site we expect to see.
+	 * @param sp           Specificity to match the site against.
+	 * @return True if this site matches the specificity.
+	 */
+	private boolean siteMatches(Character expectedSite, ModSpecificity sp) {
+		return sp.getSite().equals(expectedSite) || !sp.isSiteSpecificAminoAcid();
 	}
 
 	private static Set<ModSpecificity> collectModSpecificities(Collection<List<Mod>> inRange) {
@@ -381,7 +407,7 @@ public class IndexedModSet implements Set<Mod> {
 				.compare(this.name, tt.name)
 				.compare(this.modifications.size(), tt.modifications.size());
 		if (chain.result() == 0) {
-			for (Iterator<Mod> i = this.modifications.iterator(), j = tt.modifications.iterator(); i.hasNext();) {
+			for (Iterator<Mod> i = this.modifications.iterator(), j = tt.modifications.iterator(); i.hasNext(); ) {
 				final Mod left = i.next();
 				final Mod right = j.next();
 				chain = chain.compare(left, right);

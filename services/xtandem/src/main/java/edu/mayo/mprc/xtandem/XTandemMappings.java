@@ -180,7 +180,7 @@ public final class XTandemMappings implements Mappings {
 			// "Protein [NC]-term"
 			final boolean proteinNcTerm = ms.isProteinOnly() != null && ms.isProteinOnly();
 			// we can't support specific amino acids at N or C terminus
-			final boolean specificAminoAcidAtNorCterminus = !ms.isPositionAnywhere() && ms.isSiteAminoAcid();
+			final boolean specificAminoAcidAtNorCterminus = !ms.isPositionAnywhere() && ms.isSiteSpecificAminoAcid();
 
 			if ((ms.getTerm() != null) && (specificAminoAcidAtNorCterminus || proteinNcTerm)) {
 

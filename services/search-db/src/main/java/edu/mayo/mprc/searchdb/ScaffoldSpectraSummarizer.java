@@ -73,9 +73,9 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	private int tandemHyperScore;
 	private int tandemLadderScore;
 
-	public ScaffoldSpectraSummarizer(IndexedModSet modSet) {
+	public ScaffoldSpectraSummarizer(IndexedModSet modSet, IndexedModSet scaffoldModSet) {
 		analysis = new Analysis();
-		format = new ScaffoldModificationFormat(modSet);
+		format = new ScaffoldModificationFormat(modSet, scaffoldModSet);
 	}
 
 	/**
@@ -99,6 +99,12 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		}
 	}
 
+	/**
+	 * Saves positions of all the columns of interest, so we can later access the data for a particular column
+	 * just by using its index.
+	 *
+	 * @param line Scaffold spectra file header, defining all the data columns. The header is tab-separated.
+	 */
 	@Override
 	public void processHeader(String line) {
 		HashMap<String, Integer> map = buildColumnMap(line);
@@ -143,6 +149,11 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		cache = new SummarizerCache(format);
 	}
 
+	/**
+	 * @param columnPositions Column positions.
+	 * @param columnName      Name of the column to find.
+	 * @return Index of the column. If a matching column not found, throws an exception.
+	 */
 	private int getColumn(HashMap<String, Integer> columnPositions, String columnName) {
 		final Integer column = getColumnNumber(columnPositions, columnName);
 		if (null == column) {
@@ -152,6 +163,9 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		}
 	}
 
+	/**
+	 * @return -1 if the column name is not found, column number otherwise.
+	 */
 	private int getColumnOptional(HashMap<String, Integer> columnPositions, String columnName) {
 		final Integer column = getColumnNumber(columnPositions, columnName);
 		return column == null ? -1 : column;

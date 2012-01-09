@@ -4,6 +4,8 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.unimod.MockUnimodDao;
+import edu.mayo.mprc.unimod.Unimod;
+import edu.mayo.mprc.utilities.ResourceUtilities;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -23,7 +25,9 @@ public final class TestScaffoldModificationFormat {
 	public void setup() {
 		MockUnimodDao unimodDao = new MockUnimodDao();
 		IndexedModSet unimod = unimodDao.load();
-		format = new ScaffoldModificationFormat(unimod);
+		Unimod scaffoldUnimod = new Unimod();
+		scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", getClass()));
+		format = new ScaffoldModificationFormat(unimod, scaffoldUnimod);
 	}
 
 	/**

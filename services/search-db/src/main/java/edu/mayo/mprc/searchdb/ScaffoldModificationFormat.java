@@ -1,8 +1,10 @@
 package edu.mayo.mprc.searchdb;
 
+import com.google.common.base.Objects;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.unimod.IndexedModSet;
+import edu.mayo.mprc.unimod.Mod;
 import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 public final class ScaffoldModificationFormat {
 	private static final double MOD_DELTA_PRECISION = 0.005;
 	private IndexedModSet modSet;
+	private IndexedModSet scaffoldModSet;
 	/**
 	 * Example format:
 	 * <p/>
@@ -29,10 +32,12 @@ public final class ScaffoldModificationFormat {
 	private static final Pattern MOD_PATTERN = Pattern.compile("([nc]-term|[a-zA-Z][1-9][0-9]*)\\s*:\\s*(.*?)\\s*\\(([+-][0-9.]+)\\)(,\\s*|\\s*$)");
 
 	/**
-	 * @param modSet A set of modifications that are recognized. Usually loaded from unimod.
+	 * @param modSet         A set of modifications that are recognized. Usually loaded from unimod.
+	 * @param scaffoldModSet Scaffold's unimod configuration. We need this to be able to parse Scaffold's unimod entry names to the official ones.
 	 */
-	public ScaffoldModificationFormat(IndexedModSet modSet) {
+	public ScaffoldModificationFormat(IndexedModSet modSet, IndexedModSet scaffoldModSet) {
 		this.modSet = modSet;
+		this.scaffoldModSet = scaffoldModSet;
 	}
 
 	/**
@@ -81,11 +86,11 @@ public final class ScaffoldModificationFormat {
 			final int position;
 			final Terminus terminus;
 			if (positionGroup.equalsIgnoreCase("n-term")) {
-				residue = '-';
+				residue = sequence.charAt(0);
 				terminus = Terminus.Nterm;
 				position = 0;
 			} else if (positionGroup.equalsIgnoreCase("c-term")) {
-				residue = '-';
+				residue = sequence.charAt(sequence.length() - 1);
 				terminus = Terminus.Cterm;
 				position = sequence.length() - 1;
 			} else {
@@ -98,17 +103,10 @@ public final class ScaffoldModificationFormat {
 				}
 			}
 
-			ModSpecificity modSpecificity = null;
-			final Set<ModSpecificity> matchingModSpecificities = modSet.findMatchingModSpecificities(delta - MOD_DELTA_PRECISION, delta + MOD_DELTA_PRECISION, residue, terminus, null, null);
-			for (ModSpecificity specificity : matchingModSpecificities) {
-				if (titleGroup.equalsIgnoreCase(specificity.getModification().getTitle())) {
-					modSpecificity = specificity;
-					break;
-				}
-			}
-			if (modSpecificity == null) {
-				throw new MprcException("Could not find a modification: [" + positionGroup + ": " + titleGroup + "(" + deltaGroup + ")]");
-			}
+			ModSpecificity scaffoldSpecificity = matchScaffoldMod(positionGroup, titleGroup, deltaGroup, delta, residue, terminus);
+			ModSpecificity modSpecificity = matchEquivalentMod(scaffoldSpecificity);
+
+			// Now we have a mod from scaffold.
 
 			LocalizedModification localizedModification = new LocalizedModification(modSpecificity, position, residue);
 			mods.add(localizedModification);
@@ -116,5 +114,71 @@ public final class ScaffoldModificationFormat {
 		if (lastEnd != modifications.length()) {
 			throw new MprcException("Could not parse modification information [" + modifications.substring(lastEnd, modifications.length()) + "]");
 		}
+	}
+
+	/**
+	 * Take a mod from Scaffold, match it to the source Unimod.
+	 *
+	 * @param scaffoldSpecificity Scaffold mod specificity.
+	 * @return Scaffold's mod matched to the actual mod specificity from our database.
+	 */
+	private ModSpecificity matchEquivalentMod(ModSpecificity scaffoldSpecificity) {
+		final Mod scaffoldMod = scaffoldSpecificity.getModification();
+		final Integer recordId = scaffoldMod.getRecordID();
+		Mod matchingMod = modSet.getByRecordId(recordId);
+		if (matchingMod == null) {
+			matchingMod = modSet.getByTitle(scaffoldMod.getTitle());
+		}
+		if (!Objects.equal(matchingMod.getComposition(), scaffoldMod.getComposition())) {
+			throw new MprcException("Modification reported by Scaffold does not match your unimod modification. " +
+					"RecordId=[" + recordId + "], " +
+					"Scaffold mod: [" + scaffoldMod.getTitle() + "], composition: [" + scaffoldMod.getComposition() + "], " +
+					"Unimod mod: [" + matchingMod.getTitle() + "], composition: [" + matchingMod.getComposition() + "]");
+		}
+		for (ModSpecificity specificity : matchingMod.getModSpecificities()) {
+			if (specificity.getSite().equals(scaffoldSpecificity.getSite())
+					&& specificity.getTerm().equals(scaffoldSpecificity.getTerm())
+					&& specificity.isProteinOnly().equals(scaffoldSpecificity.isProteinOnly())) {
+				return specificity;
+			}
+		}
+		throw new MprcException("Could not find a matching mod specificity for Scaffold's " + scaffoldSpecificity.toMascotString());
+	}
+
+	/**
+	 * For given parsed data, find closest Scaffold mod that matches.
+	 * <p/>
+	 * We simply list all mods within a certain delta from specified one, that have a matching residue and terminus.
+	 * <p/>
+	 * Out of all those mods we pick the first one with a matching mod title. If no such mod is present, we throw an exception.
+	 * <p/>
+	 * HACK: See {@link #fixPyroCmc}.
+	 */
+	private ModSpecificity matchScaffoldMod(String position, String title, String deltaString, double delta, char residue, Terminus terminus) {
+		final Set<ModSpecificity> matchingModSpecificities = scaffoldModSet.findMatchingModSpecificities(delta - MOD_DELTA_PRECISION, delta + MOD_DELTA_PRECISION, residue, terminus, null, null);
+
+		String effectiveTitle = fixPyroCmc(title, residue, terminus);
+
+		for (ModSpecificity specificity : matchingModSpecificities) {
+			if (effectiveTitle.equalsIgnoreCase(specificity.getModification().getTitle())) {
+				return specificity;
+			}
+		}
+		throw new MprcException("Could not find a modification: [" + position + ": " + title + "(" + deltaString + ")]");
+	}
+
+	/**
+	 * * HACK: There is a bug in Scaffold-bundled unimod that lists pyro-cmC to have same delta as pyro-Glu. If we run into pyro-cmC and the
+	 * composition is equivalent to the broken one, we replace the mod with pyro-Glu. This happens for X!Tandem a lot.
+	 */
+	private String fixPyroCmc(String title, char residue, Terminus terminus) {
+		String effectiveTitle = title;
+		if ("Pyro-cmC".equalsIgnoreCase(title) && (residue == 'Q' || terminus == Terminus.Nterm)) {
+			final Mod brokenMod = scaffoldModSet.getByTitle("Pyro-cmC");
+			if (brokenMod != null && "H(-3) N(-1)".equals(brokenMod.getComposition())) {
+				effectiveTitle = "Pyro-glu";
+			}
+		}
+		return effectiveTitle;
 	}
 }

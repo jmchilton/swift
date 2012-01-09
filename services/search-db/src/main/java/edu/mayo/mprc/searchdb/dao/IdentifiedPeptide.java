@@ -18,6 +18,7 @@ import java.util.List;
  * @author Roman Zenka
  */
 public class IdentifiedPeptide extends PersistableBase {
+	private static final int EXPECTED_MOD_SIZE = 20;
 	/**
 	 * A peptide sequence that was determined.
 	 */
@@ -60,6 +61,18 @@ public class IdentifiedPeptide extends PersistableBase {
 
 	public List<LocalizedModification> getModifications() {
 		return modifications;
+	}
+
+	/**
+	 * @return List of mods as comma separated string, e.g. {@code c18: Carbamidomethyl(C)}
+	 */
+	public String getModificationsAsString() {
+		StringBuilder result = new StringBuilder(EXPECTED_MOD_SIZE * getModifications().size());
+		for (LocalizedModification modification : getModifications()) {
+			result.append(", ");
+			result.append(Character.toLowerCase(modification.getResidue())).append(modification.getPosition() + 1).append(": ").append(modification.getModSpecificity().toMascotString());
+		}
+		return result.length() > 1 ? result.substring(2) : "";
 	}
 
 	@Override

@@ -91,6 +91,7 @@ public final class Analysis extends PersistableBase {
 						"Percentage of Total Spectra\t" +
 						"Percentage Sequence Coverage\t" +
 						"Peptide Sequence\t" +
+						"Peptide Modifications\t" +
 						"Previous Amino Acid\t" +
 						"Next Amino Acid\t" +
 						"Best Peptide Identification Probability\t" +
@@ -125,6 +126,7 @@ public final class Analysis extends PersistableBase {
 								.append(percent(proteinGroup.getPercentageOfTotalSpectra())).append('\t')
 								.append(percent(proteinGroup.getPercentageSequenceCoverage())).append('\t')
 								.append(psm.getPeptide().getSequence().getSequence()).append('\t')
+								.append(psm.getPeptide().getModificationsAsString()).append('\t')
 								.append(psm.getPreviousAminoAcid()).append('\t')
 								.append(psm.getNextAminoAcid()).append('\t')
 								.append(psm.getBestPeptideIdentificationProbability()).append('\t')
