@@ -31,7 +31,7 @@
                     <fork>true</fork>
                     <meminitial>128m</meminitial>
                     <maxmem>1024m</maxmem>
-                    <encoding>windows-1252</encoding>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
