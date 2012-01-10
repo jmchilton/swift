@@ -52,5 +52,16 @@ public final class TestingUtilitiesTest {
 		Assert.assertEquals(format.format(date), "Jan 13, 2011 12:00:00 AM");
 	}
 
+	/**
+	 * Check that we can compare given string to a resource file.
+	 */
+	@Test
+	public void shouldCompareStringToResource() {
+		Assert.assertNull(TestingUtilities.compareStringToResourceByLine("hello\nworld", "edu/mayo/mprc/utilities/testing/hello_world.txt"));
+		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine("hello\nworld2", "edu/mayo/mprc/utilities/testing/hello_world.txt"), "Difference in line #2:\n" +
+				"[world2]\n" +
+				"[world]");
+	}
+
 
 }
