@@ -30,7 +30,7 @@ public class ProteinGroup extends PersistableBase {
 	private List<PeptideSpectrumMatch> peptideSpectrumMatches;
 
 	/**
-	 * Scaffold?s calculated probability that the protein identification is correct. 100% probability is stored as 1.0
+	 * Scaffold's calculated probability that the protein identification is correct. 100% probability is stored as 1.0
 	 */
 	private double proteinIdentificationProbability;
 
@@ -40,8 +40,8 @@ public class ProteinGroup extends PersistableBase {
 	private int numberOfUniquePeptides;
 
 	/**
-	 * Two spectra are unique if they match different peptides (even if the peptides overlap),
-	 * or match two different charge states of the same peptide, or match both a peptide and a modified form of the peptide. 
+	 * Two spectra are unique if they match different peptides (even if the peptides overlap),
+	 * or match two different charge states of the same peptide, or match both a peptide and a modified form of the peptide.
 	 * The Number of unique spectra is a count of these unique spectra.
 	 */
 	private int numberOfUniqueSpectra;
