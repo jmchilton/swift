@@ -318,7 +318,7 @@ public final class TestingUtilities {
 	public static String compareStringToResourceByLine(String actual, String expectedResource) {
 		final String expected;
 		try {
-			expected = Resources.toString(Resources.getResource(expectedResource), Charsets.ISO_8859_1);
+			expected = Resources.toString(Resources.getResource(expectedResource), Charsets.UTF_8);
 		} catch (IOException e) {
 			throw new MprcException("Could not compare to resource [" + expectedResource + "]", e);
 		}

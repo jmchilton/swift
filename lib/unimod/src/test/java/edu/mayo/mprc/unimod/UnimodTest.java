@@ -3,6 +3,7 @@ package edu.mayo.mprc.unimod;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
+import edu.mayo.mprc.utilities.TestingUtilities;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -110,5 +111,23 @@ public final class UnimodTest {
 		final Unimod unimod = UnimodTest.getDefaultUnimodSet();
 		final Map<String, Double> massMap = unimod.getFullNameToMonoisotopicMassMap();
 		Assert.assertEquals(massMap.size(), 1276, "Wrong amount of unimod modifications");
+	}
+
+	/**
+	 * Unimod parse should match precisely the expected report.
+	 */
+	@Test
+	public void shouldMatchExpectedParse() {
+		final Unimod unimod = UnimodTest.getDefaultUnimodSet();
+		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine(unimod.report(), "edu/mayo/mprc/unimod/unimod_report.txt"), null, "Unimod does not match the expected result");
+	}
+
+	/**
+	 * When cleaning up comments, newlines are removed as well as excessive tabs and spaces.
+	 */
+	@Test
+	public void shouldCleanupComments() {
+		Assert.assertEquals(IndexedModSet.cleanWhitespace("a\nb\r\nc"), "a b c");
+		Assert.assertEquals(IndexedModSet.cleanWhitespace("a          b"), "a b");
 	}
 }
