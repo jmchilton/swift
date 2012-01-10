@@ -48,6 +48,10 @@
         <servlet-name>Benchmark</servlet-name>
         <servlet-class>edu.mayo.mprc.swift.benchmark.Benchmark</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AminoAcidReport</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.AminoAcidReport</servlet-class>
+    </servlet>
     <!--inserted manually -->
     <servlet-mapping>
         <servlet-name>SwiftAppService</servlet-name>
@@ -88,6 +92,10 @@
     <servlet-mapping>
         <servlet-name>Benchmark</servlet-name>
         <url-pattern>/benchmark</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AminoAcidReport</servlet-name>
+        <url-pattern>/amino-acids</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

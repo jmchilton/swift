@@ -19,6 +19,7 @@ public final class AminoAcidSet {
 
 	private static final double MONOISOTOPIC_WATER_MASS = 18.010565;
 	public static final AminoAcidSet DEFAULT = new AminoAcidSet();
+	private static final int AA_REPORT_SIZE = 5000;
 
 
 	/**
@@ -107,5 +108,22 @@ public final class AminoAcidSet {
 		}
 
 		return names;
+	}
+
+	/**
+	 * @return A tab-separated string listing the amino acids.
+	 */
+	public String report() {
+		StringBuilder result = new StringBuilder(AA_REPORT_SIZE);
+		result.append("Code\tThree letter code\tMonoisotopic mass\tAverage mass\tFormula\n");
+		for (AminoAcid acid : data.values()) {
+			result
+					.append(acid.getCode()).append('\t')
+					.append(acid.getCode3()).append('\t')
+					.append(acid.getMonoisotopicMass()).append('\t')
+					.append(acid.getAverageMass()).append('\t')
+					.append(acid.getFormula()).append('\n');
+		}
+		return result.toString();
 	}
 }
