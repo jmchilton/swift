@@ -111,19 +111,21 @@ public final class AminoAcidSet {
 	}
 
 	/**
-	 * @return A tab-separated string listing the amino acids.
+	 * @return An HTML table listing the amino acids.
 	 */
 	public String report() {
 		StringBuilder result = new StringBuilder(AA_REPORT_SIZE);
-		result.append("Code\tThree letter code\tMonoisotopic mass\tAverage mass\tFormula\n");
+		result.append("<table>\n<tr><th>Code</th><th>Three letter code</th><th>Monoisotopic mass</th><th>Average mass</th><th>Formula</th></tr>\n");
 		for (AminoAcid acid : data.values()) {
 			result
-					.append(acid.getCode()).append('\t')
-					.append(acid.getCode3()).append('\t')
-					.append(acid.getMonoisotopicMass()).append('\t')
-					.append(acid.getAverageMass()).append('\t')
-					.append(acid.getFormula()).append('\n');
+					.append("<tr><td>")
+					.append(acid.getCode()).append("</td><td>")
+					.append(acid.getCode3()).append("</td><td>")
+					.append(acid.getMonoisotopicMass()).append("</td><td>")
+					.append(acid.getAverageMass()).append("</td><td>")
+					.append(acid.getFormula()).append("</td></tr>\n");
 		}
+		result.append("</table>");
 		return result.toString();
 	}
 }

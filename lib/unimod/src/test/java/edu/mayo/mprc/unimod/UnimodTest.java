@@ -119,7 +119,7 @@ public final class UnimodTest {
 	@Test
 	public void shouldMatchExpectedParse() {
 		final Unimod unimod = UnimodTest.getDefaultUnimodSet();
-		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine(unimod.report(), "edu/mayo/mprc/unimod/unimod_report.txt"), null, "Unimod does not match the expected result");
+		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine(unimod.report(), "edu/mayo/mprc/unimod/unimod_report.html"), null, "Unimod does not match the expected result");
 	}
 
 	/**

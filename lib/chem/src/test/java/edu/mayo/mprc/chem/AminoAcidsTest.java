@@ -32,6 +32,6 @@ public final class AminoAcidsTest {
 	 */
 	@Test
 	public void shouldProduceReport() {
-		Assert.assertNull(TestingUtilities.compareStringToResourceByLine(set.report(), "edu/mayo/mprc/chem/amino_acid_report.txt"), "Amino acids do not match.");
+		Assert.assertNull(TestingUtilities.compareStringToResourceByLine(set.report(), "edu/mayo/mprc/chem/amino_acid_report.html"), "Amino acids do not match.");
 	}
 }

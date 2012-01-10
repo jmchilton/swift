@@ -21,11 +21,19 @@ public final class AminoAcidReport extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("text/tab-separated-values");
+		resp.setContentType("text/html");
 		OutputStreamWriter writer = null;
 		try {
 			writer = new OutputStreamWriter(resp.getOutputStream(), Charsets.US_ASCII);
+			writer.write("<html><head><title>Amino Acids defined in Swift</title>" +
+					"<style>" +
+					"table { border-collapse: collapse }" +
+					"table td, table th { border: 1px solid black }" +
+					"</style>" +
+					"</head><body>");
+			writer.write("<h1>Amino acids defined in Swift</h1>");
 			writer.write(AminoAcidSet.DEFAULT.report());
+			writer.write("</body></html>");
 		} finally {
 			FileUtilities.closeQuietly(writer);
 		}

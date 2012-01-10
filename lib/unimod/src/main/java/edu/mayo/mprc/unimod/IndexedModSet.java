@@ -403,31 +403,32 @@ public class IndexedModSet implements Set<Mod> {
 	/**
 	 * Dump entire modification set into a large tsv report.
 	 *
-	 * @return TSV describing in detail all the peculiarities of modifications defined in this set.
+	 * @return HTML table describing in detail all the peculiarities of modifications defined in this set.
 	 */
 	public String report() {
 		StringBuilder result = new StringBuilder(modifications.size() * REPORT_ENTRY_SIZE);
-		result.append("Record Id\tTitle\tFull Name\tMono Mass\tAverage Mass\tComposition\tAlt Names\t" +
-				"Specificity Site\tSpecificity Terminus\tSpecificity Protein Only\tSpecificity Group\tHidden\tComments\n");
+		result.append("<table>\n<tr><th>Record Id</th><th>Title</th><th>Full Name</th><th>Mono Mass</th><th>Average Mass</th><th>Composition</th><th>Alt Names</th><th>" +
+				"Specificity Site</th><th>Specificity Terminus</th><th>Specificity Protein Only</th><th>Specificity Group</th><th>Hidden</th><th>Comments</th></tr>\n");
 		for (Mod mod : modifications) {
 			TreeSet<ModSpecificity> orderedModSpecificities = new TreeSet<ModSpecificity>(mod.getModSpecificities());
 			for (ModSpecificity specificity : orderedModSpecificities) {
-				result.append(mod.getRecordID())
-						.append('\t').append(mod.getTitle())
-						.append('\t').append(mod.getFullName())
-						.append('\t').append(mod.getMassMono())
-						.append('\t').append(mod.getMassAverage())
-						.append('\t').append(mod.getComposition())
-						.append('\t').append(cleanWhitespace(Joiner.on(", ").join(new TreeSet<String>(mod.getAltNames()))))
-						.append('\t').append(specificity.getSite())
-						.append('\t').append(specificity.getTerm())
-						.append('\t').append(specificity.isPositionProteinSpecific())
-						.append('\t').append(specificity.getSpecificityGroup())
-						.append('\t').append(specificity.getHidden())
-						.append('\t').append(cleanWhitespace(specificity.getComments()))
-						.append('\n');
+				result.append("<tr><td>").append(mod.getRecordID())
+						.append("</td><td>").append(mod.getTitle())
+						.append("</td><td>").append(mod.getFullName())
+						.append("</td><td>").append(mod.getMassMono())
+						.append("</td><td>").append(mod.getMassAverage())
+						.append("</td><td>").append(mod.getComposition())
+						.append("</td><td>").append(cleanWhitespace(Joiner.on(", ").join(new TreeSet<String>(mod.getAltNames()))))
+						.append("</td><td>").append(specificity.getSite())
+						.append("</td><td>").append(specificity.getTerm())
+						.append("</td><td>").append(specificity.isPositionProteinSpecific())
+						.append("</td><td>").append(specificity.getSpecificityGroup())
+						.append("</td><td>").append(specificity.getHidden())
+						.append("</td><td>").append(cleanWhitespace(specificity.getComments()))
+						.append("</td></tr>\n");
 			}
 		}
+		result.append("</table>");
 		return result.toString();
 	}
 
