@@ -113,9 +113,9 @@ public class TestScaffoldSpectraSummarizer {
 	}
 
 	/**
-	 * Large report shoudl be loaded correctly.
+	 * Large report should be loaded correctly.
 	 */
-	@Test(enabled = false)
+	@Test
 	public void shouldLoadLargeReport() {
 		final Reader reader = ResourceUtilities.getReader(LARGE, TestScaffoldSpectraSummarizer.class);
 		try {
