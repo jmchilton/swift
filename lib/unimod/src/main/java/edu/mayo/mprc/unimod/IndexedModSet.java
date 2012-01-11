@@ -433,6 +433,9 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	static String cleanWhitespace(String text) {
+		if (text == null) {
+			return "";
+		}
 		return CLEAN_COMMENTS.matcher(text).replaceAll(" ");
 	}
 

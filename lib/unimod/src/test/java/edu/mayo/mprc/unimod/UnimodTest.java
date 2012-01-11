@@ -4,7 +4,6 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
-import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
@@ -19,8 +18,6 @@ import java.util.Set;
  */
 @Test(sequential = true)
 public final class UnimodTest {
-	private static final Logger LOGGER = Logger.getLogger(UnimodTest.class);
-
 	private Unimod umodSet;
 
 	private static Unimod defaultUnimod;
@@ -129,5 +126,6 @@ public final class UnimodTest {
 	public void shouldCleanupComments() {
 		Assert.assertEquals(IndexedModSet.cleanWhitespace("a\nb\r\nc"), "a b c");
 		Assert.assertEquals(IndexedModSet.cleanWhitespace("a          b"), "a b");
+		Assert.assertEquals(IndexedModSet.cleanWhitespace(null), "");
 	}
 }
