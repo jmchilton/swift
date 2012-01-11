@@ -42,6 +42,39 @@ public final class SequestMappings implements Mappings, Cloneable {
 	private static final Pattern EQUALS = Pattern.compile("^.*\\=.*$");
 	private static final Pattern PARSE_LINE = Pattern.compile("^\\s*([^\\s=]+)\\s*=\\s*([^;]*)(\\s*;.*)?$");
 
+	private static final String[] FIXED_MODS = new String[]{
+			"add_Cterm_peptide",
+			"add_Cterm_protein",
+			"add_Nterm_peptide",
+			"add_Nterm_protein",
+			"add_G_Glycine",
+			"add_A_Alanine",
+			"add_S_Serine",
+			"add_P_Proline",
+			"add_V_Valine",
+			"add_T_Threonine",
+			"add_C_Cysteine",
+			"add_L_Leucine",
+			"add_I_Isoleucine",
+			"add_X_LorI",
+			"add_N_Asparagine",
+			"add_O_Ornithine",
+			"add_B_avg_NandD",
+			"add_D_Aspartic_Acid",
+			"add_Q_Glutamine",
+			"add_K_Lysine",
+			"add_Z_avg_QandE",
+			"add_E_Glutamic_Acid",
+			"add_M_Methionine",
+			"add_H_Histidine",
+			"add_F_Phenylalanine",
+			"add_R_Arginine",
+			"add_Y_Tyrosine",
+			"add_W_Tryptophan",
+			"add_J_user_amino_acid",
+			"add_U_user_amino_acid"
+	};
+
 	/**
 	 * It is important to use linked hash map because the {@link SequestToMakeDBConverter} depends
 	 * on ordering of the native params.
@@ -283,11 +316,11 @@ public final class SequestMappings implements Mappings, Cloneable {
 			masses.put(key, d + mass);
 		}
 
-		for (String param : nativeParams.keySet()) {
-			Matcher m = FIXED.matcher(param);
-			if (m.matches()) {
-				String ssite = m.group(1);
-				String pos = m.group(2);
+		for (String param : FIXED_MODS) {
+			Matcher matcher = FIXED.matcher(param);
+			if (matcher.matches()) {
+				String ssite = matcher.group(1);
+				String pos = matcher.group(2);
 				String site;
 				if (pos.startsWith("protein") || pos.startsWith("peptide")) {
 					site = ssite + "_" + pos;
@@ -295,9 +328,9 @@ public final class SequestMappings implements Mappings, Cloneable {
 					site = ssite;
 				}
 				if (masses.containsKey(site)) {
-					setNativeParam(m.group(), String.valueOf(masses.get(site)));
+					setNativeParam(matcher.group(), String.valueOf(masses.get(site)));
 				} else {
-					setNativeParam(m.group(), "0.0");
+					setNativeParam(matcher.group(), "0.0");
 				}
 			}
 		}

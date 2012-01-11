@@ -9,6 +9,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Check that sequest is mapping mods properly.
+ *
  * @author Roman Zenka
  */
 public final class TestSequestVariableMods {
@@ -113,7 +115,7 @@ public final class TestSequestVariableMods {
 	 * @param modSet List of mods to add modifications to.
 	 * @param mods   Mascot names of mods to add in "mod_name(residue)" format.
 	 */
-	private void addMods(ModSet modSet, String... mods) {
+	public void addMods(ModSet modSet, String... mods) {
 		for (String mod : mods) {
 			modSet.addAll(context.getAbstractParamsInfo().getUnimod().getSpecificitiesByMascotName(mod));
 		}
