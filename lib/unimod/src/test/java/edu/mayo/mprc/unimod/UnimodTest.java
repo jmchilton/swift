@@ -113,6 +113,25 @@ public final class UnimodTest {
 		Assert.assertEquals(massMap.size(), 1276, "Wrong amount of unimod modifications");
 	}
 
+	/**
+	 * Unimod parse should match precisely the expected report.
+	 */
+	@Test
+	public void shouldMatchExpectedParse() {
+		final Unimod unimod = UnimodTest.getDefaultUnimodSet();
+		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine(unimod.report(), "edu/mayo/mprc/unimod/unimod_report.html"), null, "Unimod does not match the expected result");
+	}
+
+	/**
+	 * When cleaning up comments, newlines are removed as well as excessive tabs and spaces.
+	 */
+	@Test
+	public void shouldCleanupComments() {
+		Assert.assertEquals(IndexedModSet.cleanWhitespace("a\nb\r\nc"), "a b c");
+		Assert.assertEquals(IndexedModSet.cleanWhitespace("a          b"), "a b");
+		Assert.assertEquals(IndexedModSet.cleanWhitespace(null), "");
+	}
+	
 	@Test
 	void shouldLoadScaffoldUnimod() throws IOException, SAXException {
 		final Unimod unimod = new Unimod();
@@ -124,7 +143,7 @@ public final class UnimodTest {
 	}
 
 	@Test
-	void shouldConvertUnimod1Composition() {
+	void shouldConvertUnimodComposition() {
 		Assert.assertEquals(Unimod1Handler.convertComposition("H(-1) H2(3) C(2) O"), "H(-1) 2H(3) C(2) O");
 		Assert.assertEquals(Unimod1Handler.convertComposition("H(-1) N(-1) O18"), "H(-1) N(-1) 18O");
 		Assert.assertEquals(Unimod1Handler.convertComposition("H(24) C(19) N(8) O(15) P(2) S(3) Cu Mo"), "H(24) C(19) N(8) O(15) P(2) S(3) Cu Mo");
@@ -135,5 +154,5 @@ public final class UnimodTest {
 		String dump = unimod.debugDump();
 		final String expected = Resources.toString(Resources.getResource(UnimodTest.class, expectedDumpResource), Charsets.ISO_8859_1);
 		Assert.assertEquals(TestingUtilities.compareStringsByLine(dump, expected, true), null, "The unimod parse does not match");
-	}
+	}	
 }

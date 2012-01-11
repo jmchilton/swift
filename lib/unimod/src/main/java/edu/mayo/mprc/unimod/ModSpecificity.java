@@ -99,7 +99,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 	}
 
 	/**
-	 * Unimod "site" string specifying the amino acid where the modification is permitted; see class description for details.
+	 * Unimod "site" string specifying the amino acid where the modification is permitted; see {@link #site}
 	 */
 	public Character getSite() {
 		return site;

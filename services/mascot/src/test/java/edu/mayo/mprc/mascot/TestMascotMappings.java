@@ -21,7 +21,6 @@ public final class TestMascotMappings {
 		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
-		mapping.read(getMascotParamReader());
 
 		MappingContext context = new PhosphoStContext(abstractParamsInfo);
 
@@ -45,7 +44,6 @@ public final class TestMascotMappings {
 		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
-		mapping.read(getMascotParamReader());
 
 		MappingContext context = new PhosphoStContext(abstractParamsInfo);
 

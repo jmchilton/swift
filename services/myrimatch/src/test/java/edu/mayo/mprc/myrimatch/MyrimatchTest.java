@@ -199,7 +199,6 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldWriteChanges() throws IOException {
 		final MyrimatchMappings mappings = createMappings();
-		mappings.read(mappings.baseSettings());
 		compareMappingsToBase(mappings, null, null);
 
 		MappingContext mappingContext = createMappingContext();
@@ -215,7 +214,6 @@ public final class MyrimatchTest {
 
 			final MyrimatchMappings mappings = createMappings();
 			MappingContext mappingContext = createMappingContext();
-			mappings.read(mappings.baseSettings());
 			mappings.setProtease(mappingContext, new Protease("Trypsin (allow P)", "KR", ""));
 			mappings.setMissedCleavages(mappingContext, 2);
 
@@ -443,7 +441,6 @@ public final class MyrimatchTest {
 		MyrimatchMappingFactory factory = new MyrimatchMappingFactory();
 		Assert.assertEquals(factory.getCanonicalParamFileName(), "myrimatch.cfg" );
 		final MyrimatchMappings mapping = (MyrimatchMappings) factory.createMapping();
-		mapping.read(mapping.baseSettings());
 		return mapping;
 	}
 

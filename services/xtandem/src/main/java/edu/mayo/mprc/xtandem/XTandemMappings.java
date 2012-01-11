@@ -24,7 +24,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class XTandemMappings implements Mappings {
@@ -42,6 +41,7 @@ public final class XTandemMappings implements Mappings {
 	private static final String MISSED_CLEAVAGES = "scoring, maximum missed cleavage sites";
 
 	private static final Pattern IONS_PATTERN = Pattern.compile("^scoring, (.*) ions");
+	private static final String[] SUPPORTED_IONS = new String[]{"x", "y", "z", "a", "b", "c"};
 
 	/**
 	 * We recognize all following params plus anything that matches {@link #IONS_PATTERN}.
@@ -270,21 +270,18 @@ public final class XTandemMappings implements Mappings {
 		for (IonSeries is : instrument.getSeries()) {
 			hasSeries.put(is.getName(), is);
 		}
-		for (String p : nativeParams.keySet()) {
-			Matcher matcher = IONS_PATTERN.matcher(p);
-			if (matcher.matches()) {
-				String seriesname = matcher.group(1);
-				if (hasSeries.containsKey(seriesname)) {
-					setNativeParam(p, "yes");
-					hasSeries.remove(seriesname);
-				} else {
-					setNativeParam(p, "no");
-				}
+		for (String seriesName : SUPPORTED_IONS) {
+			String paramName = "scoring, " + seriesName + " ions";
+			if (hasSeries.containsKey(seriesName)) {
+				setNativeParam(paramName, "yes");
+				hasSeries.remove(seriesName);
+			} else {
+				setNativeParam(paramName, "no");
 			}
 		}
 
-		for (String seriesname : hasSeries.keySet()) {
-			context.reportWarning("Tandem doesn't support ion series " + seriesname);
+		for (String s : hasSeries.keySet()) {
+			context.reportWarning("Tandem doesn't support ion series " + s);
 		}
 	}
 }

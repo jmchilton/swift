@@ -1,6 +1,8 @@
 package edu.mayo.mprc.utilities;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
+import com.google.common.io.Resources;
 import edu.mayo.mprc.MprcException;
 import org.apache.log4j.Logger;
 
@@ -38,14 +40,15 @@ public final class TestingUtilities {
 	}
 
 	/**
-	 * @param autoDelete set to true if you want to have the file cleaned up on JVM exit, no guareentee but...
-	 * @param suffix
+	 * @param autoDelete   set to true if you want to have the file cleaned up on JVM exit, no guareentee but...
+	 * @param parentFolder Where to create the file. When null, uses default temp folder.
+	 * @param suffix       Suffix for the file.
 	 * @return A temporary file.
 	 * @throws IOException The file could not be created.
 	 */
 	public static File getUniqueTempFile(final boolean autoDelete, File parentFolder, String suffix) throws IOException {
 		File tmpFile = File.createTempFile(
-				"test_" + (new SimpleDateFormat("ddMMMyyyy-HHmmss").format(new Date())),
+				"test_" + new SimpleDateFormat("ddMMMyyyy-HHmmss").format(new Date()),
 				suffix,
 				parentFolder);
 		if (autoDelete) {
@@ -301,5 +304,24 @@ public final class TestingUtilities {
 		calendar.setTimeInMillis(0);
 		calendar.set(year, month - 1, day, 0, 0, 0);
 		return calendar.getTime();
+	}
+
+	/**
+	 * Check that given string matches what is in a given resource file.
+	 * <p/>
+	 * Check is done line by line, each line gets trimmed before comparison.
+	 *
+	 * @param actual           What we got.
+	 * @param expectedResource Name of the resource containing what we expect to see.
+	 * @return String describing the first difference, or null if identical. See {@link #compareStringsByLine}
+	 */
+	public static String compareStringToResourceByLine(String actual, String expectedResource) {
+		final String expected;
+		try {
+			expected = Resources.toString(Resources.getResource(expectedResource), Charsets.UTF_8);
+		} catch (IOException e) {
+			throw new MprcException("Could not compare to resource [" + expectedResource + "]", e);
+		}
+		return compareStringsByLine(actual, expected, true);
 	}
 }

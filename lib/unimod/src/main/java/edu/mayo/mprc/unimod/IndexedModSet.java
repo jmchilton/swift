@@ -1,5 +1,6 @@
 package edu.mayo.mprc.unimod;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.ComparisonChain;
@@ -12,6 +13,12 @@ import java.util.regex.Pattern;
  * A set of Modifications.
  */
 public class IndexedModSet implements Set<Mod> {
+	/**
+	 * How many characters does one mod take in the report on average.
+	 */
+	private static final int REPORT_ENTRY_SIZE = 100;
+	private static final Pattern CLEAN_COMMENTS = Pattern.compile("\\s+");
+
 	private String name;
 	/**
 	 * all modification in this set
@@ -417,6 +424,45 @@ public class IndexedModSet implements Set<Mod> {
 			}
 		}
 		return chain.result();
+	}
+
+	/**
+	 * Dump entire modification set into a large tsv report.
+	 *
+	 * @return HTML table describing in detail all the peculiarities of modifications defined in this set.
+	 */
+	public String report() {
+		StringBuilder result = new StringBuilder(modifications.size() * REPORT_ENTRY_SIZE);
+		result.append("<table>\n<tr><th>Record Id</th><th>Title</th><th>Full Name</th><th>Mono Mass</th><th>Average Mass</th><th>Composition</th><th>Alt Names</th><th>" +
+				"Specificity Site</th><th>Specificity Terminus</th><th>Specificity Protein Only</th><th>Specificity Group</th><th>Hidden</th><th>Comments</th></tr>\n");
+		for (Mod mod : modifications) {
+			TreeSet<ModSpecificity> orderedModSpecificities = new TreeSet<ModSpecificity>(mod.getModSpecificities());
+			for (ModSpecificity specificity : orderedModSpecificities) {
+				result.append("<tr><td>").append(mod.getRecordID())
+						.append("</td><td>").append(mod.getTitle())
+						.append("</td><td>").append(mod.getFullName())
+						.append("</td><td>").append(mod.getMassMono())
+						.append("</td><td>").append(mod.getMassAverage())
+						.append("</td><td>").append(mod.getComposition())
+						.append("</td><td>").append(cleanWhitespace(Joiner.on(", ").join(new TreeSet<String>(mod.getAltNames()))))
+						.append("</td><td>").append(specificity.getSite())
+						.append("</td><td>").append(specificity.getTerm())
+						.append("</td><td>").append(specificity.isPositionProteinSpecific())
+						.append("</td><td>").append(specificity.getSpecificityGroup())
+						.append("</td><td>").append(specificity.getHidden())
+						.append("</td><td>").append(cleanWhitespace(specificity.getComments()))
+						.append("</td></tr>\n");
+			}
+		}
+		result.append("</table>");
+		return result.toString();
+	}
+
+	static String cleanWhitespace(String text) {
+		if (text == null) {
+			return "";
+		}
+		return CLEAN_COMMENTS.matcher(text).replaceAll(" ");
 	}
 
 	public boolean equals(Object obj) {

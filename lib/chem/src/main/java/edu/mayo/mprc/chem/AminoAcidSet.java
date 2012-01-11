@@ -19,6 +19,7 @@ public final class AminoAcidSet {
 
 	private static final double MONOISOTOPIC_WATER_MASS = 18.010565;
 	public static final AminoAcidSet DEFAULT = new AminoAcidSet();
+	private static final int AA_REPORT_SIZE = 5000;
 
 
 	/**
@@ -71,7 +72,7 @@ public final class AminoAcidSet {
 	}
 
 	/**
-	 * Return amino acid corresponding to givem single letter code.
+	 * Return amino acid corresponding to given single letter code.
 	 *
 	 * @param code One letter code to look up.
 	 * @return Null if such amino acid does not exist.
@@ -109,4 +110,22 @@ public final class AminoAcidSet {
 		return names;
 	}
 
+	/**
+	 * @return An HTML table listing the amino acids.
+	 */
+	public String report() {
+		StringBuilder result = new StringBuilder(AA_REPORT_SIZE);
+		result.append("<table>\n<tr><th>Code</th><th>Three letter code</th><th>Monoisotopic mass</th><th>Average mass</th><th>Formula</th></tr>\n");
+		for (AminoAcid acid : data.values()) {
+			result
+					.append("<tr><td>")
+					.append(acid.getCode()).append("</td><td>")
+					.append(acid.getCode3()).append("</td><td>")
+					.append(acid.getMonoisotopicMass()).append("</td><td>")
+					.append(acid.getAverageMass()).append("</td><td>")
+					.append(acid.getFormula()).append("</td></tr>\n");
+		}
+		result.append("</table>");
+		return result.toString();
+	}
 }
