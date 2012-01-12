@@ -9,9 +9,9 @@ import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,8 +22,10 @@ import java.util.regex.Pattern;
  */
 public final class ScaffoldModificationFormat {
 	private static final double MOD_DELTA_PRECISION = 0.005;
+	private static final String PYRO_CMC = "Pyro-cmC";
 	private IndexedModSet modSet;
 	private IndexedModSet scaffoldModSet;
+	private Boolean pyroCmcBroken = null;
 	/**
 	 * Example format:
 	 * <p/>
@@ -37,7 +39,7 @@ public final class ScaffoldModificationFormat {
 	 */
 	public ScaffoldModificationFormat(IndexedModSet modSet, IndexedModSet scaffoldModSet) {
 		this.modSet = modSet;
-		this.scaffoldModSet = scaffoldModSet;
+		setScaffoldModSet(scaffoldModSet);
 	}
 
 	/**
@@ -95,8 +97,19 @@ public final class ScaffoldModificationFormat {
 				position = sequence.length() - 1;
 			} else {
 				residue = Character.toUpperCase(positionGroup.charAt(0));
-				terminus = Terminus.Anywhere;
 				position = Integer.parseInt(positionGroup.substring(1)) - 1;
+				// We are a bit stringent with the terminus... we specifically ask for e.g. Nterm if
+				// we happen to be at the beginning, knowing that mods with terminus set to "anywhere" will match as well.
+				// This will however not happen vice-versa, e.g. being at the first position and asking for Anywhere mod
+				// would not actually match the n-terminus mod, because that is a more stringent requirement.
+				if (position == 0) {
+					terminus = Terminus.Nterm;
+				} else if (position == sequence.length() - 1) {
+					terminus = Terminus.Cterm;
+				} else {
+					terminus = Terminus.Anywhere;
+				}
+
 				final char sequenceResidue = Character.toUpperCase(sequence.charAt(position));
 				if (sequenceResidue != residue) {
 					throw new MprcException("The modification was reported at [" + residue + "] but the peptide sequence lists [" + sequenceResidue + "]");
@@ -129,6 +142,7 @@ public final class ScaffoldModificationFormat {
 		if (matchingMod == null) {
 			matchingMod = modSet.getByTitle(scaffoldMod.getTitle());
 		}
+		matchingMod = fixTandemPyro(matchingMod, scaffoldSpecificity);
 		if (!Objects.equal(matchingMod.getComposition(), scaffoldMod.getComposition())) {
 			throw new MprcException("Modification reported by Scaffold does not match your unimod modification. " +
 					"RecordId=[" + recordId + "], " +
@@ -152,12 +166,12 @@ public final class ScaffoldModificationFormat {
 	 * <p/>
 	 * Out of all those mods we pick the first one with a matching mod title. If no such mod is present, we throw an exception.
 	 * <p/>
-	 * HACK: See {@link #fixPyroCmc}.
+	 * HACK: See {@link #fixTandemPyro}.
 	 */
 	private ModSpecificity matchScaffoldMod(String position, String title, String deltaString, double delta, char residue, Terminus terminus) {
-		final Set<ModSpecificity> matchingModSpecificities = scaffoldModSet.findMatchingModSpecificities(delta - MOD_DELTA_PRECISION, delta + MOD_DELTA_PRECISION, residue, terminus, null, null);
+		final Collection<ModSpecificity> matchingModSpecificities = scaffoldModSet.findMatchingModSpecificities(delta, MOD_DELTA_PRECISION, residue, terminus, null, null);
 
-		String effectiveTitle = fixPyroCmc(title, residue, terminus);
+		String effectiveTitle = fixTandemPyro(title, residue, terminus);
 
 		for (ModSpecificity specificity : matchingModSpecificities) {
 			if (effectiveTitle.equalsIgnoreCase(specificity.getModification().getTitle())) {
@@ -168,17 +182,56 @@ public final class ScaffoldModificationFormat {
 	}
 
 	/**
-	 * * HACK: There is a bug in Scaffold-bundled unimod that lists pyro-cmC to have same delta as pyro-Glu. If we run into pyro-cmC and the
-	 * composition is equivalent to the broken one, we replace the mod with pyro-Glu. This happens for X!Tandem a lot.
+	 * HACK: There is a bug in Scaffold-bundled unimod that lists pyro-cmC to have same delta as pyro-Glu. If we run into pyro-cmC and the
+	 * composition is equivalent to the broken one (NH3), we replace the mod with pyro-Glu. This happens for X!Tandem a lot.
 	 */
-	private String fixPyroCmc(String title, char residue, Terminus terminus) {
+	private String fixTandemPyro(String title, char residue, Terminus terminus) {
 		String effectiveTitle = title;
-		if ("Pyro-cmC".equalsIgnoreCase(title) && (residue == 'Q' || terminus == Terminus.Nterm)) {
-			final Mod brokenMod = scaffoldModSet.getByTitle("Pyro-cmC");
-			if (brokenMod != null && "H(-3) N(-1)".equals(brokenMod.getComposition())) {
-				effectiveTitle = "Pyro-glu";
+		if (PYRO_CMC.equalsIgnoreCase(title)) {
+			if (residue == 'Q') {
+				if (checkPyroCmcBroken()) {
+					effectiveTitle = "Pyro-glu";
+				}
 			}
 		}
 		return effectiveTitle;
+	}
+
+	/**
+	 * HACK: Anothe part of the workaround. pyro-cmC on carbamidomethylated C as reported by Scaffold
+	 * should actually be reported as Ammonia-loss.
+	 *
+	 * @param matchingMod         What we found in our database.
+	 * @param scaffoldSpecificity What Scaffold requested.
+	 * @return Cleaned up matching mod in case we ran into the X!Tandem pyro-cmC problem
+	 */
+	private Mod fixTandemPyro(Mod matchingMod, ModSpecificity scaffoldSpecificity) {
+		// It is the broken PYRO_CMC mod
+		if (PYRO_CMC.equalsIgnoreCase(scaffoldSpecificity.getModification().getTitle()) && checkPyroCmcBroken()) {
+			// Replace the modification with ammonia loss (-NH3) on the top of carbamidomethylation
+			return modSet.getByTitle("Ammonia-loss");
+		}
+		return matchingMod;
+	}
+
+	/**
+	 * @return True if the Pyro-cmC mod is broken (lists NH3 as its composition).
+	 */
+	private boolean checkPyroCmcBroken() {
+		if (pyroCmcBroken == null) {
+			final Mod brokenMod = scaffoldModSet.getByTitle("Pyro-cmC");
+			pyroCmcBroken = brokenMod != null && "H(-3) N(-1)".equals(brokenMod.getComposition());
+		}
+		return pyroCmcBroken;
+	}
+
+	/**
+	 * Whether pyroCmc is broken or not depends on the set of mods.
+	 *
+	 * @param scaffoldModSet New mod set to use.
+	 */
+	private void setScaffoldModSet(IndexedModSet scaffoldModSet) {
+		this.scaffoldModSet = scaffoldModSet;
+		pyroCmcBroken = null;
 	}
 }

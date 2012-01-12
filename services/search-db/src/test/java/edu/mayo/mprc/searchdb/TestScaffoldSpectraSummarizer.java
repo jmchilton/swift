@@ -123,9 +123,9 @@ public class TestScaffoldSpectraSummarizer {
 			summarizer.load(reader, LARGE, "3");
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), TestingUtilities.getDate(2011, 10, 18), "Report date");
-			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
+			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.2.0", "Scaffold version");
 
-			Assert.assertEquals(analysis.getBiologicalSamples().size(), 4, "Biological samples");
+			Assert.assertEquals(analysis.getBiologicalSamples().size(), 9, "Biological samples");
 
 			checkAnalysisMatch(analysis, LARGE_EXPECTED);
 		} finally {
