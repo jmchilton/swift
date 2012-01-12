@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,16 +58,6 @@ public final class MyrimatchTest {
 	}
 
 	@Test
-	public final void shouldReadBaseSettings() {
-		final MyrimatchMappings mapping = createMappings();
-		final Map<String, String> nativeParams = mapping.getNativeParams();
-		for (Map.Entry<String, String> entry : nativeParams.entrySet()) {
-			Assert.assertNotNull(entry.getKey(), "The base must define all keys" );
-			Assert.assertNotNull(entry.getValue(), "The base must define all values" );
-		}
-	}
-
-	@Test
 	public final void shouldMapFixedMods() {
 		final MyrimatchMappings mappings = createMappings();
 		MappingContext mappingContext = createMappingContext();
@@ -78,14 +67,14 @@ public final class MyrimatchTest {
 		mappings.setFixedMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.STATIC_MODS), "", "Should report no mods" );
 
-		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.99, 16.0, 'M', null, null, null);
+		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.995, 0.005, 'M', null, null, null);
 		// final ModSpecificity oxidationMethionine = unimod.getSpecificitiesByMascotName("Oxidation (M)").get(0);
 		Assert.assertNotNull(oxidationMethionine, "Not found Oxidation(M)" );
 		mods.add(oxidationMethionine);
 		mappings.setFixedMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.STATIC_MODS), "M 15.994915", "Should report Methionine modification" );
 
-		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.0, 57.05, 'C', null, null, null);
+		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.025, 0.025, 'C', null, null, null);
 		Assert.assertNotNull(carbamidomethyl, "Not found Carbamidomethyl(C)" );
 		mods.add(carbamidomethyl);
 		mappings.setFixedMods(mappingContext, mods);
@@ -102,26 +91,26 @@ public final class MyrimatchTest {
 		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "", "Should report no mods" );
 
-		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.99, 16.0, 'M', null, null, null);
+		final ModSpecificity oxidationMethionine = unimod.findSingleMatchingModificationSet(15.995, 0.005, 'M', null, null, null);
 		// final ModSpecificity oxidationMethionine = unimod.getSpecificitiesByMascotName("Oxidation (M)").get(0);
 		Assert.assertNotNull(oxidationMethionine, "Not found Oxidation(M)" );
 		mods.add(oxidationMethionine);
 		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "M * 15.994915", "Should report Methionine modification" );
 
-		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.0, 57.05, 'C', null, null, null);
+		final ModSpecificity carbamidomethyl = unimod.findSingleMatchingModificationSet(57.025, 0.025, 'C', null, null, null);
 		Assert.assertNotNull(carbamidomethyl, "Not found Carbamidomethyl(C)" );
 		mods.add(carbamidomethyl);
 		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "C * 57.021464 M ^ 15.994915", "Should report two mods" );
 
-		final ModSpecificity dimethyl = unimod.findSingleMatchingModificationSet(28.031, 28.032, 'P', null, null, null);
+		final ModSpecificity dimethyl = unimod.findSingleMatchingModificationSet(28.0315, 0.0005, 'P', null, null, null);
 		Assert.assertNotNull(dimethyl, "Not found Dimethyl(Protein N-term P)" );
 		mods.add(dimethyl);
 		mappings.setVariableMods(mappingContext, mods);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.DYNAMIC_MODS), "C * 57.021464 (P ^ 28.0313 M @ 15.994915", "Should report three mods" );
 
-		final ModSpecificity homoserine = unimod.findSingleMatchingModificationSet(-29.9929, -29.9928, 'M', Terminus.Cterm, false, null);
+		final ModSpecificity homoserine = unimod.findSingleMatchingModificationSet(-29.99285, 0.00005, 'M', Terminus.Cterm, false, null);
 		Assert.assertNotNull(homoserine, "Not found Homoserine(C-term M)" );
 		mods.add(homoserine);
 		mappings.setVariableMods(mappingContext, mods);
