@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,11 +97,11 @@ public final class UnimodTest {
 
 		//Set<Modification> findMatchingMods(Double minMass, Double maxMass, String site, String position, Boolean hidden)
 
-		Set<ModSpecificity> result1 = umodSet.findMatchingModSpecificities(-18.010566d, -18.010564d, null, null, null, null);
+		List<ModSpecificity> result1 = umodSet.findMatchingModSpecificities(-18.010565d, 0.000001d, null, null, null, null);
 
 		Assert.assertEquals(result1.size(), 8);
 
-		Set<ModSpecificity> result2 = umodSet.findMatchingModSpecificities(null, null, null, Terminus.Nterm, null, false);
+		List<ModSpecificity> result2 = umodSet.findMatchingModSpecificities(null, null, null, Terminus.Nterm, null, false);
 
 		Assert.assertEquals(result2.size(), 19);
 
@@ -131,7 +132,7 @@ public final class UnimodTest {
 		Assert.assertEquals(IndexedModSet.cleanWhitespace("a          b"), "a b");
 		Assert.assertEquals(IndexedModSet.cleanWhitespace(null), "");
 	}
-	
+
 	@Test
 	void shouldLoadScaffoldUnimod() throws IOException, SAXException {
 		final Unimod unimod = new Unimod();
@@ -154,5 +155,5 @@ public final class UnimodTest {
 		String dump = unimod.debugDump();
 		final String expected = Resources.toString(Resources.getResource(UnimodTest.class, expectedDumpResource), Charsets.ISO_8859_1);
 		Assert.assertEquals(TestingUtilities.compareStringsByLine(dump, expected, true), null, "The unimod parse does not match");
-	}	
+	}
 }

@@ -1,10 +1,14 @@
 package edu.mayo.mprc.unimod;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.ComparisonChain;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -188,55 +192,182 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	/**
-	 * Finds the ModificationSpecifities that meet the requirements specified. Requirement set to null is not considered.
+	 * Finds the ModificationSpecifities that could occur for specified parameters.
+	 * <p/>
+	 * For instance, if we want Q on N-terminus, then all mods that modify Q anywhere match, all mods that modify anything on N-term will match,
+	 * as well as mods that specifically modify Q at the N-terminus.
+	 * <p/>
+	 * This means that different matches have different quality. We attempt to sort them by the closeness of the match as follows:
+	 * <p/>
+	 * 1) first comes anything that matches exactly what you asked for, ordered by distance from
+	 * <p/>
+	 * <p/>
+	 * Requirement set to null is not considered.
 	 * For a set of all modifications, set all parameters to null.
 	 *
-	 * @param minMass     the minimum mass
-	 * @param maxMass     the maximum mass
+	 * @param mass        the expected mass
+	 * @param maxDelta    the maximum delta allowed
 	 * @param site        the specificity site. If null, we do not care. The site can be more specific than the actual mod and still match. E.g. we ask for Q, but the mod allows "anywhere".
-	 * @param terminus    the specificity terminus
+	 * @param terminus    the specificity terminus. The terminus can be more specific than the mod. For instance, if we are asking for N-term and the mod allows "anywhere", it will match.
 	 * @param proteinOnly if terminus is set, specify if it has to be protein terminus
 	 * @param hidden      whether the modification is hidden or not
-	 * @return a set of modifications that match the given parameters
+	 * @return a list of admissible modifications, ordered by the quality of the match
 	 */
-	public Set<ModSpecificity> findMatchingModSpecificities(Double minMass, Double maxMass, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
+	public List<ModSpecificity> findMatchingModSpecificities(Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
 		Collection<List<Mod>> inRange = null;
-		if (minMass != null && maxMass != null) {
-			inRange = deltaMonoMassIndex.subMap(minMass, maxMass).values();
+		if (mass != null && maxDelta != null) {
+			inRange = deltaMonoMassIndex.subMap(mass - maxDelta, mass + maxDelta).values();
 		} else {
 			inRange = deltaMonoMassIndex.values();
 		}
 
-		Set<ModSpecificity> modsInMassRange = collectModSpecificities(inRange);
+		Collection<ModSpecificity> modsInMassRange = collectModSpecificities(inRange);
 
-		Set<ModSpecificity> matchingModSpecificities = new HashSet<ModSpecificity>();
+		ArrayList<ModSpecificityMatch> matchingModSpecificities = new ArrayList<ModSpecificityMatch>();
 		for (ModSpecificity sp : modsInMassRange) {
-			if (site != null && !siteMatches(site, sp)) {
-				continue;
+			final ModSpecificityMatch match = ModSpecificityMatch.match(sp, mass, maxDelta, site, terminus, proteinOnly, hidden);
+			if (match != null) {
+				matchingModSpecificities.add(match);
 			}
-			if (terminus != null && !sp.getTerm().equals(terminus)) {
-				continue;
-			}
-			if (proteinOnly != null && !proteinOnly.equals(sp.isProteinOnly())) {
-				continue;
-			}
-			if (hidden != null && !hidden.equals(sp.getHidden())) {
-				continue;
-			}
-			matchingModSpecificities.add(sp);
 		}
-		return matchingModSpecificities;
+
+		return Lists.transform(
+				Ordering.natural().sortedCopy(matchingModSpecificities),
+				ModSpecificityMatch.GET_MOD_SPECIFICITY);
 	}
 
 	/**
-	 * Either we have an exact match, or the mod specificity allows any site.
-	 *
-	 * @param expectedSite Site we expect to see.
-	 * @param sp           Specificity to match the site against.
-	 * @return True if this site matches the specificity.
+	 * Captures how well did a given mod specificity match.
 	 */
-	private boolean siteMatches(Character expectedSite, ModSpecificity sp) {
-		return sp.getSite().equals(expectedSite) || !sp.isSiteSpecificAminoAcid();
+	private static final class ModSpecificityMatch implements Comparable<ModSpecificityMatch> {
+		private final ModSpecificity matchingModSpecificity;
+		private final int siteMatch;
+		private final int terminusMatch;
+		private final int proteinOnlyMatch;
+		private final int hiddenMatch;
+		private final double massMatch;
+
+		private ModSpecificityMatch(ModSpecificity matchingModSpecificity, int siteMatch, int terminusMatch, int proteinOnlyMatch, int hiddenMatch, double massMatch) {
+			this.matchingModSpecificity = matchingModSpecificity;
+			this.siteMatch = siteMatch;
+			this.terminusMatch = terminusMatch;
+			this.proteinOnlyMatch = proteinOnlyMatch;
+			this.hiddenMatch = hiddenMatch;
+			this.massMatch = massMatch;
+		}
+
+		public static final Function<ModSpecificityMatch, ModSpecificity> GET_MOD_SPECIFICITY = new Function<ModSpecificityMatch, ModSpecificity>() {
+			@Override
+			public ModSpecificity apply(@Nullable ModSpecificityMatch from) {
+				return from.getMatchingModSpecificity();
+			}
+		};
+
+		public static ModSpecificityMatch match(ModSpecificity sp, Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
+			final int siteMatch = siteMatches(site, sp);
+			if (siteMatch == 0) {
+				return null;
+			}
+			final int terminusMatch = terminusMatches(terminus, sp);
+			if (terminusMatch == 0) {
+				return null;
+			}
+			final int proteinOnlyMatch = proteinOnly == null ? 1 : proteinOnly.equals(sp.isProteinOnly()) ? 10 : 0;
+			final int hiddenMatch = hidden == null ? (sp.getHidden() == true ? 1 : 2) : hidden.equals(sp.getHidden()) ? 10 : 0;
+			double delta = 0.0;
+			if (mass != null) {
+				delta = Math.abs(sp.getModification().getMassMono() - mass);
+				if (maxDelta != null && delta > maxDelta) {
+					return null;
+				}
+			}
+			return new ModSpecificityMatch(sp, siteMatch, terminusMatch, proteinOnlyMatch, hiddenMatch, delta);
+		}
+
+		public ModSpecificity getMatchingModSpecificity() {
+			return matchingModSpecificity;
+		}
+
+		/**
+		 * Either we have exact match (we require terminus, mod has the terminus), or
+		 * the specificity does not require particular terminus.
+		 *
+		 * @param terminus Expected to be non-null.
+		 * @param sp       Specificity to match.
+		 * @return 0 - no match, 10 - perfect match
+		 */
+		private static int terminusMatches(Terminus terminus, ModSpecificity sp) {
+			if (terminus == null) {
+				return 1;
+			}
+			if (sp.getTerm() == terminus) {
+				return 10;
+			}
+			if (sp.getTerm() == Terminus.Anywhere) {
+				return 5;
+			}
+			return 0;
+		}
+
+		/**
+		 * Either we have an exact match, or the mod specificity allows any site.
+		 *
+		 * @param expectedSite Site we expect to see.
+		 * @param sp           Specificity to match the site against.
+		 * @return 0 - no match, 10 - perfect match
+		 */
+		private static int siteMatches(Character expectedSite, ModSpecificity sp) {
+			if (expectedSite == null) {
+				return 1;
+			}
+			if (sp.getSite().equals(expectedSite)) {
+				return 10;
+			}
+			if (!sp.isSiteSpecificAminoAcid()) {
+				return 5;
+			}
+			return 0;
+		}
+
+		/**
+		 * Site match is the most important, then terminus, augmented by protein-only flag.
+		 * Hidden flag is least important, lastly the mass delta is taken into account.
+		 * <p/>
+		 * The larger, the better, so the comparisions are flipped, except the last one.
+		 * <p/>
+		 * If everything is the same, the modification record id is used.
+		 */
+		@Override
+		public int compareTo(ModSpecificityMatch o) {
+			return ComparisonChain.start()
+					.compare(o.siteMatch, siteMatch)
+					.compare(o.terminusMatch, terminusMatch)
+					.compare(o.proteinOnlyMatch, proteinOnlyMatch)
+					.compare(o.hiddenMatch, hiddenMatch)
+					.compare(o.massMatch, massMatch)
+					.compare(matchingModSpecificity.getModification().getRecordID(), o.getMatchingModSpecificity().getModification().getRecordID())
+					.result();
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			return compareTo((ModSpecificityMatch) o) == 0;
+		}
+
+		@Override
+		public int hashCode() {
+			int result;
+			long temp;
+			result = siteMatch;
+			result = 31 * result + terminusMatch;
+			result = 31 * result + proteinOnlyMatch;
+			result = 31 * result + hiddenMatch;
+			temp = massMatch != +0.0d ? Double.doubleToLongBits(massMatch) : 0L;
+			result = 31 * result + (int) (temp ^ (temp >>> 32));
+			return result;
+		}
 	}
 
 	private static Set<ModSpecificity> collectModSpecificities(Collection<List<Mod>> inRange) {
@@ -253,12 +384,12 @@ public class IndexedModSet implements Set<Mod> {
 
 	/**
 	 * This method works just as {@link #findMatchingModSpecificities} except if multiple results are found
-	 * then a little more intelligence is used to give just one.  Only use this if it really doesn't matter as long as the given parameteres match.
+	 * then a little more intelligence is used to give just one.  Only use this if it really doesn't matter as long as the given parameters match.
 	 * <p/>
 	 * Currently this only takes into account the 'hidden' property so that ones that are not hidden are chosen over those that are
 	 */
-	public ModSpecificity findSingleMatchingModificationSet(Double minMass, Double maxMass, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
-		List<ModSpecificity> allMatches = new ArrayList<ModSpecificity>(findMatchingModSpecificities(minMass, maxMass, site, terminus, proteinOnly, hidden));
+	public ModSpecificity findSingleMatchingModificationSet(Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
+		List<ModSpecificity> allMatches = new ArrayList<ModSpecificity>(findMatchingModSpecificities(mass, maxDelta, site, terminus, proteinOnly, hidden));
 
 		if (allMatches.isEmpty()) {
 			return null;
