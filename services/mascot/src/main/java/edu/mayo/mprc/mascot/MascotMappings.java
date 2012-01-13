@@ -153,7 +153,7 @@ public final class MascotMappings implements Mappings {
 		int i = 0;
 		StringBuilder droppedMods = new StringBuilder();
 		for (ModSpecificity ms : variableMods.getModifications()) {
-			if (i > MAX_VARIABLE_MODS) {
+			if (i >= MAX_VARIABLE_MODS) {
 				droppedMods.append(ms.toString());
 				droppedMods.append(", ");
 			} else {
