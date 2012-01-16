@@ -10,6 +10,8 @@ import java.util.Map;
 
 /**
  * DAO for the search results stored in the database.
+ *
+ * @author Roman Zenka
  */
 public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer, SearchDbDao {
 	private SwiftDao swiftDao;
@@ -28,9 +30,8 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 	}
 
 	@Override
-	public ProteinSequence addProteinSequence(String sequence) {
-		ProteinSequence proteinSequence = new ProteinSequence(sequence);
-		return save(proteinSequence, Restrictions.eq("sequence", sequence), false);
+	public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+		return save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
 	}
 
 	@Override
@@ -39,13 +40,52 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 	}
 
 	@Override
-	public PeptideSequence addPeptideSequence(String sequence) {
-		PeptideSequence peptideSequence = new PeptideSequence(sequence);
-		return save(peptideSequence, Restrictions.eq("sequence", sequence), false);
+	public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+		return save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
 	}
 
 	@Override
 	public PeptideSequence getPeptideSequence(int peptideId) {
 		return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
+	}
+
+	@Override
+	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public ProteinGroup addProteinGroup(ProteinGroup group) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public SearchResult addSearchResult(SearchResult searchResult) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public Analysis addAnalysis(Analysis analysis) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 }

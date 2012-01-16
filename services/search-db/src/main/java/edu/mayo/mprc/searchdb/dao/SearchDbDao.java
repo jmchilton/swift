@@ -9,13 +9,13 @@ import edu.mayo.mprc.database.Dao;
  */
 public interface SearchDbDao extends Dao {
 	/**
-	 * Look up given protein sequence in the database. Return an object containing the sequence ID to be referenced.
+	 * Look up given protein sequence in the database.
 	 * If the sequence does not exist in the database, it is added.
+	 * ID of the protein sequence is updated to match the database id.
 	 *
-	 * @param sequence Sequence to look up.
-	 * @return ProteinSequence object with the ID set up.
+	 * @param proteinSequence Sequence to look up.
 	 */
-	ProteinSequence addProteinSequence(String sequence);
+	ProteinSequence addProteinSequence(ProteinSequence proteinSequence);
 
 	/**
 	 * Return a protein sequence for given ID.
@@ -26,13 +26,13 @@ public interface SearchDbDao extends Dao {
 	ProteinSequence getProteinSequence(int proteinId);
 
 	/**
-	 * Look up given protein sequence in the database. Return an object containing the sequence ID to be referenced.
+	 * Look up given peptide sequence in the database.
 	 * If the sequence does not exist in the database, it is added.
+	 * ID of the peptide sequence is updated to match the database id.
 	 *
-	 * @param sequence Sequence to look up.
-	 * @return ProteinSequence object with the ID set up.
+	 * @param peptideSequence Sequence to look up.
 	 */
-	PeptideSequence addPeptideSequence(String sequence);
+	PeptideSequence addPeptideSequence(PeptideSequence peptideSequence);
 
 	/**
 	 * Return a protein sequence for given ID.
@@ -41,4 +41,20 @@ public interface SearchDbDao extends Dao {
 	 * @return Sequence from the database.
 	 */
 	PeptideSequence getPeptideSequence(int peptideId);
+
+	LocalizedModification addLocalizedModification(LocalizedModification mod);
+
+	IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide);
+
+	PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match);
+
+	ProteinGroup addProteinGroup(ProteinGroup group);
+
+	TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample);
+
+	SearchResult addSearchResult(SearchResult searchResult);
+
+	BiologicalSample addBiologicalSample(BiologicalSample biologicalSample);
+
+	Analysis addAnalysis(Analysis analysis);
 }

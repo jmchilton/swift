@@ -1,12 +1,15 @@
 package edu.mayo.mprc.searchdb;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -28,14 +31,14 @@ final class SummarizerCache {
 	 */
 	private ScaffoldModificationFormat format;
 
-	private LinkedHashMap</*Biological sample name*/String, BiologicalSample> biologicalSamples = new LinkedHashMap<String, BiologicalSample>(5);
-	private Map<SearchResultKey, SearchResult> searchResults = new HashMap<SearchResultKey, SearchResult>(5);
-	private Map<ProteinGroupKey, ProteinGroup> proteinGroups = new HashMap<ProteinGroupKey, ProteinGroup>(100);
-	private Map<PeptideSpectrumMatchKey, PeptideSpectrumMatch> peptideSpectrumMatches = new HashMap<PeptideSpectrumMatchKey, PeptideSpectrumMatch>(1000);
-	private Map</*Protein accession number*/String, ProteinSequence> proteinSequences = new HashMap<String, ProteinSequence>(100);
-	private Map<IdentifiedPeptide, IdentifiedPeptide> identifiedPeptides = new HashMap<IdentifiedPeptide, IdentifiedPeptide>(1000);
 	private Map</*Peptide sequence*/String, PeptideSequence> peptideSequences = new HashMap<String, PeptideSequence>(1000);
+	private Map</*Protein accession number*/String, ProteinSequence> proteinSequences = new HashMap<String, ProteinSequence>(100);
 	private Map<LocalizedModification, LocalizedModification> localizedModifications = new HashMap<LocalizedModification, LocalizedModification>(100);
+	private Map<IdentifiedPeptide, IdentifiedPeptide> identifiedPeptides = new HashMap<IdentifiedPeptide, IdentifiedPeptide>(1000);
+	private Map<PeptideSpectrumMatchKey, PeptideSpectrumMatch> peptideSpectrumMatches = new HashMap<PeptideSpectrumMatchKey, PeptideSpectrumMatch>(1000);
+	private Map<ProteinGroupKey, ProteinGroup> proteinGroups = new HashMap<ProteinGroupKey, ProteinGroup>(100);
+	private Map<SearchResultKey, SearchResult> searchResults = new HashMap<SearchResultKey, SearchResult>(5);
+	private LinkedHashMap</*Biological sample name*/String, BiologicalSample> biologicalSamples = new LinkedHashMap<String, BiologicalSample>(5);
 
 	SummarizerCache(ScaffoldModificationFormat format) {
 		this.format = format;
@@ -220,42 +223,6 @@ final class SummarizerCache {
 	}
 
 	/**
-	 * Get identified peptide.
-	 *
-	 * @param peptideSequence       The sequence of the peptide.
-	 * @param fixedModifications    Fixed modifications parseable by {@link ScaffoldModificationFormat}.
-	 * @param variableModifications Variable modifications parseable by {@link ScaffoldModificationFormat}.
-	 * @return Unique identified peptide entry.
-	 */
-	private IdentifiedPeptide getIdentifiedPeptide(
-			PeptideSequence peptideSequence,
-			String fixedModifications,
-			String variableModifications) {
-		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, fixedModifications, variableModifications, format);
-		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
-		if (peptide == null) {
-			identifiedPeptides.put(key, key);
-			return key;
-		}
-		return peptide;
-	}
-
-	/**
-	 * @param peptideSequence Peptide sequence to cache and translate.
-	 * @return The corresponding PeptideSequence object. The sequence is canonicalized to uppercase.
-	 */
-	private PeptideSequence getPeptideSequence(String peptideSequence) {
-		final String upperCaseSequence = peptideSequence.toUpperCase(Locale.US);
-		final PeptideSequence sequence = peptideSequences.get(upperCaseSequence);
-		if (sequence == null) {
-			final PeptideSequence newSequence = new PeptideSequence(upperCaseSequence);
-			peptideSequences.put(upperCaseSequence, newSequence);
-			return newSequence;
-		}
-		return sequence;
-	}
-
-	/**
 	 * @param psm            PSM to update.
 	 * @param spectrumName   Name of the spectrum. In Swift-friendly format (filename.fromScan.toScan.charge.dta)
 	 * @param spectrumCharge Charge as extracted by Scaffold.
@@ -271,5 +238,123 @@ final class SummarizerCache {
 	) {
 		psm.updateScores(peptideIdentificationProbability, searchEngineScores);
 		psm.addSpectrum(spectrumCharge);
+	}
+
+	/**
+	 * @return All referenced peptide sequences. Each is unique.
+	 */
+	public Collection<PeptideSequence> getAllPeptideSequences() {
+		return peptideSequences.values();
+	}
+
+	/**
+	 * @return All referenced protein sequences. Each is unique.
+	 */
+	public Collection<ProteinSequence> getAllProteinSequences() {
+		return proteinSequences.values();
+	}
+
+	/**
+	 * @return All referenced localized mods. Each is unique.
+	 */
+	public Collection<LocalizedModification> getAllLocalizedModifications() {
+		return localizedModifications.values();
+	}
+
+	/**
+	 * @return All referenced identified peptides. Each is unique.
+	 */
+	public Collection<IdentifiedPeptide> getAllIdentifiedPeptides() {
+		return identifiedPeptides.values();
+	}
+
+	/**
+	 * @return All referenced peptide spectrum match objects. Each is unique.
+	 */
+	public Collection<PeptideSpectrumMatch> getAllPeptideSpectrumMatches() {
+		return peptideSpectrumMatches.values();
+	}
+
+	/**
+	 * @return All referenced protein groups. Each is unique.
+	 */
+	public Collection<ProteinGroup> getAllProteinGroups() {
+		return proteinGroups.values();
+	}
+
+	/**
+	 * @return All referenced mass spec samples. Each is unique.
+	 */
+	public Collection<TandemMassSpectrometrySample> getAllTandemMassSpectrometrySamples() {
+		// TODO: Missing
+		return null;
+	}
+
+	/**
+	 * @return All referenced search results. Each is unique.
+	 */
+	public Collection<SearchResult> getAllSearchResults() {
+		return searchResults.values();
+	}
+
+	/**
+	 * @return All referenced search results. Each is unique.
+	 */
+	public Collection<BiologicalSample> getAllBiologicalSamples() {
+		return biologicalSamples.values();
+	}
+
+	/**
+	 * Get identified peptide.
+	 *
+	 * @param peptideSequence       The sequence of the peptide.
+	 * @param fixedModifications    Fixed modifications parseable by {@link ScaffoldModificationFormat}.
+	 * @param variableModifications Variable modifications parseable by {@link ScaffoldModificationFormat}.
+	 * @return Unique identified peptide entry.
+	 */
+	private IdentifiedPeptide getIdentifiedPeptide(
+			PeptideSequence peptideSequence,
+			String fixedModifications,
+			String variableModifications) {
+		final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
+		final List<LocalizedModification> mappedMods = Lists.transform(mods, mapLocalizedModification);
+
+		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
+		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
+		if (peptide == null) {
+			identifiedPeptides.put(key, key);
+			return key;
+		}
+		return peptide;
+	}
+
+	/**
+	 * Store each localized modification only once.
+	 */
+	private final Function<LocalizedModification, LocalizedModification> mapLocalizedModification = new Function<LocalizedModification, LocalizedModification>() {
+		@Override
+		public LocalizedModification apply(@Nullable LocalizedModification from) {
+			final LocalizedModification result = localizedModifications.get(from);
+			if (result != null) {
+				return result;
+			}
+			localizedModifications.put(from, from);
+			return from;
+		}
+	};
+
+	/**
+	 * @param peptideSequence Peptide sequence to cache and translate.
+	 * @return The corresponding PeptideSequence object. The sequence is canonicalized to uppercase.
+	 */
+	private PeptideSequence getPeptideSequence(String peptideSequence) {
+		final String upperCaseSequence = peptideSequence.toUpperCase(Locale.US);
+		final PeptideSequence sequence = peptideSequences.get(upperCaseSequence);
+		if (sequence == null) {
+			final PeptideSequence newSequence = new PeptideSequence(upperCaseSequence);
+			peptideSequences.put(upperCaseSequence, newSequence);
+			return newSequence;
+		}
+		return sequence;
 	}
 }

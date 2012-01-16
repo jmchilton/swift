@@ -50,6 +50,12 @@ public class IdentifiedPeptide extends PersistableBase {
 		this.modifications = format.parseModifications(sequence.getSequence(), fixedModifications, variableModifications);
 	}
 
+	/**
+	 * Use this when localized modification reuse is desired.
+	 *
+	 * @param sequence      Peptide sequence
+	 * @param modifications List of {@link LocalizedModification}
+	 */
 	public IdentifiedPeptide(PeptideSequence sequence, List<LocalizedModification> modifications) {
 		this.sequence = sequence;
 		this.modifications = modifications;

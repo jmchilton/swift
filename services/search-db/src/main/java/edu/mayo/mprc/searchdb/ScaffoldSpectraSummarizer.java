@@ -85,6 +85,46 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		return analysis;
 	}
 
+	/**
+	 * Save the loaded analysis into the database.
+	 * Use the {@SummarizerCache} that has already resolved identical objects to only a single instance.
+	 * <p/>
+	 * The save is done in such way that objects that depend on other objects have their dependencies saved before
+	 * they get saved themselves. (We start with the leaves of the dependency tree.)
+	 *
+	 * @param dao DAO to save with.
+	 */
+	public void saveToDatabase(SearchDbDao dao) {
+		for (PeptideSequence sequence : cache.getAllPeptideSequences()) {
+			dao.addPeptideSequence(sequence);
+		}
+		for (ProteinSequence sequence : cache.getAllProteinSequences()) {
+			dao.addProteinSequence(sequence);
+		}
+		for (LocalizedModification mod : cache.getAllLocalizedModifications()) {
+			dao.addLocalizedModification(mod);
+		}
+		for (IdentifiedPeptide peptide : cache.getAllIdentifiedPeptides()) {
+			dao.addIdentifiedPeptide(peptide);
+		}
+		for (PeptideSpectrumMatch match : cache.getAllPeptideSpectrumMatches()) {
+			dao.addPeptideSpectrumMatch(match);
+		}
+		for (ProteinGroup group : cache.getAllProteinGroups()) {
+			dao.addProteinGroup(group);
+		}
+		for (TandemMassSpectrometrySample sample : cache.getAllTandemMassSpectrometrySamples()) {
+			dao.addTandemMassSpectrometrySample(sample);
+		}
+		for (SearchResult searchResult : cache.getAllSearchResults()) {
+			dao.addSearchResult(searchResult);
+		}
+		for (BiologicalSample biologicalSample : cache.getAllBiologicalSamples()) {
+			dao.addBiologicalSample(biologicalSample);
+		}
+		dao.addAnalysis(analysis);
+	}
+
 	@Override
 	public void processMetadata(String key, String value) {
 		if (key == null) {

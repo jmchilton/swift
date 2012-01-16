@@ -253,7 +253,6 @@ public abstract class DaoBase implements Dao {
 				// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
 				item.setId(existingObject.getId());
 				return (T) session.merge(item);
-
 			}
 		}
 

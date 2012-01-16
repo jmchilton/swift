@@ -29,7 +29,8 @@ public final class MockSearchDbDao implements SearchDbDao {
 	}
 
 	@Override
-	public ProteinSequence addProteinSequence(String sequence) {
+	public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+		final String sequence = proteinSequence.getSequence();
 		Integer id = proteinSequences.inverse().get(sequence);
 		if (id == null) {
 			id = proteinSequences.size() + 1;
@@ -48,7 +49,8 @@ public final class MockSearchDbDao implements SearchDbDao {
 	}
 
 	@Override
-	public PeptideSequence addPeptideSequence(String sequence) {
+	public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+		final String sequence = peptideSequence.getSequence();
 		Integer id = peptideSequences.inverse().get(sequence);
 		if (id == null) {
 			id = peptideSequences.size() + 1;
@@ -70,5 +72,45 @@ public final class MockSearchDbDao implements SearchDbDao {
 			return peptideSequence(peptideId, sequence);
 		}
 		return null;
+	}
+
+	@Override
+	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public ProteinGroup addProteinGroup(ProteinGroup group) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public SearchResult addSearchResult(SearchResult searchResult) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public Analysis addAnalysis(Analysis analysis) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 }
