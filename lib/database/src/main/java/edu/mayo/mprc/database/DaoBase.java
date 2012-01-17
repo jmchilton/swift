@@ -176,8 +176,7 @@ public abstract class DaoBase implements Dao {
 		if (existing != null) {
 			if (owner.equals(existing)) {
 				// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-				owner.setId(existing.getId());
-				return (T) session.merge(owner);
+				return updateSavedItem(existing, owner, session);
 			} else {
 				// If this happens, your equals operator is probably broken. Two set objects must be equal
 				// iff their elements are all equal
@@ -238,6 +237,7 @@ public abstract class DaoBase implements Dao {
 	 * @param item             The item to create (in database)
 	 * @param equalityCriteria Criteria to find identical, already existing item. Do not need to check for the item class and deletion.
 	 * @param createNew        New object must be created.
+	 * @return The saved object. This can be either the newly saved item (it did not exist in the database yet), or a result of Hibernate's merge operation.
 	 */
 	protected <T extends PersistableBase> T save(T item, Criterion equalityCriteria, boolean createNew) {
 		Session session = getSession();
@@ -250,9 +250,7 @@ public abstract class DaoBase implements Dao {
 			if (createNew) {
 				throw new MprcException(item.getClass().getSimpleName() + " already exists");
 			} else if (item.equals(existingObject)) {
-				// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-				item.setId(existingObject.getId());
-				return (T) session.merge(item);
+				return updateSavedItem(existingObject, item, session);
 			}
 		}
 
@@ -282,9 +280,7 @@ public abstract class DaoBase implements Dao {
 					if (createNew) {
 						throw new MprcException(item.getClass().getSimpleName() + " already exists");
 					} else {
-						// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-						item.setId(existingObject.getId());
-						return (T) session.merge(item);
+						return updateSavedItem(existingObject, item, session);
 					}
 				}
 			}
@@ -293,6 +289,20 @@ public abstract class DaoBase implements Dao {
 		item.setId(null);
 		session.save(item);
 		return item;
+	}
+
+	/**
+	 * Item equals the saved object, bring forth the additional parameters that do not participate in equality.
+	 *
+	 * @param savedItem  Item that is already in the database, that is supposed to be equal to a provided one.
+	 * @param updateWith New item that is equivalent to the previously saved one.
+	 * @param session    Database session.
+	 * @param <T>        Type of the item.
+	 * @return A saved item that is updated with the latest values from {@code updateWith}.
+	 */
+	private <T extends PersistableBase> T updateSavedItem(T savedItem, T updateWith, Session session) {
+		updateWith.setId(savedItem.getId());
+		return (T) session.merge(updateWith);
 	}
 
 
