@@ -46,26 +46,20 @@ public abstract class Sequence extends PersistableBase {
 		this.mass = mass;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof Sequence)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		Sequence that = (Sequence) o;
+        Sequence sequence1 = (Sequence) o;
 
-		if (!getSequence().equals(that.getSequence())) {
-			return false;
-		}
+        if (getSequence() != null ? !getSequence().equals(sequence1.getSequence()) : sequence1.getSequence() != null) return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
+    @Override
 	public int hashCode() {
-		return getSequence().hashCode();
+		return getSequence() ==null ? 0 : getSequence().hashCode();
 	}
 }

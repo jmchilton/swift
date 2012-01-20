@@ -7,6 +7,9 @@
             <generator class="native"/>
         </id>
         <many-to-one name="sequence" column="peptide_sequence" class="PeptideSequence" not-null="true"/>
-        <many-to-one name="modifications" column="modifications" class="LocalizedModificationList" not-null="true"/>
+        <set name="modifications" table="peptide_modifications">
+            <key column="identified_peptide"/>
+            <many-to-many column="loc_mod" class="LocalizedModification"/>
+        </set>
     </class>
 </hibernate-mapping>

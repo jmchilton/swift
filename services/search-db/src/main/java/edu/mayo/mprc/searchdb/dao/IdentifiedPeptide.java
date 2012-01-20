@@ -3,7 +3,8 @@ package edu.mayo.mprc.searchdb.dao;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.searchdb.ScaffoldModificationFormat;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The peptide is uniquely identified by its sequence and a list of modifications.
@@ -27,7 +28,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	/**
 	 * A list of modifications + their positions. Canonicalized by {@link ScaffoldModificationFormat} parser.
 	 */
-	private LocalizedModificationList modifications;
+	private Set<LocalizedModification> modifications;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -56,7 +57,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param sequence      Peptide sequence
 	 * @param modifications List of {@link LocalizedModification}
 	 */
-	public IdentifiedPeptide(PeptideSequence sequence, LocalizedModificationList modifications) {
+	public IdentifiedPeptide(PeptideSequence sequence, Set<LocalizedModification> modifications) {
 		this.sequence = sequence;
 		this.modifications = modifications;
 	}
@@ -69,11 +70,11 @@ public class IdentifiedPeptide extends PersistableBase {
         this.sequence = sequence;
     }
 
-    public LocalizedModificationList getModifications() {
+    public Set<LocalizedModification> getModifications() {
         return modifications;
     }
 
-    public void setModifications(LocalizedModificationList modifications) {
+    public void setModifications(Set<LocalizedModification> modifications) {
         this.modifications = modifications;
     }
 

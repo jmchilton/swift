@@ -1,12 +1,13 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import com.google.common.collect.Lists;
 import edu.mayo.mprc.database.PersistableBase;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
- * A list of modifications.
+ * A sorted list of modifications. Stores its hash code so it is easy to compare a list against the database for
+ * equivalency.
  *
  * @author Roman Zenka
  */

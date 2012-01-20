@@ -1,15 +1,17 @@
 package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
-import edu.mayo.mprc.searchdb.dao.LocalizedModificationList;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.unimod.Mod;
 import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,17 +60,16 @@ public final class ScaffoldModificationFormat {
 	 * @param variableMods Scaffold-like list of variable modifications.
 	 * @return Parsed list of localized modifications.
 	 */
-	public LocalizedModificationList parseModifications(String sequence, String fixedMods, String variableMods) {
-		final LocalizedModificationList list = new LocalizedModificationList();
+	public Set<LocalizedModification> parseModifications(String sequence, String fixedMods, String variableMods) {
+		final TreeSet<LocalizedModification> list = Sets.newTreeSet();
 
 		addModifications(fixedMods.trim(), list, sequence);
 		addModifications(variableMods.trim(), list, sequence);
-        list.fix();
 
 		return list;
 	}
 
-	private void addModifications(String modifications, LocalizedModificationList mods, String sequence) {
+	private void addModifications(String modifications, Set<LocalizedModification> mods, String sequence) {
 		if (",".equals(modifications)) {
 			// Nothing to do
 			return;

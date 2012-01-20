@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Check that we can correctly parse typical mods from Scaffold reports.
@@ -35,7 +36,7 @@ public final class TestScaffoldModificationFormat {
 	 */
 	@Test
 	public void shouldParseEmptyString() {
-		final List<LocalizedModification> mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
+		final Set<LocalizedModification> mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
 		Assert.assertEquals(mods.size(), 0, "No mods");
 	}
 
@@ -104,12 +105,20 @@ public final class TestScaffoldModificationFormat {
 	public void shouldFixPyroCmc() {
 		checkSingleMod(
 				format.parseModifications("QSVEADINGLR", "n-term: Pyro-cmC (-17.03)", ""),
-				"Carbamidomethyl", 57.02, 17, 'C');
+				"Gln->pyro-Glu", -17.03, 0, 'Q');
 	}
 
-	private void checkSingleMod(List<LocalizedModification> mods, String name, double expectedMass, int position, char residue) {
+    /**
+     * Check single expected mod for parse errors.
+     * @param mods Set of modifications. There should be just one.
+     * @param name name of the modification {@link edu.mayo.mprc.unimod.Mod#getTitle}
+     * @param expectedMass The mass should be within {@link #EPSILON} from the required
+     * @param position 0 = N-term
+     * @param residue Residue the modification occurs on
+     */
+	private void checkSingleMod(Set<LocalizedModification> mods, String name, double expectedMass, int position, char residue) {
 		Assert.assertEquals(mods.size(), 1, "one mod expected");
-		final LocalizedModification localizedModification = mods.get(0);
+		final LocalizedModification localizedModification = mods.iterator().next();
 		Assert.assertEquals(localizedModification.getModSpecificity().getModification().getTitle(), name);
 		assertNear(localizedModification.getModSpecificity().getModification().getMassMono(), expectedMass, "Mass should match");
 		Assert.assertEquals(localizedModification.getPosition(), position, "Mod position should match");

@@ -75,7 +75,7 @@ public class TestScaffoldSpectraSummarizer {
 			assertNear(teraBovinGroup.getProteinIdentificationProbability(), 1.0, "Id probability");
 			Assert.assertEquals(teraBovinGroup.getProteinSequences().size(), 1, "One protein only");
 			Assert.assertEquals(teraBovinGroup.getPeptideSpectrumMatches().size(), 10, "Peptides assigned to protein");
-			final PeptideSpectrumMatch firstPsm = teraBovinGroup.getPeptideSpectrumMatches().get(0);
+			final PeptideSpectrumMatch firstPsm = teraBovinGroup.getPeptideSpectrumMatches().iterator().next();
 			Assert.assertEquals(firstPsm.getPeptide().getSequence().getSequence(), "AHVIVMAATNRPNSIDPALR");
 			Assert.assertEquals(firstPsm.getPeptide().getModifications().size(), 0);
 			Assert.assertEquals(firstPsm.getSpectrumIdentificationCounts().getNumberOfIdentifiedSpectra(), 3);
@@ -146,7 +146,7 @@ public class TestScaffoldSpectraSummarizer {
 			actual = analysis.peptideReport();
 			expected = Resources.toString(Resources.getResource(getClass(), expectedResource), Charsets.ISO_8859_1);
 		} catch (Exception e) {
-			throw new MprcException("Falied when matching analysis", e);
+			throw new MprcException("Failed when matching analysis", e);
 		}
 		Assert.assertEquals(TestingUtilities.compareStringsByLine(actual, expected, true), null, "The peptide report does not match");
 	}

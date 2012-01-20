@@ -4,8 +4,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.*;
 
@@ -124,7 +126,7 @@ final class SummarizerCache {
 		if (proteinGroup == null) {
 			final ProteinGroup newProteinGroup = new ProteinGroup();
 			addProteinSequences(accNums, newProteinGroup);
-			newProteinGroup.setPeptideSpectrumMatches(new ArrayList<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
+			newProteinGroup.setPeptideSpectrumMatches(new LinkedHashSet<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
 
 			newProteinGroup.setNumberOfTotalSpectra(numberOfTotalSpectra);
 			newProteinGroup.setNumberOfUniquePeptides(numberOfUniquePeptides);
@@ -149,7 +151,7 @@ final class SummarizerCache {
 	}
 
 	private void addProteinSequences(String[] accNums, ProteinGroup newProteinGroup) {
-		ArrayList<ProteinSequence> proteinSequences = new ArrayList<ProteinSequence>(accNums.length);
+		LinkedHashSet<ProteinSequence> proteinSequences = new LinkedHashSet<ProteinSequence>(accNums.length);
 		for (String accessionNumber : accNums) {
 			proteinSequences.add(getProteinSequence(accessionNumber));
 		}
@@ -316,8 +318,8 @@ final class SummarizerCache {
 			PeptideSequence peptideSequence,
 			String fixedModifications,
 			String variableModifications) {
-		final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
-		final List<LocalizedModification> mappedMods = Lists.transform(mods, mapLocalizedModification);
+		final Set<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
+		final Set<LocalizedModification> mappedMods = Sets.newTreeSet(Collections2.transform(mods, mapLocalizedModification));
 
 		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
 		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
