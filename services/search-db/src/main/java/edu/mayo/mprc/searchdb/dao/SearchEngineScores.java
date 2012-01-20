@@ -122,47 +122,91 @@ public final class SearchEngineScores {
 		tandemLadderScore = maxNaN(getTandemLadderScore(), newScores.getTandemLadderScore());
 	}
 
-	public double getSequestXcorrScore() {
-		return sequestXcorrScore;
-	}
+    public double getSequestXcorrScore() {
+        return sequestXcorrScore;
+    }
 
-	public double getSequestDcnScore() {
-		return sequestDcnScore;
-	}
+    public void setSequestXcorrScore(double sequestXcorrScore) {
+        this.sequestXcorrScore = sequestXcorrScore;
+    }
 
-	public double getSequestSpScore() {
-		return sequestSpScore;
-	}
+    public double getSequestDcnScore() {
+        return sequestDcnScore;
+    }
 
-	public double getSequestSpRank() {
-		return sequestSpRank;
-	}
+    public void setSequestDcnScore(double sequestDcnScore) {
+        this.sequestDcnScore = sequestDcnScore;
+    }
 
-	public double getSequestPeptidesMatched() {
-		return sequestPeptidesMatched;
-	}
+    public double getSequestSpScore() {
+        return sequestSpScore;
+    }
 
-	public double getMascotIonScore() {
-		return mascotIonScore;
-	}
+    public void setSequestSpScore(double sequestSpScore) {
+        this.sequestSpScore = sequestSpScore;
+    }
 
-	public double getMascotIdentityScore() {
-		return mascotIdentityScore;
-	}
+    public double getSequestSpRank() {
+        return sequestSpRank;
+    }
 
-	public double getMascotHomologyScore() {
-		return mascotHomologyScore;
-	}
+    public void setSequestSpRank(double sequestSpRank) {
+        this.sequestSpRank = sequestSpRank;
+    }
 
-	public double getMascotDeltaIonScore() {
-		return mascotDeltaIonScore;
-	}
+    public double getSequestPeptidesMatched() {
+        return sequestPeptidesMatched;
+    }
 
-	public double getTandemHyperScore() {
-		return tandemHyperScore;
-	}
+    public void setSequestPeptidesMatched(double sequestPeptidesMatched) {
+        this.sequestPeptidesMatched = sequestPeptidesMatched;
+    }
 
-	public double getTandemLadderScore() {
-		return tandemLadderScore;
-	}
+    public double getMascotIonScore() {
+        return mascotIonScore;
+    }
+
+    public void setMascotIonScore(double mascotIonScore) {
+        this.mascotIonScore = mascotIonScore;
+    }
+
+    public double getMascotIdentityScore() {
+        return mascotIdentityScore;
+    }
+
+    public void setMascotIdentityScore(double mascotIdentityScore) {
+        this.mascotIdentityScore = mascotIdentityScore;
+    }
+
+    public double getMascotHomologyScore() {
+        return mascotHomologyScore;
+    }
+
+    public void setMascotHomologyScore(double mascotHomologyScore) {
+        this.mascotHomologyScore = mascotHomologyScore;
+    }
+
+    public double getMascotDeltaIonScore() {
+        return mascotDeltaIonScore;
+    }
+
+    public void setMascotDeltaIonScore(double mascotDeltaIonScore) {
+        this.mascotDeltaIonScore = mascotDeltaIonScore;
+    }
+
+    public double getTandemHyperScore() {
+        return tandemHyperScore;
+    }
+
+    public void setTandemHyperScore(double tandemHyperScore) {
+        this.tandemHyperScore = tandemHyperScore;
+    }
+
+    public double getTandemLadderScore() {
+        return tandemLadderScore;
+    }
+
+    public void setTandemLadderScore(double tandemLadderScore) {
+        this.tandemLadderScore = tandemLadderScore;
+    }
 }

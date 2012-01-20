@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">jdbc:mysql://node029.mprc.mayo.edu:3306/swift_dev</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.username">swift_dev</property>
+        <property name="connection.password">app$dev</property>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/PeptideSequence.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/ProteinSequence.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/IdentifiedPeptide.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/LocalizedModification.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/LocalizedModificationList.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/PeptideSpectrumMatch.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

@@ -42,19 +42,31 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		this.residue = residue;
 	}
 
-	public ModSpecificity getModSpecificity() {
-		return modSpecificity;
-	}
+    public ModSpecificity getModSpecificity() {
+        return modSpecificity;
+    }
 
-	public int getPosition() {
-		return position;
-	}
+    public void setModSpecificity(ModSpecificity modSpecificity) {
+        this.modSpecificity = modSpecificity;
+    }
 
-	public char getResidue() {
-		return residue;
-	}
+    public int getPosition() {
+        return position;
+    }
 
-	@Override
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public char getResidue() {
+        return residue;
+    }
+
+    public void setResidue(char residue) {
+        this.residue = residue;
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
@@ -68,6 +80,10 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		return true;
 	}
 
+    /**
+     * Important - do not change hashCode calculation. It is used to optimize database access.
+     * @return Hash code for the object.
+     */
 	@Override
 	public int hashCode() {
 		int result = modSpecificity.hashCode();

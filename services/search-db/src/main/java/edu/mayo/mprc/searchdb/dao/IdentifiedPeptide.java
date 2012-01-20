@@ -27,7 +27,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	/**
 	 * A list of modifications + their positions. Canonicalized by {@link ScaffoldModificationFormat} parser.
 	 */
-	private List<LocalizedModification> modifications;
+	private LocalizedModificationList modifications;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -56,20 +56,28 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param sequence      Peptide sequence
 	 * @param modifications List of {@link LocalizedModification}
 	 */
-	public IdentifiedPeptide(PeptideSequence sequence, List<LocalizedModification> modifications) {
+	public IdentifiedPeptide(PeptideSequence sequence, LocalizedModificationList modifications) {
 		this.sequence = sequence;
 		this.modifications = modifications;
 	}
 
-	public PeptideSequence getSequence() {
-		return sequence;
-	}
+    public PeptideSequence getSequence() {
+        return sequence;
+    }
 
-	public List<LocalizedModification> getModifications() {
-		return modifications;
-	}
+    public void setSequence(PeptideSequence sequence) {
+        this.sequence = sequence;
+    }
 
-	/**
+    public LocalizedModificationList getModifications() {
+        return modifications;
+    }
+
+    public void setModifications(LocalizedModificationList modifications) {
+        this.modifications = modifications;
+    }
+
+    /**
 	 * @return List of mods as comma separated string, e.g. {@code c18: Carbamidomethyl(C)}
 	 */
 	public String getModificationsAsString() {

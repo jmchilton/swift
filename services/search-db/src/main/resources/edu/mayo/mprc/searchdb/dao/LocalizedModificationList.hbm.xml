@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.searchdb.dao" default-lazy="true">
+    <class name="LocalizedModificationList" table="loc_mod_list">
+        <id name="id" type="integer" column="loc_mod_list_id">
+            <generator class="native"/>
+        </id>
+        <property name="hashCode" column="hash_code"/>
+        <set name="modifications" inverse="false" table="list_to_loc_mod">
+            <key column="loc_mod_list"/>
+            <many-to-many class="LocalizedModification" column="loc_mod"/>
+        </set>
+    </class>
+</hibernate-mapping>
