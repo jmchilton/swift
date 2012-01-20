@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * DAO for the search results stored in the database.
+ * We use stateless session to speed up the access, as this dao is used for bulk data loading.
  *
  * @author Roman Zenka
  */
@@ -18,6 +19,7 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 
 	public SearchDbDaoImpl(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
+		this.swiftDao = swiftDao;
 	}
 
 	@Override
@@ -30,8 +32,8 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 	}
 
 	@Override
-	public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
-		return save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
+	public void addProteinSequence(ProteinSequence proteinSequence) {
+		save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
 	}
 
 	@Override
@@ -40,8 +42,8 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 	}
 
 	@Override
-	public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
-		return save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
+	public void addPeptideSequence(PeptideSequence peptideSequence) {
+		save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
 	}
 
 	@Override
@@ -50,42 +52,42 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
 	}
 
 	@Override
-	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addLocalizedModification(LocalizedModification mod) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addIdentifiedPeptide(IdentifiedPeptide peptide) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public ProteinGroup addProteinGroup(ProteinGroup group) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addProteinGroup(ProteinGroup group) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public SearchResult addSearchResult(SearchResult searchResult) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addSearchResult(SearchResult searchResult) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addBiologicalSample(BiologicalSample biologicalSample) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public Analysis addAnalysis(Analysis analysis) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addAnalysis(Analysis analysis) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 }

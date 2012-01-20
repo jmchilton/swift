@@ -29,14 +29,14 @@ public final class MockSearchDbDao implements SearchDbDao {
 	}
 
 	@Override
-	public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+	public void addProteinSequence(ProteinSequence proteinSequence) {
 		final String sequence = proteinSequence.getSequence();
 		Integer id = proteinSequences.inverse().get(sequence);
 		if (id == null) {
-			id = proteinSequences.size() + 1;
-			proteinSequences.put(id, sequence);
+			final int newId = proteinSequences.size() + 1;
+			proteinSequences.put(newId, sequence);
+			proteinSequence.setId(newId);
 		}
-		return proteinSequence(id, sequence);
 	}
 
 	@Override
@@ -49,14 +49,14 @@ public final class MockSearchDbDao implements SearchDbDao {
 	}
 
 	@Override
-	public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+	public void addPeptideSequence(PeptideSequence peptideSequence) {
 		final String sequence = peptideSequence.getSequence();
 		Integer id = peptideSequences.inverse().get(sequence);
 		if (id == null) {
-			id = peptideSequences.size() + 1;
-			peptideSequences.put(id, sequence);
+			final int newId = peptideSequences.size() + 1;
+			peptideSequences.put(newId, sequence);
+			peptideSequence.setId(newId);
 		}
-		return peptideSequence(id, sequence);
 	}
 
 	private PeptideSequence peptideSequence(Integer id, String sequence) {
@@ -75,42 +75,42 @@ public final class MockSearchDbDao implements SearchDbDao {
 	}
 
 	@Override
-	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addLocalizedModification(LocalizedModification mod) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addIdentifiedPeptide(IdentifiedPeptide peptide) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public ProteinGroup addProteinGroup(ProteinGroup group) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addProteinGroup(ProteinGroup group) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public SearchResult addSearchResult(SearchResult searchResult) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addSearchResult(SearchResult searchResult) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addBiologicalSample(BiologicalSample biologicalSample) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
-	public Analysis addAnalysis(Analysis analysis) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public void addAnalysis(Analysis analysis) {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 }

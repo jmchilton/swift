@@ -4,8 +4,7 @@ import edu.mayo.mprc.database.Dao;
 
 /**
  * This dao should be implemented in an efficient manner. Typically a large amount of queries (10000x per input file)
- * is going to be run when adding peptide/protein sequences. Many of those queries will be hitting identical objects.
- * Since all the entries are immutable, it makes sense to cache them in an indexed form to prevent extra database hits.
+ * is going to be run when adding peptide/protein sequences.
  */
 public interface SearchDbDao extends Dao {
 	/**
@@ -13,9 +12,9 @@ public interface SearchDbDao extends Dao {
 	 * If the sequence does not exist in the database, it is added.
 	 * ID of the protein sequence is updated to match the database id.
 	 *
-	 * @param proteinSequence Sequence to look up.
+	 * @param proteinSequence Sequence to add.
 	 */
-	ProteinSequence addProteinSequence(ProteinSequence proteinSequence);
+	void addProteinSequence(ProteinSequence proteinSequence);
 
 	/**
 	 * Return a protein sequence for given ID.
@@ -30,9 +29,9 @@ public interface SearchDbDao extends Dao {
 	 * If the sequence does not exist in the database, it is added.
 	 * ID of the peptide sequence is updated to match the database id.
 	 *
-	 * @param peptideSequence Sequence to look up.
+	 * @param peptideSequence Sequence to add.
 	 */
-	PeptideSequence addPeptideSequence(PeptideSequence peptideSequence);
+	void addPeptideSequence(PeptideSequence peptideSequence);
 
 	/**
 	 * Return a protein sequence for given ID.
@@ -42,19 +41,19 @@ public interface SearchDbDao extends Dao {
 	 */
 	PeptideSequence getPeptideSequence(int peptideId);
 
-	LocalizedModification addLocalizedModification(LocalizedModification mod);
+	void addLocalizedModification(LocalizedModification mod);
 
-	IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide);
+	void addIdentifiedPeptide(IdentifiedPeptide peptide);
 
-	PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match);
+	void addPeptideSpectrumMatch(PeptideSpectrumMatch match);
 
-	ProteinGroup addProteinGroup(ProteinGroup group);
+	void addProteinGroup(ProteinGroup group);
 
-	TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample);
+	void addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample);
 
-	SearchResult addSearchResult(SearchResult searchResult);
+	void addSearchResult(SearchResult searchResult);
 
-	BiologicalSample addBiologicalSample(BiologicalSample biologicalSample);
+	void addBiologicalSample(BiologicalSample biologicalSample);
 
-	Analysis addAnalysis(Analysis analysis);
+	void addAnalysis(Analysis analysis);
 }
