@@ -1,11 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
+import com.google.common.collect.Lists;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.swift.db.SwiftDao;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -15,79 +19,98 @@ import java.util.Map;
  * @author Roman Zenka
  */
 public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer, SearchDbDao {
-	private SwiftDao swiftDao;
+    private SwiftDao swiftDao;
 
-	public SearchDbDaoImpl(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
-		super(databasePlaceholder);
-		this.swiftDao = swiftDao;
-	}
+    public SearchDbDaoImpl(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
+        super(databasePlaceholder);
+        this.swiftDao = swiftDao;
+    }
 
-	@Override
-	public String check(Map<String, String> params) {
-		return null;
-	}
+    @Override
+    public String check(Map<String, String> params) {
+        return null;
+    }
 
-	@Override
-	public void initialize(Map<String, String> params) {
-	}
+    @Override
+    public void initialize(Map<String, String> params) {
+    }
 
-	@Override
-	public void addProteinSequence(ProteinSequence proteinSequence) {
-		save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
-	}
+    @Override
+    public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+        return save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
+    }
 
-	@Override
-	public ProteinSequence getProteinSequence(int proteinId) {
-		return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
-	}
+    @Override
+    public ProteinSequence getProteinSequence(int proteinId) {
+        return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
+    }
 
-	@Override
-	public void addPeptideSequence(PeptideSequence peptideSequence) {
-		save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
-	}
+    @Override
+    public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+        return save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
+    }
 
-	@Override
-	public PeptideSequence getPeptideSequence(int peptideId) {
-		return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
-	}
+    @Override
+    public PeptideSequence getPeptideSequence(int peptideId) {
+        return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
+    }
 
-	@Override
-	public void addLocalizedModification(LocalizedModification mod) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public LocalizedModification addLocalizedModification(LocalizedModification mod) {
+        return save(mod, localizedModificationEqualityCriteria(mod), false);
+    }
 
-	@Override
-	public void addIdentifiedPeptide(IdentifiedPeptide peptide) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    private Junction localizedModificationEqualityCriteria(LocalizedModification mod) {
+        return Restrictions.conjunction()
+                .add(Restrictions.eq("position", mod.getPosition()))
+                .add(Restrictions.eq("residue", mod.getResidue()))
+                .add(associationEq("modSpecificity", mod.getModSpecificity()));
+    }
 
-	@Override
-	public void addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
+        ArrayList<LocalizedModification> savedMods = Lists.newArrayListWithCapacity(peptide.getModifications().size());
+        for (LocalizedModification localizedModification : peptide.getModifications()) {
+            savedMods.add(addLocalizedModification(localizedModification));
+        }
+        peptide.setModifications(savedMods);
+        peptide.setSequence(addPeptideSequence(peptide.getSequence()));
+        return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
+    }
 
-	@Override
-	public void addProteinGroup(ProteinGroup group) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    private Criterion identifiedPeptideEqualityCriteria(IdentifiedPeptide peptide) {
+        return Restrictions.conjunction()
+                .add(associationEq("sequence", peptide.getSequence()));
+        // CONTINUE HERE;
+    }
 
-	@Override
-	public void addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-	@Override
-	public void addSearchResult(SearchResult searchResult) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public ProteinGroup addProteinGroup(ProteinGroup group) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-	@Override
-	public void addBiologicalSample(BiologicalSample biologicalSample) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-	@Override
-	public void addAnalysis(Analysis analysis) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public SearchResult addSearchResult(SearchResult searchResult) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Analysis addAnalysis(Analysis analysis) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
