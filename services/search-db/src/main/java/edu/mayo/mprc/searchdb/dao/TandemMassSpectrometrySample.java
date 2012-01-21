@@ -1,5 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
+import edu.mayo.mprc.database.PersistableBase;
+
 import java.io.File;
 import java.util.Date;
 
@@ -12,7 +14,7 @@ import java.util.Date;
  *
  * @author Roman Zenka
  */
-public class TandemMassSpectrometrySample {
+public class TandemMassSpectrometrySample extends PersistableBase {
 	/**
 	 * Link to the .RAW or .mgf file that was analyzed. It can contain a null or just a filename without the path in case the file could not be found.
 	 */

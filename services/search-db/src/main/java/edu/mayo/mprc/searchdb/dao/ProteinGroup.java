@@ -23,12 +23,12 @@ public class ProteinGroup extends PersistableBase {
 	/**
 	 * List of protein sequences belonging to the group.
 	 */
-	private Set<ProteinSequence> proteinSequences;
+	private List<ProteinSequence> proteinSequences;
 
 	/**
 	 * List of peptides matched to spectra that belong to this protein group.
 	 */
-	private Set<PeptideSpectrumMatch> peptideSpectrumMatches;
+	private List<PeptideSpectrumMatch> peptideSpectrumMatches;
 
 	/**
 	 * Scaffold's calculated probability that the protein identification is correct. 100% probability is stored as 1.0
@@ -62,19 +62,19 @@ public class ProteinGroup extends PersistableBase {
 	 */
 	private double percentageSequenceCoverage;
 
-	public Set<ProteinSequence> getProteinSequences() {
+	public List<ProteinSequence> getProteinSequences() {
 		return proteinSequences;
 	}
 
-	public void setProteinSequences(Set<ProteinSequence> proteinSequences) {
+	public void setProteinSequences(List<ProteinSequence> proteinSequences) {
 		this.proteinSequences = proteinSequences;
 	}
 
-	public Set<PeptideSpectrumMatch> getPeptideSpectrumMatches() {
+	public List<PeptideSpectrumMatch> getPeptideSpectrumMatches() {
 		return peptideSpectrumMatches;
 	}
 
-	public void setPeptideSpectrumMatches(Set<PeptideSpectrumMatch> peptideSpectrumMatches) {
+	public void setPeptideSpectrumMatches(List<PeptideSpectrumMatch> peptideSpectrumMatches) {
 		this.peptideSpectrumMatches = peptideSpectrumMatches;
 	}
 

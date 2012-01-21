@@ -36,7 +36,7 @@ public final class TestScaffoldModificationFormat {
 	 */
 	@Test
 	public void shouldParseEmptyString() {
-		final Set<LocalizedModification> mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
+		final List<LocalizedModification> mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
 		Assert.assertEquals(mods.size(), 0, "No mods");
 	}
 
@@ -116,7 +116,7 @@ public final class TestScaffoldModificationFormat {
      * @param position 0 = N-term
      * @param residue Residue the modification occurs on
      */
-	private void checkSingleMod(Set<LocalizedModification> mods, String name, double expectedMass, int position, char residue) {
+	private void checkSingleMod(List<LocalizedModification> mods, String name, double expectedMass, int position, char residue) {
 		Assert.assertEquals(mods.size(), 1, "one mod expected");
 		final LocalizedModification localizedModification = mods.iterator().next();
 		Assert.assertEquals(localizedModification.getModSpecificity().getModification().getTitle(), name);

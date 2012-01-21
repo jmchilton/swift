@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
@@ -9,9 +10,7 @@ import edu.mayo.mprc.unimod.Mod;
 import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,8 +59,8 @@ public final class ScaffoldModificationFormat {
 	 * @param variableMods Scaffold-like list of variable modifications.
 	 * @return Parsed list of localized modifications.
 	 */
-	public Set<LocalizedModification> parseModifications(String sequence, String fixedMods, String variableMods) {
-		final TreeSet<LocalizedModification> list = Sets.newTreeSet();
+	public List<LocalizedModification> parseModifications(String sequence, String fixedMods, String variableMods) {
+		final ArrayList<LocalizedModification> list = Lists.newArrayList();
 
 		addModifications(fixedMods.trim(), list, sequence);
 		addModifications(variableMods.trim(), list, sequence);
@@ -69,7 +68,7 @@ public final class ScaffoldModificationFormat {
 		return list;
 	}
 
-	private void addModifications(String modifications, Set<LocalizedModification> mods, String sequence) {
+	private void addModifications(String modifications, List<LocalizedModification> mods, String sequence) {
 		if (",".equals(modifications)) {
 			// Nothing to do
 			return;

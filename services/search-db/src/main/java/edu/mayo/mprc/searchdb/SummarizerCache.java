@@ -126,7 +126,7 @@ final class SummarizerCache {
 		if (proteinGroup == null) {
 			final ProteinGroup newProteinGroup = new ProteinGroup();
 			addProteinSequences(accNums, newProteinGroup);
-			newProteinGroup.setPeptideSpectrumMatches(new LinkedHashSet<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
+			newProteinGroup.setPeptideSpectrumMatches(new ArrayList<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
 
 			newProteinGroup.setNumberOfTotalSpectra(numberOfTotalSpectra);
 			newProteinGroup.setNumberOfUniquePeptides(numberOfUniquePeptides);
@@ -151,7 +151,7 @@ final class SummarizerCache {
 	}
 
 	private void addProteinSequences(String[] accNums, ProteinGroup newProteinGroup) {
-		LinkedHashSet<ProteinSequence> proteinSequences = new LinkedHashSet<ProteinSequence>(accNums.length);
+		ArrayList<ProteinSequence> proteinSequences = Lists.newArrayListWithCapacity(accNums.length);
 		for (String accessionNumber : accNums) {
 			proteinSequences.add(getProteinSequence(accessionNumber));
 		}
@@ -318,8 +318,8 @@ final class SummarizerCache {
 			PeptideSequence peptideSequence,
 			String fixedModifications,
 			String variableModifications) {
-		final Set<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
-		final Set<LocalizedModification> mappedMods = Sets.newTreeSet(Collections2.transform(mods, mapLocalizedModification));
+		final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
+		final List<LocalizedModification> mappedMods = Lists.newArrayList(Lists.transform(mods, mapLocalizedModification));
 
 		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
 		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
