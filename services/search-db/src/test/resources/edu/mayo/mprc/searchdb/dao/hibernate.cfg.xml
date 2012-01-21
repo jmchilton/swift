@@ -16,5 +16,7 @@
         <mapping resource="edu/mayo/mprc/searchdb/dao/ProteinGroup.hbm.xml"/>
         <mapping resource="edu/mayo/mprc/searchdb/dao/TandemMassSpectrometrySample.hbm.xml"/>
         <mapping resource="edu/mayo/mprc/searchdb/dao/SearchResult.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/BiologicalSample.hbm.xml"/>
+        <mapping resource="edu/mayo/mprc/searchdb/dao/Analysis.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
