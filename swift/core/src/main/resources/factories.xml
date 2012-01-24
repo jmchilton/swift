@@ -255,7 +255,7 @@
         <property name="searchEngines" ref="searchEngines"/>
     </bean>
 
-    <bean id="searchDbDao" class="edu.mayo.mprc.searchdb.dao.SearchDbDaoImpl">
+    <bean id="searchDbDao" class="edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate">
         <constructor-arg index="0" ref="swiftDao"/>
         <constructor-arg index="1" ref="databasePlaceholder"/>
     </bean>

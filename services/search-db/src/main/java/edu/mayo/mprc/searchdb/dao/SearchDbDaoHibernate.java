@@ -10,6 +10,8 @@ import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -18,11 +20,24 @@ import java.util.Map;
  *
  * @author Roman Zenka
  */
-public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer, SearchDbDao {
+public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitializer, SearchDbDao {
     private SwiftDao swiftDao;
 
-    public SearchDbDaoImpl(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
+    private final String MAP = "edu/mayo/mprc/searchdb/dao/";
+
+    public SearchDbDaoHibernate() {
+    }
+
+    public SearchDbDaoHibernate(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
         super(databasePlaceholder);
+        this.swiftDao = swiftDao;
+    }
+
+    public SwiftDao getSwiftDao() {
+        return swiftDao;
+    }
+
+    public void setSwiftDao(SwiftDao swiftDao) {
         this.swiftDao = swiftDao;
     }
 
@@ -112,5 +127,21 @@ public final class SearchDbDaoImpl extends DaoBase implements RuntimeInitializer
     @Override
     public Analysis addAnalysis(Analysis analysis) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<String> getHibernateMappings() {
+        return Arrays.asList(
+                MAP + "Analysis.hbm.xml",
+                MAP + "BiologicalSample.hbm.xml",
+                MAP + "IdentifiedPeptide.hbm.xml",
+                MAP + "LocalizedModification.hbm.xml",
+                MAP + "PeptideSequence.hbm.xml",
+                MAP + "PeptideSpectrumMatch.hbm.xml",
+                MAP + "ProteinGroup.hbm.xml",
+                MAP + "ProteinSequence.hbm.xml",
+                MAP + "SearchResult.hbm.xml",
+                MAP + "TandemMassSpectrometrySample.hbm.xml"
+        );
     }
 }
