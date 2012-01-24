@@ -17,15 +17,15 @@ import java.util.*;
  * <p/>
  * The DAO allows you to return current modification set, and to upgrade the set from a given file.
  */
-public final class UnimodDaoImpl extends DaoBase implements UnimodDao {
-    private static final Logger LOGGER = Logger.getLogger(UnimodDaoImpl.class);
+public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
+    private static final Logger LOGGER = Logger.getLogger(UnimodDaoHibernate.class);
 
     private static final String HBM_DIR = "edu/mayo/mprc/unimod/";
 
-    public UnimodDaoImpl() {
+    public UnimodDaoHibernate() {
     }
 
-    public UnimodDaoImpl(DatabasePlaceholder databasePlaceholder) {
+    public UnimodDaoHibernate(DatabasePlaceholder databasePlaceholder) {
         super(databasePlaceholder);
     }
 

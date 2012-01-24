@@ -24,6 +24,7 @@ import java.util.*;
 
 public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
     private static final Logger LOGGER = Logger.getLogger(SwiftDaoHibernate.class);
+    private static final String MAP = "edu/mayo/mprc/swift/dbmapping/";
 
     private FileTokenFactory fileTokenFactory;
     private final Object taskStatesLock = new Object();
@@ -41,7 +42,19 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 
     @Override
     public Collection<String> getHibernateMappings() {
-        return Arrays.asList("edu/mayo/mprc/swift/dbmapping/EnabledEngines.hbm.xml");
+        return Arrays.asList(
+                MAP + "EnabledEngines.hbm.xml",
+                MAP + "FileSearch.hbm.xml",
+                MAP + "PeptideReport.hbm.xml",
+                MAP + "ReportData.hbm.xml",
+                MAP + "SearchEngineConfig.hbm.xml",
+                MAP + "SearchRun.hbm.xml",
+                MAP + "SpectrumQa.hbm.xml",
+                MAP + "SwiftDBVersion.hbm.xml",
+                MAP + "SwiftSearchDefinition.hbm.xml",
+                MAP + "TaskData.hbm.xml",
+                MAP + "TaskStateData.hbm.xml"
+        );
     }
 
     @Override

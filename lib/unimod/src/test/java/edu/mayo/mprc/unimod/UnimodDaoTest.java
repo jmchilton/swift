@@ -16,7 +16,7 @@ public final class UnimodDaoTest extends DaoTest {
 
     @BeforeMethod
     public void setupDb() {
-        final UnimodDaoImpl daoImpl = new UnimodDaoImpl();
+        final UnimodDaoHibernate daoImpl = new UnimodDaoHibernate();
         initializeDatabase(Arrays.asList(daoImpl));
         dao = daoImpl;
         dao.begin();

@@ -14,7 +14,6 @@
         <many-to-one name="submittingUser" class="edu.mayo.mprc.workspace.User"
                      column="submitting_user"
                      lazy="false"/>
-        <property name="xmlDefFile" column="xml_def_file" type="edu.mayo.mprc.database.FileType" length="500"/>
         <!-- ID of the swift search. This is a hack to optimize loading of the objects -->
         <property name="swiftSearch" type="integer" column="swift_search"/>
         <property name="startTimestamp" column="start_timestamp" index="transaction_start_timestamp_index"/>

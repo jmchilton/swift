@@ -233,11 +233,11 @@
         </constructor-arg>
     </bean>
 
-    <bean id="unimodDao" class="edu.mayo.mprc.unimod.UnimodDaoImpl">
+    <bean id="unimodDao" class="edu.mayo.mprc.unimod.UnimodDaoHibernate">
         <constructor-arg index="0" ref="databasePlaceholder"/>
     </bean>
 
-    <bean id="paramsDao" class="edu.mayo.mprc.swift.params2.ParamsDaoImpl">
+    <bean id="paramsDao" class="edu.mayo.mprc.swift.params2.ParamsDaoHibernate">
         <constructor-arg index="0" ref="databasePlaceholder"/>
     </bean>
 

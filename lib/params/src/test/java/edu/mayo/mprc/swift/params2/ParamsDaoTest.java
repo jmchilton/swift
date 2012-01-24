@@ -21,8 +21,8 @@ import java.util.List;
 public final class ParamsDaoTest extends DaoTest {
     private static final Logger LOGGER = Logger.getLogger(ParamsDaoTest.class);
 
-    private ParamsDaoImpl dao;
-    private UnimodDaoImpl unimodDao;
+    private ParamsDaoHibernate dao;
+    private UnimodDaoHibernate unimodDao;
     private CurationDaoImpl curationDao;
 
     private Mod mod1;
@@ -39,8 +39,8 @@ public final class ParamsDaoTest extends DaoTest {
 
     @BeforeMethod
     public void setup() {
-        dao = new ParamsDaoImpl();
-        unimodDao = new UnimodDaoImpl();
+        dao = new ParamsDaoHibernate();
+        unimodDao = new UnimodDaoHibernate();
         curationDao = new CurationDaoImpl();
 
         initializeDatabase(Arrays.asList(dao, unimodDao, curationDao));

@@ -16,15 +16,15 @@ import org.hibernate.criterion.SimpleExpression;
 
 import java.util.*;
 
-public final class ParamsDaoImpl extends DaoBase implements ParamsDao {
-    private static final Logger LOGGER = Logger.getLogger(ParamsDaoImpl.class);
+public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
+    private static final Logger LOGGER = Logger.getLogger(ParamsDaoHibernate.class);
 
     private static final String PARAMS_FOLDER = "edu/mayo/mprc/swift/params2/";
 
-    public ParamsDaoImpl() {
+    public ParamsDaoHibernate() {
     }
 
-    public ParamsDaoImpl(DatabasePlaceholder databasePlaceholder) {
+    public ParamsDaoHibernate(DatabasePlaceholder databasePlaceholder) {
         super(databasePlaceholder);
     }
 
