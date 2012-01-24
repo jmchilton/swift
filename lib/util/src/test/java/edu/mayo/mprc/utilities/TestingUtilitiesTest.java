@@ -12,56 +12,56 @@ import java.util.Locale;
 
 @Test(sequential = true)
 public final class TestingUtilitiesTest {
-	private static final Logger LOGGER = Logger.getLogger(TestingUtilitiesTest.class);
+    private static final Logger LOGGER = Logger.getLogger(TestingUtilitiesTest.class);
 
-	@Test(groups = {"fast"})
-	public void test_getTempFileFromResource() {
-		try {
-			File tempFile = TestingUtilities.getTempFileFromResource(this.getClass(), "/SimpleFile.txt", true, null);
-			Assert.assertTrue(tempFile.exists(), "The file wasn't created.");
-			if (tempFile.exists()) {
-				LOGGER.debug("Temp file created: " + tempFile.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			Assert.fail("Could not create a temporary file from a local resource.", e);
-		}
-	}
+    @Test(groups = {"fast"})
+    public void test_getTempFileFromResource() {
+        try {
+            File tempFile = TestingUtilities.getTempFileFromResource(this.getClass(), "/SimpleFile.txt", true, null);
+            Assert.assertTrue(tempFile.exists(), "The file wasn't created.");
+            if (tempFile.exists()) {
+                LOGGER.debug("Temp file created: " + tempFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            Assert.fail("Could not create a temporary file from a local resource.", e);
+        }
+    }
 
-	@Test(groups = {"fast", "unit"})
-	public void FileComparisonTest() throws IOException {
-		File f1 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileA.txt", true, null);
-		File f2 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileACopy.txt", true, null);
-		LOGGER.debug(f2.getAbsolutePath());
-		Assert.assertTrue(f2.exists());
-		Assert.assertEquals(TestingUtilities.compareFilesByLine(f1, f2), null);
-	}
+    @Test(groups = {"fast", "unit"})
+    public void FileComparisonTest() throws IOException {
+        File f1 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileA.txt", true, null);
+        File f2 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileACopy.txt", true, null);
+        LOGGER.debug(f2.getAbsolutePath());
+        Assert.assertTrue(f2.exists());
+        Assert.assertEquals(TestingUtilities.compareFilesByLine(f1, f2), null);
+    }
 
-	@Test(groups = {"fast", "unit"})
-	public void DifferentFileComparisonTest() throws IOException {
-		File f1 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileA.txt", true, null);
-		File f2 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileB.txt", true, null);
-		Assert.assertEquals(TestingUtilities.compareFilesByLine(f1, f2), "First file line and second file line differences:\n" +
-				"[A simple file to compare.]\n" +
-				"[A second simple file to compare]");
-	}
+    @Test(groups = {"fast", "unit"})
+    public void DifferentFileComparisonTest() throws IOException {
+        File f1 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileA.txt", true, null);
+        File f2 = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/utilities/testing/simpleFileB.txt", true, null);
+        Assert.assertEquals(TestingUtilities.compareFilesByLine(f1, f2), "Difference in line #1:\n" +
+                "[A simple file to compare.]\n" +
+                "[A second simple file to compare]");
+    }
 
-	@Test
-	public void shouldCreateDate() {
-		final Date date = TestingUtilities.getDate(2011, 1, 13);
-		DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.US);
-		Assert.assertEquals(format.format(date), "Jan 13, 2011 12:00:00 AM");
-	}
+    @Test
+    public void shouldCreateDate() {
+        final Date date = TestingUtilities.getDate(2011, 1, 13);
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.US);
+        Assert.assertEquals(format.format(date), "Jan 13, 2011 12:00:00 AM");
+    }
 
-	/**
-	 * Check that we can compare given string to a resource file.
-	 */
-	@Test
-	public void shouldCompareStringToResource() {
-		Assert.assertNull(TestingUtilities.compareStringToResourceByLine("hello\nworld", "edu/mayo/mprc/utilities/testing/hello_world.txt"));
-		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine("hello\nworld2", "edu/mayo/mprc/utilities/testing/hello_world.txt"), "Difference in line #2:\n" +
-				"[world2]\n" +
-				"[world]");
-	}
+    /**
+     * Check that we can compare given string to a resource file.
+     */
+    @Test
+    public void shouldCompareStringToResource() {
+        Assert.assertNull(TestingUtilities.compareStringToResourceByLine("hello\nworld", "edu/mayo/mprc/utilities/testing/hello_world.txt"));
+        Assert.assertEquals(TestingUtilities.compareStringToResourceByLine("hello\nworld2", "edu/mayo/mprc/utilities/testing/hello_world.txt"), "Difference in line #2:\n" +
+                "[world2]\n" +
+                "[world]");
+    }
 
 
 }
