@@ -96,7 +96,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     private Criterion identifiedPeptideEqualityCriteria(IdentifiedPeptide peptide) {
         return Restrictions.conjunction()
                 .add(associationEq("sequence", peptide.getSequence()));
-        // CONTINUE HERE;
     }
 
     @Override
