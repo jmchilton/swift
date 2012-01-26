@@ -1,6 +1,5 @@
 package edu.mayo.mprc.dbcurator.model.curationsteps;
 
-import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.dbcurator.model.CurationExecutor;
 import edu.mayo.mprc.dbcurator.model.CurationStatus;
 import edu.mayo.mprc.dbcurator.model.CurationStep;
@@ -24,7 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author Eric J. Winter Date: Apr 10, 2007 Time: 12:03:54 PM
  */
-public class MakeDecoyStep extends CurationStepBase {
+public class MakeDecoyStep implements CurationStep {
 	private static final long serialVersionUID = 20071220L;
 
 	/**
@@ -39,6 +38,11 @@ public class MakeDecoyStep extends CurationStepBase {
 
 	// Helps inserting Reversed_ and (Reversed) in the header.
 	private static final Pattern HEADER_TRANSFORM = Pattern.compile("^>\\s*(\\S+\\s*)(.*)$");
+
+	/**
+	 * the id of the step that is used for persisent storage.  Null if not persisted
+	 */
+	private Integer id;
 
 	/**
 	 * whether this object will retain the original sequence or remove the original sequence
@@ -246,6 +250,27 @@ public class MakeDecoyStep extends CurationStepBase {
 		copy.overwriteMode = this.overwriteMode;
 		copy.manipulatorType = this.manipulatorType;
 		return copy;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	/**
+	 * the number of sequences that were present in the curation after this step was last run
+	 */
+	private Integer lastRunCompletionCount = null;
+
+	public Integer getLastRunCompletionCount() {
+		return this.lastRunCompletionCount;
+	}
+
+	public void setLastRunCompletionCount(Integer count) {
+		this.lastRunCompletionCount = count;
 	}
 
 	public String simpleDescription() {

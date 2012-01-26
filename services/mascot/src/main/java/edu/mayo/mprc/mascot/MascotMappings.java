@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class MascotMappings implements Mappings {
+	private Map<String, Protease> enzymesByMascotName;
 	private Map<Protease, String> mascotNamesByEnzyme;
 	private static final String PEP_TOL_VALUE = "TOL";
 	private static final String PEP_TOL_UNIT = "TOLU";
@@ -33,6 +34,16 @@ public final class MascotMappings implements Mappings {
 	private static final String ENZYME = "CLE";
 	private static final String MISSED_CLEAVAGES = "PFA";
 	private static final String INSTRUMENT = "INSTRUMENT";
+	private static final HashSet<String> PARSED_PARAMS = new HashSet<String>(Arrays.asList(PEP_TOL_VALUE,
+			PEP_TOL_UNIT,
+			FRAG_TOL_VALUE,
+			FRAG_TOL_UNIT,
+			DATABASE,
+			VAR_MODS,
+			FIXED_MODS,
+			ENZYME,
+			MISSED_CLEAVAGES,
+			INSTRUMENT));
 
 	/**
 	 * Mascot supports only limited amount of variable modifications.
@@ -69,6 +80,7 @@ public final class MascotMappings implements Mappings {
 		for (Protease protease : info.getEnzymeAllowedValues()) {
 			allowedH.put(protease.getName(), protease);
 		}
+		enzymesByMascotName = getEnzymesByName(allowedH, enzymeNames);
 		mascotNamesByEnzyme = getNamesByEnzyme(allowedH, enzymeNames);
 	}
 
@@ -78,10 +90,50 @@ public final class MascotMappings implements Mappings {
 
 	@Override
 	public Reader baseSettings() {
-		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.mascot.params", getClass());
+		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.mascot.params", this.getClass());
 	}
 
 	public void read(Reader isr) {
+		nativeParams = new HashMap<String, String>();
+		LineNumberReader br = null;
+		try {
+			br = new LineNumberReader(isr);
+			while (true) {
+				String it = br.readLine();
+				if (it == null) {
+					break;
+				}
+				if (it.length() == 0) {
+					break;
+				}
+
+				if (PARAM.matcher(it).matches()) {
+					Matcher matcher = KEY_VALUE_COMMENT.matcher(it);
+					if (!matcher.matches()) {
+						throw new MprcException("Can't understand '" + it + "'");
+					}
+
+					String id = matcher.group(1);
+					String value = matcher.group(2);
+
+					if (PARSED_PARAMS.contains(id)) {
+						nativeParams.put(id, value);
+					}
+				} else if (COMMENT.matcher(it).matches()) {
+					ignoreComment();
+				} else {
+					throw new MprcException("Can't understand '" + it + "'");
+				}
+			}
+		} catch (IOException e) {
+			throw new MprcException("Cannot parse mascot parameter file.", e);
+		} finally {
+			FileUtilities.closeQuietly(br);
+		}
+	}
+
+	private void ignoreComment() {
+		// Comments are ignored, do nothing
 	}
 
 	public void write(Reader oldParams, Writer out) {
@@ -165,7 +217,7 @@ public final class MascotMappings implements Mappings {
 
 		if (droppedMods.length() > 0) {
 			droppedMods.setLength(droppedMods.length() - 2);
-			context.reportWarning("Mascot supports up to " + MAX_VARIABLE_MODS + " variable modifications; dropping " + droppedMods);
+			context.reportWarning("Mascot supports up to " + MAX_VARIABLE_MODS + " variable modifications; dropping " + droppedMods.toString());
 		}
 
 		setNativeMods(context, VAR_MODS, mods);
@@ -199,8 +251,8 @@ public final class MascotMappings implements Mappings {
 	/**
 	 * The short db name matches directly the db name in Mascot.
 	 */
-	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
-		setNativeParam(DATABASE, shortDatabaseName);
+	public void setSequenceDatabase(MappingContext context, String shortName) {
+		setNativeParam(DATABASE, shortName);
 	}
 
 	public void setProtease(MappingContext context, Protease protease) {
@@ -284,7 +336,7 @@ public final class MascotMappings implements Mappings {
 				}
 			}
 			if (specificities.toString().length() > 0) {
-				context.reportWarning("Mascot will search additional site (" + specificities + ") for modification " + ms.toString());
+				context.reportWarning("Mascot will search additional site (" + specificities.toString() + ") for modification " + ms.toString());
 			}
 		}
 	}
@@ -298,6 +350,14 @@ public final class MascotMappings implements Mappings {
 			setNativeParam(tolName, String.valueOf(unit.getValue()));
 			setNativeParam(tolUnitName, unit.getUnit().getCode());
 		}
+	}
+
+	private Map<String, Protease> getEnzymesByName(Map<String, Protease> allowedHash, Map<String, String> namesHash) {
+		Map<String, Protease> hash = new HashMap<String, Protease>();
+		for (Map.Entry<String, String> e : namesHash.entrySet()) {
+			hash.put(e.getValue(), allowedHash.get(e.getKey()));
+		}
+		return hash;
 	}
 
 	private Map<Protease, String> getNamesByEnzyme(Map<String, Protease> allowedHash, Map<String, String> namesHash) {

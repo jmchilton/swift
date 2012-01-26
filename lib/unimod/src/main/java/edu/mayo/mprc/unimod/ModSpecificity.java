@@ -205,7 +205,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		} else if (modSpecificity.isPositionNTerminus()) {
 			text.append(' ').append(ModSpecificity.SITE_N_TERM);
 		}
-		if (modSpecificity.isSiteAminoAcid()) {
+		if (modSpecificity.isSiteSpecificAminoAcid()) {
 			text.append(' ').append(modSpecificity.getSite());
 		}
 		if (text.length() > 1) {
@@ -297,13 +297,20 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return term == Terminus.Anywhere;
 	}
 
-	public boolean isSiteAminoAcid() {
+	/**
+	 * @return True if this mod dictates a specific amino acid it works on. False for '*' site.
+	 */
+	public boolean isSiteSpecificAminoAcid() {
 		if (site != null) {
 			return !site.equals('*');
 		}
 		return false;
 	}
 
+	/**
+	 * @return True if this modification can occur at C terminus. This means either the C terminus is requested,
+	 *         or the modification can occur anywhere in the sequence.
+	 */
 	public boolean isSiteCTerminus() {
 		if (site != null) {
 			return site.equals('*') && isPositionCTerminus();
@@ -312,6 +319,10 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return false;
 	}
 
+	/**
+	 * @return True if this modification can occur at N terminus. This means either the N terminus is requested,
+	 *         or the modification can occur anywhere in the sequence.
+	 */
 	public boolean isSiteNTerminus() {
 		if (site != null) {
 			return site.equals('*') && isPositionNTerminus();

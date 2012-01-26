@@ -24,8 +24,16 @@ import java.util.Locale;
  * @author Eric J. Winter Date: Apr 9, 2007 Time: 9:30:27 AM
  */
 
-public class HeaderFilterStep extends CurationStepBase {
+public class HeaderFilterStep implements CurationStep {
 	private static final long serialVersionUID = 20071220L;
+
+
+	/**
+	 * the persistence identifier of this HeaderFilterStep
+	 * PERSISTENT
+	 */
+	private Integer id = null;
+
 
 	/**
 	 * the match mode of this filter (defaults to ANY)
@@ -229,6 +237,28 @@ public class HeaderFilterStep extends CurationStepBase {
 	public void setCriteriaString(String criteriaString) {
 		this.criteriaString = criteriaString;
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	/**
+	 * the number of sequences that were present in the curation after this step was last run
+	 */
+	private Integer lastRunCompletionCount = null;
+
+	public Integer getLastRunCompletionCount() {
+		return this.lastRunCompletionCount;
+	}
+
+	public void setLastRunCompletionCount(Integer count) {
+		this.lastRunCompletionCount = count;
+	}
+
 
 	public String simpleDescription() {
 		return "filtered " + this.getMatchMode().toString().toLowerCase(Locale.ENGLISH) + "\"" + getCriteriaString() + "\"";

@@ -1,25 +1,22 @@
 package edu.mayo.mprc.unimod;
 
-import org.apache.log4j.Logger;
-import org.xml.sax.Attributes;
+import com.google.common.base.Joiner;
+import edu.mayo.mprc.MprcException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
- * Indexed set of modifications corresponding to the unimod database.
- * <p/>
- * Contains methods for parsing the unimod.xml file format that matches Mascot's configuration.
+ * Reads testUniMod.xml
  */
 public final class Unimod extends IndexedModSet {
-
-	private static final Logger LOGGER = Logger.getLogger(Unimod.class);
-
+	private static final int EXPECTED_BYTES_PER_DUMP_LINE = 50;
 	/**
 	 * the unimod major version
 	 */
@@ -38,19 +35,29 @@ public final class Unimod extends IndexedModSet {
 	}
 
 	/**
+	 * Parses unimod.xml in the Mascot format.
 	 * It is the responsibility of the caller to close the stream.
 	 *
 	 * @param xmlStream a stream of xml
-	 * @throws IOException  if there was a problem parsing the xmlStream
-	 * @throws SAXException if we couldn't get SAXParser to work
 	 */
-	public void parseUnimodXML(InputStream xmlStream) throws IOException, SAXException {
-		XMLReader parser = getParser(/*preferedParser*/"org.apache.xerces.parsers.SAXParser");
+	public void parseUnimodXML(InputStream xmlStream) {
 
-		parser.setContentHandler(new UnimodContentHandler(this));
+		XMLReader parser = null;
+		try {
+			parser = getParser(/*preferedParser*/"org.apache.xerces.parsers.SAXParser");
+		} catch (SAXException e) {
+			throw new MprcException("Could not obtain XML parser to parse unimod.xml", e);
+		}
 
-		InputSource source = new InputSource(xmlStream);
-		parser.parse(source);
+		try {
+			parser.setContentHandler(new UnimodHandler(this));
+			InputSource source = new InputSource(xmlStream);
+			parser.parse(source);
+		} catch (IOException e) {
+			throw new MprcException("Could not read unimod.xml stream", e);
+		} catch (SAXException e) {
+			throw new MprcException("Could not parse unimod.xml stream", e);
+		}
 		setName("Unimod " + getMajorVersion() + "." + getMinorVersion());
 	}
 
@@ -93,166 +100,54 @@ public final class Unimod extends IndexedModSet {
 		return "Unimod " + getMajorVersion() + "." + getMinorVersion();
 	}
 
-	private class UnimodContentHandler extends DefaultHandler {
-		private final Unimod into;
+	/**
+	 * @return A string containing all information from the unimod set for testing purposes.
+	 */
+	public String debugDump() {
+		StringBuilder builder = new StringBuilder(EXPECTED_BYTES_PER_DUMP_LINE * size());
 
-		private ModBuilder currentMod;
-		private SpecificityBuilder currentSpecificity;
+		final Set<ModSpecificity> specificitySet = getAllSpecificities(true);
+		final ModSpecificity[] specificities = specificitySet.toArray(new ModSpecificity[specificitySet.size()]);
+		Arrays.sort(specificities);
 
+		builder.append("Modification Record ID\tModification Title\tModification Full Name\tModification Mono Mass\tModification Average Mass\tModification Alt Names\t" +
+				"Modification Composition\tSpecificity Site\tSpecificity Terminus\tSpecificity Protein Only\tSpecificity Classification\tSpecificity Hidden\tSpecificity Group\tSpecificity Comments\n");
+		for (ModSpecificity specificity : specificities) {
+			final Mod mod = specificity.getModification();
+			builder
+					.append(mod.getRecordID())
+					.append('\t')
+					.append(mod.getTitle())
+					.append('\t')
+					.append(mod.getFullName())
+					.append('\t')
+					.append(mod.getMassMono())
+					.append('\t')
+					.append(mod.getMassAverage())
+					.append('\t');
 
-		/**
-		 * True if there is a specificity currently being worked on.
-		 */
-		private Double currentMassMono;
-		private Double currentMassAverage;
-		private String currentComposition;
+			Joiner.on(',').appendTo(builder, mod.getAltNames());
 
-		private StringBuilder tagScanner = new StringBuilder();
-
-		public UnimodContentHandler(final Unimod into) {
-			this.into = into;
+			builder
+					.append('\t')
+					.append(mod.getComposition())
+					.append('\t')
+					.append(specificity.getSite())
+					.append('\t')
+					.append(specificity.getTerm())
+					.append('\t')
+					.append(specificity.isProteinOnly())
+					.append('\t')
+					.append(specificity.getClassification())
+					.append('\t')
+					.append(specificity.getHidden())
+					.append('\t')
+					.append(specificity.getSpecificityGroup())
+					.append('\t')
+					.append(specificity.getComments())
+					.append('\n');
 		}
-
-		private Double getDoubleValue(Attributes attr, String attrName) {
-			Double value = null;
-			try {
-				value = new Double(attr.getValue("", attrName));
-			} catch (Exception ignore) {
-				//SWALLOWED: just allow null to be returned
-			}
-			return value;
-		}
-
-		private Boolean getBooleanValue(Attributes attr, String attrName) {
-			Boolean value = null;
-			try {
-				String strValue = attr.getValue("", attrName);
-				value = (!strValue.equals("0"));
-			} catch (Exception ignore) {
-				//SWALLOWED: allow null return;
-			}
-			return value;
-		}
-
-		private Integer getIntegerValue(Attributes attr, String attrName) {
-			Integer value = null;
-			try {
-				String strValue = attr.getValue("", attrName);
-				value = Integer.valueOf(strValue);
-			} catch (Exception ignore) {
-				// SWALLOWED: allow null return;
-			}
-			return value;
-		}
-
-		@Override
-		public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attr) {
-			if (localName.equals("mod")) {
-				currentMod = new ModBuilder();
-				currentMod.setTitle(attr.getValue("", "title"));
-				currentMod.setFullName(attr.getValue("", "full_name"));
-				currentMod.setRecordID(getIntegerValue(attr, "record_id"));
-
-			} else if (localName.equals("alt_name")) {
-				tagScanner = new StringBuilder();
-			} else if (localName.equals("specificity")) {
-				// We are working on a new specificity
-				currentSpecificity = currentMod.addSpecificityFromUnimod(
-						attr.getValue("", "site"),
-						attr.getValue("", "position"),
-						getBooleanValue(attr, "hidden"),
-						attr.getValue("", "classification"),
-						getIntegerValue(attr, "spec_group"));
-			} else if (localName.equals("delta")) {
-				currentMassMono = getDoubleValue(attr, "mono_mass");
-				currentMassAverage = getDoubleValue(attr, "avge_mass");
-				currentComposition = attr.getValue("", "composition");
-			} else if (localName.equals("unimod")) {
-				majorVersion = attr.getValue("majorVersion");
-				minorVersion = attr.getValue("minorVersion");
-			} else if (!localName.equals("misc_notes")
-					&& !localName.equals("elem")
-					&& !localName.equals("element")
-					&& !localName.equals("elements")
-					&& !localName.equals("xref")
-					&& !localName.equals("text")
-					&& !localName.equals("source")
-					&& !localName.equals("url")
-					&& !localName.equals("brick")
-					&& !localName.equals("aminoAcids")
-					&& !localName.equals("Ignore")
-					&& !localName.equals("NeutralLoss")
-					&& !localName.equals("modifications")
-					&& !localName.equals("aa")
-					&& !localName.equals("amino_acids")
-					&& !localName.equals("mod_bricks")) {
-				LOGGER.info("Unused unimod element: " + qualifiedName);
-			}
-		}
-
-		@Override
-		public void characters(char[] ch, int start, int length) {
-			if (this.tagScanner != null) {
-				for (int i = 0; i < length; i++) {
-					this.tagScanner.append(ch[start + i]);
-				}
-
-			}
-		}
-
-		@Override
-		public void endElement(String namespaceURI, String localName, String qualifiedName) {
-			if (localName.equals("mod")) {
-				if (currentMod != null) {
-					into.add(currentMod.build());
-					currentMod = null;
-				}
-			} else if (localName.equals("alt_name")) {
-				if (tagScanner != null && currentMod != null) {
-					currentMod.getAltNames().add(tagScanner.toString());
-					tagScanner = null;
-				}
-			} else if (localName.equals("specificity")) {
-				if (currentMod != null && currentSpecificity != null) {
-					currentSpecificity = null;
-				}
-			} else if (localName.equals("misc_notes")) {
-				if (currentSpecificity != null) {
-					String addition = "";
-					if (tagScanner != null) {
-						addition = tagScanner.toString();
-						if (addition != null && !addition.equals("") && !addition.equals("null")) {
-							currentSpecificity.addComment(addition.trim());
-						}
-					}
-				}
-			} else if (localName.equals("delta")) {
-				if (currentMod != null && currentMassMono != null) {
-					currentMod.setMassMono(currentMassMono);
-					currentMod.setMassAverage(currentMassAverage);
-					currentMod.setComposition(currentComposition);
-					currentMassMono = null;
-				}
-			} else if (!localName.equals("elem") &&
-					!localName.equals("element") &&
-					!localName.equals("elements") &&
-					!localName.equals("xref") &&
-					!localName.equals("text") &&
-					!localName.equals("source") &&
-					!localName.equals("url") &&
-					!localName.equals("brick") &&
-					!localName.equals("aminoAcids") &&
-					!localName.equals("Ignore") &&
-					!localName.equals("NeutralLoss") &&
-					!localName.equals("modifications") &&
-					!localName.equals("aa") &&
-					!localName.equals("amino_acids") &&
-					!localName.equals("mod_bricks") &&
-					!localName.equals("unimod")) {
-				LOGGER.debug("Unused unimod element: " + qualifiedName);
-			}
-			tagScanner = new StringBuilder();
-		}
+		return builder.toString();
 	}
 
 	@Override

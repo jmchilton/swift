@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.searchdb.dao" default-lazy="true">
+    <class name="Analysis" table="analysis">
+        <id name="id" type="integer" column="analysis_id">
+            <generator class="native"/>
+        </id>
+        <property name="analysisDate" type="timestamp" column="analysis_date"/>
+        <bag name="biologicalSamples" table="analysis_samples">
+            <key column="analysis_id"/>
+            <many-to-many column="biological_sample_id" class="BiologicalSample"/>
+        </bag>
+    </class>
+</hibernate-mapping>

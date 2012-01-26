@@ -27,7 +27,7 @@ import java.util.List;
  * <p/>
  * This class will also handle operations on curations
  */
-public final class CurationHandler implements CurationHandlerI {
+public final class CurationHandler {
 	/**
 	 * looks for a CurationHandler titled "curationHandler" in the given session object and returns it.  If it is not found
 	 * then a new one is created and placed on the given session with the given name ("curationHandler").
@@ -35,11 +35,11 @@ public final class CurationHandler implements CurationHandlerI {
 	 * @param session the HttpSession that we want to look for the CurationHandler on
 	 * @return the curation handler that was on the session or a new one that has been put on the session
 	 */
-	public static CurationHandlerI getInstance(HttpSession session) {
+	public static CurationHandler getInstance(HttpSession session) {
 
-		CurationHandlerI perSession = null;
+		CurationHandler perSession = null;
 		try {
-			perSession = (CurationHandlerI) session.getAttribute("curationHandler");
+			perSession = (CurationHandler) session.getAttribute("curationHandler");
 		} catch (Exception e) {
 			LOGGER.warn("Error getting a curation handler", e);
 			perSession = null;
@@ -75,10 +75,17 @@ public final class CurationHandler implements CurationHandlerI {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#syncCuration(edu.mayo.mprc.dbcurator.client.curatorstubs.CurationStub)
+	/**
+	 * takes a CurationStub and synchronizes it to the server side.  This will take the changes from the stub and make the server
+	 * side Curation match the stub.  The only exception is messages that will be sync'd from the Curation to the Client since there
+	 * are no messages with a Curation object but only with Validations.
+	 * <p/>
+	 * As a side effect, if we are actually running the curation right now, the messages from the execution will be added
+	 * to the input CurationStub.
+	 *
+	 * @param toSync the stub that you want to synce to a curation
+	 * @return the curation that was sync'd
 	 */
-	@Override
 	public CurationStub syncCuration(CurationStub toSync) {
 
 		//clear the error messages that may have previously existed
@@ -198,10 +205,15 @@ public final class CurationHandler implements CurationHandlerI {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#createStepFromStub(edu.mayo.mprc.dbcurator.client.curatorstubs.CurationStepStub)
+	/**
+	 * creates a CurationStep from a given CurationStepStub.  It first looks in the possibleContainer by id to see if it
+	 * is already in the container.  If so it returns the one that was already in the container else it will create a new
+	 * step that has the same field as the stub.  This is a very complex method using type checking
+	 * that will needed to be changed if new steps are added.
+	 *
+	 * @param stub the stub you want to get a server side Step for
+	 * @return the step that the given stub could represent
 	 */
-	@Override
 	public CurationStep createStepFromStub(CurationStepStub stub) {
 		CurationStep retStep = null;
 
@@ -285,10 +297,12 @@ public final class CurationHandler implements CurationHandlerI {
 	 */
 	private DateFormat dater = new SimpleDateFormat("MM/dd/yyyy");
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#createStub(edu.mayo.mprc.dbcurator.model.Curation)
+	/**
+	 * use this method to create a stub for a curation.  Dates are outuput in MM/dd/yyyy format.
+	 *
+	 * @param toStubify the curation you want to createa  stub for
+	 * @return the corresponding stub
 	 */
-	@Override
 	public CurationStub createStub(Curation toStubify) {
 
 		//create the stub and fill in all fields
@@ -418,10 +432,18 @@ public final class CurationHandler implements CurationHandlerI {
 		return stub;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#getMatchingCurations(edu.mayo.mprc.dbcurator.client.curatorstubs.CurationStub, java.util.Date, java.util.Date)
+	/**
+	 * takes a curation stub with fields in it and returns an array of CurationStubs that match the given stubs and exist
+	 * in persistent store.  The fields that can be used in a search include.  * can be used as a wild card for any of these fields.
+	 * - owner email
+	 * - short name
+	 * - run date (within range)
+	 *
+	 * @param stub            the stub you want to at least match with returned stubs
+	 * @param earliestRunDate the earliest run date (inclusive) for curations you want returned (or null for unbounded)
+	 * @param latestRunDate   the latest run date (inclusive) for curations you want returned (or null for unbounded)
+	 * @return the matching curation stubs or null if there were no matches or if the sample was overly vague.
 	 */
-	@Override
 	public List<CurationStub> getMatchingCurations(CurationStub stub, Date earliestRunDate, Date latestRunDate) {
 		//this.syncCuration(stub);
 		//Curation sample = this.getCachedCuration();
@@ -447,10 +469,6 @@ public final class CurationHandler implements CurationHandlerI {
 		return stubs;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#getCurationByID(java.lang.Integer)
-	 */
-	@Override
 	public CurationStub getCurationByID(Integer id) {
 		this.cache = null;
 		this.lastRunStatus = null;
@@ -471,10 +489,14 @@ public final class CurationHandler implements CurationHandlerI {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#executeCuration(edu.mayo.mprc.dbcurator.client.curatorstubs.CurationStub)
+	/**
+	 * takes a curation and executes it.  The status for the execution will be retained for subsequent synchronizations
+	 * to the Curation
+	 * <p/>
+	 *
+	 * @param toExecute the CurationStub that you want to execute
+	 * @return the curationstub for the curation after it was executed.  This is needed because things may have been changed since the execution occured.
 	 */
-	@Override
 	public CurationStub executeCuration(CurationStub toExecute) {
 		//sync the curation to the cache
 		this.syncCuration(toExecute);
@@ -502,26 +524,29 @@ public final class CurationHandler implements CurationHandlerI {
 
 	private static final Logger LOGGER = Logger.getLogger(CurationHandler.class);
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#getCachedCurationStub()
+	/**
+	 * gets a stub that represents the currently cached curation of this object
+	 *
+	 * @return the stub for the current cached curation
 	 */
-	@Override
 	public CurationStub getCachedCurationStub() {
 		return this.createStub(this.getCachedCuration());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#setCachedCuration(edu.mayo.mprc.dbcurator.model.Curation)
+	/**
+	 * set the curation that should be cached with this handler
+	 *
+	 * @param toSet the curation to be associated with this handler
 	 */
-	@Override
 	public void setCachedCuration(Curation toSet) {
 		this.cache = toSet;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.mayo.mprc.dbcurator.server.CurationHandlerI#getCachedCuration()
+	/**
+	 * gets the curation cached with this object
+	 *
+	 * @return the curation cached with this object
 	 */
-	@Override
 	public Curation getCachedCuration() {
 		return this.cache;
 	}

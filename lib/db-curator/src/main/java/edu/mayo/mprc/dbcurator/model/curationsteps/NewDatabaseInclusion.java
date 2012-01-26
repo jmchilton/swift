@@ -19,8 +19,13 @@ import java.net.URL;
  *
  * @author Eric J. Winter Date: Apr 10, 2007 Time: 10:14:32 AM
  */
-public class NewDatabaseInclusion extends CurationStepBase {
+public class NewDatabaseInclusion implements CurationStep {
 	private static final long serialVersionUID = 20071220L;
+
+	/**
+	 * the id that will be assigned upon persistence
+	 */
+	private Integer id;
 
 	/**
 	 * The validation that was the result (returned object) of the most recent call to performStep() TRANSIENT
@@ -214,6 +219,28 @@ public class NewDatabaseInclusion extends CurationStepBase {
 	 */
 	protected void setSource(SourceDatabaseArchive source) {
 		this.source = source;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+	/**
+	 * the number of sequences that were present in the curation after this step was last run
+	 */
+	private Integer lastRunCompletionCount = null;
+
+	public Integer getLastRunCompletionCount() {
+		return this.lastRunCompletionCount;
+	}
+
+	public void setLastRunCompletionCount(Integer count) {
+		this.lastRunCompletionCount = count;
 	}
 
 	public String simpleDescription() {

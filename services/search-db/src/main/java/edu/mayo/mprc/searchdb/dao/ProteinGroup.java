@@ -3,6 +3,7 @@ package edu.mayo.mprc.searchdb.dao;
 import edu.mayo.mprc.database.PersistableBase;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Maps the following columns from the Scaffold spectrum report:

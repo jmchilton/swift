@@ -281,7 +281,7 @@ final class UnimodOmssaConverter {
 	 * @return
 	 */
 	public ModSpecificity convertToModSpecificity(Element elemMSModSpec, Unimod unimod) {
-		double delta = Double.valueOf(elemMSModSpec.getElementsByTagName("MSModSpec_monomass").item(0).getTextContent());
+		double massShift = Double.valueOf(elemMSModSpec.getElementsByTagName("MSModSpec_monomass").item(0).getTextContent());
 		Element elemType = (Element) elemMSModSpec.getElementsByTagName("MSModSpec_type").item(0);
 		String modTypeEnum = elemType.getElementsByTagName("MSModType").item(0).getTextContent();
 
@@ -307,11 +307,10 @@ final class UnimodOmssaConverter {
 		Terminus terminus = getPosition(modType);
 		boolean proteinOnly = getProteinOnly(modType);
 
-		ModSpecificity spec = unimod.findSingleMatchingModificationSet(delta - ModsUtilities.MOD_MASS_TOL,
-				delta + ModsUtilities.MOD_MASS_TOL, site, terminus, proteinOnly, /*hidden, null means don't consider*/ null);
+		ModSpecificity spec = unimod.findSingleMatchingModificationSet(massShift, ModsUtilities.MOD_MASS_TOL, site, terminus, proteinOnly, /*hidden, null means don't consider*/ null);
 
 		if (spec == null) {
-			throw new MprcException("Can't find modification in Unimod with:" + delta + "@" + site);
+			throw new MprcException("Can't find modification in Unimod with:" + massShift + "@" + site);
 		}
 		return spec;
 	}

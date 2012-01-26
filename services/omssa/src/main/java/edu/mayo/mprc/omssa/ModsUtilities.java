@@ -81,7 +81,7 @@ final class ModsUtilities {
 			sb.append("p");
 		}
 
-		if (spec.isSiteAminoAcid()) {
+		if (spec.isSiteSpecificAminoAcid()) {
 			sb.append("aa");
 		}
 

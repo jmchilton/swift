@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.searchdb.dao">
+    <class name="SearchResult" table="search_result">
+        <id name="id" type="integer" column="search_result_id">
+            <generator class="native"/>
+        </id>
+        <bag name="proteinGroups" table="search_result_proteins">
+            <key column="search_result_id"/>
+            <many-to-many column="protein_group_id" class="ProteinGroup"/>
+        </bag>
+        <many-to-one name="massSpecSample" column="mass_spec_sample" class="TandemMassSpectrometrySample" not-null="false"/>
+    </class>
+</hibernate-mapping>

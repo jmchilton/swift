@@ -3,7 +3,7 @@ package edu.mayo.mprc.qa;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import edu.mayo.mprc.msmseval.MSMSEvalOutputReader;
-import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
+import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldQaSpectraReader;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.testng.Assert;
@@ -33,7 +33,7 @@ public final class SpectrumInfoJoinerTest {
 
 			File outputFile = new File(tempFolder, "output.tsv");
 
-			ScaffoldSpectraReader spectra = new ScaffoldSpectraReader();
+			ScaffoldQaSpectraReader spectra = new ScaffoldQaSpectraReader();
 			spectra.load(scaffoldSpectra, "2");
 			RawDumpReader rawDumpReader = new RawDumpReader(rawDumpFile);
 			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(msmsEvalFile);

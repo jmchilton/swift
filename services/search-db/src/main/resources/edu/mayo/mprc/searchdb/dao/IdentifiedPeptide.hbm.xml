@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.searchdb.dao" default-lazy="true">
+    <class name="IdentifiedPeptide" table="identified_peptide">
+        <id name="id" type="integer" column="identified_peptide_id">
+            <generator class="native"/>
+        </id>
+        <many-to-one name="sequence" column="peptide_sequence" class="PeptideSequence" not-null="true"/>
+        <bag name="modifications" table="peptide_modifications">
+            <key column="identified_peptide"/>
+            <many-to-many column="loc_mod" class="LocalizedModification"/>
+        </bag>
+    </class>
+</hibernate-mapping>

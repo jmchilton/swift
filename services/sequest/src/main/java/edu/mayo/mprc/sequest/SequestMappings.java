@@ -106,7 +106,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 			Matcher m = SEQUEST_HEADER.matcher(header);
 			if ((header == null) || (header.length() == 0) || (!m.lookingAt())) {
 				throw new MprcException("Not a sequest params file");
-	}
+			}
 			while (true) {
 				String it = reader.readLine();
 				if (it == null) {
@@ -336,7 +336,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 	 */
 	private boolean notSupportedMod(ModSpecificity ms) {
 		// we can't support specific amino acids at N or C terminus of peptide or protein.
-		return ms.isSiteAminoAcid() && (!ms.isPositionAnywhere() || ms.isProteinOnly());
+		return ms.isSiteSpecificAminoAcid() && (!ms.isPositionAnywhere() || ms.isProteinOnly());
 	}
 
 	public void setFixedMods(MappingContext context, ModSet fixedMods) {
@@ -346,7 +346,7 @@ public final class SequestMappings implements Mappings, Cloneable {
 		for (ModSpecificity ms : fixedMods.getModifications()) {
 			String title = ms.toString();
 			String key;
-			if (ms.isPositionAnywhere() && ms.isSiteAminoAcid()) {
+			if (ms.isPositionAnywhere() && ms.isSiteSpecificAminoAcid()) {
 				key = String.valueOf(ms.getSite()); // The key is single letter corresponding to the amino acid
 			} else if (ms.isPositionCTerminus()) {
 				key = "Cterm_" + (ms.isProteinOnly() ? "protein" : "peptide");

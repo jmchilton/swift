@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.mayo.mprc.searchdb.dao">
+    <class name="ProteinGroup" table="protein_group">
+        <id name="id" type="integer" column="protein_group_id">
+            <generator class="native"/>
+        </id>
+        <bag name="proteinSequences" table="protein_group_members">
+            <key column="protein_group_id"/>
+            <many-to-many column="protein_sequence_id" class="ProteinSequence"/>
+        </bag>
+        <bag name="peptideSpectrumMatches" table="protein_group_psms">
+            <key column="protein_group_id"/>
+            <many-to-many column="psm_id" class="PeptideSpectrumMatch"/>
+        </bag>
+        <property name="proteinIdentificationProbability" type="double" column="protein_identification_probability"/>
+        <property name="numberOfUniquePeptides" type="integer" column="unique_peptides" />
+        <property name="numberOfUniqueSpectra" type="integer" column="unique_spectra"/>
+        <property name="numberOfTotalSpectra" type="integer" column="total_spectra"/>
+        <property name="percentageOfTotalSpectra" type="double" column="percentage_total_spectra"/>
+        <property name="percentageSequenceCoverage" type="double" column="percentage_sequence_coverage"/>
+    </class>
+</hibernate-mapping>

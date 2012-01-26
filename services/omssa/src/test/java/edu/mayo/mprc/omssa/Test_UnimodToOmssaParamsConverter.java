@@ -241,15 +241,9 @@ public final class Test_UnimodToOmssaParamsConverter {
 	 */
 	private static Unimod getFixedandVariableSpecificities(List<ModSpecificity> fixedModsList, List<ModSpecificity> varModsList, boolean fixed, boolean variable) {
 
-		InputStream umodStream = new Test_UnimodToOmssaParamsConverter().getClass().getResourceAsStream("/edu/mayo/mprc/unimod/unimod.xml");
+		InputStream umodStream = new Test_UnimodToOmssaParamsConverter().getClass().getResourceAsStream("/edu/mayo/mprc/swift/params/unimod.xml");
 		Unimod umodSet = new Unimod();
-		try {
-			umodSet.parseUnimodXML(umodStream);
-		} catch (IOException e) {
-			throw new MprcException(e);
-		} catch (SAXException e) {
-			throw new MprcException(e);
-		}
+		umodSet.parseUnimodXML(umodStream);
 
 		/**
 		 * ommssa only supports 30 user defined modifications so that is what we will support.

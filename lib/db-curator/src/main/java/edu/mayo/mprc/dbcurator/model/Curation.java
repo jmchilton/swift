@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class Curation extends EvolvableBase implements Serializable {
 	private static final long serialVersionUID = 20071220L;
+	private static final int EXPECTED_DESCRIPTION_SIZE = 500;
 
 	/**
 	 * any notes that were saved
@@ -80,7 +81,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the name of the file that will contain this curations product
 	 */
 	public File getCurationFile() {
-		return this.curationFile;
+		return curationFile;
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param sharedFile the curationFile of this Curation object.
 	 */
 	public void setCurationFile(File sharedFile) {
-		this.curationFile = sharedFile;
+		curationFile = sharedFile;
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the firstRunDate (type Date) of this Curation object.
 	 */
 	public Date getFirstRunDate() {
-		return this.firstRunDate;
+		return firstRunDate;
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the notes associated by
 	 */
 	public String getNotes() {
-		return this.notes;
+		return notes;
 	}
 
 
@@ -281,21 +282,21 @@ public class Curation extends EvolvableBase implements Serializable {
 		Curation copy = new Curation();
 
 		// We want to retain the basics so the user can modify them and stay consistent
-		copy.setShortName(this.shortName);
-		copy.setTitle(this.title);
-		copy.notes = this.notes;
-		copy.setDecoyRegex(this.getDecoyRegex());
+		copy.setShortName(shortName);
+		copy.setTitle(title);
+		copy.notes = notes;
+		copy.setDecoyRegex(getDecoyRegex());
 
 		// These fields are set only if the copy is done for refresh (should be identical)
 		if (forRefresh) {
-			copy.setDeploymentDate(this.deploymentDate);
-			copy.setOwnerEmail(this.ownerEmail);
-			copy.firstRunDate = this.firstRunDate;
+			copy.setDeploymentDate(deploymentDate);
+			copy.setOwnerEmail(ownerEmail);
+			copy.firstRunDate = firstRunDate;
 		}
 
 		//for each step we want to create a copy or use original step if this is for a refresh only.
-		for (CurationStep curationStep : this.getCurationSteps()) {
-			copy.addStep((forRefresh ? curationStep : curationStep.createCopy()), -1);
+		for (CurationStep curationStep : getCurationSteps()) {
+			copy.addStep(forRefresh ? curationStep : curationStep.createCopy(), -1);
 		}
 
 		return copy;
@@ -309,7 +310,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param toMoveTo where you want to add the step to
 	 */
 	public Curation addStep(CurationStep toAdd, int toMoveTo) {
-		this.curationSteps.add(translateStepIndex(toMoveTo), toAdd);
+		curationSteps.add(translateStepIndex(toMoveTo), toAdd);
 		return this;
 	}
 
@@ -328,14 +329,14 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the translated index
 	 */
 	protected int translateStepIndex(int step) {
-		if (step > this.curationSteps.size()) {
-			return this.curationSteps.size() - 1;
+		if (step > curationSteps.size()) {
+			return curationSteps.size() - 1;
 		}
-		if (this.curationSteps.size() == 0) {
+		if (curationSteps.size() == 0) {
 			return 0;
 		}
 		if (step < 0) {
-			return this.curationSteps.size() + step + 1;
+			return curationSteps.size() + step + 1;
 		}
 		return step;
 	}
@@ -347,7 +348,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the step that you requested
 	 */
 	public CurationStep getStepByIndex(int index) {
-		return this.curationSteps.get(translateStepIndex(index));
+		return curationSteps.get(translateStepIndex(index));
 	}
 
 	/**
@@ -356,7 +357,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @return the number of steps
 	 */
 	public int stepCount() {
-		return this.curationSteps.size();
+		return curationSteps.size();
 	}
 
 	/**
@@ -366,14 +367,14 @@ public class Curation extends EvolvableBase implements Serializable {
 	 */
 	public void setRunDate(Date runDate) {
 		this.runDate = runDate;
-		if (this.firstRunDate == null) {
-			this.firstRunDate = runDate;
+		if (firstRunDate == null) {
+			firstRunDate = runDate;
 		}
 	}
 
 	public String simpleDescription() {
-		StringBuilder sb = new StringBuilder();
-		for (CurationStep step : this.curationSteps) {
+		StringBuilder sb = new StringBuilder(EXPECTED_DESCRIPTION_SIZE);
+		for (CurationStep step : curationSteps) {
 			if (step.simpleDescription() != null) {
 				sb.append(step.simpleDescription()).append(", ");
 			}
@@ -393,21 +394,21 @@ public class Curation extends EvolvableBase implements Serializable {
 	public Curation copyFull() {
 		Curation copy = new Curation();
 
-		copy.setCurationFile(this.curationFile);
+		copy.setCurationFile(curationFile);
 
 		//for each step we want to create a copy or use original step if this is for a refresh only.
-		for (CurationStep curationStep : this.getCurationSteps()) {
+		for (CurationStep curationStep : getCurationSteps()) {
 			copy.addStep(curationStep.createCopy(), -1);
 		}
 
-		copy.setDeploymentDate(this.deploymentDate);
-		copy.setFirstRunDate(this.getFirstRunDate());
-		copy.setNotes(this.notes);
-		copy.setOwnerEmail(this.ownerEmail);
-		copy.setRunDate(this.runDate);
-		copy.setShortName(this.shortName);
-		copy.setTitle(this.title);
-		copy.setDecoyRegex(this.getDecoyRegex());
+		copy.setDeploymentDate(deploymentDate);
+		copy.setFirstRunDate(getFirstRunDate());
+		copy.setNotes(notes);
+		copy.setOwnerEmail(ownerEmail);
+		copy.setRunDate(runDate);
+		copy.setShortName(shortName);
+		copy.setTitle(title);
+		copy.setDecoyRegex(getDecoyRegex());
 
 		return copy;
 	}
@@ -446,16 +447,12 @@ public class Curation extends EvolvableBase implements Serializable {
 		if (getTitle() != null ? !getTitle().equals(curation.getTitle()) : curation.getTitle() != null) {
 			return false;
 		}
-		if (getDecoyRegex() != null ? !getDecoyRegex().equals(curation.getDecoyRegex()) : curation.getDecoyRegex() != null) {
-			return false;
-		}
-		return true;
+		return getDecoyRegex().equals(curation.getDecoyRegex());
 	}
 
 
 	public int hashCode() {
-		int result;
-		result = (getNotes() != null ? getNotes().hashCode() : 0);
+		int result = getNotes() != null ? getNotes().hashCode() : 0;
 		result = 31 * result + (getShortName() != null ? getShortName().hashCode() : 0);
 		result = 31 * result + (getFirstRunDate() != null ? getFirstRunDate().hashCode() : 0);
 		result = 31 * result + (getCurationFile() != null ? getCurationFile().hashCode() : 0);
@@ -463,7 +460,7 @@ public class Curation extends EvolvableBase implements Serializable {
 		result = 31 * result + (getOwnerEmail() != null ? getOwnerEmail().hashCode() : 0);
 		result = 31 * result + (getRunDate() != null ? getRunDate().hashCode() : 0);
 		result = 31 * result + (getDeploymentDate() != null ? getDeploymentDate().hashCode() : 0);
-		result = 31 * result + (getDecoyRegex() != null ? getDecoyRegex().hashCode() : 0);
+		result = 31 * result + getDecoyRegex().hashCode();
 		return result;
 	}
 

@@ -1,49 +1,87 @@
 package edu.mayo.mprc.searchdb;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * Caches previously seen objects, will provide identical object for same input.
+ * <p/>
+ * The Scaffold peptide spectrum report is basically a join on multiple tables. Some columns
+ * serve as primary keys and other columns depend on their value. We check this assumption rigorously,
+ * because a failure in this assessment means either that we do not understand the report format correctly,
+ * or that the report is corrupted.
  *
  * @author Roman Zenka
  */
-public class SummarizerCache {
+final class SummarizerCache {
 	private static final Splitter PROTEIN_ACCESSION_SPLITTER = Splitter.on(',').trimResults().omitEmptyStrings();
-	private LinkedHashMap<String, BiologicalSample> biologicalSamples = new LinkedHashMap<String, BiologicalSample>(5);
-	private HashMap</*Biological_Sample Name \t MS/MS Sample name*/String, TandemMassSpectrometrySearchResult> searchResults = new HashMap<String, TandemMassSpectrometrySearchResult>(5);
-	private HashMap</*Biological_Sample Name \t Accession numbers canonicalized, joined by comma*/String, ProteinGroup> proteinGroups = new HashMap<String, ProteinGroup>(100);
-	private HashMap<String, IdentifiedPeptide> identifiedPeptides = new HashMap<String, IdentifiedPeptide>(1000);
-	private HashMap<String, PeptideSpectrumMatch> peptideSpectrumMatches = new HashMap<String, PeptideSpectrumMatch>(1000);
-	private HashMap</*Protein accession number*/String, ProteinSequence> proteinSequences = new HashMap<String, ProteinSequence>(100);
-	private HashMap</*Peptide sequence*/String, PeptideSequence> peptideSequences = new HashMap<String, PeptideSequence>(1000);
-	private HashMap<String, ModificationPosition> modificationPositions = new HashMap<String, ModificationPosition>(100);
+	private static final int EXPECTED_PEPTIDES_PER_PROTEIN = 5;
 
+	/**
+	 * To translate the Scaffold mods into actual Mod objects
+	 */
+	private ScaffoldModificationFormat format;
+
+	private Map</*Peptide sequence*/String, PeptideSequence> peptideSequences = new HashMap<String, PeptideSequence>(1000);
+	private Map</*Protein accession number*/String, ProteinSequence> proteinSequences = new HashMap<String, ProteinSequence>(100);
+	private Map<LocalizedModification, LocalizedModification> localizedModifications = new HashMap<LocalizedModification, LocalizedModification>(100);
+	private Map<IdentifiedPeptide, IdentifiedPeptide> identifiedPeptides = new HashMap<IdentifiedPeptide, IdentifiedPeptide>(1000);
+	private Map<PeptideSpectrumMatchKey, PeptideSpectrumMatch> peptideSpectrumMatches = new HashMap<PeptideSpectrumMatchKey, PeptideSpectrumMatch>(1000);
+	private Map<ProteinGroupKey, ProteinGroup> proteinGroups = new HashMap<ProteinGroupKey, ProteinGroup>(100);
+	private Map<SearchResultKey, SearchResult> searchResults = new HashMap<SearchResultKey, SearchResult>(5);
+	private LinkedHashMap</*Biological sample name*/String, BiologicalSample> biologicalSamples = new LinkedHashMap<String, BiologicalSample>(5);
+
+	SummarizerCache(ScaffoldModificationFormat format) {
+		this.format = format;
+	}
+
+	/**
+	 * Get current biological sample object. If we encounter a new one, create a new one and add it to
+	 * the {@link Analysis}.
+	 *
+	 * @param analysis   Sample is part of this.
+	 * @param sampleName Primary key for {@link BiologicalSample}
+	 * @param category   Category of the sample. Depends on {@code sampleName}
+	 * @return The current sample.
+	 */
 	public BiologicalSample getBiologicalSample(Analysis analysis, String sampleName, String category) {
 		final BiologicalSample sample = biologicalSamples.get(sampleName);
 		if (sample == null) {
-			final BiologicalSample newSample = new BiologicalSample(sampleName, category, new ArrayList<TandemMassSpectrometrySearchResult>(1));
+			final BiologicalSample newSample = new BiologicalSample(sampleName, category, new ArrayList<SearchResult>(1));
 			biologicalSamples.put(sampleName, newSample);
 			analysis.getBiologicalSamples().add(newSample);
 			return newSample;
 		}
+		if (!Objects.equal(sample.getCategory(), category)) {
+			throw new MprcException("Sample [" + sampleName + "] reported with two distinct categories [" + category + "] and [" + sample.getCategory() + "]");
+		}
 		return sample;
 	}
 
-	public TandemMassSpectrometrySearchResult getTandemMassSpecResult(BiologicalSample biologicalSample, String msmsSampleName) {
-		String key = biologicalSample.getSampleName() + '\t' + msmsSampleName;
-		final TandemMassSpectrometrySearchResult searchResult = searchResults.get(key);
+	/**
+	 * Get the current mass spec sample result test for given biological sample. If a new set is discovered,
+	 * it is initialized and added to the biological sample.
+	 *
+	 * @param biologicalSample The containing biological sample.
+	 * @param msmsSampleName   The name of the tandem mass spectrometry sample.
+	 * @return Current tandem mass spec search result object.
+	 */
+	public SearchResult getTandemMassSpecResult(BiologicalSample biologicalSample, String msmsSampleName) {
+		final SearchResultKey key = new SearchResultKey(biologicalSample, msmsSampleName);
+		final SearchResult searchResult = searchResults.get(key);
 		if (searchResult == null) {
-			final TandemMassSpectrometrySearchResult newSearchResult = new TandemMassSpectrometrySearchResult(null, new ArrayList<ProteinGroup>(100));
+			final SearchResult newSearchResult = new SearchResult(null, new ArrayList<ProteinGroup>(100));
 			searchResults.put(key, newSearchResult);
 			biologicalSample.getSearchResults().add(newSearchResult);
 			return newSearchResult;
@@ -51,27 +89,44 @@ public class SummarizerCache {
 		return searchResult;
 	}
 
+	/**
+	 * Get current protein group for a tandem mass spec sample within a biological sample.
+	 * If no such group is defined yet, create a new one and add it to the {@link SearchResult}.
+	 * <p/>
+	 * All the additional parameters should depend on the accession numbers as the primary key for the protein group.
+	 * Check this for consistency and throw exceptions when the file is suspected to be corrupted.
+	 *
+	 * @param biologicalSample           Biological sample.
+	 * @param tandemMassSpecResult       Result collection for one mass spec sample.
+	 * @param proteinAccessionNumbers    List of protein accession numbers. The first one is the reference, preferred one.
+	 * @param numberOfTotalSpectra       How many spectra in the group total.
+	 * @param numberOfUniquePeptides     How many unique peptides in the group. Unique - different mods.
+	 * @param numberOfUniqueSpectra      How many unique spectra - belonging to different peptides/mods or different charge.
+	 * @param percentageOfTotalSpectra   How many percent of the total spectra assigned to this group (spectral counting)
+	 * @param percentageSequenceCoverage How many percent of the sequence are covered.
+	 * @param proteinIdentificationProbability
+	 *                                   What is the calculated probability that this protein is identified correctly.
+	 * @return Current protein group.
+	 */
 	public ProteinGroup getProteinGroup(BiologicalSample biologicalSample,
-	                                    TandemMassSpectrometrySearchResult tandemMassSpecResult,
+	                                    SearchResult tandemMassSpecResult,
 	                                    String proteinAccessionNumbers, int numberOfTotalSpectra,
 	                                    int numberOfUniquePeptides, int numberOfUniqueSpectra,
 	                                    double percentageOfTotalSpectra, double percentageSequenceCoverage,
 	                                    double proteinIdentificationProbability) {
+		// Canonicalize the protein accession numbers- just in case
 		final String[] accNums = Iterables.toArray(PROTEIN_ACCESSION_SPLITTER.split(proteinAccessionNumbers), String.class);
+		final String referenceAccNum = accNums[0];
+
 		Arrays.sort(accNums, String.CASE_INSENSITIVE_ORDER);
-		final int numProteins = accNums.length;
 		final String canonicalizedAccNums = Joiner.on(',').join(accNums);
-		final String key = biologicalSample.getSampleName() + '\t' + canonicalizedAccNums;
+		final ProteinGroupKey key = new ProteinGroupKey(biologicalSample, canonicalizedAccNums);
 
 		final ProteinGroup proteinGroup = proteinGroups.get(key);
 		if (proteinGroup == null) {
 			final ProteinGroup newProteinGroup = new ProteinGroup();
-			ArrayList<ProteinSequence> proteinSequences = new ArrayList<ProteinSequence>(numProteins);
-			for (String accessionNumber : accNums) {
-				proteinSequences.add(getProteinSequence(accessionNumber));
-			}
-			newProteinGroup.setProteinSequences(proteinSequences);
-			newProteinGroup.setPeptideSpectrumMatches(new ArrayList<PeptideSpectrumMatch>(5));
+			addProteinSequences(accNums, newProteinGroup);
+			newProteinGroup.setPeptideSpectrumMatches(new ArrayList<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
 
 			newProteinGroup.setNumberOfTotalSpectra(numberOfTotalSpectra);
 			newProteinGroup.setNumberOfUniquePeptides(numberOfUniquePeptides);
@@ -93,6 +148,14 @@ public class SummarizerCache {
 		checkConsistencyWithinSample(biologicalSample, "percentage of sequence coverage", proteinGroup.getPercentageSequenceCoverage(), percentageSequenceCoverage);
 		checkConsistencyWithinSample(biologicalSample, "protein identification probability", proteinGroup.getProteinIdentificationProbability(), proteinIdentificationProbability);
 		return proteinGroup;
+	}
+
+	private void addProteinSequences(String[] accNums, ProteinGroup newProteinGroup) {
+		ArrayList<ProteinSequence> proteinSequences = Lists.newArrayListWithCapacity(accNums.length);
+		for (String accessionNumber : accNums) {
+			proteinSequences.add(getProteinSequence(accessionNumber));
+		}
+		newProteinGroup.setProteinSequences(proteinSequences);
 	}
 
 	private void checkConsistencyWithinSample(BiologicalSample biologicalSample, String column, int previousValue, int currentValue) {
@@ -117,5 +180,183 @@ public class SummarizerCache {
 			return newProteinSequence;
 		}
 		return proteinSequence;
+	}
+
+	/**
+	 * Get current {@link PeptideSpectrumMatch} entry. If none exist, new one is created and added to the protein group.
+	 *
+	 * @param biologicalSample          {@link BiologicalSample} within which we operate.
+	 * @param searchResult              {@link SearchResult} within the biological sample.
+	 * @param proteinGroup              Protein group to assign the PSM to.
+	 * @param peptideSequence           Peptide sequence. This + fixed+variable mods form a primary key.
+	 * @param fixedModifications        Fixed modifications, parsed by {@link ScaffoldModificationFormat}. Primary key.
+	 * @param variableModifications     Variable modifications, parsed by {@link ScaffoldModificationFormat}. Primary key.
+	 * @param previousAminoAcid         Previous amino acid in the context of this protein group.
+	 * @param nextAminoAcid             Next amino acid in the context of this protein group.
+	 * @param numberOfEnzymaticTerminii Number of enzymatic terminii for this peptide (0,1=semi,2=fully)
+	 * @return Current peptide spectrum match information.
+	 */
+	public PeptideSpectrumMatch getPeptideSpectrumMatch(
+			BiologicalSample biologicalSample,
+			SearchResult searchResult,
+			ProteinGroup proteinGroup,
+			String peptideSequence,
+			String fixedModifications,
+			String variableModifications,
+			char previousAminoAcid,
+			char nextAminoAcid,
+			int numberOfEnzymaticTerminii) {
+
+		PeptideSequence sequence = getPeptideSequence(peptideSequence);
+		IdentifiedPeptide identifiedPeptide = getIdentifiedPeptide(sequence, fixedModifications, variableModifications);
+		final PeptideSpectrumMatchKey key = new PeptideSpectrumMatchKey(biologicalSample, searchResult, proteinGroup, identifiedPeptide);
+		final PeptideSpectrumMatch match = peptideSpectrumMatches.get(key);
+		if (match == null) {
+			final PeptideSpectrumMatch newMatch = new PeptideSpectrumMatch();
+			newMatch.setPeptide(identifiedPeptide);
+			newMatch.setPreviousAminoAcid(previousAminoAcid);
+			newMatch.setNextAminoAcid(nextAminoAcid);
+			newMatch.setNumberOfEnzymaticTerminii(numberOfEnzymaticTerminii);
+			peptideSpectrumMatches.put(key, newMatch);
+			proteinGroup.getPeptideSpectrumMatches().add(newMatch);
+			return newMatch;
+		}
+		return match;
+	}
+
+	/**
+	 * @param psm            PSM to update.
+	 * @param spectrumName   Name of the spectrum. In Swift-friendly format (filename.fromScan.toScan.charge.dta)
+	 * @param spectrumCharge Charge as extracted by Scaffold.
+	 * @param peptideIdentificationProbability
+	 *                       Probability that this ID is correct as assigned by Scaffold.
+	 */
+	public void recordSpectrum(
+			PeptideSpectrumMatch psm,
+			String spectrumName,
+			int spectrumCharge,
+			double peptideIdentificationProbability,
+			SearchEngineScores searchEngineScores
+	) {
+		psm.updateScores(peptideIdentificationProbability, searchEngineScores);
+		psm.addSpectrum(spectrumCharge);
+	}
+
+	/**
+	 * @return All referenced peptide sequences. Each is unique.
+	 */
+	public Collection<PeptideSequence> getAllPeptideSequences() {
+		return peptideSequences.values();
+	}
+
+	/**
+	 * @return All referenced protein sequences. Each is unique.
+	 */
+	public Collection<ProteinSequence> getAllProteinSequences() {
+		return proteinSequences.values();
+	}
+
+	/**
+	 * @return All referenced localized mods. Each is unique.
+	 */
+	public Collection<LocalizedModification> getAllLocalizedModifications() {
+		return localizedModifications.values();
+	}
+
+	/**
+	 * @return All referenced identified peptides. Each is unique.
+	 */
+	public Collection<IdentifiedPeptide> getAllIdentifiedPeptides() {
+		return identifiedPeptides.values();
+	}
+
+	/**
+	 * @return All referenced peptide spectrum match objects. Each is unique.
+	 */
+	public Collection<PeptideSpectrumMatch> getAllPeptideSpectrumMatches() {
+		return peptideSpectrumMatches.values();
+	}
+
+	/**
+	 * @return All referenced protein groups. Each is unique.
+	 */
+	public Collection<ProteinGroup> getAllProteinGroups() {
+		return proteinGroups.values();
+	}
+
+	/**
+	 * @return All referenced mass spec samples. Each is unique.
+	 */
+	public Collection<TandemMassSpectrometrySample> getAllTandemMassSpectrometrySamples() {
+		// TODO: Missing
+		return null;
+	}
+
+	/**
+	 * @return All referenced search results. Each is unique.
+	 */
+	public Collection<SearchResult> getAllSearchResults() {
+		return searchResults.values();
+	}
+
+	/**
+	 * @return All referenced search results. Each is unique.
+	 */
+	public Collection<BiologicalSample> getAllBiologicalSamples() {
+		return biologicalSamples.values();
+	}
+
+	/**
+	 * Get identified peptide.
+	 *
+	 * @param peptideSequence       The sequence of the peptide.
+	 * @param fixedModifications    Fixed modifications parseable by {@link ScaffoldModificationFormat}.
+	 * @param variableModifications Variable modifications parseable by {@link ScaffoldModificationFormat}.
+	 * @return Unique identified peptide entry.
+	 */
+	private IdentifiedPeptide getIdentifiedPeptide(
+			PeptideSequence peptideSequence,
+			String fixedModifications,
+			String variableModifications) {
+		final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
+		final List<LocalizedModification> mappedMods = Lists.newArrayList(Lists.transform(mods, mapLocalizedModification));
+
+		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
+		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
+		if (peptide == null) {
+			identifiedPeptides.put(key, key);
+			return key;
+		}
+		return peptide;
+	}
+
+	/**
+	 * Store each localized modification only once.
+	 */
+	private final Function<LocalizedModification, LocalizedModification> mapLocalizedModification = new Function<LocalizedModification, LocalizedModification>() {
+		@Override
+		public LocalizedModification apply(@Nullable LocalizedModification from) {
+			final LocalizedModification result = localizedModifications.get(from);
+			if (result != null) {
+				return result;
+			}
+			localizedModifications.put(from, from);
+			return from;
+		}
+	};
+
+	/**
+	 * @param peptideSequence Peptide sequence to cache and translate.
+	 * @return The corresponding PeptideSequence object. The sequence is canonicalized to uppercase.
+	 */
+	private PeptideSequence getPeptideSequence(String peptideSequence) {
+		final String upperCaseSequence = peptideSequence.toUpperCase(Locale.US);
+		final PeptideSequence sequence = peptideSequences.get(upperCaseSequence);
+		if (sequence == null) {
+			final PeptideSequence newSequence = new PeptideSequence(upperCaseSequence);
+			peptideSequences.put(upperCaseSequence, newSequence);
+			return newSequence;
+		}
+		return sequence;
 	}
 }
