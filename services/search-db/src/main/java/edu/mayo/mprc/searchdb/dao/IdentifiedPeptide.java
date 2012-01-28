@@ -3,10 +3,6 @@ package edu.mayo.mprc.searchdb.dao;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.searchdb.ScaffoldModificationFormat;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 /**
  * The peptide is uniquely identified by its sequence and a list of modifications.
  * <p/>
@@ -29,7 +25,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	/**
 	 * A list of modifications + their positions. Canonicalized by {@link ScaffoldModificationFormat} parser.
 	 */
-	private List<LocalizedModification> modifications;
+	private LocalizedModList modifications;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -49,7 +45,7 @@ public class IdentifiedPeptide extends PersistableBase {
 			String variableModifications,
 			ScaffoldModificationFormat format) {
 		this.sequence = sequence;
-		this.modifications = format.parseModifications(sequence.getSequence(), fixedModifications, variableModifications);
+		modifications = format.parseModifications(sequence.getSequence(), fixedModifications, variableModifications);
 	}
 
 	/**
@@ -58,28 +54,28 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param sequence      Peptide sequence
 	 * @param modifications List of {@link LocalizedModification}
 	 */
-	public IdentifiedPeptide(PeptideSequence sequence, List<LocalizedModification> modifications) {
+	public IdentifiedPeptide(PeptideSequence sequence, LocalizedModList modifications) {
 		this.sequence = sequence;
 		this.modifications = modifications;
 	}
 
-    public PeptideSequence getSequence() {
-        return sequence;
-    }
+	public PeptideSequence getSequence() {
+		return sequence;
+	}
 
-    public void setSequence(PeptideSequence sequence) {
-        this.sequence = sequence;
-    }
+	public void setSequence(PeptideSequence sequence) {
+		this.sequence = sequence;
+	}
 
-    public List<LocalizedModification> getModifications() {
-        return modifications;
-    }
+	public LocalizedModList getModifications() {
+		return modifications;
+	}
 
-    public void setModifications(List<LocalizedModification> modifications) {
-        this.modifications = modifications;
-    }
+	public void setModifications(LocalizedModList modifications) {
+		this.modifications = modifications;
+	}
 
-    /**
+	/**
 	 * @return List of mods as comma separated string, e.g. {@code c18: Carbamidomethyl(C)}
 	 */
 	public String getModificationsAsString() {

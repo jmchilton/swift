@@ -2,9 +2,6 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * Maps the following columns from the Scaffold spectrum report:
  * <ul>
@@ -23,12 +20,12 @@ public class ProteinGroup extends PersistableBase {
 	/**
 	 * List of protein sequences belonging to the group.
 	 */
-	private List<ProteinSequence> proteinSequences;
+	private ProteinSequenceList proteinSequences;
 
 	/**
 	 * List of peptides matched to spectra that belong to this protein group.
 	 */
-	private List<PeptideSpectrumMatch> peptideSpectrumMatches;
+	private PsmList peptideSpectrumMatches;
 
 	/**
 	 * Scaffold's calculated probability that the protein identification is correct. 100% probability is stored as 1.0
@@ -62,19 +59,19 @@ public class ProteinGroup extends PersistableBase {
 	 */
 	private double percentageSequenceCoverage;
 
-	public List<ProteinSequence> getProteinSequences() {
+	public ProteinSequenceList getProteinSequences() {
 		return proteinSequences;
 	}
 
-	public void setProteinSequences(List<ProteinSequence> proteinSequences) {
+	public void setProteinSequences(ProteinSequenceList proteinSequences) {
 		this.proteinSequences = proteinSequences;
 	}
 
-	public List<PeptideSpectrumMatch> getPeptideSpectrumMatches() {
+	public PsmList getPeptideSpectrumMatches() {
 		return peptideSpectrumMatches;
 	}
 
-	public void setPeptideSpectrumMatches(List<PeptideSpectrumMatch> peptideSpectrumMatches) {
+	public void setPeptideSpectrumMatches(PsmList peptideSpectrumMatches) {
 		this.peptideSpectrumMatches = peptideSpectrumMatches;
 	}
 

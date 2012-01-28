@@ -9,7 +9,10 @@ import edu.mayo.mprc.unimod.IndexedModSet;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Summarizes Scaffold spectra report into a collection of objects suitable to be loaded into the database.
@@ -185,7 +188,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		tandemLadderScore = getColumnOptional(map, ScaffoldSpectraReader.X_TANDEM_LADDER_SCORE);
 
 		// Prepare for loading all the data
-		analysis.setBiologicalSamples(new ArrayList<BiologicalSample>(5));
+		analysis.setBiologicalSamples(new BiologicalSampleList(5));
 		cache = new SummarizerCache(format);
 	}
 

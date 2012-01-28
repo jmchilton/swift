@@ -46,53 +46,22 @@
         <property name="databaseFormat" value="${peaks.databaseFormat}"/>
     </bean>
 
-    <bean id="mappingResourceList" class="java.util.ArrayList">
+    <bean id="daoList" class="java.util.ArrayList">
         <constructor-arg index="0">
-            <list value-type="java.lang.String">
-                <value>edu/mayo/mprc/database/Change.hbm.xml</value>
-
-                <value>edu/mayo/mprc/dbcurator/model/Curation.hbm.xml</value>
-                <value>edu/mayo/mprc/dbcurator/model/SourceDatabaseArchive.hbm.xml</value>
-                <value>edu/mayo/mprc/dbcurator/model/curationsteps/CurationStep.hbm.xml</value>
-                <value>edu/mayo/mprc/dbcurator/model/curationsteps/DataSource.hbm.xml</value>
-                <value>edu/mayo/mprc/dbcurator/model/curationsteps/HeaderTransform.hbm.xml</value>
-
-                <value>edu/mayo/mprc/searchdb/PeptideSequence.hbm.xml</value>
-                <value>edu/mayo/mprc/searchdb/ProteinSequence.hbm.xml</value>
-
-                <value>edu/mayo/mprc/swift/dbmapping/EnabledEngines.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/FileSearch.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/PeptideReport.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/ReportData.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/SearchEngineConfig.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/SpectrumQa.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/SwiftSearchDefinition.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/TaskData.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/TaskStateData.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/SearchRun.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/dbmapping/SwiftDBVersion.hbm.xml</value>
-
-                <value>edu/mayo/mprc/swift/params2/Protease.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/IonSeries.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/Instrument.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/SearchEngineParameters.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/SavedSearchEngineParameters.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/ExtractMsnSettings.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/ScaffoldSettings.hbm.xml</value>
-                <value>edu/mayo/mprc/swift/params2/StarredProteins.hbm.xml</value>
-
-                <value>edu/mayo/mprc/unimod/Mod.hbm.xml</value>
-                <value>edu/mayo/mprc/unimod/ModSet.hbm.xml</value>
-                <value>edu/mayo/mprc/unimod/ModSpecificity.hbm.xml</value>
-
-                <value>edu/mayo/mprc/workspace/User.hbm.xml</value>
+            <list value-type="edu.mayo.mprc.database.DaoBase">
+                <ref bean="curationDao"/>
+                <ref bean="paramsDao"/>
+                <ref bean="searchDbDao"/>
+                <ref bean="swiftDao"/>
+                <ref bean="unimodDao"/>
+                <ref bean="workspaceDao"/>
             </list>
         </constructor-arg>
     </bean>
 
     <bean id="databaseFactory" class="edu.mayo.mprc.database.DatabaseFactory">
         <property name="hibernateProperties" ref="hibernateProperties"/>
-        <property name="mappingResources" ref="mappingResourceList"/>
+        <property name="daoList" ref="daoList"/>
         <property name="placeholder" ref="databasePlaceholder"/>
     </bean>
 
@@ -137,7 +106,7 @@
 
     <bean id="databaseValidator"
           class="edu.mayo.mprc.swift.search.DatabaseValidator">
-        <property name="mappingResources" ref="mappingResourceList"/>
+        <property name="daoList" ref="daoList"/>
         <property name="hibernateProperties" ref="hibernateProperties"/>
         <property name="databasePlaceholder" ref="databasePlaceholder"/>
         <property name="runtimeInitializers" ref="searcherRuntimeInitializers"/>

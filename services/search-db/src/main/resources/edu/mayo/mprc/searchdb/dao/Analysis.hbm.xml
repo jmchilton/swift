@@ -6,6 +6,7 @@
         <id name="id" type="integer" column="analysis_id">
             <generator class="native"/>
         </id>
+        <property name="scaffoldVersion" type="string" length="20" column="scaffold_version"/>
         <property name="analysisDate" type="timestamp" column="analysis_date"/>
         <bag name="biologicalSamples" table="analysis_samples">
             <key column="analysis_id"/>

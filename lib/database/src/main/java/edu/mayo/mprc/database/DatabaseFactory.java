@@ -1,5 +1,6 @@
 package edu.mayo.mprc.database;
 
+import com.google.common.collect.Lists;
 import edu.mayo.mprc.config.DaemonConfig;
 import edu.mayo.mprc.config.DependencyResolver;
 import edu.mayo.mprc.config.FactoryBase;
@@ -9,9 +10,7 @@ import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
 import org.hibernate.SessionFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFactory> {
 
@@ -19,10 +18,28 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 	public static final String NAME = "Database";
 	public static final String DESC = "Database for storing information about Swift searches and Swift configuration.<p>The database gets created and initialized through the module that uses it (in this case, the Swift Searcher module).<p><b>Important:</b> Swift Searcher and Swift Website have to run within the same daemon as the database.";
 	private Map<String, String> hibernateProperties;
-	private List<String> mappingResources;
+	private List<DaoBase> daoList;
 	private DatabasePlaceholder placeholder;
 
 	public DatabaseFactory() {
+	}
+
+	/**
+	 * Collect all mapping resources from a selection of DAOs and additionally specified mapping files.
+	 *
+	 * @param daos         List of DAOs.
+	 * @param mappingFiles Array of additional mapping files.
+	 * @return All resources needed for the DAOs in a list. Each resource listed once.
+	 */
+	public static ArrayList<String> collectMappingResouces(Collection<? extends DaoBase> daos, String... mappingFiles) {
+		TreeSet<String> strings = new TreeSet<String>();
+		Collections.addAll(strings, mappingFiles);
+
+		for (DaoBase daoBase : daos) {
+			strings.addAll(daoBase.getHibernateMappings());
+		}
+
+		return Lists.newArrayList(strings);
 	}
 
 	public Map<String, String> getHibernateProperties() {
@@ -33,12 +50,12 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 		this.hibernateProperties = hibernateProperties;
 	}
 
-	public List<String> getMappingResources() {
-		return mappingResources;
+	public List<DaoBase> getDaoList() {
+		return daoList;
 	}
 
-	public void setMappingResources(List<String> mappingResources) {
-		this.mappingResources = mappingResources;
+	public void setDaoList(List<DaoBase> daoList) {
+		this.daoList = daoList;
 	}
 
 	public DatabasePlaceholder getPlaceholder() {
@@ -65,7 +82,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 				, localConfig.getDefaultSchema()
 				, localConfig.getSchema()
 				, getHibernateProperties()
-				, getMappingResources(),
+				, collectMappingResouces(daoList),
 				DatabaseUtilities.SchemaInitialization.None);
 
 		placeholder.setSessionFactory(sessionFactory);

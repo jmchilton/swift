@@ -5,7 +5,6 @@ import edu.mayo.mprc.database.PersistableBase;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -30,7 +29,7 @@ public final class Analysis extends PersistableBase {
 	/**
 	 * A list of all biological samples defined within the Scaffold analysis report.
 	 */
-	private List<BiologicalSample> biologicalSamples;
+	private BiologicalSampleList biologicalSamples;
 
 	/**
 	 * Empty constructor for Hibernate.
@@ -38,7 +37,7 @@ public final class Analysis extends PersistableBase {
 	public Analysis() {
 	}
 
-	public Analysis(String scaffoldVersion, Date analysisDate, List<BiologicalSample> biologicalSamples) {
+	public Analysis(String scaffoldVersion, Date analysisDate, BiologicalSampleList biologicalSamples) {
 		this.scaffoldVersion = scaffoldVersion;
 		this.analysisDate = analysisDate;
 		this.biologicalSamples = biologicalSamples;
@@ -60,11 +59,11 @@ public final class Analysis extends PersistableBase {
 		this.analysisDate = analysisDate;
 	}
 
-	public List<BiologicalSample> getBiologicalSamples() {
+	public BiologicalSampleList getBiologicalSamples() {
 		return biologicalSamples;
 	}
 
-	public void setBiologicalSamples(List<BiologicalSample> biologicalSamples) {
+	public void setBiologicalSamples(BiologicalSampleList biologicalSamples) {
 		this.biologicalSamples = biologicalSamples;
 	}
 

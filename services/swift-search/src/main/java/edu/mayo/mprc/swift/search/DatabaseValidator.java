@@ -7,10 +7,7 @@ import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.config.ui.FixTag;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.database.DatabaseFactory;
-import edu.mayo.mprc.database.DatabasePlaceholder;
-import edu.mayo.mprc.database.DatabaseUtilities;
-import edu.mayo.mprc.database.FileType;
+import edu.mayo.mprc.database.*;
 import edu.mayo.mprc.swift.db.FileTokenFactoryWrapper;
 import org.hibernate.SessionFactory;
 
@@ -29,7 +26,7 @@ import java.util.concurrent.Future;
  */
 public final class DatabaseValidator implements RuntimeInitializer {
 
-	private List<String> mappingResources;
+	private List<DaoBase> daoList;
 	private Map<String, String> hibernateProperties;
 	private DatabasePlaceholder databasePlaceholder;
 	private SwiftSearcher.Config searcherConfig;
@@ -84,7 +81,7 @@ public final class DatabaseValidator implements RuntimeInitializer {
 	/**
 	 * Initialize the connection to the database.
 	 * <p/>
-	 * Initialize the {@link edu.mayo.mprc.daemon.files.FileTokenFactory}.
+	 * Initialize the {@link FileTokenFactory}.
 	 * <p/>
 	 * Open a session and a transaction, making everything ready to write into the database.
 	 *
@@ -100,7 +97,7 @@ public final class DatabaseValidator implements RuntimeInitializer {
 				, database.getDefaultSchema()
 				, database.getSchema()
 				, hibernateProperties
-				, mappingResources
+				, DatabaseFactory.collectMappingResouces(daoList)
 				, schemaInitialization);
 
 		databasePlaceholder.setSessionFactory(sessionFactory);
@@ -238,12 +235,12 @@ public final class DatabaseValidator implements RuntimeInitializer {
 		this.databasePlaceholder = databasePlaceholder;
 	}
 
-	public List<String> getMappingResources() {
-		return mappingResources;
+	public List<DaoBase> getDaoList() {
+		return daoList;
 	}
 
-	public void setMappingResources(List<String> mappingResources) {
-		this.mappingResources = mappingResources;
+	public void setDaoList(List<DaoBase> daoList) {
+		this.daoList = daoList;
 	}
 
 	public Map<String, String> getHibernateProperties() {

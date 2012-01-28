@@ -1,15 +1,14 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import com.google.common.collect.Lists;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
+import edu.mayo.mprc.database.PersistableListBase;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -21,126 +20,232 @@ import java.util.Map;
  * @author Roman Zenka
  */
 public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitializer, SearchDbDao {
-    private SwiftDao swiftDao;
+	private SwiftDao swiftDao;
 
-    private final String MAP = "edu/mayo/mprc/searchdb/dao/";
+	private final String MAP = "edu/mayo/mprc/searchdb/dao/";
 
-    public SearchDbDaoHibernate() {
-    }
+	public SearchDbDaoHibernate() {
+	}
 
-    public SearchDbDaoHibernate(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
-        super(databasePlaceholder);
-        this.swiftDao = swiftDao;
-    }
+	public SearchDbDaoHibernate(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
+		super(databasePlaceholder);
+		this.swiftDao = swiftDao;
+	}
 
-    public SwiftDao getSwiftDao() {
-        return swiftDao;
-    }
+	public SwiftDao getSwiftDao() {
+		return swiftDao;
+	}
 
-    public void setSwiftDao(SwiftDao swiftDao) {
-        this.swiftDao = swiftDao;
-    }
+	public void setSwiftDao(SwiftDao swiftDao) {
+		this.swiftDao = swiftDao;
+	}
 
-    @Override
-    public String check(Map<String, String> params) {
-        return null;
-    }
+	@Override
+	public String check(Map<String, String> params) {
+		return null;
+	}
 
-    @Override
-    public void initialize(Map<String, String> params) {
-    }
+	@Override
+	public void initialize(Map<String, String> params) {
+	}
 
-    @Override
-    public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
-        return save(proteinSequence, Restrictions.eq("sequence", proteinSequence.getSequence()), false);
-    }
+	@Override
+	public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+		if (proteinSequence.getId() == null) {
+			return save(proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
+		}
+		return proteinSequence;
+	}
 
-    @Override
-    public ProteinSequence getProteinSequence(int proteinId) {
-        return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
-    }
+	@Override
+	public ProteinSequence getProteinSequence(int proteinId) {
+		return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
+	}
 
-    @Override
-    public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
-        return save(peptideSequence, Restrictions.eq("sequence", peptideSequence.getSequence()), false);
-    }
+	@Override
+	public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+		if (peptideSequence.getId() == null) {
+			return save(peptideSequence, nullSafeEq("sequence", peptideSequence.getSequence()), false);
+		}
+		return peptideSequence;
+	}
 
-    @Override
-    public PeptideSequence getPeptideSequence(int peptideId) {
-        return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
-    }
+	@Override
+	public PeptideSequence getPeptideSequence(int peptideId) {
+		return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
+	}
 
-    @Override
-    public LocalizedModification addLocalizedModification(LocalizedModification mod) {
-        return save(mod, localizedModificationEqualityCriteria(mod), false);
-    }
+	@Override
+	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
+		if (mod.getId() == null) {
+			return save(mod, localizedModificationEqualityCriteria(mod), false);
+		}
+		return mod;
+	}
 
-    private Junction localizedModificationEqualityCriteria(LocalizedModification mod) {
-        return Restrictions.conjunction()
-                .add(Restrictions.eq("position", mod.getPosition()))
-                .add(Restrictions.eq("residue", mod.getResidue()))
-                .add(associationEq("modSpecificity", mod.getModSpecificity()));
-    }
+	private Junction localizedModificationEqualityCriteria(LocalizedModification mod) {
+		return Restrictions.conjunction()
+				.add(nullSafeEq("position", mod.getPosition()))
+				.add(nullSafeEq("residue", mod.getResidue()))
+				.add(associationEq("modSpecificity", mod.getModSpecificity()));
+	}
 
-    @Override
-    public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
-        ArrayList<LocalizedModification> savedMods = Lists.newArrayListWithCapacity(peptide.getModifications().size());
-        for (LocalizedModification localizedModification : peptide.getModifications()) {
-            savedMods.add(addLocalizedModification(localizedModification));
-        }
-        peptide.setModifications(savedMods);
-        peptide.setSequence(addPeptideSequence(peptide.getSequence()));
-        return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
-    }
+	@Override
+	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
+		if (peptide.getId() == null) {
+			peptide.setModifications(addList(peptide.getModifications()));
+			peptide.setSequence(addPeptideSequence(peptide.getSequence()));
+			return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
+		}
+		return peptide;
+	}
 
-    private Criterion identifiedPeptideEqualityCriteria(IdentifiedPeptide peptide) {
-        return Restrictions.conjunction()
-                .add(associationEq("sequence", peptide.getSequence()));
-    }
+	private Criterion identifiedPeptideEqualityCriteria(IdentifiedPeptide peptide) {
+		return Restrictions.conjunction()
+				.add(associationEq("sequence", peptide.getSequence()))
+				.add(associationEq("modifications", peptide.getModifications()));
+	}
 
-    @Override
-    public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	@Override
+	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+		if (match.getId() == null) {
+			match.setPeptide(addIdentifiedPeptide(match.getPeptide()));
+			return save(match, matchEqualityCriteria(match), false);
+		}
+		return match;
+	}
 
-    @Override
-    public ProteinGroup addProteinGroup(ProteinGroup group) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	private Criterion matchEqualityCriteria(PeptideSpectrumMatch match) {
+		return Restrictions.conjunction()
+				.add(associationEq("peptide", match.getPeptide()))
+				.add(nullSafeEq("previousAminoAcid", match.getPreviousAminoAcid()))
+				.add(nullSafeEq("nextAminoAcid", match.getNextAminoAcid()))
+				.add(nullSafeEq("bestPeptideIdentificationProbability", match.getBestPeptideIdentificationProbability()))
+				.add(nullSafeEq("bestSearchEngineScores", match.getBestSearchEngineScores()))
+				.add(nullSafeEq("spectrumIdentificationCounts", match.getSpectrumIdentificationCounts()))
+				.add(nullSafeEq("numberOfEnzymaticTerminii", match.getNumberOfEnzymaticTerminii()));
+	}
 
-    @Override
-    public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	@Override
+	public ProteinGroup addProteinGroup(ProteinGroup group) {
+		if (group.getId() == null) {
+			group.setProteinSequences(addList(group.getProteinSequences()));
+			group.setPeptideSpectrumMatches(addList(group.getPeptideSpectrumMatches()));
+			return save(group, proteinGroupEqualityCriteria(group), false);
+		}
+		return group;
+	}
 
-    @Override
-    public SearchResult addSearchResult(SearchResult searchResult) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	private Criterion proteinGroupEqualityCriteria(ProteinGroup group) {
+		return Restrictions.conjunction()
+				.add(nullSafeEq("proteinSequences", group.getProteinSequences()))
+				.add(nullSafeEq("peptideSpectrumMatches", group.getPeptideSpectrumMatches()))
+				.add(nullSafeEq("proteinIdentificationProbability", group.getProteinIdentificationProbability()))
+				.add(nullSafeEq("numberOfUniquePeptides", group.getNumberOfUniquePeptides()))
+				.add(nullSafeEq("numberOfUniqueSpectra", group.getNumberOfUniqueSpectra()))
+				.add(nullSafeEq("numberOfTotalSpectra", group.getNumberOfTotalSpectra()))
+				.add(nullSafeEq("percentageOfTotalSpectra", group.getPercentageOfTotalSpectra()))
+				.add(nullSafeEq("percentageSequenceCoverage", group.getPercentageSequenceCoverage()));
+	}
 
-    @Override
-    public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	@Override
+	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		if (sample.getId() == null) {
+			return save(sample, sampleEqualityCriteria(sample), false);
+		}
+		return sample;
+	}
 
-    @Override
-    public Analysis addAnalysis(Analysis analysis) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	/**
+	 * Two {@link TandemMassSpectrometrySample} objects are considered identical if they point to the same file.
+	 * This way it is possible to update an older extraction of metadata for a file.
+	 */
+	private Criterion sampleEqualityCriteria(TandemMassSpectrometrySample sample) {
+		return Restrictions.conjunction()
+				.add(nullSafeEq("file", sample.getFile()));
+	}
 
-    @Override
-    public Collection<String> getHibernateMappings() {
-        return Arrays.asList(
-                MAP + "Analysis.hbm.xml",
-                MAP + "BiologicalSample.hbm.xml",
-                MAP + "IdentifiedPeptide.hbm.xml",
-                MAP + "LocalizedModification.hbm.xml",
-                MAP + "PeptideSequence.hbm.xml",
-                MAP + "PeptideSpectrumMatch.hbm.xml",
-                MAP + "ProteinGroup.hbm.xml",
-                MAP + "ProteinSequence.hbm.xml",
-                MAP + "SearchResult.hbm.xml",
-                MAP + "TandemMassSpectrometrySample.hbm.xml"
-        );
-    }
+	@Override
+	public SearchResult addSearchResult(SearchResult searchResult) {
+		if (searchResult.getId() == null) {
+			searchResult.setMassSpecSample(addTandemMassSpectrometrySample(searchResult.getMassSpecSample()));
+			searchResult.setProteinGroups(addList(searchResult.getProteinGroups()));
+			return save(searchResult, searchResultEqualityCriteria(searchResult), false);
+		}
+		return searchResult;
+	}
+
+	private Criterion searchResultEqualityCriteria(SearchResult searchResult) {
+		return Restrictions.conjunction()
+				.add(associationEq("massSpecSample", searchResult.getMassSpecSample()))
+				.add(associationEq("proteinGroups", searchResult.getProteinGroups()));
+	}
+
+	@Override
+	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
+		if (biologicalSample.getId() == null) {
+			biologicalSample.setSearchResults(addList(biologicalSample.getSearchResults()));
+			return save(biologicalSample, biologicalSampleEqualityCriteria(biologicalSample), false);
+		}
+		return biologicalSample;
+	}
+
+	private Criterion biologicalSampleEqualityCriteria(BiologicalSample biologicalSample) {
+		return Restrictions.conjunction()
+				.add(nullSafeEq("sampleName", biologicalSample.getCategory()))
+				.add(nullSafeEq("category", biologicalSample.getCategory()))
+				.add(associationEq("searchResults", biologicalSample.getSearchResults()));
+	}
+
+	@Override
+	public Analysis addAnalysis(Analysis analysis) {
+		if (analysis.getId() == null) {
+			analysis.setBiologicalSamples(addList(analysis.getBiologicalSamples()));
+			return save(analysis, analysisEqualityCriteria(analysis), false);
+		}
+		return analysis;
+	}
+
+	private Criterion analysisEqualityCriteria(Analysis analysis) {
+		return Restrictions.conjunction()
+				.add(nullSafeEq("scaffoldVersion", analysis.getScaffoldVersion()))
+				.add(nullSafeEq("analysisDate", analysis.getAnalysisDate()))
+				.add(associationEq("biologicalSamples", analysis.getBiologicalSamples()));
+	}
+
+	/**
+	 * Save any kind of list into the database.
+	 *
+	 * @param list List to save.
+	 * @param <T>  Type of the list, must extend {@link PersistableListBase}
+	 * @return Saved list (or the same one in case it was saved already).
+	 */
+	private <T extends PersistableListBase<?>> T addList(T list) {
+		if (list.getId() == null) {
+			return updateSet(list, list.getList(), "list");
+		}
+		return list;
+	}
+
+	@Override
+	public Collection<String> getHibernateMappings() {
+		return Arrays.asList(
+				MAP + "Analysis.hbm.xml",
+				MAP + "BiologicalSample.hbm.xml",
+				MAP + "BiologicalSampleList.hbm.xml",
+				MAP + "IdentifiedPeptide.hbm.xml",
+				MAP + "LocalizedModification.hbm.xml",
+				MAP + "LocalizedModList.hbm.xml",
+				MAP + "PeptideSequence.hbm.xml",
+				MAP + "PeptideSpectrumMatch.hbm.xml",
+				MAP + "ProteinGroup.hbm.xml",
+				MAP + "ProteinGroupList.hbm.xml",
+				MAP + "ProteinSequence.hbm.xml",
+				MAP + "ProteinSequenceList.hbm.xml",
+				MAP + "PsmList.hbm.xml",
+				MAP + "SearchResult.hbm.xml",
+				MAP + "SearchResultList.hbm.xml",
+				MAP + "TandemMassSpectrometrySample.hbm.xml"
+		);
+	}
 }

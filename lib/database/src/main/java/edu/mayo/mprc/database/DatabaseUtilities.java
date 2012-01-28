@@ -133,7 +133,7 @@ public final class DatabaseUtilities {
 	/**
 	 * Turns a set of persistable objects into a list of their ids.
 	 */
-	public static <T extends PersistableBase> Integer[] getIdList(Set<T> items) {
+	public static <T extends PersistableBase> Integer[] getIdList(Collection<T> items) {
 		Integer[] ids = new Integer[items.size()];
 		final Iterator<T> iterator = items.iterator();
 		for (int i = 0; i < ids.length; i++) {

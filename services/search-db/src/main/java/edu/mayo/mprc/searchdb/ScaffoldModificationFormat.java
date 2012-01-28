@@ -1,16 +1,16 @@
 package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.searchdb.dao.LocalizedModList;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.unimod.Mod;
 import edu.mayo.mprc.unimod.ModSpecificity;
 import edu.mayo.mprc.unimod.Terminus;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,8 +59,8 @@ public final class ScaffoldModificationFormat {
 	 * @param variableMods Scaffold-like list of variable modifications.
 	 * @return Parsed list of localized modifications.
 	 */
-	public List<LocalizedModification> parseModifications(String sequence, String fixedMods, String variableMods) {
-		final ArrayList<LocalizedModification> list = Lists.newArrayList();
+	public LocalizedModList parseModifications(String sequence, String fixedMods, String variableMods) {
+		final LocalizedModList list = new LocalizedModList();
 
 		addModifications(fixedMods.trim(), list, sequence);
 		addModifications(variableMods.trim(), list, sequence);

@@ -4,10 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.*;
 
@@ -58,7 +56,7 @@ final class SummarizerCache {
 	public BiologicalSample getBiologicalSample(Analysis analysis, String sampleName, String category) {
 		final BiologicalSample sample = biologicalSamples.get(sampleName);
 		if (sample == null) {
-			final BiologicalSample newSample = new BiologicalSample(sampleName, category, new ArrayList<SearchResult>(1));
+			final BiologicalSample newSample = new BiologicalSample(sampleName, category, new SearchResultList());
 			biologicalSamples.put(sampleName, newSample);
 			analysis.getBiologicalSamples().add(newSample);
 			return newSample;
@@ -81,7 +79,7 @@ final class SummarizerCache {
 		final SearchResultKey key = new SearchResultKey(biologicalSample, msmsSampleName);
 		final SearchResult searchResult = searchResults.get(key);
 		if (searchResult == null) {
-			final SearchResult newSearchResult = new SearchResult(null, new ArrayList<ProteinGroup>(100));
+			final SearchResult newSearchResult = new SearchResult(null, new ProteinGroupList(100));
 			searchResults.put(key, newSearchResult);
 			biologicalSample.getSearchResults().add(newSearchResult);
 			return newSearchResult;
@@ -126,7 +124,7 @@ final class SummarizerCache {
 		if (proteinGroup == null) {
 			final ProteinGroup newProteinGroup = new ProteinGroup();
 			addProteinSequences(accNums, newProteinGroup);
-			newProteinGroup.setPeptideSpectrumMatches(new ArrayList<PeptideSpectrumMatch>(EXPECTED_PEPTIDES_PER_PROTEIN));
+			newProteinGroup.setPeptideSpectrumMatches(new PsmList(EXPECTED_PEPTIDES_PER_PROTEIN));
 
 			newProteinGroup.setNumberOfTotalSpectra(numberOfTotalSpectra);
 			newProteinGroup.setNumberOfUniquePeptides(numberOfUniquePeptides);
@@ -151,7 +149,7 @@ final class SummarizerCache {
 	}
 
 	private void addProteinSequences(String[] accNums, ProteinGroup newProteinGroup) {
-		ArrayList<ProteinSequence> proteinSequences = Lists.newArrayListWithCapacity(accNums.length);
+		ProteinSequenceList proteinSequences = new ProteinSequenceList(accNums.length);
 		for (String accessionNumber : accNums) {
 			proteinSequences.add(getProteinSequence(accessionNumber));
 		}
@@ -319,7 +317,7 @@ final class SummarizerCache {
 			String fixedModifications,
 			String variableModifications) {
 		final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
-		final List<LocalizedModification> mappedMods = Lists.newArrayList(Lists.transform(mods, mapLocalizedModification));
+		final LocalizedModList mappedMods = new LocalizedModList(Lists.transform(mods, mapLocalizedModification));
 
 		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
 		final IdentifiedPeptide peptide = identifiedPeptides.get(key);
