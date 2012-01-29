@@ -11,11 +11,14 @@ import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.unimod.UnimodDaoHibernate;
 import edu.mayo.mprc.utilities.Log4jTestSetup;
 import edu.mayo.mprc.utilities.ResourceUtilities;
+import org.dbunit.DatabaseUnitException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -54,17 +57,17 @@ public class TestSearchDbDao extends DaoTest {
         scaffoldUnimod = new Unimod();
         scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
 
-        searchDbDao.begin();
     }
 
     @AfterMethod
     public void teardown() {
-        searchDbDao.commit();
         teardownDatabase();
     }
 
     @Test
-    public void shouldSaveSmallAnalysis() {
+    public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
+        searchDbDao.begin();
+
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 
         ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod);
@@ -72,5 +75,14 @@ public class TestSearchDbDao extends DaoTest {
         final Analysis analysis = summarizer.getAnalysis();
 
         searchDbDao.addAnalysis(analysis);
+
+        getDatabasePlaceholder().getSession().flush();
+
+        // DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
+
+        // FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
+
+        searchDbDao.commit();
+
     }
 }

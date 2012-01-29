@@ -67,6 +67,11 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.4.7</version>
+        </dependency>
         <!-- BioJava dependencies -->
         <!--<dependency>-->
         <!--<groupId>org.biojava</groupId>-->
@@ -85,14 +90,6 @@
         <developerConnection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/services/search-db</developerConnection>
         <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/services/search-db</url>
     </scm>
-
-    <repositories>
-        <repository>
-            <id>biojava-maven-repo</id>
-            <name>BioJava repository</name>
-            <url>http://www.biojava.org/download/maven/</url>
-        </repository>
-    </repositories>
 
     <distributionManagement>
         <site>
