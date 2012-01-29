@@ -7,6 +7,9 @@
             <generator class="native"/>
         </id>
 
-        <many-to-one name="list" class="BiologicalSample" column="biological_sample_id" not-null="false"/>
+        <bag name="list" table="biological_sample_list_members">
+            <key column="list_id"/>
+            <many-to-many column="item_id" class="BiologicalSample"/>
+        </bag>
     </class>
 </hibernate-mapping>

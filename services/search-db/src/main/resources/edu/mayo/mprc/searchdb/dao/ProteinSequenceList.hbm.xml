@@ -6,6 +6,9 @@
         <id name="id" type="integer" column="protein_sequence_list_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="list" class="ProteinSequence" column="protein_sequence_id" not-null="false"/>
+        <bag name="list" table="protein_sequence_list_members">
+            <key column="list_id"/>
+            <many-to-many column="item_id" class="ProteinSequence"/>
+        </bag>
     </class>
 </hibernate-mapping>

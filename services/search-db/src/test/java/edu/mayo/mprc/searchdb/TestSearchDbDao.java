@@ -1,5 +1,6 @@
 package edu.mayo.mprc.searchdb;
 
+import edu.mayo.mprc.database.Change;
 import edu.mayo.mprc.database.DaoTest;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
@@ -8,6 +9,7 @@ import edu.mayo.mprc.swift.params2.ParamsDaoHibernate;
 import edu.mayo.mprc.unimod.MockUnimodDao;
 import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.unimod.UnimodDaoHibernate;
+import edu.mayo.mprc.utilities.Log4jTestSetup;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -15,6 +17,7 @@ import org.testng.annotations.Test;
 
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Exercises the Search-db DAO.
@@ -23,25 +26,34 @@ import java.util.Arrays;
  */
 public class TestSearchDbDao extends DaoTest {
     private SearchDbDaoHibernate searchDbDao;
-    private final MockUnimodDao mockUnimodDao = new MockUnimodDao();
     private Unimod unimod;
     private Unimod scaffoldUnimod;
 
     private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
 
+    static {
+        Log4jTestSetup.configure();
+    }
+
     @BeforeMethod
     public void setup() {
-        unimod = mockUnimodDao.load();
-        scaffoldUnimod = new Unimod();
-        scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
-
         final SwiftDaoHibernate swiftDao = new SwiftDaoHibernate();
         final UnimodDaoHibernate unimodDao = new UnimodDaoHibernate();
         final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
 
         searchDbDao = new SearchDbDaoHibernate();
         searchDbDao.setSwiftDao(swiftDao);
+
         initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, searchDbDao));
+        unimodDao.begin();
+        MockUnimodDao mockUnimodDao = new MockUnimodDao();
+        unimod = mockUnimodDao.load();
+        unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
+        unimodDao.commit();
+
+        scaffoldUnimod = new Unimod();
+        scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
+
         searchDbDao.begin();
     }
 

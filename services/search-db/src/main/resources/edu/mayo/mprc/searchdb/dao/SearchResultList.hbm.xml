@@ -6,6 +6,9 @@
         <id name="id" type="integer" column="search_result_list_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="list" class="SearchResult" column="search_result_id" not-null="false"/>
+        <bag name="list" table="search_result_list_members">
+            <key column="list_id"/>
+            <many-to-many column="item_id" class="SearchResult"/>
+        </bag>
     </class>
 </hibernate-mapping>

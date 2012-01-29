@@ -10,10 +10,14 @@ import java.util.Collection;
  * @author Roman Zenka
  */
 public final class SearchResultList extends PersistableListBase<SearchResult> {
-	public SearchResultList() {
-	}
+    public SearchResultList() {
+    }
 
-	public SearchResultList(Collection<SearchResult> items) {
-		super(items);
-	}
+    public SearchResultList(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public SearchResultList(Collection<SearchResult> items) {
+        super(items);
+    }
 }
