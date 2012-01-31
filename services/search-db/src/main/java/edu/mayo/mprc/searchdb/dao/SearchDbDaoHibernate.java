@@ -4,11 +4,16 @@ import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.dbcurator.model.Curation;
+import edu.mayo.mprc.fasta.FASTAInputStream;
 import edu.mayo.mprc.swift.db.SwiftDao;
+import edu.mayo.mprc.utilities.FileUtilities;
+import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -73,6 +78,40 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     @Override
     public PeptideSequence getPeptideSequence(int peptideId) {
         return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
+    }
+
+    @Override
+    public void addFastaDatabase(Curation database) {
+        final File fasta = database.getFastaFile().getFile();
+        final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
+        final FASTAInputStream stream = new FASTAInputStream(fasta);
+        try {
+            while (stream.gotoNextSequence()) {
+                final String header = stream.getHeader();
+                final String sequence = stream.getSequence();
+                int space = header.indexOf(' ');
+                final String accessionNumber;
+                if (space >= 0) {
+                    accessionNumber = header.substring(0, space);
+                } else {
+                    accessionNumber = header;
+                }
+                final ProteinSequence proteinSequence = addProteinSequence(new ProteinSequence(sequence));
+                final ProteinDatabaseEntry entry = new ProteinDatabaseEntry(database, accessionNumber, proteinSequence);
+                saveStateless(session, entry, entryEqualityCriteria(entry), false);
+
+            }
+        } finally {
+            FileUtilities.closeQuietly(stream);
+            session.close();
+        }
+    }
+
+    private Criterion entryEqualityCriteria(ProteinDatabaseEntry entry) {
+        return Restrictions.conjunction()
+                .add(associationEq("database", entry.getDatabase()))
+                .add(nullSafeEq("accessionNumber", entry.getAccessionNumber()))
+                .add(associationEq("sequence", entry.getSequence()));
     }
 
     @Override

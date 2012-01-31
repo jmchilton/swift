@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
+import edu.mayo.mprc.dbcurator.model.Curation;
 
 /**
  * This dao should be implemented in an efficient manner. Typically a large amount of queries (10000x per input file)
@@ -40,6 +41,13 @@ public interface SearchDbDao extends Dao {
      * @return Sequence from the database.
      */
     PeptideSequence getPeptideSequence(int peptideId);
+
+    /**
+     * Add data from a given FASTA file into the database.
+     *
+     * @param database Database to load data for.
+     */
+    void addFastaDatabase(Curation database);
 
     LocalizedModification addLocalizedModification(LocalizedModification mod);
 

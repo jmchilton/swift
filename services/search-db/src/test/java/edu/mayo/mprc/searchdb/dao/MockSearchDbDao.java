@@ -2,6 +2,7 @@ package edu.mayo.mprc.searchdb.dao;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import edu.mayo.mprc.dbcurator.model.Curation;
 
 public final class MockSearchDbDao implements SearchDbDao {
     private BiMap<Integer, String> proteinSequences = HashBiMap.create();
@@ -74,6 +75,11 @@ public final class MockSearchDbDao implements SearchDbDao {
             return peptideSequence(peptideId, sequence);
         }
         return null;
+    }
+
+    @Override
+    public void addFastaDatabase(Curation database) {
+
     }
 
     @Override

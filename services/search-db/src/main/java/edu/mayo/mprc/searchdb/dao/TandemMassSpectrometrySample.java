@@ -15,161 +15,175 @@ import java.util.Date;
  * @author Roman Zenka
  */
 public class TandemMassSpectrometrySample extends PersistableBase {
-	/**
-	 * Link to the .RAW or .mgf file that was analyzed. It can contain a null or just a filename without the path in case the file could not be found.
-	 */
-	private File file;
+    /**
+     * Link to the .RAW or .mgf file that was analyzed. It can contain a null or just a filename without the path in case the file could not be found.
+     */
+    private File file;
 
-	/**
-	 * Number of survey or MS1 spectra.
-	 */
-	private int ms1Spectra;
+    /**
+     * When the file got last modified. Can store an old value in case only the modification time changed, but the
+     * file contents remained identical.
+     */
+    private Date lastModified;
 
-	/**
-	 * Number of MS2, MS3, etc.. spectra. This can be important for normalization.
-	 */
-	private int msnSpectra;
+    /**
+     * Number of survey or MS1 spectra.
+     */
+    private int ms1Spectra;
 
-	/**
-	 * Serial number of the instrument.
-	 */
-	private String instrumentSerialNumber;
+    /**
+     * Number of MS2, MS3, etc.. spectra. This can be important for normalization.
+     */
+    private int msnSpectra;
 
-	/**
-	 * Time when the instrument started to collect the data.
-	 */
-	private Date startTime;
+    /**
+     * Serial number of the instrument.
+     */
+    private String instrumentSerialNumber;
 
-	/**
-	 * For how long have the data been collected - in seconds.
-	 */
-	private double runTimeInSeconds;
+    /**
+     * Time when the instrument started to collect the data.
+     */
+    private Date startTime;
 
-	/**
-	 * A long, instrument specific text containing all the information about how was the instrument tuned for this
-	 * sample - what kind of voltages were set where, what calibration parameters were used, etc.
-	 */
-	private String tuneMethod;
+    /**
+     * For how long have the data been collected - in seconds.
+     */
+    private double runTimeInSeconds;
 
-	/**
-	 * Information about the method that was used to collect the sample. How many MS2 scans were utilized, with what settings,
-	 * what was the isolation window, etc. While {@link #tuneMethod} is about how the instrument was tuned,
-	 * this is about what the instrument was told to do on a particular sample.
-	 */
-	private String instrumentMethod;
+    /**
+     * A long, instrument specific text containing all the information about how was the instrument tuned for this
+     * sample - what kind of voltages were set where, what calibration parameters were used, etc.
+     */
+    private String tuneMethod;
 
-	/**
-	 * Information about the sample being processed. Who entered it, what vial it was in, what was the volume, etc.
-	 */
-	private String sampleInformation;
+    /**
+     * Information about the method that was used to collect the sample. How many MS2 scans were utilized, with what settings,
+     * what was the isolation window, etc. While {@link #tuneMethod} is about how the instrument was tuned,
+     * this is about what the instrument was told to do on a particular sample.
+     */
+    private String instrumentMethod;
 
-	/**
-	 * Were there any errors in processing? To save us space, if the error log contains only "No errors" message,
-	 * null should be stored here.
-	 */
-	private String errorLog;
+    /**
+     * Information about the sample being processed. Who entered it, what vial it was in, what was the volume, etc.
+     */
+    private String sampleInformation;
 
-	/**
-	 * As the instrument processes the data, it reports current values for a lot of systems - e.g. temperatures,
-	 * pressures, voltages. This log summarizes this information over the entire run, containing a report of
-	 * minimum, maximum, average, standard deviation. This should allow us to spot issues without having to store
-	 * this data on a per-spectrum basis.
-	 */
-	private String statusLogRanges;
+    /**
+     * Were there any errors in processing? To save us space, if the error log contains only "No errors" message,
+     * null should be stored here.
+     */
+    private String errorLog;
 
-	/**
-	 * Empty constructor for Hibernate.
-	 */
-	public TandemMassSpectrometrySample() {
-	}
+    /**
+     * As the instrument processes the data, it reports current values for a lot of systems - e.g. temperatures,
+     * pressures, voltages. This log summarizes this information over the entire run, containing a report of
+     * minimum, maximum, average, standard deviation. This should allow us to spot issues without having to store
+     * this data on a per-spectrum basis.
+     */
+    private String statusLogRanges;
 
-	public File getFile() {
-		return file;
-	}
+    /**
+     * Empty constructor for Hibernate.
+     */
+    public TandemMassSpectrometrySample() {
+    }
 
-	public void setFile(File file) {
-		this.file = file;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public int getMs1Spectra() {
-		return ms1Spectra;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-	public void setMs1Spectra(int ms1Spectra) {
-		this.ms1Spectra = ms1Spectra;
-	}
+    public Date getLastModified() {
+        return lastModified;
+    }
 
-	public int getMsnSpectra() {
-		return msnSpectra;
-	}
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
 
-	public void setMsnSpectra(int msnSpectra) {
-		this.msnSpectra = msnSpectra;
-	}
+    public int getMs1Spectra() {
+        return ms1Spectra;
+    }
 
-	public String getInstrumentSerialNumber() {
-		return instrumentSerialNumber;
-	}
+    public void setMs1Spectra(int ms1Spectra) {
+        this.ms1Spectra = ms1Spectra;
+    }
 
-	public void setInstrumentSerialNumber(String instrumentSerialNumber) {
-		this.instrumentSerialNumber = instrumentSerialNumber;
-	}
+    public int getMsnSpectra() {
+        return msnSpectra;
+    }
 
-	public Date getStartTime() {
-		return startTime;
-	}
+    public void setMsnSpectra(int msnSpectra) {
+        this.msnSpectra = msnSpectra;
+    }
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
+    public String getInstrumentSerialNumber() {
+        return instrumentSerialNumber;
+    }
 
-	public double getRunTimeInSeconds() {
-		return runTimeInSeconds;
-	}
+    public void setInstrumentSerialNumber(String instrumentSerialNumber) {
+        this.instrumentSerialNumber = instrumentSerialNumber;
+    }
 
-	public void setRunTimeInSeconds(double runTimeInSeconds) {
-		this.runTimeInSeconds = runTimeInSeconds;
-	}
+    public Date getStartTime() {
+        return startTime;
+    }
 
-	public String getTuneMethod() {
-		return tuneMethod;
-	}
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 
-	public void setTuneMethod(String tuneMethod) {
-		this.tuneMethod = tuneMethod;
-	}
+    public double getRunTimeInSeconds() {
+        return runTimeInSeconds;
+    }
 
-	public String getInstrumentMethod() {
-		return instrumentMethod;
-	}
+    public void setRunTimeInSeconds(double runTimeInSeconds) {
+        this.runTimeInSeconds = runTimeInSeconds;
+    }
 
-	public void setInstrumentMethod(String instrumentMethod) {
-		this.instrumentMethod = instrumentMethod;
-	}
+    public String getTuneMethod() {
+        return tuneMethod;
+    }
 
-	public String getSampleInformation() {
-		return sampleInformation;
-	}
+    public void setTuneMethod(String tuneMethod) {
+        this.tuneMethod = tuneMethod;
+    }
 
-	public void setSampleInformation(String sampleInformation) {
-		this.sampleInformation = sampleInformation;
-	}
+    public String getInstrumentMethod() {
+        return instrumentMethod;
+    }
 
-	public String getErrorLog() {
-		return errorLog;
-	}
+    public void setInstrumentMethod(String instrumentMethod) {
+        this.instrumentMethod = instrumentMethod;
+    }
 
-	public void setErrorLog(String errorLog) {
-		this.errorLog = errorLog;
-	}
+    public String getSampleInformation() {
+        return sampleInformation;
+    }
 
-	public String getStatusLogRanges() {
-		return statusLogRanges;
-	}
+    public void setSampleInformation(String sampleInformation) {
+        this.sampleInformation = sampleInformation;
+    }
 
-	public void setStatusLogRanges(String statusLogRanges) {
-		this.statusLogRanges = statusLogRanges;
-	}
+    public String getErrorLog() {
+        return errorLog;
+    }
+
+    public void setErrorLog(String errorLog) {
+        this.errorLog = errorLog;
+    }
+
+    public String getStatusLogRanges() {
+        return statusLogRanges;
+    }
+
+    public void setStatusLogRanges(String statusLogRanges) {
+        this.statusLogRanges = statusLogRanges;
+    }
 }
 
 

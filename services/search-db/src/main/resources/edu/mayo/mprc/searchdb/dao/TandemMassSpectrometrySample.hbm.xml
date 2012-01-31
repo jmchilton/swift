@@ -6,7 +6,10 @@
         <id name="id" type="integer" column="tandem_mass_spec_sample_id">
             <generator class="native"/>
         </id>
-        <property name="file" type="edu.mayo.mprc.database.FileType" column="file" not-null="true"/>
+        <properties name="uniqueFileIdentifier" unique="true">
+            <property name="file" type="edu.mayo.mprc.database.FileType" column="file" not-null="true"/>
+            <property name="lastModified" type="timestamp" column="last_modified" not-null="true"/>
+        </properties>
         <property name="ms1Spectra" type="integer" column="ms1_spectra"/>
         <property name="msnSpectra" type="integer" column="msn_spectra"/>
         <property name="instrumentSerialNumber" type="string" length="20" column="instrument_serial_number"/>

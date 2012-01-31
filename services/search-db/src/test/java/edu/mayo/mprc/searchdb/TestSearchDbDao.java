@@ -83,6 +83,14 @@ public class TestSearchDbDao extends DaoTest {
         // FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
 
         searchDbDao.commit();
+    }
 
+    @Test
+    public void shouldLoadFasta() {
+        searchDbDao.begin();
+
+        // searchDbDao.addFastaDatabase(null);
+
+        searchDbDao.commit();
     }
 }
