@@ -61,7 +61,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
         ProteinSequence sequence = (ProteinSequence) getSession()
                 .createQuery("select e.sequence from ProteinDatabaseEntry e where e.database=:database and e.accessionNumber=:accessionNumber")
                 .setEntity("database", database)
-                .setEntity("accessionNumber", accessionNumber)
+                .setString("accessionNumber", accessionNumber)
                 .uniqueResult();
         return sequence;
     }

@@ -11,43 +11,51 @@ import edu.mayo.mprc.searchdb.dao.SearchResult;
  * @author Roman Zenka
  */
 final class ProteinGroupKey {
-	private final BiologicalSample biologicalSample;
-	private final String accessionNumbers;
+    private final BiologicalSample biologicalSample;
+    private final String accessionNumbers;
+    private final String databaseSources;
 
-	/**
-	 * @param biologicalSample Biological sample the protein group belongs to.
-	 * @param accessionNumbers Accession numbers canonicalized, joined by comma
-	 */
-	ProteinGroupKey(BiologicalSample biologicalSample, String accessionNumbers) {
-		this.biologicalSample = biologicalSample;
-		this.accessionNumbers = accessionNumbers;
-	}
+    /**
+     * @param biologicalSample Biological sample the protein group belongs to.
+     * @param accessionNumbers Accession numbers canonicalized, joined by comma
+     */
+    ProteinGroupKey(BiologicalSample biologicalSample, String accessionNumbers, String databaseSources) {
+        this.biologicalSample = biologicalSample;
+        this.accessionNumbers = accessionNumbers;
+        this.databaseSources = databaseSources;
+    }
 
-	public BiologicalSample getBiologicalSample() {
-		return biologicalSample;
-	}
+    public BiologicalSample getBiologicalSample() {
+        return biologicalSample;
+    }
 
-	public String getAccessionNumbers() {
-		return accessionNumbers;
-	}
+    public String getAccessionNumbers() {
+        return accessionNumbers;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public String getDatabaseSources() {
+        return databaseSources;
+    }
 
-		ProteinGroupKey that = (ProteinGroupKey) o;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		if (!accessionNumbers.equals(that.accessionNumbers)) return false;
-		if (!biologicalSample.equals(that.biologicalSample)) return false;
+        ProteinGroupKey that = (ProteinGroupKey) o;
 
-		return true;
-	}
+        if (!accessionNumbers.equals(that.accessionNumbers)) return false;
+        if (!biologicalSample.equals(that.biologicalSample)) return false;
+        if (!databaseSources.equals(that.databaseSources)) return false;
 
-	@Override
-	public int hashCode() {
-		int result = biologicalSample.hashCode();
-		result = 31 * result + accessionNumbers.hashCode();
-		return result;
-	}
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = biologicalSample.hashCode();
+        result = 31 * result + accessionNumbers.hashCode();
+        result = 31 * result + databaseSources.hashCode();
+        return result;
+    }
 }

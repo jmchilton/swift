@@ -95,7 +95,7 @@ public class TestSearchDbDao extends DaoTest {
 
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 
-        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod);
+        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new SingleDatabaseTranslator(searchDbDao, curationDao));
         summarizer.load(reader, SINGLE, "3");
         final Analysis analysis = summarizer.getAnalysis();
 
