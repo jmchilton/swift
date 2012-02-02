@@ -43,6 +43,12 @@ public interface SearchDbDao extends Dao {
     PeptideSequence getPeptideSequence(int peptideId);
 
     /**
+     * @param database FASTA database to check.
+     * @return How many accession numbers are associated with given curation.
+     */
+    long countDatabaseEntries(Curation database);
+
+    /**
      * Add data from a given FASTA file into the database.
      *
      * @param database Database to load data for.

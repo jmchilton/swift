@@ -14,6 +14,9 @@ import java.io.InputStreamReader;
 /**
  * An input stream to handle FASTA data files.  It will read in the files and allow access to each header and sequence in
  * the file.
+ * <p/>
+ * WARNING: This class requires you to call {@link #beforeFirst()} before you start actually reading the data. This is
+ * not very intuitive. If you fail to do so, the class will quietly not load anything.
  *
  * @author Eric J. Winter Date: Apr 10, 2007 Time: 9:00:59 AM
  */
@@ -54,12 +57,7 @@ public final class FASTAInputStream implements DBInputStream {
      *             ¬
      */
     public FASTAInputStream(File file) {
-        try {
-            this.fastaFile = file;
-            reopenReader();
-        } catch (Exception e) {
-            throw new MprcException("Could not open FASTA file [" + file.getAbsolutePath() + "]", e);
-        }
+        this.fastaFile = file;
     }
 
     private void reopenReader() throws IOException {
@@ -80,7 +78,7 @@ public final class FASTAInputStream implements DBInputStream {
             reopenReader();
             this.nextHeader = this.reader.readLine();
         } catch (Exception e) {
-            throw new MprcException("Cannot reopen fasta database " + this.fastaFile.getAbsolutePath(), e);
+            throw new MprcException("Cannot open FASTA file [" + this.fastaFile.getAbsolutePath() + "]", e);
         }
     }
 
@@ -91,6 +89,9 @@ public final class FASTAInputStream implements DBInputStream {
      * @return false if we are already at the end of the file else true
      */
     public boolean gotoNextSequence() {
+        if (reader == null) {
+            throw new MprcException("FASTA stream not initalized properly. Call beforeFirst() before reading first sequence");
+        }
         //we should have been left after reading a header because that is how we detect
         //the end of the next sequence
         if (nextHeader == null) {
@@ -108,7 +109,7 @@ public final class FASTAInputStream implements DBInputStream {
         }
         //if the next line is not a header or an end of line then append it to the sequence
         while (isSequence(nextLine)) {
-            sequenceBuilder.append(nextLine);
+            sequenceBuilder.append(cleanupSequence(nextLine));
             try {
                 //read in the next line
                 nextLine = this.reader.readLine();
@@ -127,10 +128,17 @@ public final class FASTAInputStream implements DBInputStream {
         this.nextHeader = nextLine;
 
         //set the current sequence to the concatenation of all strings
-        this.currentSequence = sequenceBuilder.toString();
+        if (sequenceBuilder.charAt(sequenceBuilder.length() - 1) == '*') {
+            this.currentSequence = sequenceBuilder.toString();
+        }
+
 
         //return true since we will have a next header
         return true;
+    }
+
+    private String cleanupSequence(String nextLine) {
+        return nextLine;
     }
 
     /**

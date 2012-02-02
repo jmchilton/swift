@@ -78,6 +78,11 @@ public final class MockSearchDbDao implements SearchDbDao {
     }
 
     @Override
+    public long countDatabaseEntries(Curation database) {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void addFastaDatabase(Curation database) {
 
     }

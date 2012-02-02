@@ -18,6 +18,7 @@ import edu.mayo.mprc.utilities.Log4jTestSetup;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,6 +40,7 @@ public class TestSearchDbDao extends DaoTest {
     private Unimod unimod;
     private Unimod scaffoldUnimod;
     private CurationDaoImpl curationDao;
+    private UnimodDaoHibernate unimodDao;
 
     private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
 
@@ -49,23 +51,27 @@ public class TestSearchDbDao extends DaoTest {
     @BeforeMethod
     public void setup() {
         final SwiftDaoHibernate swiftDao = new SwiftDaoHibernate();
-        final UnimodDaoHibernate unimodDao = new UnimodDaoHibernate();
         final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
+        unimodDao = new UnimodDaoHibernate();
         curationDao = new CurationDaoImpl();
 
         searchDbDao = new SearchDbDaoHibernate();
         searchDbDao.setSwiftDao(swiftDao);
 
         initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao));
+    }
+
+    private void loadScaffoldUnimod() {
+        scaffoldUnimod = new Unimod();
+        scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
+    }
+
+    private void loadUnimod() {
         unimodDao.begin();
         MockUnimodDao mockUnimodDao = new MockUnimodDao();
         unimod = mockUnimodDao.load();
         unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
         unimodDao.commit();
-
-        scaffoldUnimod = new Unimod();
-        scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
-
     }
 
     @AfterMethod
@@ -75,6 +81,9 @@ public class TestSearchDbDao extends DaoTest {
 
     @Test
     public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
+        loadUnimod();
+        loadScaffoldUnimod();
+
         searchDbDao.begin();
 
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
@@ -96,30 +105,36 @@ public class TestSearchDbDao extends DaoTest {
 
     @Test
     public void shouldLoadFasta() throws IOException, DatabaseUnitException, SQLException {
-        File currentSpFasta = TestingUtilities.getTempFileFromResource("/edu/mayo/mprc/searchdb/currentSp.fasta", true, null);
         FileType.initialize(new DummyFileTokenTranslator());
+        File currentSpFasta = null;
+        try {
+            currentSpFasta = TestingUtilities.getTempFileFromResource("/edu/mayo/mprc/searchdb/currentSp.fasta", true, null);
+
+            Curation currentSp = addCurationToDatabase("Current_SP", currentSpFasta);
+
+            searchDbDao.addFastaDatabase(currentSp);
+
+            searchDbDao.begin();
+            Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
+            searchDbDao.commit();
+
+        } finally {
+            FileUtilities.cleanupTempFile(currentSpFasta);
+        }
+    }
+
+    private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {
         Curation currentSp = null;
         try {
             curationDao.begin();
             currentSp = new Curation();
-            currentSp.setShortName("Current_SP");
+            currentSp.setShortName(databaseName);
             currentSp.setCurationFile(currentSpFasta);
             curationDao.addCuration(currentSp);
             curationDao.commit();
         } catch (Exception e) {
             org.testng.Assert.fail("Cannot load fasta database", e);
         }
-
-//        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
-//        FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
-
-
-        try {
-            searchDbDao.begin();
-            searchDbDao.addFastaDatabase(currentSp);
-        } finally {
-            searchDbDao.commit();
-            FileUtilities.cleanupTempFile(currentSpFasta);
-        }
+        return currentSp;
     }
 }

@@ -1,5 +1,6 @@
 package edu.mayo.mprc.searchdb.dao;
 
+import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
@@ -8,9 +9,11 @@ import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fasta.FASTAInputStream;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.utilities.FileUtilities;
+import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.io.File;
@@ -62,6 +65,13 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
         return proteinSequence;
     }
 
+    private ProteinSequence addProteinSequence(StatelessSession session, ProteinSequence proteinSequence) {
+        if (proteinSequence.getId() == null) {
+            return saveStateless(session, proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
+        }
+        return proteinSequence;
+    }
+
     @Override
     public ProteinSequence getProteinSequence(int proteinId) {
         return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
@@ -81,26 +91,53 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     }
 
     @Override
+    public long countDatabaseEntries(Curation database) {
+        return (Long) getSession().createCriteria(ProteinDatabaseEntry.class)
+                .add(associationEq("database", database))
+                .setProjection(Projections.count("database"))
+                .uniqueResult();
+    }
+
+    /**
+     * This method opens its own stateless session for its duration, so you do not need to call {@link #begin}
+     * or {@link #commit} around this method. This makes the method quite special.
+     * <p/>
+     * If the curation was already previously loaded into the database, the method does nothing.
+     *
+     * @param database Database to load data for.
+     */
+    @Override
     public void addFastaDatabase(Curation database) {
-        final File fasta = database.getFastaFile().getFile();
         final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
+        Query entryCount = session.createQuery("select 1 from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
+        if (entryCount.uniqueResult() != null) {
+            // We have loaded the database already
+            return;
+        }
+
+        final File fasta = database.getFastaFile().getFile();
         final FASTAInputStream stream = new FASTAInputStream(fasta);
         try {
+            stream.beforeFirst();
+            session.getTransaction().begin();
             while (stream.gotoNextSequence()) {
                 final String header = stream.getHeader();
                 final String sequence = stream.getSequence();
                 int space = header.indexOf(' ');
                 final String accessionNumber;
-                if (space >= 0) {
-                    accessionNumber = header.substring(0, space);
+                if (space >= 1) {
+                    accessionNumber = header.substring(1, space);
                 } else {
-                    accessionNumber = header;
+                    accessionNumber = header.substring(1);
                 }
-                final ProteinSequence proteinSequence = addProteinSequence(new ProteinSequence(sequence));
+                final ProteinSequence proteinSequence = addProteinSequence(session, new ProteinSequence(sequence));
                 final ProteinDatabaseEntry entry = new ProteinDatabaseEntry(database, accessionNumber, proteinSequence);
                 saveStateless(session, entry, entryEqualityCriteria(entry), false);
-
             }
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw new MprcException("Could not add FASTA file to database " + database.getTitle(), e);
         } finally {
             FileUtilities.closeQuietly(stream);
             session.close();
@@ -329,6 +366,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 MAP + "LocalizedModList.hbm.xml",
                 MAP + "PeptideSequence.hbm.xml",
                 MAP + "PeptideSpectrumMatch.hbm.xml",
+                MAP + "ProteinDatabaseEntry.hbm.xml",
                 MAP + "ProteinGroup.hbm.xml",
                 MAP + "ProteinGroupList.hbm.xml",
                 MAP + "ProteinSequence.hbm.xml",
