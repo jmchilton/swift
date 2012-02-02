@@ -1,15 +1,15 @@
 package edu.mayo.mprc.fasta;
 
 import com.google.common.base.Charsets;
+import com.google.common.io.CountingInputStream;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.GZipUtilities;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Locale;
+import java.util.zip.GZIPInputStream;
 
 /**
  * An input stream to handle FASTA data files.  It will read in the files and allow access to each header and sequence in
@@ -32,6 +32,16 @@ public final class FASTAInputStream implements DBInputStream {
      * A reader to access the above file
      */
     private BufferedReader reader;
+
+    /**
+     * Counting input stream to know how much we read so far.
+     */
+    private CountingInputStream countingInputStream;
+
+    /**
+     * How much data is there total in the FASTA file.
+     */
+    private double totalBytesToRead;
 
     /**
      * the header of the sequence at the current location
@@ -61,10 +71,12 @@ public final class FASTAInputStream implements DBInputStream {
     }
 
     private void reopenReader() throws IOException {
+        totalBytesToRead = fastaFile.length();
+        countingInputStream = new CountingInputStream(new FileInputStream(fastaFile));
         if (GZipUtilities.isGZipped(fastaFile)) {
-            this.reader = new BufferedReader(new InputStreamReader(GZipUtilities.getCompressedFileAsStream(fastaFile), Charsets.ISO_8859_1));
+            this.reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(countingInputStream), Charsets.ISO_8859_1));
         } else {
-            this.reader = FileUtilities.getReader(fastaFile);
+            this.reader = new BufferedReader(new InputStreamReader(countingInputStream, Charsets.ISO_8859_1));
         }
     }
 
@@ -128,17 +140,23 @@ public final class FASTAInputStream implements DBInputStream {
         this.nextHeader = nextLine;
 
         //set the current sequence to the concatenation of all strings
+        // If the sequence ends with an * signalizing end codon, quietly drop it
         if (sequenceBuilder.charAt(sequenceBuilder.length() - 1) == '*') {
-            this.currentSequence = sequenceBuilder.toString();
+            currentSequence = sequenceBuilder.substring(0, sequenceBuilder.length() - 1);
+        } else {
+            currentSequence = sequenceBuilder.toString();
         }
-
 
         //return true since we will have a next header
         return true;
     }
 
+    public double percentRead() {
+        return countingInputStream.getCount() / totalBytesToRead;
+    }
+
     private String cleanupSequence(String nextLine) {
-        return nextLine;
+        return nextLine.trim().toUpperCase(Locale.US);
     }
 
     /**

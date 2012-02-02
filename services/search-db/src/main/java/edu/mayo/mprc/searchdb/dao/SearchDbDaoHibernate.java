@@ -9,6 +9,7 @@ import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fasta.FASTAInputStream;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.utilities.FileUtilities;
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Criterion;
@@ -16,6 +17,7 @@ import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -27,6 +29,8 @@ import java.util.Map;
  * @author Roman Zenka
  */
 public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitializer, SearchDbDao {
+    private static final org.apache.log4j.Logger LOGGER = Logger.getLogger(SearchDbDaoHibernate.class);
+
     private SwiftDao swiftDao;
 
     private final String MAP = "edu/mayo/mprc/searchdb/dao/";
@@ -124,10 +128,12 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
         final File fasta = database.getFastaFile().getFile();
         final FASTAInputStream stream = new FASTAInputStream(fasta);
+        long numSequencesRead = 0;
         try {
             stream.beforeFirst();
             session.getTransaction().begin();
             while (stream.gotoNextSequence()) {
+                numSequencesRead++;
                 final String header = stream.getHeader();
                 final String sequence = stream.getSequence();
                 int space = header.indexOf(' ');
@@ -139,8 +145,14 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 }
                 final ProteinSequence proteinSequence = addProteinSequence(session, new ProteinSequence(sequence));
                 final ProteinDatabaseEntry entry = new ProteinDatabaseEntry(database, accessionNumber, proteinSequence);
-                saveStateless(session, entry, entryEqualityCriteria(entry), false);
+                // We know that we will never save two identical entries (fasta has each entry unique and we have not
+                // loaded the database yet. So no need to check)
+                saveStateless(session, entry, null, false);
+                if (numSequencesRead % 10000 == 0) {
+                    LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * 100));
+                }
             }
+            LOGGER.info(MessageFormat.format("Loaded [{0}] to database: {1,number} sequences added.", fasta.getAbsolutePath(), numSequencesRead));
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();

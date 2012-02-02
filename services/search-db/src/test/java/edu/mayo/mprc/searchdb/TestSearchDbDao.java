@@ -111,25 +111,31 @@ public class TestSearchDbDao extends DaoTest {
     }
 
     private Curation loadFasta(String resource, String shortName) {
-        File currentSpFasta = null;
-
+        File file = null;
         try {
-            currentSpFasta = TestingUtilities.getTempFileFromResource(resource, true, null);
-
-            Curation currentSp = addCurationToDatabase(shortName, currentSpFasta);
-
-            searchDbDao.addFastaDatabase(currentSp);
-            return currentSp;
+            file = TestingUtilities.getTempFileFromResource(resource, true, null);
+            return loadFasta(file, shortName);
         } catch (Exception e) {
             throw new MprcException("Failed to load database [" + shortName + "]", e);
         } finally {
-            FileUtilities.cleanupTempFile(currentSpFasta);
+            FileUtilities.cleanupTempFile(file);
+        }
+    }
+
+    private Curation loadFasta(File file, String shortName) {
+        try {
+            Curation curation = addCurationToDatabase(shortName, file);
+            searchDbDao.addFastaDatabase(curation);
+            return curation;
+        } catch (Exception e) {
+            throw new MprcException("Failed to load database [" + shortName + "]", e);
         }
     }
 
     @Test
     public void shouldLoadFasta() throws IOException, DatabaseUnitException, SQLException {
         Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
+        // Curation currentSp = loadFasta(new File("/Users/m044910/Documents/Databases/Current_SP.fasta"), "Current_SP");
 
         searchDbDao.begin();
         Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);

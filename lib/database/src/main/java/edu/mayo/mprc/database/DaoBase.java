@@ -287,7 +287,7 @@ public abstract class DaoBase implements Dao {
             return item;
         }
 
-        T existingObject = (T) session
+        T existingObject = equalityCriteria == null ? null : (T) session
                 .createCriteria(item.getClass())
                 .add(equalityCriteria)
                 .uniqueResult();

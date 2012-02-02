@@ -8,6 +8,6 @@
         </id>
         <many-to-one name="database" class="edu.mayo.mprc.dbcurator.model.Curation" column="database" lazy="proxy"/>
         <property name="accessionNumber" type="string" length="50" not-null="true"/>
-        <many-to-one name="sequence" class="ProteinSequence" column="protein_sequence" not-null="true"/>
+        <many-to-one name="sequence" class="ProteinSequence" column="protein_sequence" not-null="true" lazy="proxy"/>
     </class>
 </hibernate-mapping>
