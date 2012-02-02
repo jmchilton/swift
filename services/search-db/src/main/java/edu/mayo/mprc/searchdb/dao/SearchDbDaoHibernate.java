@@ -13,7 +13,6 @@ import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.io.File;
@@ -58,6 +57,16 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     }
 
     @Override
+    public ProteinSequence getProteinSequence(Curation database, String accessionNumber) {
+        ProteinSequence sequence = (ProteinSequence) getSession()
+                .createQuery("select e.sequence from ProteinDatabaseEntry e where e.database=:database and e.accessionNumber=:accessionNumber")
+                .setEntity("database", database)
+                .setEntity("accessionNumber", accessionNumber)
+                .uniqueResult();
+        return sequence;
+    }
+
+    @Override
     public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
         if (proteinSequence.getId() == null) {
             return save(proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
@@ -92,9 +101,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
     @Override
     public long countDatabaseEntries(Curation database) {
-        return (Long) getSession().createCriteria(ProteinDatabaseEntry.class)
-                .add(associationEq("database", database))
-                .setProjection(Projections.count("database"))
+        return (Long) getSession().createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database)
                 .uniqueResult();
     }
 
@@ -109,8 +116,8 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     @Override
     public void addFastaDatabase(Curation database) {
         final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
-        Query entryCount = session.createQuery("select 1 from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
-        if (entryCount.uniqueResult() != null) {
+        Query entryCount = session.createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
+        if ((Long) entryCount.uniqueResult() != 0) {
             // We have loaded the database already
             return;
         }

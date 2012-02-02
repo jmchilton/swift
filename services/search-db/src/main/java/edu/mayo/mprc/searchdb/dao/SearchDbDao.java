@@ -26,6 +26,15 @@ public interface SearchDbDao extends Dao {
     ProteinSequence getProteinSequence(int proteinId);
 
     /**
+     * Get a protein sequence for a given accession number.
+     *
+     * @param database        A fasta database from which the accession numbers come.
+     * @param accessionNumber Accession number of the protein.
+     * @return Protein sequence corresponding to the accession number.
+     */
+    ProteinSequence getProteinSequence(Curation database, String accessionNumber);
+
+    /**
      * Look up given peptide sequence in the database.
      * If the sequence does not exist in the database, it is added.
      * ID of the peptide sequence is updated to match the database id.

@@ -1,5 +1,6 @@
 package edu.mayo.mprc.searchdb;
 
+import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.database.Change;
 import edu.mayo.mprc.database.DaoTest;
 import edu.mayo.mprc.database.DummyFileTokenTranslator;
@@ -18,12 +19,15 @@ import edu.mayo.mprc.utilities.Log4jTestSetup;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
@@ -50,6 +54,8 @@ public class TestSearchDbDao extends DaoTest {
 
     @BeforeMethod
     public void setup() {
+        FileType.initialize(new DummyFileTokenTranslator());
+
         final SwiftDaoHibernate swiftDao = new SwiftDaoHibernate();
         final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
         unimodDao = new UnimodDaoHibernate();
@@ -83,6 +89,7 @@ public class TestSearchDbDao extends DaoTest {
     public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
         loadUnimod();
         loadScaffoldUnimod();
+        Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
 
         searchDbDao.begin();
 
@@ -96,31 +103,44 @@ public class TestSearchDbDao extends DaoTest {
 
         getDatabasePlaceholder().getSession().flush();
 
-        // DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
+        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
 
-        // FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
+        FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
 
         searchDbDao.commit();
     }
 
-    @Test
-    public void shouldLoadFasta() throws IOException, DatabaseUnitException, SQLException {
-        FileType.initialize(new DummyFileTokenTranslator());
+    private Curation loadFasta(String resource, String shortName) {
         File currentSpFasta = null;
-        try {
-            currentSpFasta = TestingUtilities.getTempFileFromResource("/edu/mayo/mprc/searchdb/currentSp.fasta", true, null);
 
-            Curation currentSp = addCurationToDatabase("Current_SP", currentSpFasta);
+        try {
+            currentSpFasta = TestingUtilities.getTempFileFromResource(resource, true, null);
+
+            Curation currentSp = addCurationToDatabase(shortName, currentSpFasta);
 
             searchDbDao.addFastaDatabase(currentSp);
-
-            searchDbDao.begin();
-            Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
-            searchDbDao.commit();
-
+            return currentSp;
+        } catch (Exception e) {
+            throw new MprcException("Failed to load database [" + shortName + "]", e);
         } finally {
             FileUtilities.cleanupTempFile(currentSpFasta);
         }
+    }
+
+    @Test
+    public void shouldLoadFasta() throws IOException, DatabaseUnitException, SQLException {
+        Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
+
+        searchDbDao.begin();
+        Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
+        searchDbDao.commit();
+
+        // Add the same thing again. Nothing should happen.
+        searchDbDao.addFastaDatabase(currentSp);
+
+        searchDbDao.begin();
+        Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
+        searchDbDao.commit();
     }
 
     private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {

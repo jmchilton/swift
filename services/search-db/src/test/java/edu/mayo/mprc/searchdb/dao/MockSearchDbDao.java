@@ -51,6 +51,11 @@ public final class MockSearchDbDao implements SearchDbDao {
     }
 
     @Override
+    public ProteinSequence getProteinSequence(Curation database, String accessionNumber) {
+        return null;
+    }
+
+    @Override
     public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
         final String sequence = peptideSequence.getSequence();
         Integer id = peptideSequences.inverse().get(sequence);
