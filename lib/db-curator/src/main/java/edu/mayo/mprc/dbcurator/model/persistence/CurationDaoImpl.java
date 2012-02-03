@@ -51,12 +51,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
         );
     }
 
-    /**
-     * gets a curation with the given ID.  This also loads all associated objects.
-     *
-     * @param curationID the id of the curation that you want (this is probably too low of level for the public to use...
-     * @return the curation with the given id or null of not curation with that id was found
-     */
+    @Override
     public Curation getCuration(final int curationID) {
         Session session = getSession();
         Curation curation = null;
@@ -68,12 +63,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
         return curation;
     }
 
-    /**
-     * gets the curation by a short name
-     *
-     * @param shortName the name that we can look up by
-     * @return the curation with that short name
-     */
+    @Override
     public Curation getCurationByShortName(final String shortName) {
         Curation example = new Curation();
         example.setShortName(shortName);
@@ -124,13 +114,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
         return name;
     }
 
-    /**
-     * Takes a name that was supplied and tries to find a Curation for it.
-     * Will return the most recently run curation with the given shortname.
-     *
-     * @param name is the name either shortname, or a shortname with _LATEST appended.
-     * @return
-     */
+    @Override
     public Curation findCuration(String name) {
         name = name.trim();
         //try to see if we have a match based on short name
@@ -207,19 +191,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
         return returnList;
     }
 
-    /**
-     * Gets a list of Curations that seems to match the given templateCuration.  If you passed a curation.  You can use this
-     * as a query by example.
-     * If you want all curations you can just pass in all null values.
-     * <p/>
-     * There is an optimization for queries returing all curations. If that is the case, a count(Curation) query is ran
-     * against the database to figure out whether the amount of curations changed. If not, cached value is used.
-     *
-     * @param templateCuration the curation that has the properties that you want to match in the set of returned curations
-     * @param earliestRunDate  the earliest run date you want returned or null if
-     * @param latestRunDate    latest run date you want returned
-     * @return the set of curations that have the same parameters as the curation passed in.
-     */
+    @Override
     public List<Curation> getMatchingCurations(final Curation templateCuration, final Date earliestRunDate, final Date latestRunDate) {
         if (templateCuration == null && earliestRunDate == null && latestRunDate == null) {
             return allCurations();
@@ -278,13 +250,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
         return returnList;
     }
 
-    /**
-     * checks to see if there is a database from the given url
-     *
-     * @param url              the url that the file was downloaded from
-     * @param fileCreationDate the date the file was downloaded
-     * @return an archive that from that url on that date or null if none were found
-     */
+    @Override
     public SourceDatabaseArchive findSourceDatabaseInExistence(final String url, final Date fileCreationDate) {
         List<SourceDatabaseArchive> archiveList = null;
 

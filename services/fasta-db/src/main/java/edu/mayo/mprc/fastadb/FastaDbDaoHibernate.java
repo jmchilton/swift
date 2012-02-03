@@ -2,7 +2,10 @@ package edu.mayo.mprc.fastadb;
 
 import com.google.common.base.Preconditions;
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.daemon.progress.PercentDone;
+import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.database.DaoBase;
+import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fasta.FASTAInputStream;
 import edu.mayo.mprc.utilities.FileUtilities;
@@ -10,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -20,7 +24,16 @@ import java.util.Collection;
  */
 public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     private static final Logger LOGGER = Logger.getLogger(FastaDbDaoHibernate.class);
+    // Progress will be reported each X spectra
+    public static final int REPORT_FREQUENCY = 10000;
     private final String MAP = "edu/mayo/mprc/fastadb/";
+
+    public FastaDbDaoHibernate() {
+    }
+
+    public FastaDbDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+        super(databasePlaceholder);
+    }
 
     @Override
     public ProteinSequence getProteinSequence(Curation database, String accessionNumber) {
@@ -81,7 +94,7 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
      * @param database Database to load data for.
      */
     @Override
-    public void addFastaDatabase(Curation database) {
+    public void addFastaDatabase(Curation database, @Nullable ProgressReporter progressReporter) {
         final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
         Query entryCount = session.createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
         if ((Long) entryCount.uniqueResult() != 0) {
@@ -111,7 +124,10 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
                 // We know that we will never save two identical entries (fasta has each entry unique and we have not
                 // loaded the database yet. So no need to check)
                 saveStateless(session, entry, null, false);
-                if (numSequencesRead % 10000 == 0) {
+                if (numSequencesRead % REPORT_FREQUENCY == 0) {
+                    if (progressReporter != null) {
+                        progressReporter.reportProgress(new PercentDone((float) stream.percentRead() * 100.0f));
+                    }
                     LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * 100));
                 }
             }

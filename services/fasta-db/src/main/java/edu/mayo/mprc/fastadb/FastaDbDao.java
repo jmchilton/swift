@@ -1,5 +1,7 @@
 package edu.mayo.mprc.fastadb;
 
+import edu.mayo.mprc.daemon.progress.PercentDone;
+import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.dbcurator.model.Curation;
 
 /**
@@ -63,8 +65,9 @@ public interface FastaDbDao {
     /**
      * Add data from a given FASTA file into the database.
      *
-     * @param database Database to load data for.
+     * @param database         Database to load data for.
+     * @param progressReporter The {@link PercentDone} message will be set periodically using {@link ProgressReporter#reportProgress}. If null, no progress is reported.
      */
-    void addFastaDatabase(Curation database);
+    void addFastaDatabase(Curation database, ProgressReporter progressReporter);
 
 }

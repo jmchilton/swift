@@ -61,6 +61,7 @@ public class TestSearchDbDao extends DaoTest {
 
         searchDbDao = new SearchDbDaoHibernate();
         searchDbDao.setSwiftDao(swiftDao);
+        searchDbDao.setFastaDbDao(fastaDbDao);
 
         initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao, fastaDbDao));
     }
@@ -123,7 +124,7 @@ public class TestSearchDbDao extends DaoTest {
     private Curation loadFasta(File file, String shortName) {
         try {
             Curation curation = addCurationToDatabase(shortName, file);
-            fastaDbDao.addFastaDatabase(curation);
+            fastaDbDao.addFastaDatabase(curation, null);
             return curation;
         } catch (Exception e) {
             throw new MprcException("Failed to load database [" + shortName + "]", e);

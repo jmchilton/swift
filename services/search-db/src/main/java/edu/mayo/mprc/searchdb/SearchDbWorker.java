@@ -16,11 +16,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Can handle multiple requests:
- * <ul>
- * <li>{@link SearchDbWorkPacket} - loads a given Scaffold search result</li>
- * <li>{@link }</li>
- * </ul>
+ * Loads search results from a given Swift experiment into the database.
  */
 public final class SearchDbWorker implements Worker {
     private DatabaseFactory.Config database;

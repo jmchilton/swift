@@ -200,6 +200,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>1.3.9</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.proteomecommons</groupId>
                 <artifactId>io</artifactId>
                 <version>6.21</version>

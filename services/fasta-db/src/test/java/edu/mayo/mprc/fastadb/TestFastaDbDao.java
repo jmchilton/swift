@@ -52,7 +52,7 @@ public class TestFastaDbDao extends DaoTest {
         fastaDbDao.commit();
 
         // Add the same thing again. Nothing should happen.
-        fastaDbDao.addFastaDatabase(currentSp);
+        fastaDbDao.addFastaDatabase(currentSp, null);
 
         fastaDbDao.begin();
         Assert.assertEquals(fastaDbDao.countDatabaseEntries(currentSp), 9);
@@ -148,7 +148,7 @@ public class TestFastaDbDao extends DaoTest {
     private Curation loadFasta(File file, String shortName) {
         try {
             Curation curation = addCurationToDatabase(shortName, file);
-            fastaDbDao.addFastaDatabase(curation);
+            fastaDbDao.addFastaDatabase(curation, null);
             return curation;
         } catch (Exception e) {
             throw new MprcException("Failed to load database [" + shortName + "]", e);

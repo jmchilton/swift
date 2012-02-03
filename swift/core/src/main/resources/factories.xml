@@ -50,6 +50,7 @@
         <constructor-arg index="0">
             <list value-type="edu.mayo.mprc.database.DaoBase">
                 <ref bean="curationDao"/>
+                <ref bean="fastaDbDao"/>
                 <ref bean="paramsDao"/>
                 <ref bean="searchDbDao"/>
                 <ref bean="swiftDao"/>
@@ -74,6 +75,11 @@
 
     <bean id="searchDbFactory" class="edu.mayo.mprc.searchdb.SearchDbWorker$Factory">
         <property name="searchDbDao" ref="searchDbDao"/>
+    </bean>
+
+    <bean id="fastaDbFactory" class="edu.mayo.mprc.fastadb.FastaDbWorker$Factory">
+        <property name="curationDao" ref="curationDao"/>
+        <property name="fastaDbDao" ref="fastaDbDao"/>
     </bean>
 
     <bean id="databaseUndeployerFactory" class="edu.mayo.mprc.dbundeploy.DatabaseUndeployerWorker$Factory">
@@ -102,6 +108,8 @@
         <property name="webUiFactory" ref="webUiFactory"/>
         <property name="daemonConnectionFactory" ref="daemonConnectionFactory"/>
         <property name="databaseValidator" ref="databaseValidator"/>
+        <property name="fastaDbWorkerFactory" ref="fastaDbFactory"/>
+        <property name="searchDbWorkerFactory" ref="searchDbFactory"/>
     </bean>
 
     <bean id="databaseValidator"
@@ -217,6 +225,12 @@
         <constructor-arg index="0" ref="databasePlaceholder"/>
     </bean>
 
+    <bean id="fastaDbDao" class="edu.mayo.mprc.fastadb.FastaDbDaoHibernate">
+        <!-- if you need to get access to a session directly for some reason you can do it but try to avoid this -->
+        <constructor-arg index="0" ref="databasePlaceholder"/>
+    </bean>
+
+
     <bean id="swiftDao" class="edu.mayo.mprc.swift.db.SwiftDaoHibernate">
         <property name="databasePlaceholder" ref="databasePlaceholder"/>
         <property name="fileTokenFactory" ref="fileTokenFactory"/>
@@ -226,7 +240,8 @@
 
     <bean id="searchDbDao" class="edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate">
         <constructor-arg index="0" ref="swiftDao"/>
-        <constructor-arg index="1" ref="databasePlaceholder"/>
+        <constructor-arg index="1" ref="fastaDbDao"/>
+        <constructor-arg index="2" ref="databasePlaceholder"/>
     </bean>
 
     <bean id="workspaceDao" class="edu.mayo.mprc.workspace.WorkspaceDaoHibernate">

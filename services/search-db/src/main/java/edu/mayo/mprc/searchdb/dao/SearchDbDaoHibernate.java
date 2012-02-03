@@ -48,6 +48,14 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
         this.swiftDao = swiftDao;
     }
 
+    public FastaDbDao getFastaDbDao() {
+        return fastaDbDao;
+    }
+
+    public void setFastaDbDao(FastaDbDao fastaDbDao) {
+        this.fastaDbDao = fastaDbDao;
+    }
+
     @Override
     public String check(Map<String, String> params) {
         return null;
