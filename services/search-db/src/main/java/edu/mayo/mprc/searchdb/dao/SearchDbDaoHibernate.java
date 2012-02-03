@@ -1,23 +1,18 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.database.PersistableListBase;
-import edu.mayo.mprc.dbcurator.model.Curation;
-import edu.mayo.mprc.fasta.FASTAInputStream;
+import edu.mayo.mprc.fastadb.FastaDbDao;
+import edu.mayo.mprc.fastadb.ProteinDatabaseEntry;
+import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
-import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
-import java.io.File;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -32,15 +27,17 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     private static final org.apache.log4j.Logger LOGGER = Logger.getLogger(SearchDbDaoHibernate.class);
 
     private SwiftDao swiftDao;
+    private FastaDbDao fastaDbDao;
 
     private final String MAP = "edu/mayo/mprc/searchdb/dao/";
 
     public SearchDbDaoHibernate() {
     }
 
-    public SearchDbDaoHibernate(SwiftDao swiftDao, DatabasePlaceholder databasePlaceholder) {
+    public SearchDbDaoHibernate(SwiftDao swiftDao, FastaDbDao fastaDbDao, DatabasePlaceholder databasePlaceholder) {
         super(databasePlaceholder);
         this.swiftDao = swiftDao;
+        this.fastaDbDao = fastaDbDao;
     }
 
     public SwiftDao getSwiftDao() {
@@ -60,108 +57,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     public void initialize(Map<String, String> params) {
     }
 
-    @Override
-    public ProteinSequence getProteinSequence(Curation database, String accessionNumber) {
-        ProteinSequence sequence = (ProteinSequence) getSession()
-                .createQuery("select e.sequence from ProteinDatabaseEntry e where e.database=:database and e.accessionNumber=:accessionNumber")
-                .setEntity("database", database)
-                .setString("accessionNumber", accessionNumber)
-                .uniqueResult();
-        return sequence;
-    }
-
-    @Override
-    public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
-        if (proteinSequence.getId() == null) {
-            return save(proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
-        }
-        return proteinSequence;
-    }
-
-    private ProteinSequence addProteinSequence(StatelessSession session, ProteinSequence proteinSequence) {
-        if (proteinSequence.getId() == null) {
-            return saveStateless(session, proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
-        }
-        return proteinSequence;
-    }
-
-    @Override
-    public ProteinSequence getProteinSequence(int proteinId) {
-        return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
-    }
-
-    @Override
-    public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
-        if (peptideSequence.getId() == null) {
-            return save(peptideSequence, nullSafeEq("sequence", peptideSequence.getSequence()), false);
-        }
-        return peptideSequence;
-    }
-
-    @Override
-    public PeptideSequence getPeptideSequence(int peptideId) {
-        return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
-    }
-
-    @Override
-    public long countDatabaseEntries(Curation database) {
-        return (Long) getSession().createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database)
-                .uniqueResult();
-    }
-
-    /**
-     * This method opens its own stateless session for its duration, so you do not need to call {@link #begin}
-     * or {@link #commit} around this method. This makes the method quite special.
-     * <p/>
-     * If the curation was already previously loaded into the database, the method does nothing.
-     *
-     * @param database Database to load data for.
-     */
-    @Override
-    public void addFastaDatabase(Curation database) {
-        final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
-        Query entryCount = session.createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
-        if ((Long) entryCount.uniqueResult() != 0) {
-            // We have loaded the database already
-            return;
-        }
-
-        final File fasta = database.getFastaFile().getFile();
-        final FASTAInputStream stream = new FASTAInputStream(fasta);
-        long numSequencesRead = 0;
-        try {
-            stream.beforeFirst();
-            session.getTransaction().begin();
-            while (stream.gotoNextSequence()) {
-                numSequencesRead++;
-                final String header = stream.getHeader();
-                final String sequence = stream.getSequence();
-                int space = header.indexOf(' ');
-                final String accessionNumber;
-                if (space >= 1) {
-                    accessionNumber = header.substring(1, space);
-                } else {
-                    accessionNumber = header.substring(1);
-                }
-                final ProteinSequence proteinSequence = addProteinSequence(session, new ProteinSequence(sequence));
-                final ProteinDatabaseEntry entry = new ProteinDatabaseEntry(database, accessionNumber, proteinSequence);
-                // We know that we will never save two identical entries (fasta has each entry unique and we have not
-                // loaded the database yet. So no need to check)
-                saveStateless(session, entry, null, false);
-                if (numSequencesRead % 10000 == 0) {
-                    LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * 100));
-                }
-            }
-            LOGGER.info(MessageFormat.format("Loaded [{0}] to database: {1,number} sequences added.", fasta.getAbsolutePath(), numSequencesRead));
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-            throw new MprcException("Could not add FASTA file to database " + database.getTitle(), e);
-        } finally {
-            FileUtilities.closeQuietly(stream);
-            session.close();
-        }
-    }
 
     private Criterion entryEqualityCriteria(ProteinDatabaseEntry entry) {
         return Restrictions.conjunction()
@@ -197,7 +92,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 peptide.setModifications(addList(newList));
             }
 
-            peptide.setSequence(addPeptideSequence(peptide.getSequence()));
+            peptide.setSequence(fastaDbDao.addPeptideSequence(peptide.getSequence()));
             return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
         }
         return peptide;
@@ -237,7 +132,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 if (originalList.getId() == null) {
                     ProteinSequenceList newList = new ProteinSequenceList(originalList.size());
                     for (ProteinSequence item : originalList) {
-                        newList.add(addProteinSequence(item));
+                        newList.add(fastaDbDao.addProteinSequence(item));
                     }
                     group.setProteinSequences(addList(newList));
                 }
@@ -383,12 +278,9 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 MAP + "IdentifiedPeptide.hbm.xml",
                 MAP + "LocalizedModification.hbm.xml",
                 MAP + "LocalizedModList.hbm.xml",
-                MAP + "PeptideSequence.hbm.xml",
                 MAP + "PeptideSpectrumMatch.hbm.xml",
-                MAP + "ProteinDatabaseEntry.hbm.xml",
                 MAP + "ProteinGroup.hbm.xml",
                 MAP + "ProteinGroupList.hbm.xml",
-                MAP + "ProteinSequence.hbm.xml",
                 MAP + "ProteinSequenceList.hbm.xml",
                 MAP + "PsmList.hbm.xml",
                 MAP + "SearchResult.hbm.xml",

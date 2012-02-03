@@ -3,6 +3,8 @@ package edu.mayo.mprc.searchdb;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.fastadb.ProteinSequence;
+import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
 import edu.mayo.mprc.searchdb.dao.*;
 import edu.mayo.mprc.unimod.MockUnimodDao;
 import edu.mayo.mprc.unimod.Unimod;

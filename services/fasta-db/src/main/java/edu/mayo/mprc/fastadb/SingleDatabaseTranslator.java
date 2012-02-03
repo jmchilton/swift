@@ -1,24 +1,22 @@
-package edu.mayo.mprc.searchdb;
+package edu.mayo.mprc.fastadb;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
-import edu.mayo.mprc.searchdb.dao.ProteinSequence;
-import edu.mayo.mprc.searchdb.dao.SearchDbDao;
 import edu.mayo.mprc.utilities.FileUtilities;
 
 /**
  * Caches the first database it is asked to translate. Every subsequent database will be checked for identity,
  * if it does not match, error is thrown.
  */
-class SingleDatabaseTranslator implements ProteinSequenceTranslator {
+public class SingleDatabaseTranslator implements ProteinSequenceTranslator {
+    private FastaDbDao fastaDbDao;
     private CurationDao curationDao;
-    private SearchDbDao searchDbDao;
     private Curation database;
     private String currentDatabaseSources;
 
-    SingleDatabaseTranslator(SearchDbDao searchDbDao, CurationDao curationDao) {
-        this.searchDbDao = searchDbDao;
+    public SingleDatabaseTranslator(FastaDbDao fastaDbDao, CurationDao curationDao) {
+        this.fastaDbDao = fastaDbDao;
         this.curationDao = curationDao;
     }
 
@@ -28,12 +26,12 @@ class SingleDatabaseTranslator implements ProteinSequenceTranslator {
             if (databaseSources.contains(",")) {
                 throw new MprcException("Multiple databases per Scaffold file not supported: [" + databaseSources + "]");
             }
-            currentDatabaseSources = databaseSources;
-            database = curationDao.getCurationByShortName(getDatabaseName(databaseSources));
+            currentDatabaseSources = getDatabaseName(databaseSources);
+            database = curationDao.getCurationByShortName(currentDatabaseSources);
         } else if (!databaseSources.equals(currentDatabaseSources)) {
             throw new MprcException("Swift supports only a single FASTA database per Scaffold file. Two databases encountered: [" + currentDatabaseSources + "] and [" + databaseSources + "]");
         }
-        return searchDbDao.getProteinSequence(database, accessionNumber);
+        return fastaDbDao.getProteinSequence(database, accessionNumber);
     }
 
     /**
@@ -44,6 +42,6 @@ class SingleDatabaseTranslator implements ProteinSequenceTranslator {
      */
     private String getDatabaseName(String databaseFile) {
         String extension = FileUtilities.getGzippedExtension(databaseFile);
-        return databaseFile.substring(0, databaseFile.length() - extension.length() - 1);
+        return databaseFile.substring(0, databaseFile.length() - extension.length() - (/*dot*/extension.length() > 0 ? 1 : 0));
     }
 }

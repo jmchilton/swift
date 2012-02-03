@@ -1,35 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>edu.mayo.mprc</groupId>
-    <artifactId>swift-db</artifactId>
+    <artifactId>fasta-db</artifactId>
     <version>3.0-SNAPSHOT</version>
-    <name>swift-db</name>
-    <description>Access to Swift's database</description>
+    <name>fasta-db</name>
+    <description>Loads FASTA database contents into a relational database for easy querying.</description>
 
     <parent>
-        <groupId>edu.mayo.mprc</groupId>
         <artifactId>services</artifactId>
+        <groupId>edu.mayo.mprc</groupId>
         <version>3.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <groupId>edu.mayo.mprc</groupId>
-            <artifactId>database</artifactId>
-            <version>3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>edu.mayo.mprc</groupId>
@@ -38,36 +29,39 @@
         </dependency>
         <dependency>
             <groupId>edu.mayo.mprc</groupId>
-            <artifactId>workflow-engine</artifactId>
+            <artifactId>database</artifactId>
             <version>3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>edu.mayo.mprc</groupId>
-            <artifactId>workspace</artifactId>
+            <artifactId>chem</artifactId>
             <version>3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>edu.mayo.mprc</groupId>
-            <artifactId>params</artifactId>
+            <artifactId>db-curator</artifactId>
             <version>3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>edu.mayo.mprc</groupId>
-            <artifactId>fasta-db</artifactId>
-            <version>3.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.mayo.mprc</groupId>
-            <artifactId>scafml</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
+
+    <scm>
+        <connection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/services/fasta-db</connection>
+        <developerConnection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/services/fasta-db</developerConnection>
+        <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/services/fasta-db</url>
+    </scm>
 
     <distributionManagement>
         <site>
             <id>mprc-site</id>
-            <name>swift-db documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/swift-db</url>
+            <name>fasta-db documentation</name>
+            <url>scp://delphi.mayo.edu/var/www/html/projects/fasta-db</url>
         </site>
     </distributionManagement>
+
 </project>

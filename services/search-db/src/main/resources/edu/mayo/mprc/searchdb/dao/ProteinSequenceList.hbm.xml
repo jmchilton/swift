@@ -8,7 +8,7 @@
         </id>
         <bag name="list" table="protein_sequence_list_members">
             <key column="list_id"/>
-            <many-to-many column="item_id" class="ProteinSequence"/>
+            <many-to-many column="item_id" class="edu.mayo.mprc.fastadb.ProteinSequence"/>
         </bag>
     </class>
 </hibernate-mapping>

@@ -7,6 +7,8 @@ import edu.mayo.mprc.database.DummyFileTokenTranslator;
 import edu.mayo.mprc.database.FileType;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl;
+import edu.mayo.mprc.fastadb.FastaDbDaoHibernate;
+import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
@@ -15,13 +17,11 @@ import edu.mayo.mprc.unimod.MockUnimodDao;
 import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.unimod.UnimodDaoHibernate;
 import edu.mayo.mprc.utilities.FileUtilities;
-import edu.mayo.mprc.utilities.Log4jTestSetup;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -45,12 +45,9 @@ public class TestSearchDbDao extends DaoTest {
     private Unimod scaffoldUnimod;
     private CurationDaoImpl curationDao;
     private UnimodDaoHibernate unimodDao;
+    private FastaDbDaoHibernate fastaDbDao;
 
     private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
-
-    static {
-        Log4jTestSetup.configure();
-    }
 
     @BeforeMethod
     public void setup() {
@@ -60,11 +57,12 @@ public class TestSearchDbDao extends DaoTest {
         final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
         unimodDao = new UnimodDaoHibernate();
         curationDao = new CurationDaoImpl();
+        fastaDbDao = new FastaDbDaoHibernate();
 
         searchDbDao = new SearchDbDaoHibernate();
         searchDbDao.setSwiftDao(swiftDao);
 
-        initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao));
+        initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao, fastaDbDao));
     }
 
     private void loadScaffoldUnimod() {
@@ -95,7 +93,7 @@ public class TestSearchDbDao extends DaoTest {
 
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 
-        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new SingleDatabaseTranslator(searchDbDao, curationDao));
+        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new SingleDatabaseTranslator(fastaDbDao, curationDao));
         summarizer.load(reader, SINGLE, "3");
         final Analysis analysis = summarizer.getAnalysis();
 
@@ -125,28 +123,11 @@ public class TestSearchDbDao extends DaoTest {
     private Curation loadFasta(File file, String shortName) {
         try {
             Curation curation = addCurationToDatabase(shortName, file);
-            searchDbDao.addFastaDatabase(curation);
+            fastaDbDao.addFastaDatabase(curation);
             return curation;
         } catch (Exception e) {
             throw new MprcException("Failed to load database [" + shortName + "]", e);
         }
-    }
-
-    @Test
-    public void shouldLoadFasta() throws IOException, DatabaseUnitException, SQLException {
-        Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
-        // Curation currentSp = loadFasta(new File("/Users/m044910/Documents/Databases/Current_SP.fasta"), "Current_SP");
-
-        searchDbDao.begin();
-        Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
-        searchDbDao.commit();
-
-        // Add the same thing again. Nothing should happen.
-        searchDbDao.addFastaDatabase(currentSp);
-
-        searchDbDao.begin();
-        Assert.assertEquals(searchDbDao.countDatabaseEntries(currentSp), 9);
-        searchDbDao.commit();
     }
 
     private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {

@@ -6,7 +6,8 @@
         <id name="id" type="integer" column="identified_peptide_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="sequence" column="peptide_sequence" class="PeptideSequence" not-null="true"/>
+        <many-to-one name="sequence" column="peptide_sequence" class="edu.mayo.mprc.fastadb.PeptideSequence"
+                     not-null="true"/>
         <many-to-one name="modifications" column="peptide_modifications" class="LocalizedModList" not-null="true"/>
     </class>
 </hibernate-mapping>

@@ -1,4 +1,4 @@
-package edu.mayo.mprc.searchdb.dao;
+package edu.mayo.mprc.fastadb;
 
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.dbcurator.model.Curation;
@@ -37,7 +37,7 @@ public class ProteinDatabaseEntry extends PersistableBase {
         return database;
     }
 
-    public void setDatabase(Curation database) {
+    void setDatabase(Curation database) {
         this.database = database;
     }
 
@@ -45,7 +45,7 @@ public class ProteinDatabaseEntry extends PersistableBase {
         return accessionNumber;
     }
 
-    public void setAccessionNumber(String accessionNumber) {
+    void setAccessionNumber(String accessionNumber) {
         this.accessionNumber = accessionNumber;
     }
 
@@ -53,7 +53,7 @@ public class ProteinDatabaseEntry extends PersistableBase {
         return sequence;
     }
 
-    public void setSequence(ProteinSequence sequence) {
+    void setSequence(ProteinSequence sequence) {
         this.sequence = sequence;
     }
 }

@@ -7,6 +7,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.fastadb.PeptideSequence;
+import edu.mayo.mprc.fastadb.ProteinSequence;
+import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
 import edu.mayo.mprc.searchdb.dao.*;
 
 import javax.annotation.Nullable;

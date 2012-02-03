@@ -1,4 +1,4 @@
-package edu.mayo.mprc.searchdb.dao;
+package edu.mayo.mprc.fastadb;
 
 /**
  * A protein sequence. Immutable, stored in the database only once with unique ID.
@@ -6,10 +6,10 @@ package edu.mayo.mprc.searchdb.dao;
  * @author Roman Zenka
  */
 public final class ProteinSequence extends Sequence {
-	ProteinSequence() {
-	}
+    ProteinSequence() {
+    }
 
-	public ProteinSequence(String sequence) {
-		super(sequence);
-	}
+    public ProteinSequence(String sequence) {
+        super(sequence);
+    }
 }

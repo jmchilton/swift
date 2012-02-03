@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="edu.mayo.mprc.searchdb.dao">
+<hibernate-mapping package="edu.mayo.mprc.fastadb">
     <class name="ProteinSequence" table="protein_sequence">
         <id name="id" type="integer" column="protein_sequence_id">
             <generator class="native"/>

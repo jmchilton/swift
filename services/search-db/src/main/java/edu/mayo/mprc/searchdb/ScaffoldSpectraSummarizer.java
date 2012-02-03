@@ -3,6 +3,7 @@ package edu.mayo.mprc.searchdb;
 import com.google.common.base.Splitter;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.chem.AminoAcidSet;
+import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
 import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
 import edu.mayo.mprc.searchdb.dao.*;
 import edu.mayo.mprc.unimod.IndexedModSet;
@@ -16,7 +17,7 @@ import java.util.Locale;
 
 /**
  * Summarizes Scaffold spectra report into a collection of objects suitable to be loaded into the database.
- * The object that should be identical are allocated just once - e.g. two peptides with identical modifications will
+ * The objects that should be identical are allocated just once - e.g. two peptides with identical modifications will
  * be stored as a single object. Our goal is to limit the database space needed as these tables can grow very large
  * with many experiments.
  * <p/>

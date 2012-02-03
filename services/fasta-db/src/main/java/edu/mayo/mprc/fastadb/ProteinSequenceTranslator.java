@@ -1,6 +1,4 @@
-package edu.mayo.mprc.searchdb;
-
-import edu.mayo.mprc.searchdb.dao.ProteinSequence;
+package edu.mayo.mprc.fastadb;
 
 /**
  * Can translate given accession number to protein sequence within a context of a particular database.
