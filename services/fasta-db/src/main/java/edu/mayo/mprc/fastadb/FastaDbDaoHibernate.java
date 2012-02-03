@@ -26,17 +26,18 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     private static final Logger LOGGER = Logger.getLogger(FastaDbDaoHibernate.class);
     // Progress will be reported each X spectra
     public static final int REPORT_FREQUENCY = 10000;
-    private final String MAP = "edu/mayo/mprc/fastadb/";
+    private static final String MAP = "edu/mayo/mprc/fastadb/";
+    public static final float PERCENT = 100.0f;
 
     public FastaDbDaoHibernate() {
     }
 
-    public FastaDbDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+    public FastaDbDaoHibernate(final DatabasePlaceholder databasePlaceholder) {
         super(databasePlaceholder);
     }
 
     @Override
-    public ProteinSequence getProteinSequence(Curation database, String accessionNumber) {
+    public ProteinSequence getProteinSequence(final Curation database, final String accessionNumber) {
         Preconditions.checkNotNull(database, "Database has to be specified");
         ProteinSequence sequence = (ProteinSequence) getSession()
                 .createQuery("select e.sequence from ProteinDatabaseEntry e where e.database=:database and e.accessionNumber=:accessionNumber")
@@ -47,14 +48,14 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     }
 
     @Override
-    public ProteinSequence addProteinSequence(ProteinSequence proteinSequence) {
+    public ProteinSequence addProteinSequence(final ProteinSequence proteinSequence) {
         if (proteinSequence.getId() == null) {
             return save(proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
         }
         return proteinSequence;
     }
 
-    private ProteinSequence addProteinSequence(StatelessSession session, ProteinSequence proteinSequence) {
+    private ProteinSequence addProteinSequence(final StatelessSession session, final ProteinSequence proteinSequence) {
         if (proteinSequence.getId() == null) {
             return saveStateless(session, proteinSequence, nullSafeEq("sequence", proteinSequence.getSequence()), false);
         }
@@ -62,12 +63,12 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     }
 
     @Override
-    public ProteinSequence getProteinSequence(int proteinId) {
+    public ProteinSequence getProteinSequence(final int proteinId) {
         return (ProteinSequence) getSession().get(ProteinSequence.class, proteinId);
     }
 
     @Override
-    public PeptideSequence addPeptideSequence(PeptideSequence peptideSequence) {
+    public PeptideSequence addPeptideSequence(final PeptideSequence peptideSequence) {
         if (peptideSequence.getId() == null) {
             return save(peptideSequence, nullSafeEq("sequence", peptideSequence.getSequence()), false);
         }
@@ -75,12 +76,12 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     }
 
     @Override
-    public PeptideSequence getPeptideSequence(int peptideId) {
+    public PeptideSequence getPeptideSequence(final int peptideId) {
         return (PeptideSequence) getSession().get(PeptideSequence.class, peptideId);
     }
 
     @Override
-    public long countDatabaseEntries(Curation database) {
+    public long countDatabaseEntries(final Curation database) {
         return (Long) getSession().createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database)
                 .uniqueResult();
     }
@@ -126,9 +127,9 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
                 saveStateless(session, entry, null, false);
                 if (numSequencesRead % REPORT_FREQUENCY == 0) {
                     if (progressReporter != null) {
-                        progressReporter.reportProgress(new PercentDone((float) stream.percentRead() * 100.0f));
+                        progressReporter.reportProgress(new PercentDone((float) stream.percentRead() * PERCENT));
                     }
-                    LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * 100));
+                    LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * PERCENT));
                 }
             }
             LOGGER.info(MessageFormat.format("Loaded [{0}] to database: {1,number} sequences added.", fasta.getAbsolutePath(), numSequencesRead));

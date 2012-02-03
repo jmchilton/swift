@@ -25,9 +25,7 @@ public abstract class Sequence extends PersistableBase {
     }
 
     public Sequence(String sequence) {
-        if (sequence == null) {
-            setMass(null);
-        } else {
+        if (sequence != null) {
             final String canonicalSequence = cleanupSequence(sequence);
             setSequence(canonicalSequence);
             setMass(AminoAcidSet.DEFAULT.getMonoisotopicMass(canonicalSequence));
@@ -48,13 +46,12 @@ public abstract class Sequence extends PersistableBase {
         return trimUpper;
     }
 
-
     public String getSequence() {
         return sequence;
     }
 
     void setSequence(String sequence) {
-        this.sequence = sequence;
+        this.sequence = cleanupSequence(sequence);
     }
 
     public Double getMass() {
@@ -67,13 +64,18 @@ public abstract class Sequence extends PersistableBase {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Sequence sequence1 = (Sequence) o;
 
-        if (getSequence() != null ? !getSequence().equals(sequence1.getSequence()) : sequence1.getSequence() != null)
+        if (getSequence() != null ? !getSequence().equals(sequence1.getSequence()) : sequence1.getSequence() != null) {
             return false;
+        }
 
         return true;
     }

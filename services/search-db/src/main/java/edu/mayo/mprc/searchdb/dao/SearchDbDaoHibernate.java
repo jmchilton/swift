@@ -5,10 +5,8 @@ import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.database.PersistableListBase;
 import edu.mayo.mprc.fastadb.FastaDbDao;
-import edu.mayo.mprc.fastadb.ProteinDatabaseEntry;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
-import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
@@ -24,8 +22,6 @@ import java.util.Map;
  * @author Roman Zenka
  */
 public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitializer, SearchDbDao {
-    private static final org.apache.log4j.Logger LOGGER = Logger.getLogger(SearchDbDaoHibernate.class);
-
     private SwiftDao swiftDao;
     private FastaDbDao fastaDbDao;
 
@@ -63,14 +59,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
     @Override
     public void initialize(Map<String, String> params) {
-    }
-
-
-    private Criterion entryEqualityCriteria(ProteinDatabaseEntry entry) {
-        return Restrictions.conjunction()
-                .add(associationEq("database", entry.getDatabase()))
-                .add(nullSafeEq("accessionNumber", entry.getAccessionNumber()))
-                .add(associationEq("sequence", entry.getSequence()));
     }
 
     @Override
