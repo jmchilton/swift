@@ -29,7 +29,7 @@ Once you have Java and Maven setup, you can build Swift as follows:
 #### Create swift-3.0-install.zip
 
 	cd swift
-	mvn package -DskipTests
+	mvn install -DskipTests
 	cd target
 	ls
 	# You should see swift-3.0-install.zip
