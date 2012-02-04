@@ -922,7 +922,7 @@ public final class SwiftSearcher implements Worker {
                     .reference(FastaDbWorker.TYPE, UiBuilder.NONE_TYPE)
 
                     .property(SEARCH_DB, SearchDbWorker.NAME, "Load Scaffold search results into a database")
-                    .reference(FastaDbWorker.TYPE, UiBuilder.NONE_TYPE);
+                    .reference(SearchDbWorker.TYPE, UiBuilder.NONE_TYPE);
         }
     }
 }
