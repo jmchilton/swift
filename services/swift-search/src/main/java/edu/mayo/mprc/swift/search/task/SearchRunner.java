@@ -93,6 +93,12 @@ public final class SearchRunner implements Runnable {
     private Map<ScaffoldCall, ScaffoldTaskI> scaffoldCalls = new HashMap<ScaffoldCall, ScaffoldTaskI>();
 
     /**
+     * Key: Curation ID
+     * Value: FastaDb loader (will load FASTA into a relational database)
+     */
+    private Map<Integer, FastaDbTask> fastaDbCalls = new HashMap<Integer, FastaDbTask>();
+
+    /**
      * One and only QA task for the entire search == more practical
      */
     private QaTask qaTask;
@@ -213,6 +219,7 @@ public final class SearchRunner implements Runnable {
                             engineSearches.size() +
                             scaffoldCalls.size() +
                             reportCalls.size() +
+                            fastaDbCalls.size() +
                             (qaTask == null ? 0 : 1) : "All tasks must be a collection of *ALL* tasks";
         }
     }
@@ -225,6 +232,7 @@ public final class SearchRunner implements Runnable {
         workflowEngine.addAllTasks(spectrumQaTasks.values());
         workflowEngine.addAllTasks(engineSearches.values());
         workflowEngine.addAllTasks(scaffoldCalls.values());
+        workflowEngine.addAllTasks(fastaDbCalls.values());
         workflowEngine.addAllTasks(reportCalls);
         if (qaTask != null) {
             workflowEngine.addTask(qaTask);
@@ -248,6 +256,10 @@ public final class SearchRunner implements Runnable {
             } else {
                 LOGGER.info("Skipping nonexistent input file [" + file.getAbsolutePath() + "]");
             }
+        }
+
+        if (fastaDbDaemon != null) {
+            addFastaDbCall(searchDefinition.getSearchParameters().getDatabase());
         }
     }
 
@@ -731,6 +743,18 @@ public final class SearchRunner implements Runnable {
         scaffoldTask.addDependency(scaffoldDbDeployment);
 
         return scaffoldTask;
+    }
+
+    private FastaDbTask addFastaDbCall(Curation curation) {
+        int id = curation.getId();
+        FastaDbTask task = fastaDbCalls.get(id);
+        if (task == null) {
+            FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, id);
+            fastaDbCalls.put(id, newTask);
+            return newTask;
+        } else {
+            return task;
+        }
     }
 
     private static String getEngineSearchHashKey(SearchEngine engine, File file) {

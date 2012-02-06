@@ -11,12 +11,17 @@ public class FastaDbWorkPacket extends WorkPacketBase {
 
     private int curationId;
 
-    /**
-     * @param taskId      Task identifier to be used for nested diagnostic context when logging.
-     * @param fromScratch Do all the work from scratch, do not rely on cached values.
-     */
     public FastaDbWorkPacket(String taskId, boolean fromScratch) {
         super(taskId, fromScratch);
+    }
+
+    /**
+     * @param taskId     ID of this task.
+     * @param curationId ID of the curation to deploy.
+     */
+    public FastaDbWorkPacket(String taskId, int curationId) {
+        super(taskId, false);
+        this.curationId = curationId;
     }
 
     public int getCurationId() {
