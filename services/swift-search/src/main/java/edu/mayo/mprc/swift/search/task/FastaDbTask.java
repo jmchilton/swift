@@ -4,6 +4,7 @@ import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fastadb.FastaDbWorkPacket;
 
 /**
@@ -17,9 +18,11 @@ public class FastaDbTask extends AsyncTaskBase {
     /**
      * See {@link AsyncTaskBase#AsyncTaskBase(edu.mayo.mprc.daemon.DaemonConnection, edu.mayo.mprc.daemon.files.FileTokenFactory, boolean)}
      */
-    public FastaDbTask(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch, int curationIdToLoad) {
+    public FastaDbTask(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch, Curation curationToLoad) {
         super(daemon, fileTokenFactory, fromScratch);
-        this.curationIdToLoad = curationIdToLoad;
+        this.curationIdToLoad = curationToLoad.getId();
+        setName("Fasta DB load");
+        setDescription("Load " + fileTokenFactory.fileToTaggedDatabaseToken(curationToLoad.getCurationFile()) + " to database.");
     }
 
     public int getCurationIdToLoad() {

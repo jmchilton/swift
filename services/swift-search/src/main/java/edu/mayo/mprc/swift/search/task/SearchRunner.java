@@ -99,6 +99,12 @@ public final class SearchRunner implements Runnable {
     private Map<Integer, FastaDbTask> fastaDbCalls = new HashMap<Integer, FastaDbTask>();
 
     /**
+     * Key: Scaffold
+     * Value: FastaDb loader (will load FASTA into a relational database)
+     */
+    private Map<Integer, FastaDbTask> searchDbCalls = new HashMap<Integer, FastaDbTask>();
+
+    /**
      * One and only QA task for the entire search == more practical
      */
     private QaTask qaTask;
@@ -749,7 +755,7 @@ public final class SearchRunner implements Runnable {
         int id = curation.getId();
         FastaDbTask task = fastaDbCalls.get(id);
         if (task == null) {
-            FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, id);
+            FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, curation);
             fastaDbCalls.put(id, newTask);
             return newTask;
         } else {
