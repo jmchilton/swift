@@ -7,6 +7,6 @@
             <generator class="native"/>
         </id>
         <property name="mass" type="double" column="mass"/>
-        <property name="sequence" type="text" column="sequence" unique="true"/>
+        <property name="sequence" type="text" column="sequence"/>
     </class>
 </hibernate-mapping>
