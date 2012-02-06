@@ -7,8 +7,8 @@
             <generator class="native"/>
         </id>
         <bag name="list" table="search_result_list_members">
-            <key column="list_id"/>
-            <many-to-many column="item_id" class="SearchResult"/>
+            <key column="search_result_list_id"/>
+            <many-to-many column="search_result_id" class="SearchResult"/>
         </bag>
     </class>
 </hibernate-mapping>

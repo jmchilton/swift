@@ -6,8 +6,8 @@
         <id name="id" type="integer" column="protein_database_entry_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="database" class="edu.mayo.mprc.dbcurator.model.Curation" column="curation" lazy="proxy"/>
-        <property name="accessionNumber" type="string" length="50" not-null="true"/>
-        <many-to-one name="sequence" class="ProteinSequence" column="protein_sequence" not-null="true" lazy="proxy"/>
+        <many-to-one name="database" class="edu.mayo.mprc.dbcurator.model.Curation" column="curation_id" lazy="proxy"/>
+        <property name="accessionNumber" type="string" length="50" column="accession_number" not-null="true"/>
+        <many-to-one name="sequence" class="ProteinSequence" column="protein_sequence_id" not-null="true" lazy="proxy"/>
     </class>
 </hibernate-mapping>

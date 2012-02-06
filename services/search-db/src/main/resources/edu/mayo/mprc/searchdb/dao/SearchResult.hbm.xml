@@ -6,8 +6,8 @@
         <id name="id" type="integer" column="search_result_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="proteinGroups" class="ProteinGroupList" column="protein_groups"/>
-        <many-to-one name="massSpecSample" column="mass_spec_sample" class="TandemMassSpectrometrySample"
+        <many-to-one name="proteinGroups" class="ProteinGroupList" column="protein_group_list_id"/>
+        <many-to-one name="massSpecSample" class="TandemMassSpectrometrySample" column="tandem_mass_spec_sample_id"
                      not-null="false"/>
     </class>
 </hibernate-mapping>

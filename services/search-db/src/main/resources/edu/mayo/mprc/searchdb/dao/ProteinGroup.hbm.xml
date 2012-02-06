@@ -6,8 +6,8 @@
         <id name="id" type="integer" column="protein_group_id">
             <generator class="native"/>
         </id>
-        <many-to-one name="proteinSequences" class="ProteinSequenceList" column="protein_sequences"/>
-        <many-to-one name="peptideSpectrumMatches" class="PsmList" column="peptide_spectrum_matches"/>
+        <many-to-one name="proteinSequences" class="ProteinSequenceList" column="protein_sequence_list_id"/>
+        <many-to-one name="peptideSpectrumMatches" class="PsmList" column="peptide_spectrum_match_list_id"/>
         <property name="proteinIdentificationProbability" type="double" column="protein_identification_probability"/>
         <property name="numberOfUniquePeptides" type="integer" column="unique_peptides"/>
         <property name="numberOfUniqueSpectra" type="integer" column="unique_spectra"/>

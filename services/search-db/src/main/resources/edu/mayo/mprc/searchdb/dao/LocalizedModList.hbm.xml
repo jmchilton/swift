@@ -7,8 +7,8 @@
             <generator class="native"/>
         </id>
         <bag name="list" table="localized_mod_list_members">
-            <key column="list_id"/>
-            <many-to-many column="item_id" class="LocalizedModification"/>
+            <key column="localized_mod_list_id"/>
+            <many-to-many column="localized_modification_id" class="LocalizedModification"/>
         </bag>
     </class>
 </hibernate-mapping>

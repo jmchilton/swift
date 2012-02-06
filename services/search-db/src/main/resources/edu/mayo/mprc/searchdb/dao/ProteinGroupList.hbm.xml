@@ -7,8 +7,8 @@
             <generator class="native"/>
         </id>
         <bag name="list" table="protein_group_list_members">
-            <key column="list_id"/>
-            <many-to-many column="item_id" class="ProteinGroup"/>
+            <key column="protein_group_list_id"/>
+            <many-to-many column="protein_group_id" class="ProteinGroup"/>
         </bag>
     </class>
 </hibernate-mapping>

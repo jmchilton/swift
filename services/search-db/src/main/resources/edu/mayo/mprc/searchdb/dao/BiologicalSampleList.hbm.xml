@@ -8,8 +8,8 @@
         </id>
 
         <bag name="list" table="biological_sample_list_members">
-            <key column="list_id"/>
-            <many-to-many column="item_id" class="BiologicalSample"/>
+            <key column="biological_sample_list_id"/>
+            <many-to-many column="biological_sample_id" class="BiologicalSample"/>
         </bag>
     </class>
 </hibernate-mapping>
