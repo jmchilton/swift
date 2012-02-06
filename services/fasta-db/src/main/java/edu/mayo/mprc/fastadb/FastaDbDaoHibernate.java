@@ -24,8 +24,10 @@ import java.util.Collection;
  */
 public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
     private static final Logger LOGGER = Logger.getLogger(FastaDbDaoHibernate.class);
-    // Progress will be reported each X spectra
-    public static final int REPORT_FREQUENCY = 10000;
+    // Progress will be checked each X spectra
+    public static final int REPORT_FREQUENCY = 100;
+    // Only if we reported at least this many milliseconds ago, we will send another update
+    public static final int REPORT_EACH_MILLIS = 1000;
     private static final String MAP = "edu/mayo/mprc/fastadb/";
     public static final float PERCENT = 100.0f;
 
@@ -106,6 +108,7 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
         final File fasta = database.getFastaFile().getFile();
         final FASTAInputStream stream = new FASTAInputStream(fasta);
         long numSequencesRead = 0;
+        long timestamp = System.currentTimeMillis();
         try {
             stream.beforeFirst();
             session.getTransaction().begin();
@@ -126,10 +129,14 @@ public class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
                 // loaded the database yet. So no need to check)
                 saveStateless(session, entry, null, false);
                 if (numSequencesRead % REPORT_FREQUENCY == 0) {
-                    if (progressReporter != null) {
-                        progressReporter.reportProgress(new PercentDone((float) stream.percentRead() * PERCENT));
+                    long timeNow = System.currentTimeMillis();
+                    if (timeNow - timestamp > REPORT_EACH_MILLIS) {
+                        if (progressReporter != null) {
+                            progressReporter.reportProgress(new PercentDone((float) stream.percentRead() * PERCENT));
+                        }
+                        LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * PERCENT));
+                        timestamp = timeNow;
                     }
-                    LOGGER.info(MessageFormat.format("Loading [{0}] to database: {1,number,#.##} percent done.", fasta.getAbsolutePath(), stream.percentRead() * PERCENT));
                 }
             }
             LOGGER.info(MessageFormat.format("Loaded [{0}] to database: {1,number} sequences added.", fasta.getAbsolutePath(), numSequencesRead));
