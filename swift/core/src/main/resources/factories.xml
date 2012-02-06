@@ -52,6 +52,7 @@
                 <ref bean="curationDao"/>
                 <ref bean="fastaDbDao"/>
                 <ref bean="paramsDao"/>
+                <ref bean="fastaDbDao"/>
                 <ref bean="searchDbDao"/>
                 <ref bean="swiftDao"/>
                 <ref bean="unimodDao"/>
