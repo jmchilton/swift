@@ -9,7 +9,7 @@ public final class TestSearchDbWorker {
     @Test
     public static void shouldStore() {
         SearchDbWorker worker = new SearchDbWorker(null);
-        SearchDbWorkPacket workPacket = new SearchDbWorkPacket(0, "test", false);
+        SearchDbWorkPacket workPacket = new SearchDbWorkPacket("task0", false, 0, null);
 
         worker.processRequest(workPacket, new ProgressReporter() {
             @Override

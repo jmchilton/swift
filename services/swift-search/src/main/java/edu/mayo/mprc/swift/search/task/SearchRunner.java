@@ -1,5 +1,6 @@
 package edu.mayo.mprc.swift.search.task;
 
+import com.google.common.base.Preconditions;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
@@ -7,10 +8,8 @@ import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
 import edu.mayo.mprc.swift.db.SearchEngine;
-import edu.mayo.mprc.swift.dbmapping.FileSearch;
-import edu.mayo.mprc.swift.dbmapping.SearchEngineConfig;
-import edu.mayo.mprc.swift.dbmapping.SpectrumQa;
-import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
+import edu.mayo.mprc.swift.db.SwiftDao;
+import edu.mayo.mprc.swift.dbmapping.*;
 import edu.mayo.mprc.swift.params2.ExtractMsnSettings;
 import edu.mayo.mprc.swift.params2.SearchEngineParameters;
 import edu.mayo.mprc.swift.search.SwiftSearchWorkPacket;
@@ -49,6 +48,12 @@ public final class SearchRunner implements Runnable {
     private SwiftSearchDefinition searchDefinition;
 
     private CurationDao curationDao;
+    private SwiftDao swiftDao;
+
+    /**
+     * Database record of the search we are currently running.
+     */
+    private SearchRun searchRun;
 
     /**
      * Key: (raw file, raw settings) tuple, obtained by {@link #getRawToMgfConversionHashKey(java.io.File, edu.mayo.mprc.swift.params2.ExtractMsnSettings)}.<br/>
@@ -155,6 +160,7 @@ public final class SearchRunner implements Runnable {
             ProgressReporter reporter,
             ExecutorService service,
             CurationDao curationDao,
+            SwiftDao swiftDao,
             FileTokenFactory fileTokenFactory) {
         this.searchDefinition = searchDefinition;
         this.packet = packet;
@@ -170,6 +176,7 @@ public final class SearchRunner implements Runnable {
         this.reporter = reporter;
         this.service = service;
         this.curationDao = curationDao;
+        this.swiftDao = swiftDao;
         this.fileTokenFactory = fileTokenFactory;
         assertValid();
     }
@@ -209,12 +216,22 @@ public final class SearchRunner implements Runnable {
         }
     }
 
+    public SearchRun getSearchRun() {
+        return searchRun;
+    }
+
+    public void setSearchRun(SearchRun searchRun) {
+        this.searchRun = searchRun;
+    }
+
     private void yield() {
         // Currently does nothing, the engine immediatelly keeps processing more work
     }
 
     public void assertValid() {
-        assert curationDao != null : "Curation DAO has to be set up";
+        Preconditions.checkNotNull(curationDao, "Curation DAO has to be set up");
+        Preconditions.checkNotNull(swiftDao, "Swift DAO has to be set up");
+
         assert searchEngines != null : "Search engine set must not be null";
         if (this.searchDefinition != null) {
             assert workflowEngine.getNumTasks() ==
@@ -711,6 +728,7 @@ public final class SearchRunner implements Runnable {
                     experiment,
                     searchDefinition,
                     getScaffoldEngine().getSearchDaemon(),
+                    swiftDao, searchRun,
                     scaffoldOutputDir,
                     fileTokenFactory,
                     isFromScratch());
@@ -738,6 +756,7 @@ public final class SearchRunner implements Runnable {
                     experiment,
                     searchDefinition,
                     getScaffold3Engine().getSearchDaemon(),
+                    swiftDao, searchRun,
                     scaffoldOutputDir,
                     fileTokenFactory,
                     isFromScratch());

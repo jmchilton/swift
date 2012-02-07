@@ -323,6 +323,7 @@ public final class SwiftSearcher implements Worker {
                     progressReporter,
                     service,
                     curationDao,
+                    swiftDao,
                     fileTokenFactory);
 
             searchRunner.initialize();
@@ -331,6 +332,7 @@ public final class SwiftSearcher implements Worker {
             checkSearchCapabilities(searchRunner.getSearchDefinition());
 
             final SearchRun data = swiftDao.fillSearchRun(searchRunner.getSearchDefinition());
+            searchRunner.setSearchRun(data);
 
             PersistenceMonitor monitor = new PersistenceMonitor(data.getId(), swiftDao);
             searchRunner.addSearchMonitor(monitor);

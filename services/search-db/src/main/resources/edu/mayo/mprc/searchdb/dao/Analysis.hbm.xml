@@ -6,6 +6,7 @@
         <id name="id" type="integer" column="analysis_id">
             <generator class="native"/>
         </id>
+        <many-to-one name="reportData" class="edu.mayo.mprc.swift.dbmapping.ReportData" column="report_id"/>
         <property name="scaffoldVersion" type="string" length="20" column="scaffold_version"/>
         <property name="analysisDate" type="timestamp" column="analysis_date"/>
         <many-to-one name="biologicalSamples" class="BiologicalSampleList" column="biological_sample_list_id"/>

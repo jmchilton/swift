@@ -508,12 +508,8 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
     @Override
     public void storeReport(int searchRunId, final File resultFile) {
         try {
-            ReportData r = new ReportData();
-
-            r.setDateCreated(new Date());
-            r.setReportFileId(resultFile);
             final SearchRun searchRun = getSearchRunForId(searchRunId);
-            r.setSearchRun(searchRun);
+            ReportData r = new ReportData(resultFile, new Date(), searchRun);
             searchRun.getReports().add(r);
             getSession().saveOrUpdate(r);
         } catch (Exception t) {
