@@ -319,6 +319,7 @@ public final class SwiftSearcher implements Worker {
                     scaffoldReportDaemon,
                     qaDaemon,
                     fastaDbDaemon,
+                    searchDbDaemon,
                     supportedEngines,
                     progressReporter,
                     service,

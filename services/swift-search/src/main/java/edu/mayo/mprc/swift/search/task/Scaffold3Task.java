@@ -158,7 +158,7 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
         swiftDao.begin();
         try {
             // Scaffold finished. Store the resulting file.
-            swiftDao.storeReport(searchRun.getId(), getResultingFile());
+            setReportData(swiftDao.storeReport(searchRun.getId(), getResultingFile()));
             swiftDao.commit();
         } catch (Exception t) {
             swiftDao.rollback();

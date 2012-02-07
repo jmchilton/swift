@@ -15,6 +15,7 @@ import edu.mayo.mprc.swift.params2.SearchEngineParameters;
 import edu.mayo.mprc.swift.search.SwiftSearchWorkPacket;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.Tuple;
+import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
 import edu.mayo.mprc.workflow.engine.Resumer;
 import edu.mayo.mprc.workflow.engine.SearchMonitor;
 import edu.mayo.mprc.workflow.engine.Task;
@@ -104,10 +105,9 @@ public final class SearchRunner implements Runnable {
     private Map<Integer, FastaDbTask> fastaDbCalls = new HashMap<Integer, FastaDbTask>();
 
     /**
-     * Key: Scaffold
-     * Value: FastaDb loader (will load FASTA into a relational database)
+     * List of search db tasks, mapped to scaffold calls and corresponding fastaDb calls.
      */
-    private Map<Integer, FastaDbTask> searchDbCalls = new HashMap<Integer, FastaDbTask>();
+    private Map<File, SearchDbTask> searchDbCalls = new HashMap<File, SearchDbTask>();
 
     /**
      * One and only QA task for the entire search == more practical
@@ -126,6 +126,7 @@ public final class SearchRunner implements Runnable {
     private DaemonConnection scaffoldReportDaemon;
     private DaemonConnection qaDaemon;
     private DaemonConnection fastaDbDaemon;
+    private DaemonConnection searchDbDaemon;
 
     private Collection<SearchEngine> searchEngines = null;
 
@@ -156,6 +157,7 @@ public final class SearchRunner implements Runnable {
             DaemonConnection scaffoldReportDaemon,
             DaemonConnection qaDaemon,
             DaemonConnection fastaDbDaemon,
+            DaemonConnection searchDbDaemon,
             Collection<SearchEngine> searchEngines,
             ProgressReporter reporter,
             ExecutorService service,
@@ -171,6 +173,7 @@ public final class SearchRunner implements Runnable {
         this.scaffoldReportDaemon = scaffoldReportDaemon;
         this.qaDaemon = qaDaemon;
         this.fastaDbDaemon = fastaDbDaemon;
+        this.searchDbDaemon = searchDbDaemon;
         this.workflowEngine = new WorkflowEngine(packet.getTaskId());
         this.searchEngines = searchEngines;
         this.reporter = reporter;
@@ -243,6 +246,7 @@ public final class SearchRunner implements Runnable {
                             scaffoldCalls.size() +
                             reportCalls.size() +
                             fastaDbCalls.size() +
+                            searchDbCalls.size() +
                             (qaTask == null ? 0 : 1) : "All tasks must be a collection of *ALL* tasks";
         }
     }
@@ -257,6 +261,7 @@ public final class SearchRunner implements Runnable {
         workflowEngine.addAllTasks(scaffoldCalls.values());
         workflowEngine.addAllTasks(fastaDbCalls.values());
         workflowEngine.addAllTasks(reportCalls);
+        workflowEngine.addAllTasks(searchDbCalls.values());
         if (qaTask != null) {
             workflowEngine.addTask(qaTask);
         }
@@ -351,8 +356,8 @@ public final class SearchRunner implements Runnable {
                             searchDefinition.getSearchParameters().getDatabase());
         }
 
-        ScaffoldTaskI scaffoldTask = null;
-        ScaffoldTaskI scaffold3Task = null;
+        ScaffoldTask scaffoldTask = null;
+        Scaffold3Task scaffold3Task = null;
 
         // Go through all possible search engines this file requires
         for (SearchEngine engine : searchEngines) {
@@ -374,7 +379,13 @@ public final class SearchRunner implements Runnable {
                     if (scaffoldDeployment == null) {
                         throw new MprcException("Scaffold search submitted without having Scaffold service enabled.");
                     }
-                    scaffoldTask = addScaffoldCall(inputFile, search, scaffoldDeployment);
+
+                    ScaffoldTaskI scaffoldTaskI = addScaffoldCall(inputFile, search, scaffoldDeployment);
+                    if (!(scaffoldTaskI instanceof ScaffoldTask)) {
+                        ExceptionUtilities.throwCastException(scaffoldTaskI, ScaffoldTask.class);
+                        return;
+                    }
+                    scaffoldTask = (ScaffoldTask) scaffoldTaskI;
 
                     if (searchDefinition.getQa() != null) {
                         addQaTask(inputFile, scaffoldTask, mgfOutput);
@@ -384,10 +395,21 @@ public final class SearchRunner implements Runnable {
                     if (scaffold3Deployment == null) {
                         throw new MprcException("Scaffold search submitted without having Scaffold 3 service enabled.");
                     }
-                    scaffold3Task = addScaffold3Call(inputFile, search, scaffold3Deployment);
+
+                    ScaffoldTaskI scaffoldTaskI = addScaffold3Call(inputFile, search, scaffold3Deployment);
+                    if (!(scaffoldTaskI instanceof Scaffold3Task)) {
+                        ExceptionUtilities.throwCastException(scaffoldTaskI, Scaffold3Task.class);
+                        return;
+                    }
+
+                    scaffold3Task = (Scaffold3Task) scaffoldTaskI;
 
                     if (searchDefinition.getQa() != null) {
                         addQaTask(inputFile, scaffold3Task, mgfOutput);
+                    }
+
+                    if (searchDbDaemon != null) {
+                        addSearchDbCall(scaffold3Task, searchDefinition.getSearchParameters().getDatabase());
                     }
                 }
             }
@@ -779,6 +801,21 @@ public final class SearchRunner implements Runnable {
             return newTask;
         } else {
             return task;
+        }
+    }
+
+    private SearchDbTask addSearchDbCall(Scaffold3Task scaffold3Task, Curation curation) {
+        File file = scaffold3Task.getScaffoldSpectraFile();
+        SearchDbTask searchDbTask = searchDbCalls.get(file);
+        if (searchDbTask == null) {
+            FastaDbTask fastaDbTask = addFastaDbCall(curation);
+            SearchDbTask task = new SearchDbTask(searchDbDaemon, fileTokenFactory, false, scaffold3Task);
+            task.addDependency(fastaDbTask);
+            task.addDependency(scaffold3Task);
+            searchDbCalls.put(file, task);
+            return task;
+        } else {
+            return searchDbTask;
         }
     }
 
