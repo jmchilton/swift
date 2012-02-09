@@ -26,244 +26,244 @@ import java.util.concurrent.Future;
  */
 public final class DatabaseValidator implements RuntimeInitializer {
 
-	private List<DaoBase> daoList;
-	private Map<String, String> hibernateProperties;
-	private DatabasePlaceholder databasePlaceholder;
-	private SwiftSearcher.Config searcherConfig;
-	private DaemonConfig daemonConfig;
-	private List<RuntimeInitializer> runtimeInitializers;
-	private FileTokenFactory fileTokenFactory;
-	private final static ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private List<DaoBase> daoList;
+    private Map<String, String> hibernateProperties;
+    private DatabasePlaceholder databasePlaceholder;
+    private SwiftSearcher.Config searcherConfig;
+    private DaemonConfig daemonConfig;
+    private List<RuntimeInitializer> runtimeInitializers;
+    private FileTokenFactory fileTokenFactory;
+    private final static ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
-	/**
-	 * Sets up the file token factory. File token factory needs to know which daemon we are running in,
-	 * and where is the database module. The database module is located within the config.
-	 *
-	 * @param daemonConfig Config for the active daemon.
-	 */
-	public static void setupFileTokenFactory(DaemonConfig daemonConfig, final FileTokenFactory fileTokenFactory) {
-		// Setup the actual daemon
-		fileTokenFactory.setDaemonConfigInfo(daemonConfig.createDaemonConfigInfo());
-		if (daemonConfig.getTempFolderPath() == null) {
-			throw new MprcException("The temporary folder is not configured for this daemon. Swift cannot run.");
-		}
-		fileTokenFactory.setTempFolderRepository(new File(daemonConfig.getTempFolderPath()));
+    /**
+     * Sets up the file token factory. File token factory needs to know which daemon we are running in,
+     * and where is the database module. The database module is located within the config.
+     *
+     * @param daemonConfig Config for the active daemon.
+     */
+    public static void setupFileTokenFactory(DaemonConfig daemonConfig, final FileTokenFactory fileTokenFactory) {
+        // Setup the actual daemon
+        fileTokenFactory.setDaemonConfigInfo(daemonConfig.createDaemonConfigInfo());
+        if (daemonConfig.getTempFolderPath() == null) {
+            throw new MprcException("The temporary folder is not configured for this daemon. Swift cannot run.");
+        }
+        fileTokenFactory.setTempFolderRepository(new File(daemonConfig.getTempFolderPath()));
 
-		DaemonConfig databaseDaemonConfig = getDatabaseDaemonConfig(daemonConfig.getApplicationConfig());
+        DaemonConfig databaseDaemonConfig = getDatabaseDaemonConfig(daemonConfig.getApplicationConfig());
 
-		fileTokenFactory.setDatabaseDaemonConfigInfo(databaseDaemonConfig.createDaemonConfigInfo());
+        fileTokenFactory.setDatabaseDaemonConfigInfo(databaseDaemonConfig.createDaemonConfigInfo());
 
-		FileType.initialize(new FileTokenFactoryWrapper(fileTokenFactory));
-	}
+        FileType.initialize(new FileTokenFactoryWrapper(fileTokenFactory));
+    }
 
-	/**
-	 * Returns a config for a daemon that contains the database. There must be exactly one such daemon.
-	 *
-	 * @param swiftConfig Swift configuration.
-	 * @return Daemon that contains the database module.
-	 */
-	private static DaemonConfig getDatabaseDaemonConfig(ApplicationConfig swiftConfig) {
-		final ResourceConfig databaseResource = getDatabaseResource(swiftConfig);
-		return swiftConfig.getDaemonForResource(databaseResource);
-	}
+    /**
+     * Returns a config for a daemon that contains the database. There must be exactly one such daemon.
+     *
+     * @param swiftConfig Swift configuration.
+     * @return Daemon that contains the database module.
+     */
+    private static DaemonConfig getDatabaseDaemonConfig(ApplicationConfig swiftConfig) {
+        final ResourceConfig databaseResource = getDatabaseResource(swiftConfig);
+        return swiftConfig.getDaemonForResource(databaseResource);
+    }
 
-	private static ResourceConfig getDatabaseResource(ApplicationConfig swiftConfig) {
-		List<ResourceConfig> configs = swiftConfig.getModulesOfConfigType(DatabaseFactory.Config.class);
-		if (configs.size() > 1) {
-			throw new MprcException("Swift has more than one database defined.");
-		}
-		if (configs.size() == 0) {
-			throw new MprcException("Swift does not define a database.");
-		}
-		return configs.get(0);
-	}
+    private static ResourceConfig getDatabaseResource(ApplicationConfig swiftConfig) {
+        List<ResourceConfig> configs = swiftConfig.getModulesOfConfigType(DatabaseFactory.Config.class);
+        if (configs.size() > 1) {
+            throw new MprcException("Swift has more than one database defined.");
+        }
+        if (configs.size() == 0) {
+            throw new MprcException("Swift does not define a database.");
+        }
+        return configs.get(0);
+    }
 
-	/**
-	 * Initialize the connection to the database.
-	 * <p/>
-	 * Initialize the {@link FileTokenFactory}.
-	 * <p/>
-	 * Open a session and a transaction, making everything ready to write into the database.
-	 *
-	 * @param schemaInitialization How to initialize the database.
-	 */
-	private void beginTransaction(DatabaseUtilities.SchemaInitialization schemaInitialization) {
-		final DatabaseFactory.Config database = searcherConfig.getDatabase();
-		final SessionFactory sessionFactory = DatabaseUtilities.getSessionFactory(database.getUrl()
-				, database.getUserName()
-				, database.getPassword()
-				, database.getDialect()
-				, database.getDriverClassName()
-				, database.getDefaultSchema()
-				, database.getSchema()
-				, hibernateProperties
-				, DatabaseFactory.collectMappingResouces(daoList)
-				, schemaInitialization);
+    /**
+     * Initialize the connection to the database.
+     * <p/>
+     * Initialize the {@link FileTokenFactory}.
+     * <p/>
+     * Open a session and a transaction, making everything ready to write into the database.
+     *
+     * @param schemaInitialization How to initialize the database.
+     */
+    private void beginTransaction(DatabaseUtilities.SchemaInitialization schemaInitialization) {
+        final DatabaseFactory.Config database = searcherConfig.getDatabase();
+        final SessionFactory sessionFactory = DatabaseUtilities.getSessionFactory(database.getUrl()
+                , database.getUserName()
+                , database.getPassword()
+                , database.getDialect()
+                , database.getDriverClassName()
+                , database.getDefaultSchema()
+                , database.getSchema()
+                , hibernateProperties
+                , DatabaseFactory.collectMappingResouces(daoList)
+                , schemaInitialization);
 
-		databasePlaceholder.setSessionFactory(sessionFactory);
+        databasePlaceholder.setSessionFactory(sessionFactory);
 
-		setupFileTokenFactory(daemonConfig, fileTokenFactory);
+        setupFileTokenFactory(daemonConfig, fileTokenFactory);
 
-		databasePlaceholder.begin();
-	}
+        databasePlaceholder.begin();
+    }
 
-	private void commitTransaction() {
-		databasePlaceholder.commit();
-	}
+    private void commitTransaction() {
+        databasePlaceholder.commit();
+    }
 
-	private void rollbackTransaction() {
-		databasePlaceholder.rollback();
-	}
+    private void rollbackTransaction() {
+        databasePlaceholder.rollback();
+    }
 
-	@Override
-	public String check(Map<String, String> params) {
-		final HashMap<String, String> newParams = new HashMap<String, String>(params);
-		newParams.put(CurationInitializer.FASTA_FOLDER, searcherConfig.getFastaPath());
-		newParams.put(CurationInitializer.FASTA_ARCHIVE_FOLDER, searcherConfig.getFastaArchivePath());
+    @Override
+    public String check(Map<String, String> params) {
+        final HashMap<String, String> newParams = new HashMap<String, String>(params);
+        newParams.put(CurationInitializer.FASTA_FOLDER, searcherConfig.getFastaPath());
+        newParams.put(CurationInitializer.FASTA_ARCHIVE_FOLDER, searcherConfig.getFastaArchivePath());
 
-		final Future<String> future = EXECUTOR.submit(new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-				String errors = "";
-				try {
-					// No initialization for the check
-					beginTransaction(DatabaseUtilities.SchemaInitialization.None);
+        final Future<String> future = EXECUTOR.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String errors = "";
+                try {
+                    // Before checking, update the schema
+                    beginTransaction(DatabaseUtilities.SchemaInitialization.Update);
 
-					String initializationToDo = null;
+                    String initializationToDo = null;
 
-					// Go through a list of RuntimeInitializer, stop when one of them reports it is not ready
-					for (RuntimeInitializer initializer : runtimeInitializers) {
-						final String result = initializer.check(newParams);
-						databasePlaceholder.getSession().flush();
-						if (result != null) {
-							initializationToDo = result;
-							break;
-						}
-					}
+                    // Go through a list of RuntimeInitializer, stop when one of them reports it is not ready
+                    for (RuntimeInitializer initializer : runtimeInitializers) {
+                        final String result = initializer.check(newParams);
+                        databasePlaceholder.getSession().flush();
+                        if (result != null) {
+                            initializationToDo = result;
+                            break;
+                        }
+                    }
 
-					if (initializationToDo != null) {
-						errors += "Database is not initialized: " + initializationToDo + " - " + FixTag.getTag(
-								DatabaseUtilities.SchemaInitialization.Update.getValue(), "Initialize Database");
-					}
-					commitTransaction();
-				} catch (Exception e) {
-					errors += "Database connection could not be established.<br/>Error: " + e.getMessage()
-							+ "<br/>Database may not exist. " + FixTag.getTag(
-							DatabaseUtilities.SchemaInitialization.Create.getValue(), "Create Database");
-					rollbackTransaction();
-				}
+                    if (initializationToDo != null) {
+                        errors += "Database is not initialized: " + initializationToDo + " - " + FixTag.getTag(
+                                DatabaseUtilities.SchemaInitialization.Update.getValue(), "Initialize Database");
+                    }
+                    commitTransaction();
+                } catch (Exception e) {
+                    errors += "Database connection could not be established.<br/>Error: " + e.getMessage()
+                            + "<br/>Database may not exist. " + FixTag.getTag(
+                            DatabaseUtilities.SchemaInitialization.Create.getValue(), "Create Database");
+                    rollbackTransaction();
+                }
 
-				return "".equals(errors) ? null : errors;
-			}
-		});
+                return "".equals(errors) ? null : errors;
+            }
+        });
 
-		try {
-			return future.get();
-		} catch (Exception e) {
-			throw new MprcException("Could not check the database", e);
-		}
-	}
+        try {
+            return future.get();
+        } catch (Exception e) {
+            throw new MprcException("Could not check the database", e);
+        }
+    }
 
-	@Override
-	/**
-	 * @param params Recognizes "action" key that can be one of
-	 * {@link edu.mayo.mprc.database.DatabaseUtilities.SchemaInitialization#getValue()}.
-	 */
-	public void initialize(Map<String, String> params) {
-		final String action = params.get("action");
-		final HashMap<String, String> newParams = new HashMap<String, String>(params);
-		newParams.put(CurationInitializer.FASTA_FOLDER, searcherConfig.getFastaPath());
-		newParams.put(CurationInitializer.FASTA_ARCHIVE_FOLDER, searcherConfig.getFastaArchivePath());
+    @Override
+    /**
+     * @param params Recognizes "action" key that can be one of
+     * {@link edu.mayo.mprc.database.DatabaseUtilities.SchemaInitialization#getValue()}.
+     */
+    public void initialize(Map<String, String> params) {
+        final String action = params.get("action");
+        final HashMap<String, String> newParams = new HashMap<String, String>(params);
+        newParams.put(CurationInitializer.FASTA_FOLDER, searcherConfig.getFastaPath());
+        newParams.put(CurationInitializer.FASTA_ARCHIVE_FOLDER, searcherConfig.getFastaArchivePath());
 
-		final Future<?> future = EXECUTOR.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					DatabaseUtilities.SchemaInitialization initialization = DatabaseUtilities.SchemaInitialization.Update;
-					for (DatabaseUtilities.SchemaInitialization schema : DatabaseUtilities.SchemaInitialization.values()) {
-						if (schema.getValue().equals(action)) {
-							initialization = schema;
-						}
-					}
+        final Future<?> future = EXECUTOR.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DatabaseUtilities.SchemaInitialization initialization = DatabaseUtilities.SchemaInitialization.Update;
+                    for (DatabaseUtilities.SchemaInitialization schema : DatabaseUtilities.SchemaInitialization.values()) {
+                        if (schema.getValue().equals(action)) {
+                            initialization = schema;
+                        }
+                    }
 
-					beginTransaction(initialization);
+                    beginTransaction(initialization);
 
-					for (RuntimeInitializer initializer : runtimeInitializers) {
-						initializer.initialize(newParams);
-						databasePlaceholder.getSession().flush();
-						// We completely wipe out the caches between the initialization steps to prevent
-						// huge memory consumption.
-						databasePlaceholder.getSession().clear();
-					}
+                    for (RuntimeInitializer initializer : runtimeInitializers) {
+                        initializer.initialize(newParams);
+                        databasePlaceholder.getSession().flush();
+                        // We completely wipe out the caches between the initialization steps to prevent
+                        // huge memory consumption.
+                        databasePlaceholder.getSession().clear();
+                    }
 
-					commitTransaction();
-				} catch (Exception e) {
-					rollbackTransaction();
-					throw new MprcException(e);
-				}
-			}
-		});
+                    commitTransaction();
+                } catch (Exception e) {
+                    rollbackTransaction();
+                    throw new MprcException(e);
+                }
+            }
+        });
 
-		try {
-			future.get();
-		} catch (Exception e) {
-			throw new MprcException("Failed to initialize the database", e);
-		}
-	}
+        try {
+            future.get();
+        } catch (Exception e) {
+            throw new MprcException("Failed to initialize the database", e);
+        }
+    }
 
-	public SwiftSearcher.Config getSearcherConfig() {
-		return searcherConfig;
-	}
+    public SwiftSearcher.Config getSearcherConfig() {
+        return searcherConfig;
+    }
 
-	public void setSearcherConfig(SwiftSearcher.Config searcherConfig) {
-		this.searcherConfig = searcherConfig;
-	}
+    public void setSearcherConfig(SwiftSearcher.Config searcherConfig) {
+        this.searcherConfig = searcherConfig;
+    }
 
-	public DaemonConfig getDaemonConfig() {
-		return daemonConfig;
-	}
+    public DaemonConfig getDaemonConfig() {
+        return daemonConfig;
+    }
 
-	public void setDaemonConfig(DaemonConfig daemonConfig) {
-		this.daemonConfig = daemonConfig;
-	}
+    public void setDaemonConfig(DaemonConfig daemonConfig) {
+        this.daemonConfig = daemonConfig;
+    }
 
-	public DatabasePlaceholder getDatabasePlaceholder() {
-		return databasePlaceholder;
-	}
+    public DatabasePlaceholder getDatabasePlaceholder() {
+        return databasePlaceholder;
+    }
 
-	public void setDatabasePlaceholder(DatabasePlaceholder databasePlaceholder) {
-		this.databasePlaceholder = databasePlaceholder;
-	}
+    public void setDatabasePlaceholder(DatabasePlaceholder databasePlaceholder) {
+        this.databasePlaceholder = databasePlaceholder;
+    }
 
-	public List<DaoBase> getDaoList() {
-		return daoList;
-	}
+    public List<DaoBase> getDaoList() {
+        return daoList;
+    }
 
-	public void setDaoList(List<DaoBase> daoList) {
-		this.daoList = daoList;
-	}
+    public void setDaoList(List<DaoBase> daoList) {
+        this.daoList = daoList;
+    }
 
-	public Map<String, String> getHibernateProperties() {
-		return hibernateProperties;
-	}
+    public Map<String, String> getHibernateProperties() {
+        return hibernateProperties;
+    }
 
-	public void setHibernateProperties(Map<String, String> hibernateProperties) {
-		this.hibernateProperties = hibernateProperties;
-	}
+    public void setHibernateProperties(Map<String, String> hibernateProperties) {
+        this.hibernateProperties = hibernateProperties;
+    }
 
-	public List<RuntimeInitializer> getRuntimeInitializers() {
-		return runtimeInitializers;
-	}
+    public List<RuntimeInitializer> getRuntimeInitializers() {
+        return runtimeInitializers;
+    }
 
-	public void setRuntimeInitializers(List<RuntimeInitializer> runtimeInitializers) {
-		this.runtimeInitializers = runtimeInitializers;
-	}
+    public void setRuntimeInitializers(List<RuntimeInitializer> runtimeInitializers) {
+        this.runtimeInitializers = runtimeInitializers;
+    }
 
-	public FileTokenFactory getFileTokenFactory() {
-		return fileTokenFactory;
-	}
+    public FileTokenFactory getFileTokenFactory() {
+        return fileTokenFactory;
+    }
 
-	public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
-		this.fileTokenFactory = fileTokenFactory;
-	}
+    public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+        this.fileTokenFactory = fileTokenFactory;
+    }
 }
