@@ -95,16 +95,16 @@ public class IdentifiedPeptide extends PersistableBase {
 
         IdentifiedPeptide that = (IdentifiedPeptide) o;
 
-        if (!modifications.equals(that.modifications)) return false;
-        if (!sequence.equals(that.sequence)) return false;
+        if (!getModifications().equals(that.getModifications())) return false;
+        if (!getSequence().equals(that.getSequence())) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = sequence.hashCode();
-        result = 31 * result + modifications.hashCode();
+        int result = getSequence().hashCode();
+        result = 31 * result + getModifications().hashCode();
         return result;
     }
 }

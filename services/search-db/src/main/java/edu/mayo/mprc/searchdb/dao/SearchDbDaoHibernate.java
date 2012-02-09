@@ -1,5 +1,6 @@
 package edu.mayo.mprc.searchdb.dao;
 
+import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
@@ -9,7 +10,6 @@ import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Arrays;
@@ -70,7 +70,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
         return mod;
     }
 
-    private Junction localizedModificationEqualityCriteria(LocalizedModification mod) {
+    private Criterion localizedModificationEqualityCriteria(LocalizedModification mod) {
         return Restrictions.conjunction()
                 .add(nullSafeEq("position", mod.getPosition()))
                 .add(nullSafeEq("residue", mod.getResidue()))
@@ -90,7 +90,11 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
             }
 
             peptide.setSequence(fastaDbDao.addPeptideSequence(peptide.getSequence()));
-            return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
+            try {
+                return save(peptide, identifiedPeptideEqualityCriteria(peptide), false);
+            } catch (Exception e) {
+                throw new MprcException("Could not add identified peptide", e);
+            }
         }
         return peptide;
     }

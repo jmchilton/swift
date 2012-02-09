@@ -13,40 +13,62 @@ import edu.mayo.mprc.database.PersistableBase;
  * @author Roman Zenka
  */
 public class SearchResult extends PersistableBase {
-	/**
-	 * The mass spec sample.
-	 */
-	private TandemMassSpectrometrySample massSpecSample;
+    /**
+     * The mass spec sample.
+     */
+    private TandemMassSpectrometrySample massSpecSample;
 
-	/**
-	 * List of all protein groups identified in this sample.
-	 */
-	private ProteinGroupList proteinGroups;
+    /**
+     * List of all protein groups identified in this sample.
+     */
+    private ProteinGroupList proteinGroups;
 
-	/**
-	 * Empty constructor for Hibernate.
-	 */
-	public SearchResult() {
-	}
+    /**
+     * Empty constructor for Hibernate.
+     */
+    public SearchResult() {
+    }
 
-	public SearchResult(TandemMassSpectrometrySample massSpecSample, ProteinGroupList proteinGroups) {
-		this.massSpecSample = massSpecSample;
-		this.proteinGroups = proteinGroups;
-	}
+    public SearchResult(TandemMassSpectrometrySample massSpecSample, ProteinGroupList proteinGroups) {
+        this.setMassSpecSample(massSpecSample);
+        this.setProteinGroups(proteinGroups);
+    }
 
-	public TandemMassSpectrometrySample getMassSpecSample() {
-		return massSpecSample;
-	}
+    public TandemMassSpectrometrySample getMassSpecSample() {
+        return massSpecSample;
+    }
 
-	public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
-		this.massSpecSample = massSpecSample;
-	}
+    public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
+        this.massSpecSample = massSpecSample;
+    }
 
-	public ProteinGroupList getProteinGroups() {
-		return proteinGroups;
-	}
+    public ProteinGroupList getProteinGroups() {
+        return proteinGroups;
+    }
 
-	public void setProteinGroups(ProteinGroupList proteinGroups) {
-		this.proteinGroups = proteinGroups;
-	}
+    public void setProteinGroups(ProteinGroupList proteinGroups) {
+        this.proteinGroups = proteinGroups;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchResult that = (SearchResult) o;
+
+        if (getMassSpecSample() != null ? !getMassSpecSample().equals(that.getMassSpecSample()) : that.getMassSpecSample() != null)
+            return false;
+        if (getProteinGroups() != null ? !getProteinGroups().equals(that.getProteinGroups()) : that.getProteinGroups() != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getMassSpecSample() != null ? getMassSpecSample().hashCode() : 0;
+        result = 31 * result + (getProteinGroups() != null ? getProteinGroups().hashCode() : 0);
+        return result;
+    }
 }

@@ -265,13 +265,13 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
     }
 
     /**
-     * Parse a double number. If the number is missing, Double.NaN is returned
+     * Parse a double number. If the number is missing, {@link Double#NaN} is returned
      *
      * @param s String representation of the number.
      * @return The number parsed. If the number is missing. {@link Double#NaN} is returned. Commas separating thousands
      *         are handled as if they were not present. Trailing percent sign is removed if present.
      */
-    private double parseDouble(String s) {
+    private Double parseDouble(String s) {
         if ("".equals(s)) {
             return Double.NaN;
         }

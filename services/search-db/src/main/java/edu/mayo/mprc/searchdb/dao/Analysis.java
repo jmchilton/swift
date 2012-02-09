@@ -168,4 +168,32 @@ public final class Analysis extends PersistableBase {
     private String percent(double percent) {
         return PERCENT_FORMAT.format(percent);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Analysis analysis = (Analysis) o;
+
+        if (getAnalysisDate() != null ? !getAnalysisDate().equals(analysis.getAnalysisDate()) : analysis.getAnalysisDate() != null)
+            return false;
+        if (getBiologicalSamples() != null ? !getBiologicalSamples().equals(analysis.getBiologicalSamples()) : analysis.getBiologicalSamples() != null)
+            return false;
+        if (getReportData() != null ? !getReportData().equals(analysis.getReportData()) : analysis.getReportData() != null)
+            return false;
+        if (getScaffoldVersion() != null ? !getScaffoldVersion().equals(analysis.getScaffoldVersion()) : analysis.getScaffoldVersion() != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getReportData() != null ? getReportData().hashCode() : 0;
+        result = 31 * result + (getScaffoldVersion() != null ? getScaffoldVersion().hashCode() : 0);
+        result = 31 * result + (getAnalysisDate() != null ? getAnalysisDate().hashCode() : 0);
+        result = 31 * result + (getBiologicalSamples() != null ? getBiologicalSamples().hashCode() : 0);
+        return result;
+    }
 }

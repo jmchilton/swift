@@ -184,6 +184,57 @@ public class TandemMassSpectrometrySample extends PersistableBase {
     public void setStatusLogRanges(String statusLogRanges) {
         this.statusLogRanges = statusLogRanges;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TandemMassSpectrometrySample that = (TandemMassSpectrometrySample) o;
+
+        if (getMs1Spectra() != that.getMs1Spectra()) return false;
+        if (getMsnSpectra() != that.getMsnSpectra()) return false;
+        if (Double.compare(that.getRunTimeInSeconds(), getRunTimeInSeconds()) != 0) return false;
+        if (getErrorLog() != null ? !getErrorLog().equals(that.getErrorLog()) : that.getErrorLog() != null)
+            return false;
+        if (getFile() != null ? !getFile().equals(that.getFile()) : that.getFile() != null) return false;
+        if (getInstrumentMethod() != null ? !getInstrumentMethod().equals(that.getInstrumentMethod()) : that.getInstrumentMethod() != null)
+            return false;
+        if (getInstrumentSerialNumber() != null ? !getInstrumentSerialNumber().equals(that.getInstrumentSerialNumber()) : that.getInstrumentSerialNumber() != null)
+            return false;
+        if (getLastModified() != null ? !getLastModified().equals(that.getLastModified()) : that.getLastModified() != null)
+            return false;
+        if (getSampleInformation() != null ? !getSampleInformation().equals(that.getSampleInformation()) : that.getSampleInformation() != null)
+            return false;
+        if (getStartTime() != null ? !getStartTime().equals(that.getStartTime()) : that.getStartTime() != null)
+            return false;
+        if (getStatusLogRanges() != null ? !getStatusLogRanges().equals(that.getStatusLogRanges()) : that.getStatusLogRanges() != null)
+            return false;
+        if (getTuneMethod() != null ? !getTuneMethod().equals(that.getTuneMethod()) : that.getTuneMethod() != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = getFile() != null ? getFile().hashCode() : 0;
+        result = 31 * result + (getLastModified() != null ? getLastModified().hashCode() : 0);
+        result = 31 * result + getMs1Spectra();
+        result = 31 * result + getMsnSpectra();
+        result = 31 * result + (getInstrumentSerialNumber() != null ? getInstrumentSerialNumber().hashCode() : 0);
+        result = 31 * result + (getStartTime() != null ? getStartTime().hashCode() : 0);
+        temp = getRunTimeInSeconds() != +0.0d ? Double.doubleToLongBits(getRunTimeInSeconds()) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (getTuneMethod() != null ? getTuneMethod().hashCode() : 0);
+        result = 31 * result + (getInstrumentMethod() != null ? getInstrumentMethod().hashCode() : 0);
+        result = 31 * result + (getSampleInformation() != null ? getSampleInformation().hashCode() : 0);
+        result = 31 * result + (getErrorLog() != null ? getErrorLog().hashCode() : 0);
+        result = 31 * result + (getStatusLogRanges() != null ? getStatusLogRanges().hashCode() : 0);
+        return result;
+    }
 }
 
 
