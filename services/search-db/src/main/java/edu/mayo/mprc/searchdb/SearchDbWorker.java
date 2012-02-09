@@ -204,7 +204,17 @@ public final class SearchDbWorker implements Worker {
 
         @Override
         public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
-            //TODO: implement me
+            DatabaseFactory.Config database = (DatabaseFactory.Config) daemon.firstResourceOfType(DatabaseFactory.Config.class);
+
+            builder.property(DATABASE, "Database", "Database we will be storing data into")
+                    .reference(DatabaseFactory.TYPE, UiBuilder.NONE_TYPE)
+                    .defaultValue(database);
+
+            builder.property(SCAFFOLD_MOD_SET, "Scaffold's unimod.xml", "A location of Scaffold's current unimod.xml file.<p>" +
+                    "On Linux it is typically in <tt>/opt/Scaffold3/parameters/unimod.xml.<p>" +
+                    "The file has to be available where the searcher is running, so you might have to copy it elsewhere first.")
+                    .existingFile()
+                    .required();
         }
     }
 }
