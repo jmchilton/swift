@@ -144,6 +144,7 @@
         <property name="workspaceDao" ref="workspaceDao"/>
         <property name="paramsDao" ref="paramsDao"/>
         <property name="unimodDao" ref="unimodDao"/>
+        <property name="searchDbDao" ref="searchDbDao"/>
         <property name="databasePlaceholder" ref="databasePlaceholder"/>
         <property name="abstractParamsInfo" ref="paramsInfo"/>
         <property name="searchEngines" ref="searchEngines"/>

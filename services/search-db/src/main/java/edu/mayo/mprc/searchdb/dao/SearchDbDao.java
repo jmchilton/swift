@@ -3,6 +3,8 @@ package edu.mayo.mprc.searchdb.dao;
 import edu.mayo.mprc.database.Dao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 
+import java.util.List;
+
 /**
  * This dao should be implemented in an efficient manner. Typically a large amount of queries (10000x per input file)
  * is going to be run when adding peptide/protein sequences.
@@ -28,4 +30,18 @@ public interface SearchDbDao extends Dao {
      * @return Added analysis properly linked into Hibernate.
      */
     Analysis addAnalysis(Analysis analysis, ReportData reportData);
+
+    /**
+     * @param reportId Id of {@link ReportData}
+     * @return Analysis linked to a particular report (Scaffold .sf3 file).
+     */
+    Analysis getAnalysis(long reportId);
+
+    /**
+     * List accession numbers for a protein group.
+     *
+     * @param proteinSequenceList A list of protein sequences.
+     * @return A string describing the accession numbers for proteins within the group.
+     */
+    List<String> getProteinAccessionNumbers(ProteinSequenceList proteinSequenceList);
 }

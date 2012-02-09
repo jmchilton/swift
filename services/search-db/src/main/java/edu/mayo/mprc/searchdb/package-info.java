@@ -19,7 +19,7 @@
  * <h2>{@link Analysis}</h2>
  * <ul>
  * <li>Scaffold version - from header</li>
- * <li>Experiment name</li>
+ * <li>Date created</li>
  * </ul>
  * <h2>{@link BiologicalSample}</h2>
  * <ul>

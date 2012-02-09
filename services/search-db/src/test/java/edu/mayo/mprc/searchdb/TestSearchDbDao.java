@@ -10,6 +10,7 @@ import edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl;
 import edu.mayo.mprc.fastadb.FastaDbDaoHibernate;
 import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
 import edu.mayo.mprc.searchdb.dao.Analysis;
+import edu.mayo.mprc.searchdb.dao.Report;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
@@ -29,6 +30,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
@@ -104,6 +106,11 @@ public class TestSearchDbDao extends DaoTest {
         searchDbDao.addAnalysis(analysis, reportData);
 
         getDatabasePlaceholder().getSession().flush();
+
+        StringWriter writer = new StringWriter();
+        Report r = new Report(writer);
+
+        analysis.htmlReport(r, searchDbDao);
 
         // TODO: Check that the analysis is saved properly
 //        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());

@@ -1,12 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
+import com.google.common.base.Joiner;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 /**
  * Extracted information about how the analysis was performed that should get stored into the LIMS.
@@ -195,5 +198,63 @@ public final class Analysis extends PersistableBase {
         result = 31 * result + (getAnalysisDate() != null ? getAnalysisDate().hashCode() : 0);
         result = 31 * result + (getBiologicalSamples() != null ? getBiologicalSamples().hashCode() : 0);
         return result;
+    }
+
+    /**
+     * Report information about entire analysis into a given writer in HTML format.
+     */
+    public void htmlReport(Report r, SearchDbDao searchDbDao) {
+        r
+                .startTable("Scaffold run")
+                .addKeyValueTable("Date", getAnalysisDate())
+                .addKeyValueTable("Scaffold Version", getScaffoldVersion())
+                .endTable();
+
+        r.startTable("Results") // -- Results
+                .cell("", 1);
+
+        TreeMap<Integer, ProteinGroup> allProteinGroups = new TreeMap<Integer, ProteinGroup>();
+
+        // List biological samples
+        for (BiologicalSample sample : getBiologicalSamples()) {
+            r.cell(sample.getSampleName(), sample.getSearchResults().size());
+
+            for (SearchResult result : sample.getSearchResults()) {
+                for (ProteinGroup group : result.getProteinGroups()) {
+                    allProteinGroups.put(group.getId(), group);
+                }
+            }
+        }
+        r.nextRow(); // ---------------
+
+        r.cell("");
+
+        // List all mass-spec samples within the biological samples
+        for (BiologicalSample sample : getBiologicalSamples()) {
+            for (SearchResult result : sample.getSearchResults()) {
+                r.cell(result.getMassSpecSample().getFile().getName());
+            }
+        }
+        r.nextRow(); // ---------------
+
+        for (ProteinGroup proteinGroup : allProteinGroups.values()) {
+            List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinGroup.getProteinSequences());
+            r.hCell(Joiner.on(", ").join(proteinAccessionNumbers));
+
+            for (BiologicalSample sample : getBiologicalSamples()) {
+                for (SearchResult result : sample.getSearchResults()) {
+                    for (ProteinGroup g : result.getProteinGroups()) {
+                        if (proteinGroup.getId().equals(g.getId())) {
+                            r.cell(String.valueOf(g.getNumberOfTotalSpectra()));
+                        }
+                    }
+                }
+            }
+
+            r.nextRow();
+        }
+
+
+        r.endTable();
     }
 }

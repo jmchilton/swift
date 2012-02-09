@@ -14,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -267,6 +268,18 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
             return save(analysis, analysisEqualityCriteria(analysis), false);
         }
         return analysis;
+    }
+
+    @Override
+    public Analysis getAnalysis(long reportId) {
+        return (Analysis) getSession().createCriteria(Analysis.class).add(Restrictions.eq("reportData.id", reportId)).uniqueResult();
+    }
+
+    @Override
+    public List<String> getProteinAccessionNumbers(ProteinSequenceList proteinSequenceList) {
+        return (List<String>) getSession().createQuery("select distinct e.accessionNumber from ProteinDatabaseEntry e where e.sequence in :sequences order by e.accessionNumber")
+                .setParameterList("sequences", proteinSequenceList.getList())
+                .list();
     }
 
     private Criterion analysisEqualityCriteria(Analysis analysis) {
