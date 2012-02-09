@@ -9,156 +9,163 @@ import java.util.*;
  * @author Roman Zenka
  */
 public abstract class PersistableListBase<T extends PersistableBase> extends PersistableBase implements List<T> {
-	private List<T> list;
+    private List<T> list;
 
-	public PersistableListBase() {
-		list = new ArrayList<T>();
-	}
+    public PersistableListBase() {
+        list = new ArrayList<T>();
+    }
 
-	public PersistableListBase(int initialCapacity) {
-		list = new ArrayList<T>(initialCapacity);
-	}
+    public PersistableListBase(int initialCapacity) {
+        list = new ArrayList<T>(initialCapacity);
+    }
 
-	/**
-	 * Create a list prefilled with a given collection.
-	 *
-	 * @param items Items to add to this list.
-	 */
-	public PersistableListBase(Collection<T> items) {
-		this(items.size());
-		list.addAll(items);
-	}
+    /**
+     * Create a list prefilled with a given collection.
+     *
+     * @param items Items to add to this list.
+     */
+    public PersistableListBase(Collection<T> items) {
+        this(items.size());
+        list.addAll(items);
+    }
 
-	public List<T> getList() {
-		return list;
-	}
+    public List<T> getList() {
+        return list;
+    }
 
-	public void setList(List<T> list) {
-		this.list = list;
-	}
+    public void setList(List<T> list) {
+        this.list = list;
+    }
 
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return list.containsAll(c);
-	}
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return list.containsAll(c);
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return list.removeAll(c);
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return list.removeAll(c);
+    }
 
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return list.retainAll(c);
-	}
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return list.retainAll(c);
+    }
 
-	@Override
-	public Iterator<T> iterator() {
-		return list.iterator();
-	}
+    @Override
+    public Iterator<T> iterator() {
+        return list.iterator();
+    }
 
-	@Override
-	public ListIterator<T> listIterator() {
-		return list.listIterator();
-	}
+    @Override
+    public ListIterator<T> listIterator() {
+        return list.listIterator();
+    }
 
-	@Override
-	public ListIterator<T> listIterator(int index) {
-		return list.listIterator(index);
-	}
+    @Override
+    public ListIterator<T> listIterator(int index) {
+        return list.listIterator(index);
+    }
 
-	@Override
-	public List<T> subList(int fromIndex, int toIndex) {
-		return list.subList(fromIndex, toIndex);
-	}
+    @Override
+    public List<T> subList(int fromIndex, int toIndex) {
+        return list.subList(fromIndex, toIndex);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		return list.equals(o);
-	}
+    @Override
+    public int size() {
+        return list.size();
+    }
 
-	@Override
-	public int hashCode() {
-		return list.hashCode();
-	}
+    @Override
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
 
-	@Override
-	public int size() {
-		return list.size();
-	}
+    @Override
+    public boolean contains(Object o) {
+        return list.contains(o);
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return list.isEmpty();
-	}
+    @Override
+    public int indexOf(Object o) {
+        return list.indexOf(o);
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		return list.contains(o);
-	}
+    @Override
+    public int lastIndexOf(Object o) {
+        return list.lastIndexOf(o);
+    }
 
-	@Override
-	public int indexOf(Object o) {
-		return list.indexOf(o);
-	}
+    @Override
+    public Object[] toArray() {
+        return list.toArray();
+    }
 
-	@Override
-	public int lastIndexOf(Object o) {
-		return list.lastIndexOf(o);
-	}
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return list.toArray(a);
+    }
 
-	@Override
-	public Object[] toArray() {
-		return list.toArray();
-	}
+    @Override
+    public boolean add(T t) {
+        return list.add(t);
+    }
 
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return list.toArray(a);
-	}
+    @Override
+    public T get(int index) {
+        return list.get(index);
+    }
 
-	@Override
-	public boolean add(T t) {
-		return list.add(t);
-	}
+    @Override
+    public T set(int index, T element) {
+        return list.set(index, element);
+    }
 
-	@Override
-	public T get(int index) {
-		return list.get(index);
-	}
+    @Override
+    public void add(int index, T element) {
+        list.add(index, element);
+    }
 
-	@Override
-	public T set(int index, T element) {
-		return list.set(index, element);
-	}
+    @Override
+    public T remove(int index) {
+        return list.remove(index);
+    }
 
-	@Override
-	public void add(int index, T element) {
-		list.add(index, element);
-	}
+    @Override
+    public boolean remove(Object o) {
+        return list.remove(o);
+    }
 
-	@Override
-	public T remove(int index) {
-		return list.remove(index);
-	}
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        return list.addAll(c);
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		return list.remove(o);
-	}
+    @Override
+    public boolean addAll(int index, Collection<? extends T> c) {
+        return list.addAll(index, c);
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends T> c) {
-		return list.addAll(c);
-	}
+    @Override
+    public void clear() {
+        list.clear();
+    }
 
-	@Override
-	public boolean addAll(int index, Collection<? extends T> c) {
-		return list.addAll(index, c);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	@Override
-	public void clear() {
-		list.clear();
-	}
+        PersistableListBase that = (PersistableListBase) o;
+
+        if (getList() != null ? !getList().equals(that.getList()) : that.getList() != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getList() != null ? getList().hashCode() : 0;
+    }
 }
