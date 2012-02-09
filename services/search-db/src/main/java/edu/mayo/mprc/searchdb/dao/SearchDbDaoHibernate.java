@@ -121,7 +121,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                 .add(nullSafeEq("nextAminoAcid", match.getNextAminoAcid()))
                 .add(nullSafeEq("bestPeptideIdentificationProbability", match.getBestPeptideIdentificationProbability()))
 
-                .add(doubleEq("bastSearchEngineScores.mascotDeltaIonScore", match.getBestSearchEngineScores().getMascotDeltaIonScore(), SearchEngineScores.DELTA))
+                .add(doubleEq("bestSearchEngineScores.mascotDeltaIonScore", match.getBestSearchEngineScores().getMascotDeltaIonScore(), SearchEngineScores.DELTA))
                 .add(doubleEq("bestSearchEngineScores.mascotHomologyScore", match.getBestSearchEngineScores().getMascotHomologyScore(), SearchEngineScores.DELTA))
                 .add(doubleEq("bestSearchEngineScores.mascotIdentityScore", match.getBestSearchEngineScores().getMascotIdentityScore(), SearchEngineScores.DELTA))
                 .add(doubleEq("bestSearchEngineScores.mascotIonScore", match.getBestSearchEngineScores().getMascotIonScore(), SearchEngineScores.DELTA))
