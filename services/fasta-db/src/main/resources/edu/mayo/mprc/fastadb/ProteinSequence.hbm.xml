@@ -10,7 +10,7 @@
         <property name="sequence" type="text" column="sequence"/>
     </class>
     <database-object>
-        <create>ALTER TABLE `protein_sequence` ADD UNIQUE INDEX `sequence` USING HASH (`sequence`(200) ASC) ;</create>
+        <create>ALTER TABLE `protein_sequence` ADD INDEX `sequence` USING HASH (`sequence`(200) ASC) ;</create>
         <drop>ALTER TABLE `protein_sequence` DROP INDEX `sequence` ;</drop>
         <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect"/>
     </database-object>
