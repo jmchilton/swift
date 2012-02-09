@@ -63,6 +63,7 @@ public class FastaDbWorker implements Worker {
                 throw new MprcException("Curation #" + workPacket.getCurationId() + " is not in the database.");
             }
             fastaDbDao.addFastaDatabase(database, reporter);
+            curationDao.commit();
         } catch (Exception e) {
             curationDao.rollback();
             throw new MprcException("Could not load curation #" + workPacket.getCurationId() + " into the database", e);

@@ -163,7 +163,8 @@ public final class SearchRunner implements Runnable {
             ExecutorService service,
             CurationDao curationDao,
             SwiftDao swiftDao,
-            FileTokenFactory fileTokenFactory) {
+            FileTokenFactory fileTokenFactory,
+            SearchRun searchRun) {
         this.searchDefinition = searchDefinition;
         this.packet = packet;
         this.raw2mgfDaemon = raw2mgfDaemon;
@@ -181,6 +182,7 @@ public final class SearchRunner implements Runnable {
         this.curationDao = curationDao;
         this.swiftDao = swiftDao;
         this.fileTokenFactory = fileTokenFactory;
+        this.searchRun = searchRun;
         assertValid();
     }
 

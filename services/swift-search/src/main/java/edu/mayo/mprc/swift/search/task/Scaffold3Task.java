@@ -87,6 +87,7 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
         setDescription("Scaffold 3 search " + this.experiment);
         File scaffoldFile = new File(outputFolder, experiment + ".sf3");
         if (!isFromScratch() && scaffoldFile.exists() && scaffoldFile.isFile() && scaffoldFile.length() > 0) {
+            storeReportFile();
             return null;
         }
 
@@ -155,6 +156,15 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
     public void onSuccess() {
         completeWhenFileAppears(getResultingFile());
         completeWhenFileAppears(getScaffoldSpectraFile());
+        storeReportFile();
+    }
+
+    /**
+     * Store information into the database that we produced a particular report file.
+     * This has to happen whenever Scaffold successfully finished (be it because it ran,
+     * or if it was done previously).
+     */
+    private void storeReportFile() {
         swiftDao.begin();
         try {
             // Scaffold finished. Store the resulting file.

@@ -519,6 +519,11 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
     }
 
     @Override
+    public ReportData getReportForId(long reportDataId) {
+        return (ReportData) getSession().load(ReportData.class, reportDataId);
+    }
+
+    @Override
     public void storeAssignedTaskData(final TaskData taskData, final AssignedTaskData assignedTaskData) {
         try {
             taskData.setGridJobId(assignedTaskData.getAssignedId());

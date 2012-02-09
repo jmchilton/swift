@@ -122,7 +122,18 @@ public interface SwiftDao extends Dao, RuntimeInitializer {
 
     ReportData storeReport(int searchRunId, File resultFile);
 
+    /**
+     * Find search report file for given report id. Used to retrieve {@link #storeReport} result
+     * after only the report ID got transfered over the network.
+     *
+     * @param reportDataId Id of the {@link ReportData} object.
+     * @return {@link ReportData} for the given id.
+     */
+    ReportData getReportForId(long reportDataId);
+
     void storeAssignedTaskData(TaskData taskData, AssignedTaskData assignedTaskData);
 
     void searchRunFailed(int searchRunId, String message);
+
+
 }

@@ -7,6 +7,7 @@ import edu.mayo.mprc.database.PersistableListBase;
 import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
+import edu.mayo.mprc.swift.dbmapping.ReportData;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
@@ -229,7 +230,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
     }
 
     @Override
-    public Analysis addAnalysis(Analysis analysis) {
+    public Analysis addAnalysis(Analysis analysis, ReportData reportData) {
         if (analysis.getId() == null) {
             final BiologicalSampleList originalList = analysis.getBiologicalSamples();
             if (originalList.getId() == null) {
@@ -238,6 +239,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
                     newList.add(addBiologicalSample(sample));
                 }
                 analysis.setBiologicalSamples(addList(newList));
+                analysis.setReportData(reportData);
             }
             return save(analysis, analysisEqualityCriteria(analysis), false);
         }

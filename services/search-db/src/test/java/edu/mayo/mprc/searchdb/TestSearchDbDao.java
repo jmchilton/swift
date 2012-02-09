@@ -12,6 +12,8 @@ import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
+import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import edu.mayo.mprc.swift.params2.ParamsDaoHibernate;
 import edu.mayo.mprc.unimod.MockUnimodDao;
 import edu.mayo.mprc.unimod.Unimod;
@@ -42,6 +44,7 @@ public class TestSearchDbDao extends DaoTest {
     private Unimod scaffoldUnimod;
     private CurationDaoImpl curationDao;
     private UnimodDaoHibernate unimodDao;
+    private SwiftDaoHibernate swiftDao;
     private FastaDbDaoHibernate fastaDbDao;
 
     private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
@@ -50,11 +53,11 @@ public class TestSearchDbDao extends DaoTest {
     public void setup() {
         FileType.initialize(new DummyFileTokenTranslator());
 
-        final SwiftDaoHibernate swiftDao = new SwiftDaoHibernate();
         final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
         unimodDao = new UnimodDaoHibernate();
         curationDao = new CurationDaoImpl();
         fastaDbDao = new FastaDbDaoHibernate();
+        swiftDao = new SwiftDaoHibernate();
 
         searchDbDao = new SearchDbDaoHibernate();
         searchDbDao.setSwiftDao(swiftDao);
@@ -95,7 +98,10 @@ public class TestSearchDbDao extends DaoTest {
         summarizer.load(reader, SINGLE, "3");
         final Analysis analysis = summarizer.getAnalysis();
 
-        searchDbDao.addAnalysis(analysis);
+        SearchRun searchRun = swiftDao.fillSearchRun(null);
+        ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
+
+        searchDbDao.addAnalysis(analysis, reportData);
 
         getDatabasePlaceholder().getSession().flush();
 

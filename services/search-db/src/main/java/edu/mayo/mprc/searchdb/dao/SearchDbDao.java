@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
+import edu.mayo.mprc.swift.dbmapping.ReportData;
 
 /**
  * This dao should be implemented in an efficient manner. Typically a large amount of queries (10000x per input file)
@@ -21,5 +22,10 @@ public interface SearchDbDao extends Dao {
 
     BiologicalSample addBiologicalSample(BiologicalSample biologicalSample);
 
-    Analysis addAnalysis(Analysis analysis);
+    /**
+     * @param analysis   Analysis to add.
+     * @param reportData The analysis is bound to this Scaffold data report (.sf3 file)
+     * @return Added analysis properly linked into Hibernate.
+     */
+    Analysis addAnalysis(Analysis analysis, ReportData reportData);
 }

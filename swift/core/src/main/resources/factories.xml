@@ -76,6 +76,10 @@
 
     <bean id="searchDbFactory" class="edu.mayo.mprc.searchdb.SearchDbWorker$Factory">
         <property name="searchDbDao" ref="searchDbDao"/>
+        <property name="fastaDbDao" ref="fastaDbDao"/>
+        <property name="curationDao" ref="curationDao"/>
+        <property name="unimodDao" ref="unimodDao"/>
+        <property name="swiftDao" ref="swiftDao"/>
     </bean>
 
     <bean id="fastaDbFactory" class="edu.mayo.mprc.fastadb.FastaDbWorker$Factory">
