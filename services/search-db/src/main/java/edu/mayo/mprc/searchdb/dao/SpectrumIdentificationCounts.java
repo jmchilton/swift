@@ -40,19 +40,19 @@ public final class SpectrumIdentificationCounts {
      * @param spectrumCharge Charge of the spectrum.
      */
     public void addSpectrum(int spectrumCharge) {
-        numberOfIdentifiedSpectra++;
+        setNumberOfIdentifiedSpectra(getNumberOfIdentifiedSpectra() + 1);
         switch (spectrumCharge) {
             case 1:
-                numberOfIdentified1HSpectra++;
+                setNumberOfIdentified1HSpectra(getNumberOfIdentified1HSpectra() + 1);
                 break;
             case 2:
-                numberOfIdentified2HSpectra++;
+                setNumberOfIdentified2HSpectra(getNumberOfIdentified2HSpectra() + 1);
                 break;
             case 3:
-                numberOfIdentified3HSpectra++;
+                setNumberOfIdentified3HSpectra(getNumberOfIdentified3HSpectra() + 1);
                 break;
             case 4:
-                numberOfIdentified4HSpectra++;
+                setNumberOfIdentified4HSpectra(getNumberOfIdentified4HSpectra() + 1);
                 break;
         }
     }
@@ -95,5 +95,31 @@ public final class SpectrumIdentificationCounts {
 
     public void setNumberOfIdentified4HSpectra(int numberOfIdentified4HSpectra) {
         this.numberOfIdentified4HSpectra = numberOfIdentified4HSpectra;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SpectrumIdentificationCounts that = (SpectrumIdentificationCounts) o;
+
+        if (getNumberOfIdentified1HSpectra() != that.getNumberOfIdentified1HSpectra()) return false;
+        if (getNumberOfIdentified2HSpectra() != that.getNumberOfIdentified2HSpectra()) return false;
+        if (getNumberOfIdentified3HSpectra() != that.getNumberOfIdentified3HSpectra()) return false;
+        if (getNumberOfIdentified4HSpectra() != that.getNumberOfIdentified4HSpectra()) return false;
+        if (getNumberOfIdentifiedSpectra() != that.getNumberOfIdentifiedSpectra()) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getNumberOfIdentifiedSpectra();
+        result = 31 * result + getNumberOfIdentified1HSpectra();
+        result = 31 * result + getNumberOfIdentified2HSpectra();
+        result = 31 * result + getNumberOfIdentified3HSpectra();
+        result = 31 * result + getNumberOfIdentified4HSpectra();
+        return result;
     }
 }
