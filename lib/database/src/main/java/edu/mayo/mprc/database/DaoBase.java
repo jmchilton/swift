@@ -5,6 +5,7 @@ import edu.mayo.mprc.MprcException;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -394,5 +395,20 @@ public abstract class DaoBase implements Dao {
         } else {
             return Restrictions.eq(propertyName, value);
         }
+    }
+
+    /**
+     * @param propertyName Name of the property to check.
+     * @param value        Value that has to be within the range of the database entry.
+     * @param tolerance    The value has to be in &lt;value-tolerance, value+tolerance&gt; range.
+     * @return A criterion that checks the given property is in the permissible range.
+     */
+    public static Criterion doubleEq(String propertyName, double value, double tolerance) {
+        if (Double.isNaN(value)) {
+            return Restrictions.isNull(propertyName);
+        }
+        return new Conjunction()
+                .add(Restrictions.ge(propertyName, value - tolerance))
+                .add(Restrictions.le(propertyName, value + tolerance));
     }
 }

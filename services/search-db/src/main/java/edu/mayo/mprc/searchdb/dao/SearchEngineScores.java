@@ -12,7 +12,7 @@ public final class SearchEngineScores {
     /**
      * Delta for double comparison.
      */
-    private static final double DELTA = 1E-8;
+    public static final double DELTA = 1E-8;
 
     /**
      * Sequest XCorr score
