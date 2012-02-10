@@ -113,10 +113,9 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
         PersistableListBase that = (PersistableListBase) o;
 
         LinkedHashMultiset<T> me = makeMultiset(this.getList());
-        LinkedHashMultiset<T> other = makeMultiset(that == null ? null : that.getList());
-        if (me != null ? !me.equals(other) : other != null) return false;
+        LinkedHashMultiset<T> other = makeMultiset(that.getList());
+        return !(me != null ? !me.equals(other) : other != null);
 
-        return true;
     }
 
     private LinkedHashMultiset<T> makeMultiset(Collection collection) {
