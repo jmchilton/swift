@@ -8,39 +8,39 @@ import edu.mayo.mprc.searchdb.dao.BiologicalSample;
  * @author Roman Zenka
  */
 final class SearchResultKey {
-	private final BiologicalSample biologicalSample;
-	private final String massSpectrometrySampleName;
+    private final BiologicalSample biologicalSample;
+    private final String massSpectrometrySampleName;
 
-	public SearchResultKey(BiologicalSample biologicalSample, String massSpectrometrySampleName) {
-		this.biologicalSample = biologicalSample;
-		this.massSpectrometrySampleName = massSpectrometrySampleName;
-	}
+    public SearchResultKey(BiologicalSample biologicalSample, String massSpectrometrySampleName) {
+        this.biologicalSample = biologicalSample;
+        this.massSpectrometrySampleName = massSpectrometrySampleName;
+    }
 
-	public BiologicalSample getBiologicalSample() {
-		return biologicalSample;
-	}
+    public BiologicalSample getBiologicalSample() {
+        return biologicalSample;
+    }
 
-	public String getMassSpectrometrySampleName() {
-		return massSpectrometrySampleName;
-	}
+    public String getMassSpectrometrySampleName() {
+        return massSpectrometrySampleName;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		SearchResultKey that = (SearchResultKey) o;
+        SearchResultKey that = (SearchResultKey) o;
 
-		if (!biologicalSample.equals(that.biologicalSample)) return false;
-		if (!massSpectrometrySampleName.equals(that.massSpectrometrySampleName)) return false;
+        if (!biologicalSample.keyEquals(that.biologicalSample)) return false;
+        if (!massSpectrometrySampleName.equals(that.massSpectrometrySampleName)) return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = biologicalSample.hashCode();
-		result = 31 * result + massSpectrometrySampleName.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = biologicalSample.keyHashCode();
+        result = 31 * result + massSpectrometrySampleName.hashCode();
+        return result;
+    }
 }

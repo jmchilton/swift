@@ -34,27 +34,12 @@ public final class SpectrumIdentificationCounts {
     public SpectrumIdentificationCounts() {
     }
 
-    /**
-     * A new spectrum appeared. Based on the charege, update the spectrum statistics
-     *
-     * @param spectrumCharge Charge of the spectrum.
-     */
-    public void addSpectrum(int spectrumCharge) {
-        setNumberOfIdentifiedSpectra(getNumberOfIdentifiedSpectra() + 1);
-        switch (spectrumCharge) {
-            case 1:
-                setNumberOfIdentified1HSpectra(getNumberOfIdentified1HSpectra() + 1);
-                break;
-            case 2:
-                setNumberOfIdentified2HSpectra(getNumberOfIdentified2HSpectra() + 1);
-                break;
-            case 3:
-                setNumberOfIdentified3HSpectra(getNumberOfIdentified3HSpectra() + 1);
-                break;
-            case 4:
-                setNumberOfIdentified4HSpectra(getNumberOfIdentified4HSpectra() + 1);
-                break;
-        }
+    public SpectrumIdentificationCounts(int numberOfIdentifiedSpectra, int numberOfIdentified1HSpectra, int numberOfIdentified2HSpectra, int numberOfIdentified3HSpectra, int numberOfIdentified4HSpectra) {
+        this.numberOfIdentifiedSpectra = numberOfIdentifiedSpectra;
+        this.numberOfIdentified1HSpectra = numberOfIdentified1HSpectra;
+        this.numberOfIdentified2HSpectra = numberOfIdentified2HSpectra;
+        this.numberOfIdentified3HSpectra = numberOfIdentified3HSpectra;
+        this.numberOfIdentified4HSpectra = numberOfIdentified4HSpectra;
     }
 
     public int getNumberOfIdentifiedSpectra() {

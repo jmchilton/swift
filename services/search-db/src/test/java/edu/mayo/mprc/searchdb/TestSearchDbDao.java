@@ -10,7 +10,6 @@ import edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl;
 import edu.mayo.mprc.fastadb.FastaDbDaoHibernate;
 import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
 import edu.mayo.mprc.searchdb.dao.Analysis;
-import edu.mayo.mprc.searchdb.dao.Report;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
@@ -96,7 +95,9 @@ public class TestSearchDbDao extends DaoTest {
 
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 
-        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new SingleDatabaseTranslator(fastaDbDao, curationDao));
+        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
+                new SingleDatabaseTranslator(fastaDbDao, curationDao),
+                new DummyMassSpecDataExtractor());
         summarizer.load(reader, SINGLE, "3");
         final Analysis analysis = summarizer.getAnalysis();
 

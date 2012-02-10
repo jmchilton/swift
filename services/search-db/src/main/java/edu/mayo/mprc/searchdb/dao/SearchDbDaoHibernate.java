@@ -277,7 +277,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
     @Override
     public List<String> getProteinAccessionNumbers(ProteinSequenceList proteinSequenceList) {
-        return (List<String>) getSession().createQuery("select distinct e.accessionNumber from ProteinDatabaseEntry e where e.sequence in :sequences order by e.accessionNumber")
+        return (List<String>) getSession().createQuery("select distinct e.accessionNumber from ProteinDatabaseEntry e where e.sequence in (:sequences) order by e.accessionNumber")
                 .setParameterList("sequences", proteinSequenceList.getList())
                 .list();
     }

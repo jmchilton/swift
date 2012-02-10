@@ -93,7 +93,8 @@ public final class SearchDbWorker implements Worker {
             ReportData reportData = swiftDao.getReportForId(workPacket.getReportDataId());
 
             ProteinSequenceTranslator translator = new SingleDatabaseTranslator(fastaDbDao, curationDao);
-            ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(databaseUnimod, scaffoldUnimod, translator);
+            MassSpecDataExtractor dataExtractor = new DummyMassSpecDataExtractor();
+            ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(databaseUnimod, scaffoldUnimod, translator, dataExtractor);
             summarizer.load(workPacket.getScaffoldSpectrumReport(), "3");
 
             dao.addAnalysis(summarizer.getAnalysis(), reportData);

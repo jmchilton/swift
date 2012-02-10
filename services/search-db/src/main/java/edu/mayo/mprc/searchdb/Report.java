@@ -1,4 +1,4 @@
-package edu.mayo.mprc.searchdb.dao;
+package edu.mayo.mprc.searchdb;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.StringUtilities;
@@ -49,7 +49,7 @@ public class Report {
     }
 
     public Report nextRow() {
-        write("</tr>");
+        write("</tr>\n");
         rowStarted = false;
         return this;
     }
@@ -66,7 +66,7 @@ public class Report {
             write("<td colspan=\"" + colspan + "\">");
         }
         write(esc(text));
-        write("</td>");
+        write("</td>\n");
         return this;
     }
 
@@ -78,7 +78,8 @@ public class Report {
     }
 
     public Report hCell(String text) {
-        write("<th>" + esc(text) + "</th>");
+        checkRow();
+        write("<th>" + esc(text) + "</th>\n");
         return this;
     }
 
@@ -100,7 +101,7 @@ public class Report {
      * Close the table.
      */
     public Report endTable() {
-        write("</table>");
+        write("</table>\n");
         return this;
     }
 

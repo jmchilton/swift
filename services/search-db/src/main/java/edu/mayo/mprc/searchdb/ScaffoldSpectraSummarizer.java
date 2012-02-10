@@ -5,7 +5,9 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.chem.AminoAcidSet;
 import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
 import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
-import edu.mayo.mprc.searchdb.dao.*;
+import edu.mayo.mprc.searchdb.builder.*;
+import edu.mayo.mprc.searchdb.dao.Analysis;
+import edu.mayo.mprc.searchdb.dao.SearchEngineScores;
 import edu.mayo.mprc.unimod.IndexedModSet;
 
 import java.text.DateFormat;
@@ -37,8 +39,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
      * To parse Scaffold-reported mods.
      */
     private ScaffoldModificationFormat format;
-    private Analysis analysis;
-    private SummarizerCache cache;
+    private AnalysisBuilder analysis;
 
     // Current line parsed into columns, with data in fields trimmed
     private String[] currentLine;
@@ -82,20 +83,23 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
     private int tandemLadderScore;
 
     /**
-     * @param modSet         List of modifications as stored in our database.
-     * @param scaffoldModSet List of modifications as configured within Scaffold.
+     * @param modSet                List of modifications as stored in our database.
+     * @param scaffoldModSet        List of modifications as configured within Scaffold.
+     * @param translator            Can translate accession number + database name into a protein sequence.
+     * @param massSpecDataExtractor Can obtain metadata about the .RAW files.
      */
-    public ScaffoldSpectraSummarizer(IndexedModSet modSet, IndexedModSet scaffoldModSet, ProteinSequenceTranslator translator) {
-        analysis = new Analysis();
+    public ScaffoldSpectraSummarizer(IndexedModSet modSet, IndexedModSet scaffoldModSet, ProteinSequenceTranslator translator,
+                                     MassSpecDataExtractor massSpecDataExtractor) {
         format = new ScaffoldModificationFormat(modSet, scaffoldModSet);
         this.translator = translator;
+        analysis = new AnalysisBuilder(format, translator, massSpecDataExtractor);
     }
 
     /**
      * @return Result of the parse process.
      */
     public Analysis getAnalysis() {
-        return analysis;
+        return analysis.build();
     }
 
     @Override
@@ -157,10 +161,6 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
         mascotDeltaIonScore = getColumnOptional(map, ScaffoldSpectraReader.MASCOT_DELTA_ION_SCORE);
         tandemHyperScore = getColumnOptional(map, ScaffoldSpectraReader.X_TANDEM_HYPER_SCORE);
         tandemLadderScore = getColumnOptional(map, ScaffoldSpectraReader.X_TANDEM_LADDER_SCORE);
-
-        // Prepare for loading all the data
-        analysis.setBiologicalSamples(new BiologicalSampleList(5));
-        cache = new SummarizerCache(format, translator);
     }
 
     /**
@@ -192,10 +192,9 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
     @Override
     public void processRow(String line) {
         fillCurrentLine(line);
-        final BiologicalSample biologicalSample = cache.getBiologicalSample(analysis, currentLine[biologicalSampleName], currentLine[biologicalSampleCategory]);
-        final SearchResult searchResult = cache.getTandemMassSpecResult(biologicalSample, currentLine[msmsSampleName]);
-        final ProteinGroup proteinGroup = cache.getProteinGroup(biologicalSample,
-                searchResult,
+        final BiologicalSampleBuilder biologicalSample = analysis.getBiologicalSamples().getBiologicalSample(currentLine[biologicalSampleName], currentLine[biologicalSampleCategory]);
+        final SearchResultBuilder searchResult = biologicalSample.getSearchResults().getTandemMassSpecResult(currentLine[msmsSampleName]);
+        final ProteinGroupBuilder proteinGroup = searchResult.getProteinGroups().getProteinGroup(
                 currentLine[proteinAccessionNumbers],
                 currentLine[databaseSources],
 
@@ -206,21 +205,17 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
                 parseDouble(currentLine[percentageSequenceCoverage]) / HUNDRED_PERCENT,
                 parseDouble(currentLine[proteinIdentificationProbability]) / HUNDRED_PERCENT);
 
-        final PeptideSpectrumMatch peptideSpectrumMatch =
-                cache.getPeptideSpectrumMatch(
-                        biologicalSample,
-                        searchResult,
-                        proteinGroup,
 
-                        currentLine[peptideSequence],
-                        currentLine[fixedModifications],
-                        currentLine[variableModifications],
+        final PeptideSpectrumMatchBuilder peptideSpectrumMatch = proteinGroup.getPeptideSpectrumMatches().getPeptideSpectrumMatch(
+                currentLine[peptideSequence],
+                currentLine[fixedModifications],
+                currentLine[variableModifications],
 
-                        parseAminoAcid(currentLine[previousAminoAcid]),
-                        parseAminoAcid(currentLine[nextAminoAcid]),
-                        parseInt(currentLine[numberOfEnzymaticTerminii]));
+                parseAminoAcid(currentLine[previousAminoAcid]),
+                parseAminoAcid(currentLine[nextAminoAcid]),
+                parseInt(currentLine[numberOfEnzymaticTerminii]));
 
-        cache.recordSpectrum(peptideSpectrumMatch,
+        peptideSpectrumMatch.recordSpectrum(
                 currentLine[spectrumName],
                 parseInt(currentLine[spectrumCharge]),
                 parseDouble(currentLine[peptideIdentificationProbability]) / HUNDRED_PERCENT,

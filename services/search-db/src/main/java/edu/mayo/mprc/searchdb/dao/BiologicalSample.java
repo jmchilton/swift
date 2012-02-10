@@ -8,7 +8,7 @@ import edu.mayo.mprc.database.PersistableBase;
  * The spectrum IDs need to be separated on sample by
  * sample basis.
  * <p/>
- * The followign Scaffold spectrum report columns are parsed to form this object:
+ * The following Scaffold spectrum report columns are parsed to form this object:
  * <ul>
  * <li>Biological sample category</li>
  * <li>Biological sample name</li>
@@ -76,10 +76,7 @@ public class BiologicalSample extends PersistableBase {
 
         BiologicalSample that = (BiologicalSample) o;
 
-        if (getCategory() != null ? !getCategory().equals(that.getCategory()) : that.getCategory() != null)
-            return false;
-        if (getSampleName() != null ? !getSampleName().equals(that.getSampleName()) : that.getSampleName() != null)
-            return false;
+        if (!keyEquals(that)) return false;
         if (getSearchResults() != null ? !getSearchResults().equals(that.getSearchResults()) : that.getSearchResults() != null)
             return false;
 
@@ -88,9 +85,22 @@ public class BiologicalSample extends PersistableBase {
 
     @Override
     public int hashCode() {
+        int result = keyHashCode();
+        result = 31 * result + (getSearchResults() != null ? getSearchResults().hashCode() : 0);
+        return result;
+    }
+
+    public boolean keyEquals(BiologicalSample that) {
+        if (getCategory() != null ? !getCategory().equals(that.getCategory()) : that.getCategory() != null)
+            return false;
+        if (getSampleName() != null ? !getSampleName().equals(that.getSampleName()) : that.getSampleName() != null)
+            return false;
+        return true;
+    }
+
+    public int keyHashCode() {
         int result = getSampleName() != null ? getSampleName().hashCode() : 0;
         result = 31 * result + (getCategory() != null ? getCategory().hashCode() : 0);
-        result = 31 * result + (getSearchResults() != null ? getSearchResults().hashCode() : 0);
         return result;
     }
 }

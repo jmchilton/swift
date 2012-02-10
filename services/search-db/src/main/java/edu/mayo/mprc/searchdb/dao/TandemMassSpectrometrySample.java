@@ -89,6 +89,21 @@ public class TandemMassSpectrometrySample extends PersistableBase {
     public TandemMassSpectrometrySample() {
     }
 
+    public TandemMassSpectrometrySample(File file, Date lastModified, int ms1Spectra, int msnSpectra, String instrumentSerialNumber, Date startTime, double runTimeInSeconds, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog, String statusLogRanges) {
+        this.file = file;
+        this.lastModified = lastModified;
+        this.ms1Spectra = ms1Spectra;
+        this.msnSpectra = msnSpectra;
+        this.instrumentSerialNumber = instrumentSerialNumber;
+        this.startTime = startTime;
+        this.runTimeInSeconds = runTimeInSeconds;
+        this.tuneMethod = tuneMethod;
+        this.instrumentMethod = instrumentMethod;
+        this.sampleInformation = sampleInformation;
+        this.errorLog = errorLog;
+        this.statusLogRanges = statusLogRanges;
+    }
+
     public File getFile() {
         return file;
     }

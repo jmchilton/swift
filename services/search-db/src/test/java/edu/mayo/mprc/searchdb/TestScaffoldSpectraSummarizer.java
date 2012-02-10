@@ -54,7 +54,8 @@ public class TestScaffoldSpectraSummarizer {
     public void shouldLoadSingleReport() throws IOException {
         final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
         try {
-            ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new DummyTranslator());
+            ScaffoldSpectraSummarizer summarizer = makeSummarizer();
+
             summarizer.load(reader, SINGLE, "3");
             final Analysis analysis = summarizer.getAnalysis();
             Assert.assertEquals(analysis.getAnalysisDate(), TestingUtilities.getDate(2011, 12, 16), "Report date");
@@ -93,6 +94,13 @@ public class TestScaffoldSpectraSummarizer {
         }
     }
 
+    private ScaffoldSpectraSummarizer makeSummarizer() {
+        return new ScaffoldSpectraSummarizer(
+                unimod, scaffoldUnimod,
+                new DummyTranslator(),
+                new DummyMassSpecDataExtractor());
+    }
+
     /**
      * Multiple experiments in one report should be loaded correctly.
      */
@@ -100,7 +108,7 @@ public class TestScaffoldSpectraSummarizer {
     public void shouldLoadMultipleReports() {
         final Reader reader = ResourceUtilities.getReader(MULTIPLE, TestScaffoldSpectraSummarizer.class);
         try {
-            ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new DummyTranslator());
+            ScaffoldSpectraSummarizer summarizer = makeSummarizer();
             summarizer.load(reader, MULTIPLE, "3");
             final Analysis analysis = summarizer.getAnalysis();
             Assert.assertEquals(analysis.getAnalysisDate(), TestingUtilities.getDate(2011, 12, 28), "Report date");
@@ -121,7 +129,7 @@ public class TestScaffoldSpectraSummarizer {
     public void shouldLoadLargeReport() {
         final Reader reader = ResourceUtilities.getReader(LARGE, TestScaffoldSpectraSummarizer.class);
         try {
-            ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod, new DummyTranslator());
+            ScaffoldSpectraSummarizer summarizer = makeSummarizer();
             summarizer.load(reader, LARGE, "3");
             final Analysis analysis = summarizer.getAnalysis();
             Assert.assertEquals(analysis.getAnalysisDate(), TestingUtilities.getDate(2011, 10, 18), "Report date");

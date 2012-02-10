@@ -2,6 +2,7 @@ package edu.mayo.mprc.searchdb.dao;
 
 import com.google.common.base.Joiner;
 import edu.mayo.mprc.database.PersistableBase;
+import edu.mayo.mprc.searchdb.Report;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 
 import java.text.DecimalFormat;
@@ -213,7 +214,7 @@ public final class Analysis extends PersistableBase {
         r.startTable("Results") // -- Results
                 .cell("", 1);
 
-        TreeMap<Integer, ProteinGroup> allProteinGroups = new TreeMap<Integer, ProteinGroup>();
+        TreeMap<Integer, ProteinSequenceList> allProteinGroups = new TreeMap<Integer, ProteinSequenceList>();
 
         // List biological samples
         for (BiologicalSample sample : getBiologicalSamples()) {
@@ -221,7 +222,7 @@ public final class Analysis extends PersistableBase {
 
             for (SearchResult result : sample.getSearchResults()) {
                 for (ProteinGroup group : result.getProteinGroups()) {
-                    allProteinGroups.put(group.getId(), group);
+                    allProteinGroups.put(group.getProteinSequences().getId(), group.getProteinSequences());
                 }
             }
         }
@@ -232,19 +233,19 @@ public final class Analysis extends PersistableBase {
         // List all mass-spec samples within the biological samples
         for (BiologicalSample sample : getBiologicalSamples()) {
             for (SearchResult result : sample.getSearchResults()) {
-                r.cell(result.getMassSpecSample().getFile().getName());
+                r.cell(result.getMassSpecSample() != null ? result.getMassSpecSample().getFile().getName() : "<null>");
             }
         }
         r.nextRow(); // ---------------
 
-        for (ProteinGroup proteinGroup : allProteinGroups.values()) {
-            List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinGroup.getProteinSequences());
+        for (ProteinSequenceList proteinSequences : allProteinGroups.values()) {
+            List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinSequences);
             r.hCell(Joiner.on(", ").join(proteinAccessionNumbers));
 
             for (BiologicalSample sample : getBiologicalSamples()) {
                 for (SearchResult result : sample.getSearchResults()) {
                     for (ProteinGroup g : result.getProteinGroups()) {
-                        if (proteinGroup.getId().equals(g.getId())) {
+                        if (proteinSequences.getId().equals(g.getProteinSequences().getId())) {
                             r.cell(String.valueOf(g.getNumberOfTotalSpectra()));
                         }
                     }

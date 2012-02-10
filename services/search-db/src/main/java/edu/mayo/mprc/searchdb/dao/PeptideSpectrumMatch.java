@@ -73,6 +73,19 @@ public class PeptideSpectrumMatch extends PersistableBase {
      */
     private int numberOfEnzymaticTerminii;
 
+    public PeptideSpectrumMatch() {
+    }
+
+    public PeptideSpectrumMatch(IdentifiedPeptide peptide, char previousAminoAcid, char nextAminoAcid, double bestPeptideIdentificationProbability, SearchEngineScores bestSearchEngineScores, SpectrumIdentificationCounts spectrumIdentificationCounts, int numberOfEnzymaticTerminii) {
+        this.peptide = peptide;
+        this.previousAminoAcid = previousAminoAcid;
+        this.nextAminoAcid = nextAminoAcid;
+        this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
+        this.bestSearchEngineScores = bestSearchEngineScores;
+        this.spectrumIdentificationCounts = spectrumIdentificationCounts;
+        this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
+    }
+
     public IdentifiedPeptide getPeptide() {
         return peptide;
     }
@@ -127,28 +140,6 @@ public class PeptideSpectrumMatch extends PersistableBase {
 
     public void setSpectrumIdentificationCounts(SpectrumIdentificationCounts spectrumIdentificationCounts) {
         this.spectrumIdentificationCounts = spectrumIdentificationCounts;
-    }
-
-    /**
-     * Bump up best scores based on a new bunch.
-     *
-     * @param peptideIdentificationProbability
-     *               Potentially better ID probability.
-     * @param scores Potentially better search engine scores
-     */
-    public void updateScores(double peptideIdentificationProbability,
-                             SearchEngineScores scores) {
-        bestPeptideIdentificationProbability = Math.max(bestPeptideIdentificationProbability, peptideIdentificationProbability);
-        bestSearchEngineScores.setMax(scores);
-    }
-
-    /**
-     * Count another spectrum towards the PSM.
-     *
-     * @param spectrumCharge Charge of the new spectrum.
-     */
-    public void addSpectrum(int spectrumCharge) {
-        spectrumIdentificationCounts.addSpectrum(spectrumCharge);
     }
 
     @Override

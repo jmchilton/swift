@@ -45,7 +45,7 @@ final class ProteinGroupKey {
         ProteinGroupKey that = (ProteinGroupKey) o;
 
         if (!accessionNumbers.equals(that.accessionNumbers)) return false;
-        if (!biologicalSample.equals(that.biologicalSample)) return false;
+        if (!biologicalSample.keyEquals(that.biologicalSample)) return false;
         if (!databaseSources.equals(that.databaseSources)) return false;
 
         return true;
@@ -53,7 +53,7 @@ final class ProteinGroupKey {
 
     @Override
     public int hashCode() {
-        int result = biologicalSample.hashCode();
+        int result = biologicalSample.keyHashCode();
         result = 31 * result + accessionNumbers.hashCode();
         result = 31 * result + databaseSources.hashCode();
         return result;

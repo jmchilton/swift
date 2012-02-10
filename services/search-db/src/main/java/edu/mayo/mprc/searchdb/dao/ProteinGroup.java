@@ -59,6 +59,20 @@ public class ProteinGroup extends PersistableBase {
      */
     private double percentageSequenceCoverage;
 
+    public ProteinGroup() {
+    }
+
+    public ProteinGroup(ProteinSequenceList proteinSequences, PsmList peptideSpectrumMatches, double proteinIdentificationProbability, int numberOfUniquePeptides, int numberOfUniqueSpectra, int numberOfTotalSpectra, double percentageOfTotalSpectra, double percentageSequenceCoverage) {
+        this.proteinSequences = proteinSequences;
+        this.peptideSpectrumMatches = peptideSpectrumMatches;
+        this.proteinIdentificationProbability = proteinIdentificationProbability;
+        this.numberOfUniquePeptides = numberOfUniquePeptides;
+        this.numberOfUniqueSpectra = numberOfUniqueSpectra;
+        this.numberOfTotalSpectra = numberOfTotalSpectra;
+        this.percentageOfTotalSpectra = percentageOfTotalSpectra;
+        this.percentageSequenceCoverage = percentageSequenceCoverage;
+    }
+
     public ProteinSequenceList getProteinSequences() {
         return proteinSequences;
     }
