@@ -161,33 +161,13 @@ public abstract class DaoBase implements Dao {
         if (owner.getId() != null) {
             throw new MprcException("The set is already saved in the database.");
         }
-        T existing = null;
+        final T existing;
         final String className = owner.getClass().getName();
 
         if (set.size() > 0) {
-            Integer[] ids = DatabaseUtilities.getIdList(set);
-
-            final List<T> ts = (List<T>) session.createQuery(
-                    "select s from " + className + " as s join s." + setField + " as m where m.id in (:ids) and s.id in ("
-                            + "select s.id from " + className + " where s." + setField + ".size = :ids_count "
-                            + ") group by s.id having count(m)=:ids_count")
-                    .setParameterList("ids", ids)
-                    .setParameter("ids_count", ids.length)
-                    .list();
-            if (ts.size() > 1) {
-                throw new MprcException("There are " + ts.size() + " identical sets in the database");
-            } else if (ts.size() == 1) {
-                existing = ts.iterator().next();
-            }
+            existing = getMatchingSet(set, setField, className);
         } else {
-            final List<T> ts = (List<T>) session.createQuery(
-                    "select s from " + className + " as s where s." + setField + ".size = 0")
-                    .list();
-            if (ts.size() > 1) {
-                throw new MprcException("Empty set exists in two instances, database is probably corrupted");
-            } else if (ts.size() == 1) {
-                existing = ts.iterator().next();
-            }
+            existing = getMatchingEmptySet(setField, className);
         }
 
         if (existing != null) {
@@ -203,6 +183,37 @@ public abstract class DaoBase implements Dao {
 
         session.save(owner);
         return owner;
+    }
+
+    private <T extends PersistableBase> T getMatchingEmptySet(String setField, String className) {
+        final List<T> ts = (List<T>) getSession().createQuery(
+                "select s from " + className + " as s where s." + setField + ".size = 0")
+                .list();
+        if (ts.size() > 1) {
+            throw new MprcException("Empty set exists in two instances, database is probably corrupted");
+        } else if (ts.size() == 1) {
+            return ts.iterator().next();
+        }
+        return null;
+    }
+
+    private <T extends PersistableBase, S extends PersistableBase> T getMatchingSet(Collection<S> set, String setField, String className) {
+        Session session = getSession();
+        Integer[] ids = DatabaseUtilities.getIdList(set);
+
+        final List<T> ts = (List<T>) session.createQuery(
+                "select s from " + className + " as s join s." + setField + " as m where m.id in (:ids) and s.id in ("
+                        + "select s.id from " + className + " where s." + setField + ".size = :ids_count "
+                        + ") group by s.id having count(m)=:ids_count")
+                .setParameterList("ids", ids)
+                .setParameter("ids_count", ids.length)
+                .list();
+        if (ts.size() > 1) {
+            throw new MprcException("There are " + ts.size() + " identical sets in the database");
+        } else if (ts.size() == 1) {
+            return ts.iterator().next();
+        }
+        return null;
     }
 
     /**
