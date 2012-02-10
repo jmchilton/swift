@@ -40,10 +40,10 @@ SearchRunItemVisualizer.prototype.toggleExpanded = function(evt, element, id, ob
     this.update(element, object);
     if (object.expanded) {
         new Ajax.Request('reportupdate',
-                {
-                    method: 'get',
-                    parameters : { action : 'expand', id : object.id }
-                });
+            {
+                method: 'get',
+                parameters : { action : 'expand', id : object.id }
+            });
     }
 };
 
@@ -53,22 +53,14 @@ SearchRunItemVisualizer.prototype.render = function(id, object, elementType) {
     return element;
 };
 
-SearchRunItemVisualizer.prototype.singleResultTemplate = new Template('<table class="reportList">' +
-        '<tr>' +
-        '<td class="result-link"><span title="#{filePath}" id="#{id}" class="result-link"><a href="#{fullUrl}" title="#{filePath}">#{fileName}</a></span>' +
-        '</td>' +
-        '<td class="result-buttons">' +
-        '<a href="#{parentUrl}" class="parent-dir-link" title="#{parentPath}">Directory</a>' +
-        '<a href="#{parentUrl}../qa/index.html" class="qa-link" title="Quality Analysis">QA</a>' +
-        '</td></tr>' +
-        '</table>');
-
 SearchRunItemVisualizer.prototype.multiResultHeadTemplate = new Template('<table class="reportList"><tr><td class="result-link"><span>');
 SearchRunItemVisualizer.prototype.multiResultEntryTemplate = new Template('<a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><br/>');
+// Entry has analysis attached
+SearchRunItemVisualizer.prototype.multiResultEntryAnalysisTemplate = new Template('<a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><a href="/analysis?id=#{reportId}" class="analysis-data-link">Data</a><br/>');
 SearchRunItemVisualizer.prototype.multiResultTailTemplate = new Template('</span></td><td class="result-buttons">' +
-        '<a href="#{parentUrl}" class="parent-dir-link" title="#{parentPath}">Directory</a>' +
-        '<a href="#{parentUrl}../qa/index.html" class="qa-link" title="Quality Analysis">QA</a>' +
-        '</td></tr></table>');
+    '<a href="#{parentUrl}" class="parent-dir-link" title="#{parentPath}">Directory</a>' +
+    '<a href="#{parentUrl}../qa/index.html" class="qa-link" title="Quality Analysis">QA</a>' +
+    '</td></tr></table>');
 
 SearchRunItemVisualizer.prototype.displayTransactionError = function(event, message) {
     alert(message);
@@ -84,7 +76,7 @@ SearchRunItemVisualizer.prototype.getParentFile = function(filename) {
 
 SearchRunItemVisualizer.prototype.confirmRerun = function(event, id, title) {
     if (!window.confirm("Are you sure you want to restart search " + title + " (id=" + id + ") ?\n\n"
-            + "You should only restart searches that are not currently running."
+        + "You should only restart searches that are not currently running."
     )) {
         Event.stop(event);
     }
@@ -92,7 +84,7 @@ SearchRunItemVisualizer.prototype.confirmRerun = function(event, id, title) {
 
 SearchRunItemVisualizer.prototype.confirmHide = function(event, id, title) {
     if (!window.confirm("Are you sure you want to hide search " + title + " (id=" + id + ") ?\n\n"
-            + "After a search was hidden, it takes an admin to unhide it again.")) {
+        + "After a search was hidden, it takes an admin to unhide it again.")) {
         Event.stop(event);
     }
 };
@@ -215,24 +207,19 @@ SearchRunItemVisualizer.prototype.fillWithContents = function(fragment, id, obje
             }
             else {
                 if (object.results) {
-                    if (object.results.length > 1) {
+                    if (object.results.length > 0) {
                         results += this.multiResultHeadTemplate.evaluate({id:"file_" + object.id});
                         var fileInfo;
                         for (var i = 0; i < object.results.length; i++) {
-                            fileInfo = new Object();
-                            var path = object.results[i];
-                            this.splitPathIntoParts(path, fileInfo);
-                            results += this.multiResultEntryTemplate.evaluate(fileInfo);
+                            fileInfo = object.results[i];
+                            this.splitPathIntoParts(fileInfo.path, fileInfo);
+                            if (fileInfo.analysis == 0) {
+                                results += this.multiResultEntryTemplate.evaluate(fileInfo);
+                            } else {
+                                results += this.multiResultEntryAnalysisTemplate.evaluate(fileInfo);
+                            }
                         }
                         results += this.multiResultTailTemplate.evaluate(fileInfo);
-                    }
-                    else if (object.results.length > 0) {
-                        var fileInfo = new Object();
-                        var path = object.results[0];
-                        var path = object.results[0];
-                        fileInfo['id'] = "file_" + object.id;
-                        this.splitPathIntoParts(path, fileInfo);
-                        results += this.singleResultTemplate.evaluate(fileInfo);
                     }
                 } else {
                     results += "<span class='result-status'>" + statusMessage + "</span>";
@@ -396,7 +383,7 @@ RegExp.escape = function(text) {
             '(', ')', '[', ']', '{', '}', '\\'
         ];
         arguments.callee.sRE = new RegExp(
-                '(\\' + specials.join('|\\') + ')', 'g'
+            '(\\' + specials.join('|\\') + ')', 'g'
         );
     }
     return text.replace(arguments.callee.sRE, '\\$1');

@@ -1,6 +1,7 @@
 package edu.mayo.mprc.swift.ui.server;
 
 import edu.mayo.mprc.common.client.GWTServiceException;
+import edu.mayo.mprc.swift.SwiftWebContext;
 import edu.mayo.mprc.swift.ui.client.rpc.ClientUser;
 import edu.mayo.mprc.swift.ui.client.rpc.files.DirectoryEntry;
 import edu.mayo.mprc.swift.ui.client.rpc.files.Entry;
@@ -27,6 +28,7 @@ public final class ServiceTest {
 	protected void init() throws Exception {
 		LOGGER.debug("Starting up service");
 		_service = new ServiceImpl();
+		SwiftWebContext.setupTest();
 		LOGGER.debug("Service is up");
 	}
 

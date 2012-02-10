@@ -390,7 +390,7 @@ a:hover.filter_button.filter.ztoa {
     border: 1px solid #ddf;
 }
 
-.rerun-link, .edit-link, .hide-link, .qa-link, .parent-dir-link {
+.rerun-link, .edit-link, .hide-link, .qa-link, .parent-dir-link, .analysis-data-link {
     display: block;
     color: #fff;
     font-size: 1px;
@@ -420,6 +420,11 @@ a:hover.filter_button.filter.ztoa {
 }
 
 .qa-link {
+    background-image: url(search.gif);
+}
+
+.analysis-data-link {
+    float: none;
     background-image: url(search.gif);
 }
 

@@ -9,6 +9,7 @@ import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.qstat.QstatOutput;
 import edu.mayo.mprc.qstat.QstatWorkPacket;
+import edu.mayo.mprc.searchdb.dao.SearchDbDao;
 import edu.mayo.mprc.swift.SwiftWebContext;
 import edu.mayo.mprc.swift.db.SearchRunFilter;
 import edu.mayo.mprc.swift.db.SwiftDao;
@@ -37,6 +38,7 @@ public final class ReportUpdate extends HttpServlet {
 	private static final String CONTENT_TYPE = "application/javascript; charset=utf-8";
 	private static final Logger LOGGER = Logger.getLogger(ReportUpdate.class);
 	private transient SwiftDao swiftDao;
+	private transient SearchDbDao searchDbDao;
 	private transient FileTokenFactory fileTokenFactory;
 	/**
 	 * How many milliseconds to wait till qstat considered down.
@@ -47,6 +49,7 @@ public final class ReportUpdate extends HttpServlet {
 		if (ServletIntialization.initServletConfiguration(getServletConfig())) {
 			if (SwiftWebContext.getServletConfig() != null) {
 				swiftDao = SwiftWebContext.getServletConfig().getSwiftDao();
+				searchDbDao = SwiftWebContext.getServletConfig().getSearchDbDao();
 				fileTokenFactory = SwiftWebContext.getServletConfig().getFileTokenFactory();
 			}
 		}
@@ -256,7 +259,7 @@ public final class ReportUpdate extends HttpServlet {
 		newTimestamp.setTime(0);
 		for (int i = firstSearchRun; i < lastSearchRun; i++) {
 			SearchRun searchRun = searchRuns.get(i);
-			ArrayList<String> reports = getReportsForSearchRun(searchRun);
+			ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
 			if (null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(newTimestamp) > 0) {
 				newTimestamp = searchRun.getStartTimestamp();
 			}
@@ -270,17 +273,17 @@ public final class ReportUpdate extends HttpServlet {
 		out.setTimestamp(newTimestamp);
 	}
 
-	private ArrayList<String> getReportsForSearchRun(SearchRun searchRun) {
-		ArrayList<String> reports = null;
-		if (searchRun.isCompleted()) {
-			reports = new ArrayList<String>();
-			for (ReportData report : searchRun.getReports()) {
-				reports.add(fileTokenFactory.fileToTaggedDatabaseToken(report.getReportFileId()));
-			}
+	private ArrayList<ReportInfo> getReportsForSearchRun(SearchRun searchRun) {
+		ArrayList<ReportInfo> reports = new ArrayList<ReportInfo>();
+		for (ReportData report : searchRun.getReports()) {
+			reports.add(
+					new ReportInfo(report.getId(),
+							fileTokenFactory.fileToTaggedDatabaseToken(report.getReportFileId()),
+							searchDbDao.hasAnalysis(report.getId())
+					)
+			);
 		}
-		if (reports != null) {
-			Collections.sort(reports);
-		}
+		Collections.sort(reports);
 		return reports;
 	}
 
@@ -300,7 +303,7 @@ public final class ReportUpdate extends HttpServlet {
 		Date newTimestamp = timestamp;
 		for (int i = firstSearchRun; i < lastSearchRun; i++) {
 			SearchRun searchRun = searchRuns.get(i);
-			ArrayList<String> reports = getReportsForSearchRun(searchRun);
+			ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
 			if (null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(newTimestamp) > 0) {
 				newTimestamp = searchRun.getStartTimestamp();
 			}

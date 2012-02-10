@@ -78,7 +78,7 @@ public final class JsonWriter {
 	 * @param reports      A listing of searchRun output files. Can be null in case the searchRun did not finish yet.
 	 * @param runningTasks Number of tasks currently running.
 	 */
-	public void processSearchRun(int order, SearchRun searchRun, int runningTasks, Iterable<String> reports, String method) {
+	public void processSearchRun(int order, SearchRun searchRun, int runningTasks, Iterable<ReportInfo> reports, String method) {
 		StringBuilder parameter = new StringBuilder(SEARCH_RUN_BUILDER_CAPACITY);
 		// Only insert method supports the order parameter (others define items by id)
 		// Only update method outputs just "live" data (data that change during lifetime of the searchRun)
@@ -97,7 +97,7 @@ public final class JsonWriter {
 	 * @param justLiveData When true, only "live data" are reported (data that changes during the lifetime of the searchRun)
 	 * @return Original StringBuilder with searchRun appended.
 	 */
-	public static StringBuilder appendSearchRunJson(StringBuilder builder, int order, SearchRun searchRun, int runningTasks, Iterable<String> reports, boolean justLiveData) {
+	public static StringBuilder appendSearchRunJson(StringBuilder builder, int order, SearchRun searchRun, int runningTasks, Iterable<ReportInfo> reports, boolean justLiveData) {
 		builder.append('{');
 
 		if (0 <= order) {
@@ -125,8 +125,8 @@ public final class JsonWriter {
 		appendKeyNumber(builder, "failures", (long) searchRun.getTasksFailed());
 		appendKeyNumber(builder, "warnings", (long) searchRun.getTasksWithWarning());
 		appendKeyNumber(builder, "running", (long) runningTasks);
-		if (searchRun.getTasksCompleted() >= searchRun.getNumTasks()) {
-			appendKeyStringArray(builder, "results", reports);
+		if (reports != null) {
+			appendKeyReportInfo(builder, "results", reports);
 		}
 		appendComma(builder);
 		builder.append("\"details\":{");
@@ -309,6 +309,33 @@ public final class JsonWriter {
 			}
 			parameter.append(']');
 		}
+	}
+
+	private static void appendKeyReportInfo(StringBuilder parameter, String key, Iterable<ReportInfo> value) {
+		appendComma(parameter);
+		if (value == null) {
+			parameter.append('"').append(key).append("\":null");
+		} else {
+			parameter.append('"').append(key).append("\":[");
+			boolean first = true;
+			for (ReportInfo v : value) {
+				if (!first) {
+					parameter.append(", ");
+				}
+				first = false;
+
+				appendReportInfo(parameter, v);
+			}
+			parameter.append(']');
+		}
+	}
+
+	private static void appendReportInfo(StringBuilder builder, ReportInfo info) {
+		builder.append('{');
+		appendKeyNumber(builder, "reportId", info.getReportId());
+		appendKeyString(builder, "path", info.getFilePath());
+		appendKeyNumber(builder, "analysis", info.isHasAnalysis() ? 1 : 0);
+		builder.append('}');
 	}
 
 	private static void appendLogInfo(StringBuilder builder, LogInfo info) {

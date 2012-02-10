@@ -3,6 +3,7 @@ package edu.mayo.mprc.swift;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.ApplicationConfig;
 import edu.mayo.mprc.config.DaemonConfig;
+import edu.mayo.mprc.config.DependencyResolver;
 import edu.mayo.mprc.config.MultiFactory;
 import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.dbcurator.server.CurationWebContext;
@@ -10,10 +11,12 @@ import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * This is a utility class for centralizing access to the Spring ApplicationContext that has been set.  Ideally this
+ * This is a utility class for centralizing access to the Spring ApplicationContext.  Ideally this
  * class would eventually go away as we wire more and more of Swift through Spring but in reality it will take a large
  * effort (too large?) to decouple Swift enough to make full Spring wiring possible.
  */
@@ -138,5 +141,19 @@ public final class SwiftWebContext {
 			return prefix + "/";
 		}
 		return prefix;
+	}
+
+	/**
+	 * TODO: SwiftWebContext must not be a singleton to enable proper testing - fix!
+	 */
+	public static void setupTest() {
+		synchronized (SwiftWebContext.class) {
+			final WebUi.Config config = new WebUi.Config();
+			final DependencyResolver dependencies = new DependencyResolver(null);
+			Map<String, String> map = new HashMap<String, String>(1);
+			map.put(WebUi.BROWSE_ROOT, "/");
+			config.load(map, dependencies);
+			webUi = (WebUi) MainFactoryContext.getResourceTable().createSingleton(config, dependencies);
+		}
 	}
 }

@@ -5,6 +5,7 @@ import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import edu.mayo.mprc.swift.dbmapping.TaskData;
 import edu.mayo.mprc.swift.dbmapping.TaskStateData;
 import edu.mayo.mprc.swift.report.JsonWriter;
+import edu.mayo.mprc.swift.report.ReportInfo;
 import edu.mayo.mprc.workflow.persistence.TaskState;
 import edu.mayo.mprc.workspace.User;
 import org.testng.Assert;
@@ -14,8 +15,10 @@ import org.testng.annotations.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Roman Zenka
@@ -30,7 +33,9 @@ public final class JsonCommunicationTest {
 					"\"submitted\":\"5/6/05 10:22 AM\", \"duration\":\"397 days, 13:11:11\", \"subtasks\":123, " +
 					"\"search\":0, " +
 					"\"errormsg\":\"Transaction error message\", " +
-					"\"ok\":13, \"failures\":14, \"warnings\":15, \"running\":3, \"details\":{\"total\":123}}";
+					"\"ok\":13, \"failures\":14, \"warnings\":15, \"running\":3, " +
+					"\"results\":[{\"reportId\":34, \"path\":\"/test1.sf3\", \"analysis\":1}, {\"reportId\":35, \"path\":\"/test2.sf3\", \"analysis\":0}], " +
+					"\"details\":{\"total\":123}}";
 
 	private TaskData status;
 	private static final String STATUS_JSON =
@@ -100,7 +105,6 @@ public final class JsonCommunicationTest {
 		searchRun.setTitle("Transaction title");
 		searchRun.setErrorMessage("Transaction error message");
 		searchRun.setErrorCode(12321);
-
 	}
 
 	@AfterMethod
@@ -125,16 +129,23 @@ public final class JsonCommunicationTest {
 
 	@Test(enabled = true, groups = {"fast", "unit"}, dependsOnMethods = {"testClearAll"}, sequential = true)
 	public void testInsertSearchRun() {
-		out.processSearchRun(0, searchRun, 3, null, "insert");
+		out.processSearchRun(0, searchRun, 3, getReportInfos(), "insert");
 		out.close();
 		Assert.assertEquals(outputStream.toString(), JsonWriter.TARGET + ".insert([" + SEARCH_RUN_JSON + "]);" + JsonWriter.TARGET + ".fireOnChange();", "Insert transaction");
 	}
 
+	private List<ReportInfo> getReportInfos() {
+		List<ReportInfo> reportInfos = new ArrayList<ReportInfo>(2);
+		reportInfos.add(new ReportInfo(34, "/test1.sf3", true));
+		reportInfos.add(new ReportInfo(35, "/test2.sf3", false));
+		return reportInfos;
+	}
+
 	@Test(enabled = true, groups = {"fast", "unit"}, dependsOnMethods = {"testInsertSearchRun"}, sequential = true)
 	public void testInsertClearInsert() {
-		out.processSearchRun(0, searchRun, 3, null, "insert");
+		out.processSearchRun(0, searchRun, 3, getReportInfos(), "insert");
 		out.clearAll();
-		out.processSearchRun(0, searchRun, 3, null, "insert");
+		out.processSearchRun(0, searchRun, 3, getReportInfos(), "insert");
 		out.close();
 		Assert.assertEquals(outputStream.toString(),
 				JsonWriter.TARGET + ".insert([" + SEARCH_RUN_JSON + "]);" +
@@ -144,8 +155,8 @@ public final class JsonCommunicationTest {
 
 	@Test(enabled = true, groups = {"fast", "unit"}, dependsOnMethods = {"testInsertClearInsert"}, sequential = true)
 	public void testDoubleInsert() {
-		out.processSearchRun(0, this.searchRun, 3, null, "insert");
-		out.processSearchRun(0, this.searchRun, 3, null, "insert");
+		out.processSearchRun(0, this.searchRun, 3, getReportInfos(), "insert");
+		out.processSearchRun(0, this.searchRun, 3, getReportInfos(), "insert");
 		out.close();
 		Assert.assertEquals(outputStream.toString(),
 				JsonWriter.TARGET + ".insert([" + SEARCH_RUN_JSON + ", " + SEARCH_RUN_JSON + "]);" + JsonWriter.TARGET + ".fireOnChange();", "Double insert");
