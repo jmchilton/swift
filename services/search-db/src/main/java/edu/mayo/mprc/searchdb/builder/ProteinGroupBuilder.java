@@ -7,6 +7,8 @@ import edu.mayo.mprc.searchdb.dao.ProteinSequenceList;
  * @author Roman Zenka
  */
 public class ProteinGroupBuilder implements Builder<ProteinGroup> {
+    private SearchResultBuilder searchResult;
+
     private ProteinSequenceList proteinSequences;
     private PsmListBuilder peptideSpectrumMatches;
     private double proteinIdentificationProbability;
@@ -16,11 +18,15 @@ public class ProteinGroupBuilder implements Builder<ProteinGroup> {
     private double percentageOfTotalSpectra;
     private double percentageSequenceCoverage;
 
-    private SearchResultBuilder searchResult;
-
-    public ProteinGroupBuilder(SearchResultBuilder searchResult) {
+    public ProteinGroupBuilder(SearchResultBuilder searchResult, double proteinIdentificationProbability, int numberOfUniquePeptides, int numberOfUniqueSpectra, int numberOfTotalSpectra, double percentageOfTotalSpectra, double percentageSequenceCoverage) {
         this.searchResult = searchResult;
         this.peptideSpectrumMatches = new PsmListBuilder(this);
+        this.proteinIdentificationProbability = proteinIdentificationProbability;
+        this.numberOfUniquePeptides = numberOfUniquePeptides;
+        this.numberOfUniqueSpectra = numberOfUniqueSpectra;
+        this.numberOfTotalSpectra = numberOfTotalSpectra;
+        this.percentageOfTotalSpectra = percentageOfTotalSpectra;
+        this.percentageSequenceCoverage = percentageSequenceCoverage;
     }
 
     @Override
@@ -33,45 +39,6 @@ public class ProteinGroupBuilder implements Builder<ProteinGroup> {
 
     public SearchResultBuilder getSearchResult() {
         return searchResult;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProteinGroupBuilder that = (ProteinGroupBuilder) o;
-
-        if (numberOfTotalSpectra != that.numberOfTotalSpectra) return false;
-        if (numberOfUniquePeptides != that.numberOfUniquePeptides) return false;
-        if (numberOfUniqueSpectra != that.numberOfUniqueSpectra) return false;
-        if (Double.compare(that.percentageOfTotalSpectra, percentageOfTotalSpectra) != 0) return false;
-        if (Double.compare(that.percentageSequenceCoverage, percentageSequenceCoverage) != 0) return false;
-        if (Double.compare(that.proteinIdentificationProbability, proteinIdentificationProbability) != 0) return false;
-        if (peptideSpectrumMatches != null ? !peptideSpectrumMatches.equals(that.peptideSpectrumMatches) : that.peptideSpectrumMatches != null)
-            return false;
-        if (proteinSequences != null ? !proteinSequences.equals(that.proteinSequences) : that.proteinSequences != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = proteinSequences != null ? proteinSequences.hashCode() : 0;
-        result = 31 * result + (peptideSpectrumMatches != null ? peptideSpectrumMatches.hashCode() : 0);
-        temp = proteinIdentificationProbability != +0.0d ? Double.doubleToLongBits(proteinIdentificationProbability) : 0L;
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + numberOfUniquePeptides;
-        result = 31 * result + numberOfUniqueSpectra;
-        result = 31 * result + numberOfTotalSpectra;
-        temp = percentageOfTotalSpectra != +0.0d ? Double.doubleToLongBits(percentageOfTotalSpectra) : 0L;
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = percentageSequenceCoverage != +0.0d ? Double.doubleToLongBits(percentageSequenceCoverage) : 0L;
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
     }
 
     public ProteinSequenceList getProteinSequences() {

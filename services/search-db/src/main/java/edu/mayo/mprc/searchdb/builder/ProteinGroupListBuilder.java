@@ -52,7 +52,7 @@ public class ProteinGroupListBuilder implements Builder<ProteinGroupList> {
      *                                   What is the calculated probability that this protein is identified correctly.
      * @return Current protein group.
      */
-    public ProteinGroupBuilder getProteinGroup(String proteinAccessionNumbers,
+    public ProteinGroupBuilder getProteinGroup(CharSequence proteinAccessionNumbers,
                                                String databaseSources,
                                                int numberOfTotalSpectra,
                                                int numberOfUniquePeptides, int numberOfUniqueSpectra,
@@ -60,8 +60,6 @@ public class ProteinGroupListBuilder implements Builder<ProteinGroupList> {
                                                double proteinIdentificationProbability) {
         // Canonicalize the protein accession numbers- just in case
         final String[] accNums = Iterables.toArray(PROTEIN_ACCESSION_SPLITTER.split(proteinAccessionNumbers), String.class);
-        final String referenceAccNum = accNums[0];
-
 
         Arrays.sort(accNums, String.CASE_INSENSITIVE_ORDER);
         final String canonicalizedAccNums = Joiner.on(',').join(accNums);
@@ -69,15 +67,10 @@ public class ProteinGroupListBuilder implements Builder<ProteinGroupList> {
 
         final ProteinGroupBuilder proteinGroup = list.get(key);
         if (proteinGroup == null) {
-            final ProteinGroupBuilder newProteinGroup = new ProteinGroupBuilder(searchResult);
+            final ProteinGroupBuilder newProteinGroup = new ProteinGroupBuilder(searchResult,
+                    proteinIdentificationProbability, numberOfUniquePeptides, numberOfUniqueSpectra,
+                    numberOfTotalSpectra, percentageOfTotalSpectra, percentageSequenceCoverage);
             addProteinSequences(accNums, databaseSources, newProteinGroup);
-
-            newProteinGroup.setNumberOfTotalSpectra(numberOfTotalSpectra);
-            newProteinGroup.setNumberOfUniquePeptides(numberOfUniquePeptides);
-            newProteinGroup.setNumberOfUniqueSpectra(numberOfUniqueSpectra);
-            newProteinGroup.setPercentageOfTotalSpectra(percentageOfTotalSpectra);
-            newProteinGroup.setPercentageSequenceCoverage(percentageSequenceCoverage);
-            newProteinGroup.setProteinIdentificationProbability(proteinIdentificationProbability);
 
             list.put(key, newProteinGroup);
             return newProteinGroup;
