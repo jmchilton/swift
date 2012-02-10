@@ -201,10 +201,6 @@ public abstract class DaoBase implements Dao {
             }
         }
 
-        if (set.size() == 0) {
-            String name = set.getClass().getName();
-            int i = 0;
-        }
         session.save(owner);
         return owner;
     }
