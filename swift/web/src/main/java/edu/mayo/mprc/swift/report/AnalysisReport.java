@@ -59,7 +59,7 @@ public class AnalysisReport extends HttpServlet {
                         "</style>" +
                         "</head><body>");
                 writer.write("<h1>Scaffold Report</h1>");
-                analysis.htmlReport(new Report(writer));
+                analysis.htmlReport(new Report(writer), searchDbDao);
 
                 searchDbDao.commit();
             } catch (Exception e) {
