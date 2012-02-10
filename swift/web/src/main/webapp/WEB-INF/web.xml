@@ -56,6 +56,10 @@
         <servlet-name>ModificationReport</servlet-name>
         <servlet-class>edu.mayo.mprc.swift.report.ModificationReport</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AnalysisReport</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.AnalysisReport</servlet-class>
+    </servlet>
     <!--inserted manually -->
     <servlet-mapping>
         <servlet-name>SwiftAppService</servlet-name>
@@ -104,6 +108,10 @@
     <servlet-mapping>
         <servlet-name>ModificationReport</servlet-name>
         <url-pattern>/mods</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AnalysisReport</servlet-name>
+        <url-pattern>/analysis</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
