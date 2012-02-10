@@ -1,6 +1,9 @@
 package edu.mayo.mprc.database;
 
-import java.util.*;
+import com.google.common.collect.LinkedHashMultiset;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Base for classes that are nothing but a list to be persisted.
@@ -8,15 +11,25 @@ import java.util.*;
  *
  * @author Roman Zenka
  */
-public abstract class PersistableListBase<T extends PersistableBase> extends PersistableBase implements List<T> {
-    private List<T> list;
+public abstract class PersistableListBase<T extends PersistableBase> extends PersistableBase implements Collection<T> {
+    private Collection<T> list;
 
     public PersistableListBase() {
-        list = new ArrayList<T>();
+        list = LinkedHashMultiset.create();
     }
 
     public PersistableListBase(int initialCapacity) {
-        list = new ArrayList<T>(initialCapacity);
+        list = LinkedHashMultiset.create(initialCapacity);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return list.remove(o);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> ts) {
+        return list.addAll(ts);
     }
 
     /**
@@ -29,11 +42,11 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
         list.addAll(items);
     }
 
-    public List<T> getList() {
+    public Collection<T> getList() {
         return list;
     }
 
-    public void setList(List<T> list) {
+    public void setList(Collection<T> list) {
         this.list = list;
     }
 
@@ -58,21 +71,6 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
     }
 
     @Override
-    public ListIterator<T> listIterator() {
-        return list.listIterator();
-    }
-
-    @Override
-    public ListIterator<T> listIterator(int index) {
-        return list.listIterator(index);
-    }
-
-    @Override
-    public List<T> subList(int fromIndex, int toIndex) {
-        return list.subList(fromIndex, toIndex);
-    }
-
-    @Override
     public int size() {
         return list.size();
     }
@@ -85,16 +83,6 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
     @Override
     public boolean contains(Object o) {
         return list.contains(o);
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return list.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return list.lastIndexOf(o);
     }
 
     @Override
@@ -113,41 +101,6 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
     }
 
     @Override
-    public T get(int index) {
-        return list.get(index);
-    }
-
-    @Override
-    public T set(int index, T element) {
-        return list.set(index, element);
-    }
-
-    @Override
-    public void add(int index, T element) {
-        list.add(index, element);
-    }
-
-    @Override
-    public T remove(int index) {
-        return list.remove(index);
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return list.remove(o);
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        return list.addAll(c);
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
-        return list.addAll(index, c);
-    }
-
-    @Override
     public void clear() {
         list.clear();
     }
@@ -155,17 +108,29 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         PersistableListBase that = (PersistableListBase) o;
 
-        if (getList() != null ? !getList().equals(that.getList()) : that.getList() != null) return false;
+        LinkedHashMultiset<T> me = makeMultiset(this.getList());
+        LinkedHashMultiset<T> other = makeMultiset(that == null ? null : that.getList());
+        if (me != null ? !me.equals(other) : other != null) return false;
 
         return true;
     }
 
+    private LinkedHashMultiset<T> makeMultiset(Collection collection) {
+        if (collection == null) {
+            return null;
+        }
+        if (collection instanceof LinkedHashMultiset) {
+            return (LinkedHashMultiset<T>) collection;
+        }
+        return LinkedHashMultiset.create(collection);
+    }
+
     @Override
     public int hashCode() {
-        return getList() != null ? getList().hashCode() : 0;
+        return getList() != null ? makeMultiset(this.getList()).hashCode() : 0;
     }
 }

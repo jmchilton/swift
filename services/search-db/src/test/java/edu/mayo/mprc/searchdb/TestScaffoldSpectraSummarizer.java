@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Iterator;
 
 /**
  * Tests the summary report for the scaffold spectra file.
@@ -63,13 +64,17 @@ public class TestScaffoldSpectraSummarizer {
 
             Assert.assertEquals(analysis.getBiologicalSamples().size(), 1, "Biological samples");
 
-            final BiologicalSample biologicalSample = analysis.getBiologicalSamples().get(0);
+            final BiologicalSample biologicalSample = analysis.getBiologicalSamples().iterator().next();
             Assert.assertEquals(biologicalSample.getSampleName(), "test1", "Sample name");
             Assert.assertEquals(biologicalSample.getSearchResults().size(), 1, "Total msms searches");
 
-            final SearchResult searchResult = biologicalSample.getSearchResults().get(0);
+            final SearchResult searchResult = biologicalSample.getSearchResults().iterator().next();
             Assert.assertEquals(searchResult.getProteinGroups().size(), 5, "Total protein groups");
-            final ProteinGroup teraBovinGroup = searchResult.getProteinGroups().get(3);
+            final Iterator<ProteinGroup> iterator = searchResult.getProteinGroups().iterator();
+            iterator.next();
+            iterator.next();
+            iterator.next();
+            final ProteinGroup teraBovinGroup = iterator.next();
             Assert.assertEquals(teraBovinGroup.getNumberOfTotalSpectra(), 26, "Total spectra");
             Assert.assertEquals(teraBovinGroup.getNumberOfUniquePeptides(), 10, "Unique peptides");
             Assert.assertEquals(teraBovinGroup.getNumberOfUniqueSpectra(), 13, "Unique spectra");

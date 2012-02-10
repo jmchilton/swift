@@ -125,8 +125,8 @@ public class AnalysisBuilder implements Builder<Analysis> {
             PeptideSequence peptideSequence,
             String fixedModifications,
             String variableModifications) {
-        final List<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
-        final LocalizedModList mappedMods = new LocalizedModList(Lists.transform(mods, mapLocalizedModification));
+        final Collection<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
+        final LocalizedModList mappedMods = new LocalizedModList(Lists.transform(Lists.newArrayList(mods), mapLocalizedModification));
 
         final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
         final IdentifiedPeptide peptide = identifiedPeptides.get(key);

@@ -180,9 +180,14 @@ public abstract class DaoBase implements Dao {
                 existing = ts.iterator().next();
             }
         } else {
-            existing = (T) session.createQuery(
+            final List<T> ts = (List<T>) session.createQuery(
                     "select s from " + className + " as s where s." + setField + ".size = 0")
-                    .uniqueResult();
+                    .list();
+            if (ts.size() > 1) {
+                throw new MprcException("Empty set exists in two instances, database is probably corrupted");
+            } else if (ts.size() == 1) {
+                existing = ts.iterator().next();
+            }
         }
 
         if (existing != null) {
@@ -196,6 +201,10 @@ public abstract class DaoBase implements Dao {
             }
         }
 
+        if (set.size() == 0) {
+            String name = set.getClass().getName();
+            int i = 0;
+        }
         session.save(owner);
         return owner;
     }
