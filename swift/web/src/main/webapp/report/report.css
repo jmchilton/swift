@@ -424,8 +424,9 @@ a:hover.filter_button.filter.ztoa {
 }
 
 .analysis-data-link {
-    float: none;
-    background-image: url(search.gif);
+    background-image: url(analysis.gif);
+    width: 16px;
+    height: 16px;
 }
 
 #navigation {

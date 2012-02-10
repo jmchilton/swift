@@ -56,7 +56,7 @@ SearchRunItemVisualizer.prototype.render = function(id, object, elementType) {
 SearchRunItemVisualizer.prototype.multiResultHeadTemplate = new Template('<table class="reportList"><tr><td class="result-link"><span>');
 SearchRunItemVisualizer.prototype.multiResultEntryTemplate = new Template('<a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><br/>');
 // Entry has analysis attached
-SearchRunItemVisualizer.prototype.multiResultEntryAnalysisTemplate = new Template('<a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><a href="/analysis?id=#{reportId}" class="analysis-data-link">Data</a><br/>');
+SearchRunItemVisualizer.prototype.multiResultEntryAnalysisTemplate = new Template('<a href="/analysis?id=#{reportId}" class="analysis-data-link">Data</a><a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><br clear="left"/>');
 SearchRunItemVisualizer.prototype.multiResultTailTemplate = new Template('</span></td><td class="result-buttons">' +
     '<a href="#{parentUrl}" class="parent-dir-link" title="#{parentPath}">Directory</a>' +
     '<a href="#{parentUrl}../qa/index.html" class="qa-link" title="Quality Analysis">QA</a>' +
