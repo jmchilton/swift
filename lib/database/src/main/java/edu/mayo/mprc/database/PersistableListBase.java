@@ -108,7 +108,7 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
+        if (o == null || !(o instanceof PersistableListBase)) return false;
 
         PersistableListBase that = (PersistableListBase) o;
 
