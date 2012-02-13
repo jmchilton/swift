@@ -2,6 +2,7 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.swift.dbmapping.SearchRun;
 
 import java.util.List;
 
@@ -50,4 +51,12 @@ public interface SearchDbDao extends Dao {
 	 * @return A string describing the accession numbers for proteins within the group.
 	 */
 	List<String> getProteinAccessionNumbers(ProteinSequenceList proteinSequenceList);
+
+	/**
+	 * List all searches where a protein of given accession number was observed.
+	 *
+	 * @param accessionNumber Accession number.
+	 * @return List of searches.
+	 */
+	List<SearchRun> getSearchesForAccessionNumber(String accessionNumber);
 }

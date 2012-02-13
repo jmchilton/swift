@@ -22,6 +22,7 @@ import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -33,6 +34,7 @@ import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Exercises the Search-db DAO.
@@ -116,6 +118,13 @@ public class TestSearchDbDao extends DaoTest {
 		// TODO: Check that the analysis is saved properly
 //        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
 //        FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
+
+		searchDbDao.commit();
+
+		searchDbDao.begin();
+
+		final List<SearchRun> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
+		Assert.assertEquals(searchRuns.size(), 1, "Must find our one search");
 
 		searchDbDao.commit();
 	}

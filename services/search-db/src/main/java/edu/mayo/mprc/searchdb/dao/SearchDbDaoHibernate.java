@@ -9,6 +9,7 @@ import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
@@ -286,6 +287,19 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return (List<String>) getSession().createQuery("select distinct e.accessionNumber from ProteinDatabaseEntry e where e.sequence in (:sequences) order by e.accessionNumber")
 				.setParameterList("sequences", proteinSequenceList.getList())
 				.list();
+	}
+
+	@Override
+	public List<SearchRun> getSearchesForAccessionNumber(String accessionNumber) {
+		return (List<SearchRun>) getSession().createQuery(
+				"select rd  from ProteinDatabaseEntry as e, ProteinSequenceList as l, ProteinSequence as s, ProteinGroup as pg, ProteinGroupList as pgl, SearchResult  as sr, SearchResultList as srl," +
+						" BiologicalSample as bs, BiologicalSampleList as bsl, Analysis as a, ReportData as rd " +
+						"where e.accessionNumber=:accessionNumber and" +
+						" e.sequence=s and e in elements (l.list) and pg.proteinSequences = l and pg in elements(pgl.list) and sr.proteinGroups=pgl and sr in elements(srl.list) and bs.searchResults=srl and" +
+						" bs in elements(bsl.list) and a.biologicalSamples=bsl and a.reportData=rd")
+				.setParameter("accessionNumber", accessionNumber)
+				.list();
+
 	}
 
 	private Criterion analysisEqualityCriteria(Analysis analysis) {

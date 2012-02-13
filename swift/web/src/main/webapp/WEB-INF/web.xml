@@ -60,6 +60,10 @@
         <servlet-name>AnalysisReport</servlet-name>
         <servlet-class>edu.mayo.mprc.swift.report.AnalysisReport</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FindProtein</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.FindProtein</servlet-class>
+    </servlet>
     <!--inserted manually -->
     <servlet-mapping>
         <servlet-name>SwiftAppService</servlet-name>
@@ -113,6 +117,11 @@
         <servlet-name>AnalysisReport</servlet-name>
         <url-pattern>/analysis</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FindProtein</servlet-name>
+        <url-pattern>/find-protein</url-pattern>
+    </servlet-mapping>
+
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
