@@ -21,7 +21,7 @@ public class Report {
 		this.w = w;
 	}
 
-	private static String esc(String s) {
+	public static String esc(String s) {
 		return StringUtilities.escapeHtml(s);
 	}
 
@@ -88,6 +88,11 @@ public class Report {
 		return this;
 	}
 
+	public Report hCellRaw(String text) {
+		checkRow();
+		write("<th>" + text + "</th>\n");
+		return this;
+	}
 
 	/**
 	 * Add a key-value pair to a table on a separate row.

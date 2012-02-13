@@ -49,6 +49,8 @@ public class AnalysisReport extends HttpServlet {
 				throw new MprcException("Cannot process report id: " + reportIdStr, e);
 			}
 
+			String highlight = req.getParameter("highlight");
+
 			searchDbDao.begin();
 			try {
 				Analysis analysis = searchDbDao.getAnalysis(reportId);
@@ -58,7 +60,7 @@ public class AnalysisReport extends HttpServlet {
 						"<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>\n" +
 						"</head><body>\n");
 				writer.write("<h1>Scaffold Report</h1>\n");
-				analysis.htmlReport(new Report(writer), searchDbDao);
+				analysis.htmlReport(new Report(writer), searchDbDao, highlight);
 
 				searchDbDao.commit();
 			} catch (Exception e) {

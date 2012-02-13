@@ -9,3 +9,7 @@ table {
 table td, table th {
     border: 1px solid black
 }
+
+.highlight {
+    background-color: #f9f500;
+}

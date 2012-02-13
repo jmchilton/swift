@@ -1,6 +1,5 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import com.google.common.base.Joiner;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.searchdb.Report;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
@@ -212,7 +211,7 @@ public final class Analysis extends PersistableBase {
 	/**
 	 * Report information about entire analysis into a given writer in HTML format.
 	 */
-	public void htmlReport(Report r, SearchDbDao searchDbDao) {
+	public void htmlReport(Report r, SearchDbDao searchDbDao, String highlight) {
 		r
 				.startTable("Scaffold run")
 				.addKeyValueTable("Date", getAnalysisDate())
@@ -246,9 +245,19 @@ public final class Analysis extends PersistableBase {
 		}
 		r.nextRow(); // ---------------
 
+		StringBuilder accNums = new StringBuilder(50);
 		for (ProteinSequenceList proteinSequences : allProteinGroups.values()) {
 			List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinSequences);
-			r.hCell(Joiner.on(", ").join(proteinAccessionNumbers));
+			accNums.setLength(0);
+			for (String accNum : proteinAccessionNumbers) {
+				if (accNum.equalsIgnoreCase(highlight)) {
+					accNums.append("<span class=\"highlight\">" + r.esc(accNum) + "</span>, ");
+				} else {
+					accNums.append(r.esc(accNum)).append(", ");
+
+				}
+			}
+			r.hCellRaw(accNums.substring(0, 2 <= accNums.length() ? accNums.length() - 2 : accNums.length()));
 
 			for (BiologicalSample sample : getBiologicalSamples()) {
 				for (SearchResult result : sample.getSearchResults()) {
