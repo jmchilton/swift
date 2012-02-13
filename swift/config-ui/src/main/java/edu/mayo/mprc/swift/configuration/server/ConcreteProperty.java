@@ -26,8 +26,12 @@ class ConcreteProperty {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof ConcreteProperty)) return false;
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ConcreteProperty)) {
+			return false;
+		}
 
 		ConcreteProperty that = (ConcreteProperty) o;
 		return Objects.equal(resourceConfig, that.resourceConfig) &&

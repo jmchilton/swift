@@ -35,7 +35,9 @@ public final class ValidationPanel extends Composite {
 	private static SeverityImageBundle bundle;
 
 	public static synchronized Image getImageForSeverity(int severity) {
-		if (bundle == null) bundle = (SeverityImageBundle) GWT.create(SeverityImageBundle.class);
+		if (bundle == null) {
+			bundle = (SeverityImageBundle) GWT.create(SeverityImageBundle.class);
+		}
 		switch (severity) {
 			case ClientValidation.SEVERITY_NONE:
 				return bundle.none().createImage();

@@ -29,12 +29,18 @@ final class Column implements Comparable<Column> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
 		Column column = (Column) o;
 
-		if (title != null ? !title.equals(column.title) : column.title != null) return false;
+		if (title != null ? !title.equals(column.title) : column.title != null) {
+			return false;
+		}
 
 		return true;
 	}

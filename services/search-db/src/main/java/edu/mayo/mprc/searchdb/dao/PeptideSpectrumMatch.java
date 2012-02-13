@@ -34,147 +34,162 @@ import edu.mayo.mprc.database.PersistableBase;
  * @author Roman Zenka
  */
 public class PeptideSpectrumMatch extends PersistableBase {
-    /**
-     * Peptide that is identified by this PSM. This means peptide sequence + modifications.
-     */
-    private IdentifiedPeptide peptide;
+	/**
+	 * Peptide that is identified by this PSM. This means peptide sequence + modifications.
+	 */
+	private IdentifiedPeptide peptide;
 
-    /**
-     * Previous amino acid. Used e.g. to distinguish whether the algorithm could have
-     * thought this was an actual tryptic peptide (probabilities for those can vary).
-     * This was not actually observed by the instrument and it depends on which protein the algorithm
-     * assigned the peptide to.
-     */
-    private char previousAminoAcid;
+	/**
+	 * Previous amino acid. Used e.g. to distinguish whether the algorithm could have
+	 * thought this was an actual tryptic peptide (probabilities for those can vary).
+	 * This was not actually observed by the instrument and it depends on which protein the algorithm
+	 * assigned the peptide to.
+	 */
+	private char previousAminoAcid;
 
-    /**
-     * Next amino acid. See {@link #previousAminoAcid} for more info.
-     */
-    private char nextAminoAcid;
+	/**
+	 * Next amino acid. See {@link #previousAminoAcid} for more info.
+	 */
+	private char nextAminoAcid;
 
-    /**
-     * Peptide identification probability - the best one over all the spectra.
-     * Probability of 100% is stored as 1.0
-     */
-    private double bestPeptideIdentificationProbability;
+	/**
+	 * Peptide identification probability - the best one over all the spectra.
+	 * Probability of 100% is stored as 1.0
+	 */
+	private double bestPeptideIdentificationProbability;
 
-    /**
-     * Best search engine scores encountered so far. Each component is maximized separately.
-     */
-    private SearchEngineScores bestSearchEngineScores = new SearchEngineScores();
+	/**
+	 * Best search engine scores encountered so far. Each component is maximized separately.
+	 */
+	private SearchEngineScores bestSearchEngineScores = new SearchEngineScores();
 
-    /**
-     * How many spectra have we seen so far for different charge states.
-     */
-    private SpectrumIdentificationCounts spectrumIdentificationCounts = new SpectrumIdentificationCounts();
+	/**
+	 * How many spectra have we seen so far for different charge states.
+	 */
+	private SpectrumIdentificationCounts spectrumIdentificationCounts = new SpectrumIdentificationCounts();
 
-    /**
-     * Number of enzymatic termini - to distinguish missed cleavage hits from enzymatic. Can be 0-2.
-     */
-    private int numberOfEnzymaticTerminii;
+	/**
+	 * Number of enzymatic termini - to distinguish missed cleavage hits from enzymatic. Can be 0-2.
+	 */
+	private int numberOfEnzymaticTerminii;
 
-    public PeptideSpectrumMatch() {
-    }
+	public PeptideSpectrumMatch() {
+	}
 
-    public PeptideSpectrumMatch(IdentifiedPeptide peptide, char previousAminoAcid, char nextAminoAcid, double bestPeptideIdentificationProbability, SearchEngineScores bestSearchEngineScores, SpectrumIdentificationCounts spectrumIdentificationCounts, int numberOfEnzymaticTerminii) {
-        this.peptide = peptide;
-        this.previousAminoAcid = previousAminoAcid;
-        this.nextAminoAcid = nextAminoAcid;
-        this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
-        this.bestSearchEngineScores = bestSearchEngineScores;
-        this.spectrumIdentificationCounts = spectrumIdentificationCounts;
-        this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
-    }
+	public PeptideSpectrumMatch(IdentifiedPeptide peptide, char previousAminoAcid, char nextAminoAcid, double bestPeptideIdentificationProbability, SearchEngineScores bestSearchEngineScores, SpectrumIdentificationCounts spectrumIdentificationCounts, int numberOfEnzymaticTerminii) {
+		this.peptide = peptide;
+		this.previousAminoAcid = previousAminoAcid;
+		this.nextAminoAcid = nextAminoAcid;
+		this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
+		this.bestSearchEngineScores = bestSearchEngineScores;
+		this.spectrumIdentificationCounts = spectrumIdentificationCounts;
+		this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
+	}
 
-    public IdentifiedPeptide getPeptide() {
-        return peptide;
-    }
+	public IdentifiedPeptide getPeptide() {
+		return peptide;
+	}
 
-    public void setPeptide(IdentifiedPeptide peptide) {
-        this.peptide = peptide;
-    }
+	public void setPeptide(IdentifiedPeptide peptide) {
+		this.peptide = peptide;
+	}
 
-    public char getPreviousAminoAcid() {
-        return previousAminoAcid;
-    }
+	public char getPreviousAminoAcid() {
+		return previousAminoAcid;
+	}
 
-    public void setPreviousAminoAcid(char previousAminoAcid) {
-        this.previousAminoAcid = previousAminoAcid;
-    }
+	public void setPreviousAminoAcid(char previousAminoAcid) {
+		this.previousAminoAcid = previousAminoAcid;
+	}
 
-    public char getNextAminoAcid() {
-        return nextAminoAcid;
-    }
+	public char getNextAminoAcid() {
+		return nextAminoAcid;
+	}
 
-    public void setNextAminoAcid(char nextAminoAcid) {
-        this.nextAminoAcid = nextAminoAcid;
-    }
+	public void setNextAminoAcid(char nextAminoAcid) {
+		this.nextAminoAcid = nextAminoAcid;
+	}
 
-    public int getNumberOfEnzymaticTerminii() {
-        return numberOfEnzymaticTerminii;
-    }
+	public int getNumberOfEnzymaticTerminii() {
+		return numberOfEnzymaticTerminii;
+	}
 
-    public void setNumberOfEnzymaticTerminii(int numberOfEnzymaticTerminii) {
-        this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
-    }
+	public void setNumberOfEnzymaticTerminii(int numberOfEnzymaticTerminii) {
+		this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
+	}
 
-    public double getBestPeptideIdentificationProbability() {
-        return bestPeptideIdentificationProbability;
-    }
+	public double getBestPeptideIdentificationProbability() {
+		return bestPeptideIdentificationProbability;
+	}
 
-    public void setBestPeptideIdentificationProbability(double bestPeptideIdentificationProbability) {
-        this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
-    }
+	public void setBestPeptideIdentificationProbability(double bestPeptideIdentificationProbability) {
+		this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
+	}
 
-    public SearchEngineScores getBestSearchEngineScores() {
-        return bestSearchEngineScores;
-    }
+	public SearchEngineScores getBestSearchEngineScores() {
+		return bestSearchEngineScores;
+	}
 
-    public void setBestSearchEngineScores(SearchEngineScores bestSearchEngineScores) {
-        this.bestSearchEngineScores = bestSearchEngineScores;
-    }
+	public void setBestSearchEngineScores(SearchEngineScores bestSearchEngineScores) {
+		this.bestSearchEngineScores = bestSearchEngineScores;
+	}
 
-    public SpectrumIdentificationCounts getSpectrumIdentificationCounts() {
-        return spectrumIdentificationCounts;
-    }
+	public SpectrumIdentificationCounts getSpectrumIdentificationCounts() {
+		return spectrumIdentificationCounts;
+	}
 
-    public void setSpectrumIdentificationCounts(SpectrumIdentificationCounts spectrumIdentificationCounts) {
-        this.spectrumIdentificationCounts = spectrumIdentificationCounts;
-    }
+	public void setSpectrumIdentificationCounts(SpectrumIdentificationCounts spectrumIdentificationCounts) {
+		this.spectrumIdentificationCounts = spectrumIdentificationCounts;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        PeptideSpectrumMatch that = (PeptideSpectrumMatch) o;
+		PeptideSpectrumMatch that = (PeptideSpectrumMatch) o;
 
-        if (Double.compare(that.getBestPeptideIdentificationProbability(), getBestPeptideIdentificationProbability()) != 0)
-            return false;
-        if (getNextAminoAcid() != that.getNextAminoAcid()) return false;
-        if (getNumberOfEnzymaticTerminii() != that.getNumberOfEnzymaticTerminii()) return false;
-        if (getPreviousAminoAcid() != that.getPreviousAminoAcid()) return false;
-        if (getBestSearchEngineScores() != null ? !getBestSearchEngineScores().equals(that.getBestSearchEngineScores()) : that.getBestSearchEngineScores() != null)
-            return false;
-        if (getPeptide() != null ? !getPeptide().equals(that.getPeptide()) : that.getPeptide() != null) return false;
-        if (getSpectrumIdentificationCounts() != null ? !getSpectrumIdentificationCounts().equals(that.getSpectrumIdentificationCounts()) : that.getSpectrumIdentificationCounts() != null)
-            return false;
+		if (Double.compare(that.getBestPeptideIdentificationProbability(), getBestPeptideIdentificationProbability()) != 0) {
+			return false;
+		}
+		if (getNextAminoAcid() != that.getNextAminoAcid()) {
+			return false;
+		}
+		if (getNumberOfEnzymaticTerminii() != that.getNumberOfEnzymaticTerminii()) {
+			return false;
+		}
+		if (getPreviousAminoAcid() != that.getPreviousAminoAcid()) {
+			return false;
+		}
+		if (getBestSearchEngineScores() != null ? !getBestSearchEngineScores().equals(that.getBestSearchEngineScores()) : that.getBestSearchEngineScores() != null) {
+			return false;
+		}
+		if (getPeptide() != null ? !getPeptide().equals(that.getPeptide()) : that.getPeptide() != null) {
+			return false;
+		}
+		if (getSpectrumIdentificationCounts() != null ? !getSpectrumIdentificationCounts().equals(that.getSpectrumIdentificationCounts()) : that.getSpectrumIdentificationCounts() != null) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = getPeptide() != null ? getPeptide().hashCode() : 0;
-        result = 31 * result + (int) getPreviousAminoAcid();
-        result = 31 * result + (int) getNextAminoAcid();
-        temp = getBestPeptideIdentificationProbability() != +0.0d ? Double.doubleToLongBits(getBestPeptideIdentificationProbability()) : 0L;
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (getBestSearchEngineScores() != null ? getBestSearchEngineScores().hashCode() : 0);
-        result = 31 * result + (getSpectrumIdentificationCounts() != null ? getSpectrumIdentificationCounts().hashCode() : 0);
-        result = 31 * result + getNumberOfEnzymaticTerminii();
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result;
+		long temp;
+		result = getPeptide() != null ? getPeptide().hashCode() : 0;
+		result = 31 * result + (int) getPreviousAminoAcid();
+		result = 31 * result + (int) getNextAminoAcid();
+		temp = getBestPeptideIdentificationProbability() != +0.0d ? Double.doubleToLongBits(getBestPeptideIdentificationProbability()) : 0L;
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		result = 31 * result + (getBestSearchEngineScores() != null ? getBestSearchEngineScores().hashCode() : 0);
+		result = 31 * result + (getSpectrumIdentificationCounts() != null ? getSpectrumIdentificationCounts().hashCode() : 0);
+		result = 31 * result + getNumberOfEnzymaticTerminii();
+		return result;
+	}
 }

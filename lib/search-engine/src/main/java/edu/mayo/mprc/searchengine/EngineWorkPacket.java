@@ -153,17 +153,30 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof EngineWorkPacket)) return false;
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof EngineWorkPacket)) {
+			return false;
+		}
 
 		EngineWorkPacket that = (EngineWorkPacket) o;
 
-		if (publishResultFiles != that.publishResultFiles) return false;
-		if (databaseFile != null ? !databaseFile.equals(that.databaseFile) : that.databaseFile != null) return false;
-		if (inputFile != null ? !inputFile.equals(that.inputFile) : that.inputFile != null) return false;
-		if (outputFile != null ? !outputFile.equals(that.outputFile) : that.outputFile != null) return false;
-		if (searchParamsFile != null ? !searchParamsFile.equals(that.searchParamsFile) : that.searchParamsFile != null)
+		if (publishResultFiles != that.publishResultFiles) {
 			return false;
+		}
+		if (databaseFile != null ? !databaseFile.equals(that.databaseFile) : that.databaseFile != null) {
+			return false;
+		}
+		if (inputFile != null ? !inputFile.equals(that.inputFile) : that.inputFile != null) {
+			return false;
+		}
+		if (outputFile != null ? !outputFile.equals(that.outputFile) : that.outputFile != null) {
+			return false;
+		}
+		if (searchParamsFile != null ? !searchParamsFile.equals(that.searchParamsFile) : that.searchParamsFile != null) {
+			return false;
+		}
 
 		return true;
 	}

@@ -7,60 +7,66 @@ import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySample;
  * @author Roman Zenka
  */
 public class SearchResultBuilder implements Builder<SearchResult> {
-    private TandemMassSpectrometrySample massSpecSample;
+	private TandemMassSpectrometrySample massSpecSample;
 
-    public SearchResultBuilder(BiologicalSampleBuilder biologicalSample) {
-        this.biologicalSample = biologicalSample;
-        proteinGroups = new ProteinGroupListBuilder(this);
-    }
+	public SearchResultBuilder(BiologicalSampleBuilder biologicalSample) {
+		this.biologicalSample = biologicalSample;
+		proteinGroups = new ProteinGroupListBuilder(this);
+	}
 
-    /**
-     * List of all protein groups identified in this sample.
-     */
-    private ProteinGroupListBuilder proteinGroups;
+	/**
+	 * List of all protein groups identified in this sample.
+	 */
+	private ProteinGroupListBuilder proteinGroups;
 
-    private BiologicalSampleBuilder biologicalSample;
+	private BiologicalSampleBuilder biologicalSample;
 
-    public BiologicalSampleBuilder getBiologicalSample() {
-        return biologicalSample;
-    }
+	public BiologicalSampleBuilder getBiologicalSample() {
+		return biologicalSample;
+	}
 
-    @Override
-    public SearchResult build() {
-        return new SearchResult(massSpecSample, proteinGroups.build());
-    }
+	@Override
+	public SearchResult build() {
+		return new SearchResult(massSpecSample, proteinGroups.build());
+	}
 
-    public TandemMassSpectrometrySample getMassSpecSample() {
-        return massSpecSample;
-    }
+	public TandemMassSpectrometrySample getMassSpecSample() {
+		return massSpecSample;
+	}
 
-    public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
-        this.massSpecSample = massSpecSample;
-    }
+	public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
+		this.massSpecSample = massSpecSample;
+	}
 
-    public ProteinGroupListBuilder getProteinGroups() {
-        return proteinGroups;
-    }
+	public ProteinGroupListBuilder getProteinGroups() {
+		return proteinGroups;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        SearchResultBuilder that = (SearchResultBuilder) o;
+		SearchResultBuilder that = (SearchResultBuilder) o;
 
-        if (massSpecSample != null ? !massSpecSample.equals(that.massSpecSample) : that.massSpecSample != null)
-            return false;
-        if (proteinGroups != null ? !proteinGroups.equals(that.proteinGroups) : that.proteinGroups != null)
-            return false;
+		if (massSpecSample != null ? !massSpecSample.equals(that.massSpecSample) : that.massSpecSample != null) {
+			return false;
+		}
+		if (proteinGroups != null ? !proteinGroups.equals(that.proteinGroups) : that.proteinGroups != null) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = massSpecSample != null ? massSpecSample.hashCode() : 0;
-        result = 31 * result + (proteinGroups != null ? proteinGroups.hashCode() : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = massSpecSample != null ? massSpecSample.hashCode() : 0;
+		result = 31 * result + (proteinGroups != null ? proteinGroups.hashCode() : 0);
+		return result;
+	}
 }

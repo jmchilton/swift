@@ -81,15 +81,24 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
 		QaTaskExperiment that = (QaTaskExperiment) o;
 
-		if (name != null ? !name.equals(that.name) : that.name != null) return false;
-		if (scaffoldVersion != null ? !scaffoldVersion.equals(that.scaffoldVersion) : that.scaffoldVersion != null)
+		if (name != null ? !name.equals(that.name) : that.name != null) {
 			return false;
-		if (spectraFile != null ? !spectraFile.equals(that.spectraFile) : that.spectraFile != null) return false;
+		}
+		if (scaffoldVersion != null ? !scaffoldVersion.equals(that.scaffoldVersion) : that.scaffoldVersion != null) {
+			return false;
+		}
+		if (spectraFile != null ? !spectraFile.equals(that.spectraFile) : that.spectraFile != null) {
+			return false;
+		}
 
 		return true;
 	}

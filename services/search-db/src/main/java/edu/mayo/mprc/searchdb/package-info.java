@@ -26,7 +26,7 @@
  * <li>Biological sample category</li>
  * <li>Biological sample name</li>
  * </ul>
- * <h2>{@link edu.mayo.mprc.searchdb.dao.SearchResult}</h2>
+ * <h2>{@link SearchResult}</h2>
  * <ul>
  * <li>MS/MS sample name - used to link to {@link TandemMassSpectrometrySample} with more information</li>
  * </ul>

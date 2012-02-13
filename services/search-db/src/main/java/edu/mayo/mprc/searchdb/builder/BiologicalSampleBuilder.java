@@ -8,78 +8,86 @@ import edu.mayo.mprc.searchdb.dao.BiologicalSample;
  * @author Roman Zenka
  */
 public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
-    private AnalysisBuilder analysis;
+	private AnalysisBuilder analysis;
 
-    private String sampleName;
+	private String sampleName;
 
-    /**
-     * Category of the sample. This is usually set to "none", but sometimes it can contain useful information.
-     */
-    private String category;
+	/**
+	 * Category of the sample. This is usually set to "none", but sometimes it can contain useful information.
+	 */
+	private String category;
 
-    /**
-     * Results of protein searches for this particular biological sample. Would usually contain only one mass
-     * spec sample.
-     */
-    private SearchResultListBuilder searchResults;
+	/**
+	 * Results of protein searches for this particular biological sample. Would usually contain only one mass
+	 * spec sample.
+	 */
+	private SearchResultListBuilder searchResults;
 
-    public BiologicalSampleBuilder(AnalysisBuilder analysis, String sampleName, String category) {
-        this.analysis = analysis;
-        this.sampleName = sampleName;
-        this.category = category;
-        this.searchResults = new SearchResultListBuilder(this);
-    }
+	public BiologicalSampleBuilder(AnalysisBuilder analysis, String sampleName, String category) {
+		this.analysis = analysis;
+		this.sampleName = sampleName;
+		this.category = category;
+		this.searchResults = new SearchResultListBuilder(this);
+	}
 
-    @Override
-    public BiologicalSample build() {
-        return new BiologicalSample(sampleName, category, searchResults.build());
-    }
+	@Override
+	public BiologicalSample build() {
+		return new BiologicalSample(sampleName, category, searchResults.build());
+	}
 
-    public AnalysisBuilder getAnalysis() {
-        return analysis;
-    }
+	public AnalysisBuilder getAnalysis() {
+		return analysis;
+	}
 
-    public String getSampleName() {
-        return sampleName;
-    }
+	public String getSampleName() {
+		return sampleName;
+	}
 
-    public void setSampleName(String sampleName) {
-        this.sampleName = sampleName;
-    }
+	public void setSampleName(String sampleName) {
+		this.sampleName = sampleName;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public SearchResultListBuilder getSearchResults() {
-        return searchResults;
-    }
+	public SearchResultListBuilder getSearchResults() {
+		return searchResults;
+	}
 
-    public void setSearchResults(SearchResultListBuilder searchResults) {
-        this.searchResults = searchResults;
-    }
+	public void setSearchResults(SearchResultListBuilder searchResults) {
+		this.searchResults = searchResults;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        BiologicalSampleBuilder that = (BiologicalSampleBuilder) o;
+		BiologicalSampleBuilder that = (BiologicalSampleBuilder) o;
 
-        if (category != null ? !category.equals(that.category) : that.category != null) return false;
-        if (sampleName != null ? !sampleName.equals(that.sampleName) : that.sampleName != null) return false;
+		if (category != null ? !category.equals(that.category) : that.category != null) {
+			return false;
+		}
+		if (sampleName != null ? !sampleName.equals(that.sampleName) : that.sampleName != null) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = sampleName != null ? sampleName.hashCode() : 0;
-        result = 31 * result + (category != null ? category.hashCode() : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = sampleName != null ? sampleName.hashCode() : 0;
+		result = 31 * result + (category != null ? category.hashCode() : 0);
+		return result;
+	}
 }

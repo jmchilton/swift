@@ -175,19 +175,27 @@ public final class Analysis extends PersistableBase {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
 		Analysis analysis = (Analysis) o;
 
-		if (getAnalysisDate() != null ? !getAnalysisDate().equals(analysis.getAnalysisDate()) : analysis.getAnalysisDate() != null)
+		if (getAnalysisDate() != null ? !getAnalysisDate().equals(analysis.getAnalysisDate()) : analysis.getAnalysisDate() != null) {
 			return false;
-		if (getBiologicalSamples() != null ? !getBiologicalSamples().equals(analysis.getBiologicalSamples()) : analysis.getBiologicalSamples() != null)
+		}
+		if (getBiologicalSamples() != null ? !getBiologicalSamples().equals(analysis.getBiologicalSamples()) : analysis.getBiologicalSamples() != null) {
 			return false;
-		if (getReportData() != null ? !getReportData().equals(analysis.getReportData()) : analysis.getReportData() != null)
+		}
+		if (getReportData() != null ? !getReportData().equals(analysis.getReportData()) : analysis.getReportData() != null) {
 			return false;
-		if (getScaffoldVersion() != null ? !getScaffoldVersion().equals(analysis.getScaffoldVersion()) : analysis.getScaffoldVersion() != null)
+		}
+		if (getScaffoldVersion() != null ? !getScaffoldVersion().equals(analysis.getScaffoldVersion()) : analysis.getScaffoldVersion() != null) {
 			return false;
+		}
 
 		return true;
 	}

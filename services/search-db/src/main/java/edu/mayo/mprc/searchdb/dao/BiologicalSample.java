@@ -17,90 +17,99 @@ import edu.mayo.mprc.database.PersistableBase;
  * @author Roman Zenka
  */
 public class BiologicalSample extends PersistableBase {
-    /**
-     * Name of the sample.
-     */
-    private String sampleName;
+	/**
+	 * Name of the sample.
+	 */
+	private String sampleName;
 
-    /**
-     * Category of the sample. This is usually set to "none", but sometimes it can contain useful information.
-     */
-    private String category;
+	/**
+	 * Category of the sample. This is usually set to "none", but sometimes it can contain useful information.
+	 */
+	private String category;
 
-    /**
-     * Results of protein searches for this particular biological sample. Would usually contain only one mass
-     * spec sample.
-     */
-    private SearchResultList searchResults;
+	/**
+	 * Results of protein searches for this particular biological sample. Would usually contain only one mass
+	 * spec sample.
+	 */
+	private SearchResultList searchResults;
 
-    /**
-     * Empty constructor for Hibernate.
-     */
-    public BiologicalSample() {
-    }
+	/**
+	 * Empty constructor for Hibernate.
+	 */
+	public BiologicalSample() {
+	}
 
-    public BiologicalSample(String sampleName, String category, SearchResultList searchResults) {
-        this.sampleName = sampleName;
-        this.category = category;
-        this.searchResults = searchResults;
-    }
+	public BiologicalSample(String sampleName, String category, SearchResultList searchResults) {
+		this.sampleName = sampleName;
+		this.category = category;
+		this.searchResults = searchResults;
+	}
 
-    public String getSampleName() {
-        return sampleName;
-    }
+	public String getSampleName() {
+		return sampleName;
+	}
 
-    public void setSampleName(String sampleName) {
-        this.sampleName = sampleName;
-    }
+	public void setSampleName(String sampleName) {
+		this.sampleName = sampleName;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public SearchResultList getSearchResults() {
-        return searchResults;
-    }
+	public SearchResultList getSearchResults() {
+		return searchResults;
+	}
 
-    public void setSearchResults(SearchResultList searchResults) {
-        this.searchResults = searchResults;
-    }
+	public void setSearchResults(SearchResultList searchResults) {
+		this.searchResults = searchResults;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        BiologicalSample that = (BiologicalSample) o;
+		BiologicalSample that = (BiologicalSample) o;
 
-        if (!keyEquals(that)) return false;
-        if (getSearchResults() != null ? !getSearchResults().equals(that.getSearchResults()) : that.getSearchResults() != null)
-            return false;
+		if (!keyEquals(that)) {
+			return false;
+		}
+		if (getSearchResults() != null ? !getSearchResults().equals(that.getSearchResults()) : that.getSearchResults() != null) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = keyHashCode();
-        result = 31 * result + (getSearchResults() != null ? getSearchResults().hashCode() : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = keyHashCode();
+		result = 31 * result + (getSearchResults() != null ? getSearchResults().hashCode() : 0);
+		return result;
+	}
 
-    public boolean keyEquals(BiologicalSample that) {
-        if (getCategory() != null ? !getCategory().equals(that.getCategory()) : that.getCategory() != null)
-            return false;
-        if (getSampleName() != null ? !getSampleName().equals(that.getSampleName()) : that.getSampleName() != null)
-            return false;
-        return true;
-    }
+	public boolean keyEquals(BiologicalSample that) {
+		if (getCategory() != null ? !getCategory().equals(that.getCategory()) : that.getCategory() != null) {
+			return false;
+		}
+		if (getSampleName() != null ? !getSampleName().equals(that.getSampleName()) : that.getSampleName() != null) {
+			return false;
+		}
+		return true;
+	}
 
-    public int keyHashCode() {
-        int result = getSampleName() != null ? getSampleName().hashCode() : 0;
-        result = 31 * result + (getCategory() != null ? getCategory().hashCode() : 0);
-        return result;
-    }
+	public int keyHashCode() {
+		int result = getSampleName() != null ? getSampleName().hashCode() : 0;
+		result = 31 * result + (getCategory() != null ? getCategory().hashCode() : 0);
+		return result;
+	}
 }
