@@ -44,7 +44,7 @@ public class FindProtein extends HttpServlet {
 
 			searchDbDao.begin();
 			try {
-				List<SearchRun> searchRuns = searchDbDao.getSearchesForAccessionNumber(accessionNumber);
+				List<ReportData> reportDataList = searchDbDao.getSearchesForAccessionNumber(accessionNumber);
 
 				writer.write("<html><head><title>Searches containing " + accessionNumber + "</title>\n" +
 						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +
@@ -52,20 +52,23 @@ public class FindProtein extends HttpServlet {
 						"</head><body>\n");
 				writer.write("<h1>Searches containing " + accessionNumber + "</h1>\n");
 				writer.write("<table>");
-				writer.write("<tr><th>Title</th><th>Completed</th><th>Load</th><th>Reports</th></tr>");
+				writer.write("<tr><th>Title</th><th>Completed</th><th>Reports</th></tr>");
 
-				for (final SearchRun run : searchRuns) {
-					writer.write("<tr>");
-					writer.write("<td>" + run.getTitle() + "</td>");
-					writer.write("<td>" + run.getEndTimestamp() + "</td>");
-					writer.write("<td><a href=\"/start/?load=" + run.getId() + "\">" + run.getId() + "</a></td>");
-					writer.write("<td>");
-					for (final ReportData report : run.getReports()) {
-						writer.write("<a href=\"/analysis?id=" + report.getId() + "\">#" + report.getId() + "</a> ");
+				Integer previousSearchRun = 0;
+				for (final ReportData reportData : reportDataList) {
+					final SearchRun searchRun = reportData.getSearchRun();
+					if (!searchRun.getId().equals(previousSearchRun)) {
+						closePreviousRun(writer, previousSearchRun);
+
+						writer.write("<tr>");
+						previousSearchRun = searchRun.getId();
+						writer.write("<td><a href=\"/start/?load=" + searchRun.getId() + "\">" + searchRun.getTitle() + "</a></td>");
+						writer.write("<td>" + searchRun.getEndTimestamp() + "</td>");
+						writer.write("<td>");
 					}
-					writer.write("</td>");
-					writer.write("</tr>");
+					writer.write("<a href=\"/analysis?id=" + reportData.getId() + "\">" + reportData.getReportFileId().getName() + "</a> ");
 				}
+				closePreviousRun(writer, previousSearchRun);
 
 				writer.write("</table>");
 				writer.write("</body></html>");
@@ -79,6 +82,13 @@ public class FindProtein extends HttpServlet {
 			writer.write("</body></html>");
 		} finally {
 			FileUtilities.closeQuietly(writer);
+		}
+	}
+
+	private void closePreviousRun(OutputStreamWriter writer, Integer previousSearchRun) throws IOException {
+		if (0 != previousSearchRun) {
+			writer.write("</td>");
+			writer.write("</tr>");
 		}
 	}
 

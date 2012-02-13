@@ -9,7 +9,6 @@ import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
-import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
@@ -290,9 +289,10 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public List<SearchRun> getSearchesForAccessionNumber(String accessionNumber) {
-		return (List<SearchRun>) getSession().createQuery(
-				"select a.reportData from Analysis as a" +
+	public List<ReportData> getSearchesForAccessionNumber(String accessionNumber) {
+		return (List<ReportData>) getSession().createQuery(
+				"select distinct rd from " +
+						" Analysis as a" +
 						" inner join a.biologicalSamples as bsl" +
 						" inner join bsl.list as bs" +
 						" inner join bs.searchResults as srl" +
@@ -300,10 +300,13 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 						" inner join sr.proteinGroups as pgl" +
 						" inner join pgl.list as pg" +
 						" inner join pg.proteinSequences as psl" +
-						" inner join psl.list as ps, " +
-						" ProteinDatabaseEntry pde " +
-						" where pde.sequence = ps and pde.accessionNumber=:accesionNumber")
-				.setParameter("accesionNumber", accessionNumber)
+						" inner join psl.list as ps" +
+						" inner join a.reportData as rd," +
+						" ProteinDatabaseEntry as pde" +
+						" where pde.sequence = ps " +
+						" and pde.accessionNumber=:accessionNumber" +
+						" order by rd.searchRun")
+				.setParameter("accessionNumber", accessionNumber)
 				.list();
 	}
 
