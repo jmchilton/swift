@@ -123,8 +123,9 @@ public class TestSearchDbDao extends DaoTest {
 
 		searchDbDao.begin();
 
-		final List<SearchRun> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
+		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
 		Assert.assertEquals(searchRuns.size(), 1, "Must find our one search");
+		Assert.assertTrue(null != searchRuns.get(0), "Must return correct type");
 
 		searchDbDao.commit();
 	}
