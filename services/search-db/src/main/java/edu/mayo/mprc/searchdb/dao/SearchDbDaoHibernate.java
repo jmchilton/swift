@@ -291,32 +291,19 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 	@Override
 	public List<SearchRun> getSearchesForAccessionNumber(String accessionNumber) {
-		return (List<SearchRun>) getSession().createSQLQuery(
-				"select distinct rd.* from " +
-						"analysis as a, " +
-						"report as rd, " +
-						"biological_sample as bs, " +
-						"biological_sample_list_members as bsm, " +
-						"search_result as sr, " +
-						"search_result_list_members as srm, " +
-						"protein_group as pg, " +
-						"protein_group_list_members as pgm, " +
-						"protein_sequence as ps, " +
-						"protein_sequence_list_members as psm, " +
-						"protein_database_entry as pde " +
-						"where " +
-						"a.report_id = rd.report_id " +
-						"and bs.biological_sample_id = bsm.biological_sample_id " +
-						"and bsm.biological_sample_list_id=a.biological_sample_list_id " +
-						"and bs.search_result_list_id = srm.search_result_list_id " +
-						"and srm.search_result_id = sr.search_result_id " +
-						"and sr.protein_group_list_id = pgm.protein_group_list_id " +
-						"and pgm.protein_group_id = pg.protein_group_id " +
-						"and pg.protein_sequence_list_id = psm.protein_sequence_list_id " +
-						"and psm.protein_sequence_id = ps.protein_sequence_id " +
-						"and pde.protein_sequence_id = ps.protein_sequence_id " +
-						"and pde.accession_number = :accessionNumber")
-				.setParameter("accessionNumber", accessionNumber)
+		return (List<SearchRun>) getSession().createQuery(
+				"select a.reportData from Analysis as a" +
+						" inner join a.biologicalSamples as bsl" +
+						" inner join bsl.list as bs" +
+						" inner join bs.searchResults as srl" +
+						" inner join srl.list as sr" +
+						" inner join sr.proteinGroups as pgl" +
+						" inner join pgl.list as pg" +
+						" inner join pg.proteinSequences as psl" +
+						" inner join psl.list as ps, " +
+						" ProteinDatabaseEntry pde " +
+						" where pde.sequence = ps and pde.accessionNumber=:accesionNumber")
+				.setParameter("accesionNumber", accessionNumber)
 				.list();
 	}
 
