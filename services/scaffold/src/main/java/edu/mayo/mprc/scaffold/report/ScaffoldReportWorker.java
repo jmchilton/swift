@@ -9,7 +9,7 @@ import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public final class ScaffoldReportWorker implements Worker {
 
 	/**
 	 * Processes given request data.
-	 * The is responsible for a call {@link edu.mayo.mprc.daemon.progress.ProgressReporter#reportSuccess()} or {@link edu.mayo.mprc.daemon.progress.ProgressReporter#reportFailure(Throwable)}
+	 * The is responsible for a call {@link edu.mayo.mprc.utilities.progress.ProgressReporter#reportSuccess()} or {@link edu.mayo.mprc.utilities.progress.ProgressReporter#reportFailure(Throwable)}
 	 * to signalize whether it succeeded or failed. This call can be performed after the method is done executing,
 	 * e.g. be scheduled for later time. You can also report failure or success and keep executing, as long as you do not
 	 * report success or failure twice in a row.

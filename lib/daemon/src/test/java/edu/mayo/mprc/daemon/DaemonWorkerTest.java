@@ -1,7 +1,7 @@
 package edu.mayo.mprc.daemon;
 
 import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

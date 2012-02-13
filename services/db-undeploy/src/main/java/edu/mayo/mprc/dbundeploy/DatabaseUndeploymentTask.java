@@ -4,13 +4,12 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.AssignedTaskData;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
@@ -79,7 +78,7 @@ public final class DatabaseUndeploymentTask {
 			}
 
 			@Override
-			public void requestTerminated(DaemonException e) {
+			public void requestTerminated(Exception e) {
 				onFailure(e);
 			}
 

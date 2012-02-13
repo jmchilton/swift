@@ -3,15 +3,15 @@ package edu.mayo.mprc.daemon;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenHolder;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.messaging.ResponseListener;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 import java.io.Serializable;
 
 /**
- * Listens to response returned by the daemon and translates it to calls on a given {@link edu.mayo.mprc.daemon.progress.ProgressListener}.
+ * Listens to response returned by the daemon and translates it to calls on a given {@link edu.mayo.mprc.utilities.progress.ProgressListener}.
  * TODO: This should get better explanation.
  */
 class DaemonResponseListener implements ResponseListener {

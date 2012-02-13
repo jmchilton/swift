@@ -9,13 +9,13 @@ import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.PercentDone;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.msmseval.MSMSEvalOutputReader;
 import edu.mayo.mprc.myrimatch.MyrimatchPepXmlReader;
 import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldQaSpectraReader;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ProcessCaller;
+import edu.mayo.mprc.utilities.progress.PercentDone;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -160,7 +160,7 @@ public final class QaWorker implements Worker {
 			LOGGER.info("Generating output file [" + outputFile.getAbsolutePath() + "]");
 
 			ScaffoldQaSpectraReader scaffoldParser = new ScaffoldQaSpectraReader();
-			scaffoldParser.load(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion());
+			scaffoldParser.load(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion(), null);
 			RawDumpReader rawDumpReader = new RawDumpReader(qaFiles.getRawSpectraFile());
 			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(qaFiles.getMsmsEvalOutputFile());
 			final String rawInputFile = qaFiles.getRawInputFile() != null ? qaFiles.getRawInputFile().getAbsolutePath() : null;

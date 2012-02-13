@@ -1,4 +1,4 @@
-package edu.mayo.mprc.daemon.progress;
+package edu.mayo.mprc.utilities.progress;
 
 /**
  * Interface allowing the user to report progress of a {@link edu.mayo.mprc.daemon.Worker}.

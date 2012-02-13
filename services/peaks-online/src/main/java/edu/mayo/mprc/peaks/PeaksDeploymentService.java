@@ -8,7 +8,6 @@ import edu.mayo.mprc.config.ui.ServiceUiFactory;
 import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
 import edu.mayo.mprc.enginedeployment.DeploymentService;
@@ -16,6 +15,7 @@ import edu.mayo.mprc.peaks.core.Peaks;
 import edu.mayo.mprc.peaks.core.PeaksAdmin;
 import edu.mayo.mprc.peaks.core.PeaksDatabase;
 import edu.mayo.mprc.peaks.core.PeaksURIs;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.net.URI;
 import java.util.HashMap;

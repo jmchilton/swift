@@ -11,10 +11,10 @@ import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.database.Change;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.util.Date;

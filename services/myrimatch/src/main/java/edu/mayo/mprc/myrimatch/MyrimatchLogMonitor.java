@@ -1,8 +1,8 @@
 package edu.mayo.mprc.myrimatch;
 
-import edu.mayo.mprc.daemon.progress.PercentDone;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.utilities.LogMonitor;
+import edu.mayo.mprc.utilities.progress.PercentDone;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

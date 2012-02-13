@@ -1,8 +1,8 @@
 package edu.mayo.mprc.workflow.engine;
 
 import edu.mayo.mprc.MprcException;
-import edu.mayo.mprc.daemon.progress.ProgressReport;
 import edu.mayo.mprc.utilities.exceptions.CompositeException;
+import edu.mayo.mprc.utilities.progress.ProgressReport;
 import edu.mayo.mprc.workflow.persistence.TaskState;
 import org.apache.log4j.Logger;
 

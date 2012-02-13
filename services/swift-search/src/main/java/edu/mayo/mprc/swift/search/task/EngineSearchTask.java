@@ -4,7 +4,6 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.mascot.MascotResultUrl;
 import edu.mayo.mprc.mascot.MascotWorkPacket;
 import edu.mayo.mprc.myrimatch.MyrimatchDeploymentResult;
@@ -14,6 +13,7 @@ import edu.mayo.mprc.peaks.PeaksWorkPacket;
 import edu.mayo.mprc.searchengine.SearchEngineResult;
 import edu.mayo.mprc.sequest.SequestMGFWorkPacket;
 import edu.mayo.mprc.swift.db.SearchEngine;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 import edu.mayo.mprc.xtandem.XTandemWorkPacket;
 
 import java.io.File;

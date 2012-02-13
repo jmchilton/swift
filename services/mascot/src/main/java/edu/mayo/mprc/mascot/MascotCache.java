@@ -6,8 +6,8 @@ import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ui.ServiceUiFactory;
 import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.WorkCache;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 

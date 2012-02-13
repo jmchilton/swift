@@ -18,25 +18,25 @@ public final class SpectrumInfoJoinerTest {
 	@Test
 	public void generateMgfStatisticsFileTest() throws IOException {
 
-		File tempFolder = FileUtilities.createTempFolder();
+		final File tempFolder = FileUtilities.createTempFolder();
 
 		try {
-			File mgfFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/test1.mgf", tempFolder);
-			File scaffoldSpectra = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/scaffoldSpectra.txt", tempFolder);
-			File referenceOutputFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/Out.tsv", tempFolder);
-			File rawDumpFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/rawdump.tsv", tempFolder);
-			File msmsEvalFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/msmsEval.csv", tempFolder);
+			final File mgfFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/test1.mgf", tempFolder);
+			final File scaffoldSpectra = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/scaffoldSpectra.txt", tempFolder);
+			final File referenceOutputFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/Out.tsv", tempFolder);
+			final File rawDumpFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/rawdump.tsv", tempFolder);
+			final File msmsEvalFile = TestingUtilities.getNamedFileFromResource("/edu/mayo/mprc/qa/msmsEval.csv", tempFolder);
 
 			String refOut = Files.toString(referenceOutputFile, Charsets.UTF_8);
 			refOut = refOut.replaceAll("<MGF>", Matcher.quoteReplacement(mgfFile.getAbsolutePath()));
 			FileUtilities.writeStringToFile(referenceOutputFile, refOut, true);
 
-			File outputFile = new File(tempFolder, "output.tsv");
+			final File outputFile = new File(tempFolder, "output.tsv");
 
-			ScaffoldQaSpectraReader spectra = new ScaffoldQaSpectraReader();
-			spectra.load(scaffoldSpectra, "2");
-			RawDumpReader rawDumpReader = new RawDumpReader(rawDumpFile);
-			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(msmsEvalFile);
+			final ScaffoldQaSpectraReader spectra = new ScaffoldQaSpectraReader();
+			spectra.load(scaffoldSpectra, "2", null);
+			final RawDumpReader rawDumpReader = new RawDumpReader(rawDumpFile);
+			final MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(msmsEvalFile);
 
 			SpectrumInfoJoiner.joinSpectrumData(mgfFile, spectra, rawDumpReader, msmsEvalReader, null, outputFile, null);
 

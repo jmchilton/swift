@@ -3,8 +3,8 @@ package edu.mayo.mprc.daemon;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import edu.mayo.mprc.config.*;
 import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;

@@ -2,13 +2,13 @@ package edu.mayo.mprc.fastadb;
 
 import com.google.common.base.Preconditions;
 import edu.mayo.mprc.MprcException;
-import edu.mayo.mprc.daemon.progress.PercentDone;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fasta.FASTAInputStream;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.PercentDone;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;

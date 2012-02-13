@@ -1,6 +1,4 @@
-package edu.mayo.mprc.daemon.progress;
-
-import edu.mayo.mprc.daemon.exception.DaemonException;
+package edu.mayo.mprc.utilities.progress;
 
 /**
  * Listens to daemon progress.
@@ -27,7 +25,7 @@ public interface ProgressListener {
 	 *
 	 * @param e Exception causing the process to terminate.
 	 */
-	void requestTerminated(DaemonException e);
+	void requestTerminated(Exception e);
 
 	/**
 	 * User-specific progress information, such as how many percent done, or that a grid-engine id was assigned.

@@ -1,6 +1,6 @@
 package edu.mayo.mprc.qstat;
 
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 public final class QstatOutput implements ProgressInfo {
 	private static final long serialVersionUID = 20080129L;

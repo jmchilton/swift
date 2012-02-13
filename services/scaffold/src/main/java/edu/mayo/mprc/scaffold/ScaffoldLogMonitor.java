@@ -1,8 +1,8 @@
 package edu.mayo.mprc.scaffold;
 
-import edu.mayo.mprc.daemon.progress.PercentDone;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.utilities.LogMonitor;
+import edu.mayo.mprc.utilities.progress.PercentDone;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 public class ScaffoldLogMonitor implements LogMonitor {
 	private static final int TIME_BETWEEN_UPDATES_MS = 1000;

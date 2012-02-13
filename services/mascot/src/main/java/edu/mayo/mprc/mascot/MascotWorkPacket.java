@@ -4,9 +4,9 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.WorkPacket;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.searchengine.EngineWorkPacket;
 import edu.mayo.mprc.searchengine.SearchEngineResult;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;

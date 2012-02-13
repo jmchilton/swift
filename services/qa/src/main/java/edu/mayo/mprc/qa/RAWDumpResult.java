@@ -1,7 +1,7 @@
 package edu.mayo.mprc.qa;
 
 import edu.mayo.mprc.daemon.files.FileHolder;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 

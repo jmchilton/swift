@@ -1,6 +1,6 @@
 package edu.mayo.mprc.workflow.engine;
 
-import edu.mayo.mprc.daemon.progress.ProgressReport;
+import edu.mayo.mprc.utilities.progress.ProgressReport;
 
 import java.util.ArrayList;
 import java.util.List;

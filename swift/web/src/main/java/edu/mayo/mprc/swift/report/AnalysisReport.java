@@ -22,55 +22,53 @@ import java.io.OutputStreamWriter;
  * @author Roman Zenka
  */
 public class AnalysisReport extends HttpServlet {
-    private SearchDbDao searchDbDao;
+	private SearchDbDao searchDbDao;
 
-    public void init() throws ServletException {
-        if (ServletIntialization.initServletConfiguration(getServletConfig())) {
-            if (SwiftWebContext.getServletConfig() != null) {
-                searchDbDao = SwiftWebContext.getServletConfig().getSearchDbDao();
-            }
-        }
-    }
+	public void init() throws ServletException {
+		if (ServletIntialization.initServletConfiguration(getServletConfig())) {
+			if (SwiftWebContext.getServletConfig() != null) {
+				searchDbDao = SwiftWebContext.getServletConfig().getSearchDbDao();
+			}
+		}
+	}
 
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        OutputStreamWriter writer = null;
-        try {
-            writer = new OutputStreamWriter(resp.getOutputStream(), Charsets.US_ASCII);
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("text/html");
+		OutputStreamWriter writer = null;
+		try {
+			writer = new OutputStreamWriter(resp.getOutputStream(), Charsets.US_ASCII);
 
-            String reportIdStr = req.getParameter("id");
-            final long reportId;
-            try {
-                reportId = Long.parseLong(reportIdStr);
-            } catch (NumberFormatException e) {
-                throw new MprcException("Cannot process report id: " + reportIdStr, e);
-            }
+			String reportIdStr = req.getParameter("id");
+			final long reportId;
+			try {
+				reportId = Long.parseLong(reportIdStr);
+			} catch (NumberFormatException e) {
+				throw new MprcException("Cannot process report id: " + reportIdStr, e);
+			}
 
-            searchDbDao.begin();
-            try {
-                Analysis analysis = searchDbDao.getAnalysis(reportId);
+			searchDbDao.begin();
+			try {
+				Analysis analysis = searchDbDao.getAnalysis(reportId);
 
-                writer.write("<html><head><title>Scaffold Report</title>" +
-                        "<style>" +
-                        "table { border-collapse: collapse }" +
-                        "table td, table th { border: 1px solid black }" +
-                        "</style>" +
-                        "</head><body>");
-                writer.write("<h1>Scaffold Report</h1>");
-                analysis.htmlReport(new Report(writer), searchDbDao);
+				writer.write("<html><head><title>Scaffold Report</title>\n" +
+						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +
+						"<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>\n" +
+						"</head><body>\n");
+				writer.write("<h1>Scaffold Report</h1>\n");
+				analysis.htmlReport(new Report(writer), searchDbDao);
 
-                searchDbDao.commit();
-            } catch (Exception e) {
-                searchDbDao.rollback();
-                throw new MprcException("Could not obtain analysis data", e);
-            }
+				searchDbDao.commit();
+			} catch (Exception e) {
+				searchDbDao.rollback();
+				throw new MprcException("Could not obtain analysis data", e);
+			}
 
-            writer.write("</body></html>");
-        } finally {
-            FileUtilities.closeQuietly(writer);
-        }
-    }
+			writer.write("</body></html>");
+		} finally {
+			FileUtilities.closeQuietly(writer);
+		}
+	}
 }
 

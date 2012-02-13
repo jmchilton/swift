@@ -2,10 +2,9 @@ package edu.mayo.mprc.dbundeploy;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.dbcurator.model.Curation;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public final class DatabaseUndeployerCaller {
 			}
 
 			@Override
-			public void requestTerminated(DaemonException e) {
+			public void requestTerminated(Exception e) {
 				addMessageToQueue(taskId, "Undeployment request terminated due:\n" + MprcException.getDetailedMessage(e), true);
 			}
 

@@ -2,8 +2,8 @@ package edu.mayo.mprc.enginedeployment;
 
 
 import edu.mayo.mprc.daemon.files.FileHolder;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.utilities.exceptions.CompositeException;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 import java.util.ArrayList;

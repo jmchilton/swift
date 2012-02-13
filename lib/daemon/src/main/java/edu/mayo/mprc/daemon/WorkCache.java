@@ -6,13 +6,12 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.DependencyResolver;
 import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ServiceConfig;
-import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.StringUtilities;
 import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -299,7 +298,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		}
 
 		@Override
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			try {
 				// The work in progress folder can be scratched
 				FileUtilities.deleteNow(wipFolder);

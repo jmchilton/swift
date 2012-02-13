@@ -1,8 +1,7 @@
 package edu.mayo.mprc.swift.search.task;
 
-import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import edu.mayo.mprc.workflow.engine.AssignedExecutedOnHost;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
@@ -29,7 +28,7 @@ abstract class TaskProgressListener implements ProgressListener {
 		task.afterProgressInformationReceived(null);
 	}
 
-	public void requestTerminated(DaemonException e) {
+	public void requestTerminated(Exception e) {
 		try {
 			NDC.push(this.task.getFullId());
 			LOGGER.error("Task failed: " + this.task.getName(), e);

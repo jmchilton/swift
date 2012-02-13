@@ -2,14 +2,13 @@ package edu.mayo.mprc.daemon;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.DaemonConfigInfo;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.messaging.Service;
 import edu.mayo.mprc.messaging.ServiceFactory;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -147,7 +146,7 @@ public final class WorkCachePerformanceTest {
 		}
 
 		@Override
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			Assert.fail("Unexpected exception", e);
 		}
 

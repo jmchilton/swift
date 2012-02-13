@@ -1,7 +1,7 @@
 package edu.mayo.mprc.daemon;
 
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.util.ArrayList;
 import java.util.List;

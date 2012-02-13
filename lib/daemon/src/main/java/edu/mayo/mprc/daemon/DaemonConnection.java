@@ -1,7 +1,7 @@
 package edu.mayo.mprc.daemon;
 
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 
 /**
  * A connection to a specific runner within another daemon. Technically, this should be called "RunnerConnection".

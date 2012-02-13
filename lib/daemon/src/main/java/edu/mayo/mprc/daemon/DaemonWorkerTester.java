@@ -2,13 +2,12 @@ package edu.mayo.mprc.daemon;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.DaemonConfigInfo;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.messaging.Service;
 import edu.mayo.mprc.messaging.ServiceFactory;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 
 import java.net.URI;
@@ -210,7 +209,7 @@ public final class DaemonWorkerTester {
 			}
 		}
 
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			LOGGER.error("Work failed", e);
 			lastError = e;
 			done = true;

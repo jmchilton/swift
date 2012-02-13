@@ -3,11 +3,11 @@ package edu.mayo.mprc.swift.search.task;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.qa.ExperimentQa;
 import edu.mayo.mprc.qa.MgfQaFiles;
 import edu.mayo.mprc.qa.QaWorkPacket;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 import java.util.ArrayList;

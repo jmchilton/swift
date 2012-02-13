@@ -3,9 +3,9 @@ package edu.mayo.mprc.swift.search.task;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.mgf2mgf.MgfTitleCleanupResult;
 import edu.mayo.mprc.mgf2mgf.MgfTitleCleanupWorkPacket;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,6 +1,6 @@
 package edu.mayo.mprc.mascot;
 
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 public final class MascotResultUrl implements ProgressInfo {
 	private static final long serialVersionUID = 20101101;

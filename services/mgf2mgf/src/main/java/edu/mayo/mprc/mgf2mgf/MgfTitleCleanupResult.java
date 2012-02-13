@@ -1,6 +1,6 @@
 package edu.mayo.mprc.mgf2mgf;
 
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 /**
  * Result of cleaning up the mgf.

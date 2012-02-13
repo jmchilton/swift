@@ -8,8 +8,8 @@ import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.io.mgf.MgfCleanup;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.File;
 import java.util.HashMap;

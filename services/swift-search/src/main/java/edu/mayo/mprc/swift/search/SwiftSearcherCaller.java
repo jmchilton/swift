@@ -3,10 +3,9 @@ package edu.mayo.mprc.swift.search;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.AssignedTaskData;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.swift.dbmapping.SearchRun;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 
 /**
@@ -50,7 +49,7 @@ public final class SwiftSearcherCaller {
 	}
 
 	public static class SearchProgressListener implements ProgressListener {
-		private MprcException exception;
+		private Exception exception;
 		private long searchId;
 		private boolean running = true;
 		private volatile boolean ready;
@@ -85,7 +84,7 @@ public final class SwiftSearcherCaller {
 			}
 		}
 
-		public MprcException getException() {
+		public Exception getException() {
 			synchronized (monitor) {
 				return exception;
 			}
@@ -116,7 +115,7 @@ public final class SwiftSearcherCaller {
 			}
 		}
 
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			LOGGER.debug("Request terminated with error", e);
 			synchronized (monitor) {
 				ready = true;

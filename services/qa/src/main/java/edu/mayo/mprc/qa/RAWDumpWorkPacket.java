@@ -3,7 +3,7 @@ package edu.mayo.mprc.qa;
 import edu.mayo.mprc.daemon.CachableWorkPacket;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.WorkPacketBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.File;
 import java.util.Arrays;

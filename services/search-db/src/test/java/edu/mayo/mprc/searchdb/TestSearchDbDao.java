@@ -40,120 +40,120 @@ import java.util.Date;
  * @author Roman Zenka
  */
 public class TestSearchDbDao extends DaoTest {
-    private SearchDbDaoHibernate searchDbDao;
-    private Unimod unimod;
-    private Unimod scaffoldUnimod;
-    private CurationDaoImpl curationDao;
-    private UnimodDaoHibernate unimodDao;
-    private SwiftDaoHibernate swiftDao;
-    private FastaDbDaoHibernate fastaDbDao;
+	private SearchDbDaoHibernate searchDbDao;
+	private Unimod unimod;
+	private Unimod scaffoldUnimod;
+	private CurationDaoImpl curationDao;
+	private UnimodDaoHibernate unimodDao;
+	private SwiftDaoHibernate swiftDao;
+	private FastaDbDaoHibernate fastaDbDao;
 
-    private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
+	private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
 
-    @BeforeMethod
-    public void setup() {
-        FileType.initialize(new DummyFileTokenTranslator());
+	@BeforeMethod
+	public void setup() {
+		FileType.initialize(new DummyFileTokenTranslator());
 
-        final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
-        unimodDao = new UnimodDaoHibernate();
-        curationDao = new CurationDaoImpl();
-        fastaDbDao = new FastaDbDaoHibernate();
-        swiftDao = new SwiftDaoHibernate();
+		final ParamsDaoHibernate paramsDao = new ParamsDaoHibernate();
+		unimodDao = new UnimodDaoHibernate();
+		curationDao = new CurationDaoImpl();
+		fastaDbDao = new FastaDbDaoHibernate();
+		swiftDao = new SwiftDaoHibernate();
 
-        searchDbDao = new SearchDbDaoHibernate();
-        searchDbDao.setSwiftDao(swiftDao);
-        searchDbDao.setFastaDbDao(fastaDbDao);
+		searchDbDao = new SearchDbDaoHibernate();
+		searchDbDao.setSwiftDao(swiftDao);
+		searchDbDao.setFastaDbDao(fastaDbDao);
 
-        initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao, fastaDbDao));
-    }
+		initializeDatabase(Arrays.asList(swiftDao, unimodDao, paramsDao, curationDao, searchDbDao, fastaDbDao));
+	}
 
-    private void loadScaffoldUnimod() {
-        scaffoldUnimod = new Unimod();
-        scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
-    }
+	private void loadScaffoldUnimod() {
+		scaffoldUnimod = new Unimod();
+		scaffoldUnimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/searchdb/scaffold_unimod.xml", Unimod.class));
+	}
 
-    private void loadUnimod() {
-        unimodDao.begin();
-        MockUnimodDao mockUnimodDao = new MockUnimodDao();
-        unimod = mockUnimodDao.load();
-        unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
-        unimodDao.commit();
-    }
+	private void loadUnimod() {
+		unimodDao.begin();
+		MockUnimodDao mockUnimodDao = new MockUnimodDao();
+		unimod = mockUnimodDao.load();
+		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
+		unimodDao.commit();
+	}
 
-    @AfterMethod
-    public void teardown() {
-        teardownDatabase();
-    }
+	@AfterMethod
+	public void teardown() {
+		teardownDatabase();
+	}
 
-    @Test
-    public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
-        loadUnimod();
-        loadScaffoldUnimod();
-        Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
+	@Test
+	public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
+		loadUnimod();
+		loadScaffoldUnimod();
+		Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
 
-        searchDbDao.begin();
+		searchDbDao.begin();
 
-        final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
+		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
 
-        ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
-                new SingleDatabaseTranslator(fastaDbDao, curationDao),
-                new DummyMassSpecDataExtractor());
-        summarizer.load(reader, SINGLE, "3");
-        final Analysis analysis = summarizer.getAnalysis();
+		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
+				new SingleDatabaseTranslator(fastaDbDao, curationDao),
+				new DummyMassSpecDataExtractor());
+		summarizer.load(reader, SINGLE, "3", null);
+		final Analysis analysis = summarizer.getAnalysis();
 
-        SearchRun searchRun = swiftDao.fillSearchRun(null);
-        ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
+		SearchRun searchRun = swiftDao.fillSearchRun(null);
+		ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
 
-        searchDbDao.addAnalysis(analysis, reportData);
+		searchDbDao.addAnalysis(analysis, reportData);
 
-        getDatabasePlaceholder().getSession().flush();
+		getDatabasePlaceholder().getSession().flush();
 
-        StringWriter writer = new StringWriter();
-        Report r = new Report(writer);
+		StringWriter writer = new StringWriter();
+		Report r = new Report(writer);
 
-        analysis.htmlReport(r, searchDbDao);
+		analysis.htmlReport(r, searchDbDao);
 
-        // TODO: Check that the analysis is saved properly
+		// TODO: Check that the analysis is saved properly
 //        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
 //        FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database.xml"));
 
-        searchDbDao.commit();
-    }
+		searchDbDao.commit();
+	}
 
-    private Curation loadFasta(String resource, String shortName) {
-        File file = null;
-        try {
-            file = TestingUtilities.getTempFileFromResource(resource, true, null);
-            return loadFasta(file, shortName);
-        } catch (Exception e) {
-            throw new MprcException("Failed to load database [" + shortName + "]", e);
-        } finally {
-            FileUtilities.cleanupTempFile(file);
-        }
-    }
+	private Curation loadFasta(String resource, String shortName) {
+		File file = null;
+		try {
+			file = TestingUtilities.getTempFileFromResource(resource, true, null);
+			return loadFasta(file, shortName);
+		} catch (Exception e) {
+			throw new MprcException("Failed to load database [" + shortName + "]", e);
+		} finally {
+			FileUtilities.cleanupTempFile(file);
+		}
+	}
 
-    private Curation loadFasta(File file, String shortName) {
-        try {
-            Curation curation = addCurationToDatabase(shortName, file);
-            fastaDbDao.addFastaDatabase(curation, null);
-            return curation;
-        } catch (Exception e) {
-            throw new MprcException("Failed to load database [" + shortName + "]", e);
-        }
-    }
+	private Curation loadFasta(File file, String shortName) {
+		try {
+			Curation curation = addCurationToDatabase(shortName, file);
+			fastaDbDao.addFastaDatabase(curation, null);
+			return curation;
+		} catch (Exception e) {
+			throw new MprcException("Failed to load database [" + shortName + "]", e);
+		}
+	}
 
-    private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {
-        Curation currentSp = null;
-        try {
-            curationDao.begin();
-            currentSp = new Curation();
-            currentSp.setShortName(databaseName);
-            currentSp.setCurationFile(currentSpFasta);
-            curationDao.addCuration(currentSp);
-            curationDao.commit();
-        } catch (Exception e) {
-            org.testng.Assert.fail("Cannot load fasta database", e);
-        }
-        return currentSp;
-    }
+	private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {
+		Curation currentSp = null;
+		try {
+			curationDao.begin();
+			currentSp = new Curation();
+			currentSp.setShortName(databaseName);
+			currentSp.setCurationFile(currentSpFasta);
+			curationDao.addCuration(currentSp);
+			curationDao.commit();
+		} catch (Exception e) {
+			org.testng.Assert.fail("Cannot load fasta database", e);
+		}
+		return currentSp;
+	}
 }

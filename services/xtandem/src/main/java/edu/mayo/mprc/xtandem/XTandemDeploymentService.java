@@ -8,10 +8,10 @@ import edu.mayo.mprc.config.ui.ServiceUiFactory;
 import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
 import edu.mayo.mprc.enginedeployment.DeploymentService;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;

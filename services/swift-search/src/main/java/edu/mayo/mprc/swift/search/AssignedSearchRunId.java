@@ -1,6 +1,6 @@
 package edu.mayo.mprc.swift.search;
 
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 /**
  * The search run id assigned by running the search.

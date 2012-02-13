@@ -3,8 +3,8 @@ package edu.mayo.mprc.swift.search.task;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
 import edu.mayo.mprc.scaffold.report.ScaffoldReportWorkPacket;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 import org.apache.log4j.Logger;
 
 import java.io.File;

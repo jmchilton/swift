@@ -1,6 +1,6 @@
 package edu.mayo.mprc.daemon;
 
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.File;
 import java.io.Serializable;

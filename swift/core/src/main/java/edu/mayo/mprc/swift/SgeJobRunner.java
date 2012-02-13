@@ -11,8 +11,6 @@ import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.daemon.files.FileTokenHolder;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.filesharing.jms.JmsFileTransferHandlerFactory;
 import edu.mayo.mprc.messaging.rmi.BoundMessenger;
 import edu.mayo.mprc.messaging.rmi.MessengerFactory;
@@ -20,6 +18,8 @@ import edu.mayo.mprc.messaging.rmi.OneWayMessenger;
 import edu.mayo.mprc.messaging.rmi.RemoteObjectHandler;
 import edu.mayo.mprc.sge.GridDaemonWorkerAllocatorInputObject;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
 import java.io.File;

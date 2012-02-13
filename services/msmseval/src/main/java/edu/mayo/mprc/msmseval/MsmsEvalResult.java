@@ -3,7 +3,7 @@ package edu.mayo.mprc.msmseval;
 import edu.mayo.mprc.daemon.files.FileHolder;
 import edu.mayo.mprc.daemon.files.FileTokenSynchronizer;
 import edu.mayo.mprc.daemon.files.ReceiverTokenTranslator;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 

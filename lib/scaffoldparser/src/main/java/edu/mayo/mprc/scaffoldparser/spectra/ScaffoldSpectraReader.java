@@ -2,6 +2,7 @@ package edu.mayo.mprc.scaffoldparser.spectra;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.*;
 import java.util.regex.Pattern;
@@ -105,7 +106,7 @@ public abstract class ScaffoldSpectraReader {
 	 * @param scaffoldSpectraFile Spectrum file to load.
 	 * @param scaffoldVersion     {@link #scaffoldVersion}
 	 */
-	public void load(File scaffoldSpectraFile, String scaffoldVersion) {
+	public void load(File scaffoldSpectraFile, String scaffoldVersion, ProgressReporter reporter) {
 		dataSourceName = scaffoldSpectraFile.getAbsolutePath();
 		this.scaffoldVersion = scaffoldVersion;
 		FileReader fileReader = null;
@@ -125,8 +126,9 @@ public abstract class ScaffoldSpectraReader {
 	 * @param reader          Reader to load from. Will be closed upon load.
 	 * @param dataSourceName  Information about where the spectra data came from - displayed when throwing exceptions.
 	 * @param scaffoldVersion {@link #scaffoldVersion}
+	 * @param reporter        To report the progress. Can be null.
 	 */
-	public void load(Reader reader, String dataSourceName, String scaffoldVersion) {
+	public void load(Reader reader, String dataSourceName, String scaffoldVersion, ProgressReporter reporter) {
 		this.dataSourceName = dataSourceName;
 		this.scaffoldVersion = scaffoldVersion;
 		try {

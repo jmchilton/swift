@@ -8,8 +8,8 @@ import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.progress.ProgressReporter;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.util.Map;
 import java.util.TreeMap;

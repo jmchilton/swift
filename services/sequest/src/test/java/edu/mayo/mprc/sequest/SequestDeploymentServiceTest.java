@@ -2,14 +2,13 @@ package edu.mayo.mprc.sequest;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonWorkerTester;
-import edu.mayo.mprc.daemon.exception.DaemonException;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -126,7 +125,7 @@ public final class SequestDeploymentServiceTest {
 				LOGGER.debug("SequestDS processing finished");
 			}
 
-			public void requestTerminated(DaemonException e) {
+			public void requestTerminated(Exception e) {
 				fail("Request terminated", e);
 			}
 

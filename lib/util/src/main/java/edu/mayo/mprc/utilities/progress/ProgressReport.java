@@ -1,4 +1,4 @@
-package edu.mayo.mprc.daemon.progress;
+package edu.mayo.mprc.utilities.progress;
 
 import java.io.Serializable;
 import java.text.MessageFormat;

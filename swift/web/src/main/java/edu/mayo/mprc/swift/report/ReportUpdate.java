@@ -3,10 +3,7 @@ package edu.mayo.mprc.swift.report;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.ServletIntialization;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
-import edu.mayo.mprc.daemon.progress.ProgressInfo;
-import edu.mayo.mprc.daemon.progress.ProgressListener;
 import edu.mayo.mprc.qstat.QstatOutput;
 import edu.mayo.mprc.qstat.QstatWorkPacket;
 import edu.mayo.mprc.searchdb.dao.SearchDbDao;
@@ -17,6 +14,8 @@ import edu.mayo.mprc.swift.dbmapping.ReportData;
 import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import edu.mayo.mprc.swift.search.AssignedSearchRunId;
 import edu.mayo.mprc.swift.search.SwiftSearcherCaller;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressListener;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -354,7 +353,7 @@ public final class ReportUpdate extends HttpServlet {
 			}
 		}
 
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			String info = e.getMessage();
 			try {
 				ServletOutputStream output = response.getOutputStream();
@@ -428,7 +427,7 @@ public final class ReportUpdate extends HttpServlet {
 		public void requestProcessingFinished() {
 		}
 
-		public void requestTerminated(DaemonException e) {
+		public void requestTerminated(Exception e) {
 			synchronized (lock) {
 				this.lastException = e;
 				lock.notifyAll();
