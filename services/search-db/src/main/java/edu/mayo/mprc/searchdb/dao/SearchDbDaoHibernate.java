@@ -291,15 +291,33 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 	@Override
 	public List<SearchRun> getSearchesForAccessionNumber(String accessionNumber) {
-		return (List<SearchRun>) getSession().createQuery(
-				"select rd  from ProteinDatabaseEntry as e, ProteinSequenceList as l, ProteinSequence as s, ProteinGroup as pg, ProteinGroupList as pgl, SearchResult  as sr, SearchResultList as srl," +
-						" BiologicalSample as bs, BiologicalSampleList as bsl, Analysis as a, ReportData as rd " +
-						"where e.accessionNumber=:accessionNumber and" +
-						" e.sequence=s and e in elements (l.list) and pg.proteinSequences = l and pg in elements(pgl.list) and sr.proteinGroups=pgl and sr in elements(srl.list) and bs.searchResults=srl and" +
-						" bs in elements(bsl.list) and a.biologicalSamples=bsl and a.reportData=rd")
+		return (List<SearchRun>) getSession().createSQLQuery(
+				"select distinct rd.* from " +
+						"analysis as a, " +
+						"report as rd, " +
+						"biological_sample as bs, " +
+						"biological_sample_list_members as bsm, " +
+						"search_result as sr, " +
+						"search_result_list_members as srm, " +
+						"protein_group as pg, " +
+						"protein_group_list_members as pgm, " +
+						"protein_sequence as ps, " +
+						"protein_sequence_list_members as psm, " +
+						"protein_database_entry as pde " +
+						"where " +
+						"a.report_id = rd.report_id " +
+						"and bs.biological_sample_id = bsm.biological_sample_id " +
+						"and bsm.biological_sample_list_id=a.biological_sample_list_id " +
+						"and bs.search_result_list_id = srm.search_result_list_id " +
+						"and srm.search_result_id = sr.search_result_id " +
+						"and sr.protein_group_list_id = pgm.protein_group_list_id " +
+						"and pgm.protein_group_id = pg.protein_group_id " +
+						"and pg.protein_sequence_list_id = psm.protein_sequence_list_id " +
+						"and psm.protein_sequence_id = ps.protein_sequence_id " +
+						"and pde.protein_sequence_id = ps.protein_sequence_id " +
+						"and pde.accession_number = :accessionNumber")
 				.setParameter("accessionNumber", accessionNumber)
 				.list();
-
 	}
 
 	private Criterion analysisEqualityCriteria(Analysis analysis) {
