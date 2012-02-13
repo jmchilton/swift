@@ -8,77 +8,102 @@ import edu.mayo.mprc.dbcurator.model.Curation;
  *
  * @author Roman Zenka
  */
-public class ProteinDatabaseEntry extends PersistableBase {
-    /**
-     * Database this entry belongs to.
-     */
-    private Curation database;
+public final class ProteinDatabaseEntry extends PersistableBase {
+	/**
+	 * Database this entry belongs to.
+	 */
+	private Curation database;
 
-    /**
-     * Accession number the entry belongs to.
-     */
-    private String accessionNumber;
+	/**
+	 * Accession number the entry belongs to.
+	 */
+	private String accessionNumber;
 
-    /**
-     * The protein sequence of the entry.
-     */
-    private ProteinSequence sequence;
+	/**
+	 * Description of the database entry.
+	 */
+	private String description;
 
-    public ProteinDatabaseEntry() {
-    }
+	/**
+	 * The protein sequence of the entry.
+	 */
+	private ProteinSequence sequence;
 
-    public ProteinDatabaseEntry(Curation database, String accessionNumber, ProteinSequence sequence) {
-        this.setDatabase(database);
-        this.setAccessionNumber(accessionNumber);
-        this.setSequence(sequence);
-    }
+	public ProteinDatabaseEntry() {
+	}
 
-    public Curation getDatabase() {
-        return database;
-    }
+	public ProteinDatabaseEntry(final Curation database, final String accessionNumber, final String description, final ProteinSequence sequence) {
+		setDatabase(database);
+		setAccessionNumber(accessionNumber);
+		setDescription(description);
+		setSequence(sequence);
+	}
 
-    void setDatabase(Curation database) {
-        this.database = database;
-    }
+	public Curation getDatabase() {
+		return database;
+	}
 
-    public String getAccessionNumber() {
-        return accessionNumber;
-    }
+	void setDatabase(final Curation database) {
+		this.database = database;
+	}
 
-    void setAccessionNumber(String accessionNumber) {
-        this.accessionNumber = accessionNumber;
-    }
+	public String getAccessionNumber() {
+		return accessionNumber;
+	}
 
-    public ProteinSequence getSequence() {
-        return sequence;
-    }
+	void setAccessionNumber(final String accessionNumber) {
+		this.accessionNumber = accessionNumber;
+	}
 
-    void setSequence(ProteinSequence sequence) {
-        this.sequence = sequence;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public void setDescription(final String description) {
+		this.description = description;
+	}
 
-        ProteinDatabaseEntry that = (ProteinDatabaseEntry) o;
+	public ProteinSequence getSequence() {
+		return sequence;
+	}
 
-        if (getAccessionNumber() != null ? !getAccessionNumber().equals(that.getAccessionNumber()) : that.getAccessionNumber() != null)
-            return false;
-        if (getDatabase() != null ? !getDatabase().equals(that.getDatabase()) : that.getDatabase() != null)
-            return false;
-        if (getSequence() != null ? !getSequence().equals(that.getSequence()) : that.getSequence() != null)
-            return false;
+	void setSequence(final ProteinSequence sequence) {
+		this.sequence = sequence;
+	}
 
-        return true;
-    }
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (null == o || getClass() != o.getClass()) {
+			return false;
+		}
 
-    @Override
-    public int hashCode() {
-        int result = getDatabase() != null ? getDatabase().hashCode() : 0;
-        result = 31 * result + (getAccessionNumber() != null ? getAccessionNumber().hashCode() : 0);
-        result = 31 * result + (getSequence() != null ? getSequence().hashCode() : 0);
-        return result;
-    }
+		final ProteinDatabaseEntry that = (ProteinDatabaseEntry) o;
+
+		if (null != getAccessionNumber() ? !getAccessionNumber().equals(that.getAccessionNumber()) : null != that.getAccessionNumber()) {
+			return false;
+		}
+		if (null != getDatabase() ? !getDatabase().equals(that.getDatabase()) : null != that.getDatabase()) {
+			return false;
+		}
+		if (null != getDescription() ? !getDescription().equals(that.getDescription()) : null != that.getDescription()) {
+			return false;
+		}
+		if (null != getSequence() ? !getSequence().equals(that.getSequence()) : null != that.getSequence()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = null != getDatabase() ? getDatabase().hashCode() : 0;
+		result = 31 * result + (null != getAccessionNumber() ? getAccessionNumber().hashCode() : 0);
+		result = 31 * result + (null != getDescription() ? getDescription().hashCode() : 0);
+		result = 31 * result + (null != getSequence() ? getSequence().hashCode() : 0);
+		return result;
+	}
 }

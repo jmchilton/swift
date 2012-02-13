@@ -427,6 +427,7 @@ a:hover.filter_button.filter.ztoa {
     background-image: url(analysis.gif);
     width: 16px;
     height: 16px;
+    margin-right: 5px;
 }
 
 #navigation {
