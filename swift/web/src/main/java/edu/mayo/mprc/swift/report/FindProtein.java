@@ -51,26 +51,12 @@ public class FindProtein extends HttpServlet {
 						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +
 						"<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>\n" +
 						"</head><body>\n");
-				writer.write("<form action=\"/find_protein\" method=\"get\">Search: <input type=\"text\" name=\"id\" value=\"" + (accessionNumber == null ? "" : accessionNumber) + "\"></form>");
+				writer.write("<form action=\"/find-protein\" method=\"get\">Search: <input type=\"text\" name=\"id\" value=\"" + (null == accessionNumber ? "" : accessionNumber) + "\"></form>");
 				writer.write("<h1>Searches containing " + accessionNumber + "</h1>\n");
 				writer.write("<table>");
 				writer.write("<tr><th>Title</th><th>Completed</th><th>Reports</th></tr>");
 
-				Integer previousSearchRun = 0;
-				for (final ReportData reportData : reportDataList) {
-					final SearchRun searchRun = reportData.getSearchRun();
-					if (!searchRun.getId().equals(previousSearchRun)) {
-						closePreviousRun(writer, previousSearchRun);
-
-						writer.write("<tr>");
-						previousSearchRun = searchRun.getId();
-						writer.write("<td><a href=\"/start/?load=" + searchRun.getId() + "\">" + searchRun.getTitle() + "</a></td>");
-						writer.write("<td>" + searchRun.getEndTimestamp() + "</td>");
-						writer.write("<td>");
-					}
-					writer.write("<a href=\"/analysis?id=" + reportData.getId() + "\"&highlight=" + accessionNumber + ">" + reportData.getReportFileId().getName() + "</a> ");
-				}
-				closePreviousRun(writer, previousSearchRun);
+				matchingSearchesTable(writer, reportDataList, accessionNumber);
 
 				writer.write("</table>");
 				writer.write("</body></html>");
@@ -85,6 +71,24 @@ public class FindProtein extends HttpServlet {
 		} finally {
 			FileUtilities.closeQuietly(writer);
 		}
+	}
+
+	private void matchingSearchesTable(OutputStreamWriter writer, List<ReportData> reportDataList, String accessionNumber) throws IOException {
+		Integer previousSearchRun = 0;
+		for (final ReportData reportData : reportDataList) {
+			final SearchRun searchRun = reportData.getSearchRun();
+			if (!searchRun.getId().equals(previousSearchRun)) {
+				closePreviousRun(writer, previousSearchRun);
+
+				writer.write("<tr>");
+				previousSearchRun = searchRun.getId();
+				writer.write("<td><a href=\"/start/?load=" + searchRun.getId() + "\">" + searchRun.getTitle() + "</a></td>");
+				writer.write("<td>" + searchRun.getEndTimestamp() + "</td>");
+				writer.write("<td>");
+			}
+			writer.write("<a href=\"/analysis?id=" + reportData.getId() + "&highlight=" + accessionNumber + "\">" + reportData.getReportFileId().getName() + "</a> ");
+		}
+		closePreviousRun(writer, previousSearchRun);
 	}
 
 	private void closePreviousRun(OutputStreamWriter writer, Integer previousSearchRun) throws IOException {
