@@ -51,6 +51,7 @@ public class FindProtein extends HttpServlet {
 						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +
 						"<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>\n" +
 						"</head><body>\n");
+				writer.write("<form action=\"/find_protein\" method=\"get\">Search: <input type=\"text\" name=\"id\" value=\"" + (accessionNumber == null ? "" : accessionNumber) + "\"></form>");
 				writer.write("<h1>Searches containing " + accessionNumber + "</h1>\n");
 				writer.write("<table>");
 				writer.write("<tr><th>Title</th><th>Completed</th><th>Reports</th></tr>");
@@ -67,7 +68,7 @@ public class FindProtein extends HttpServlet {
 						writer.write("<td>" + searchRun.getEndTimestamp() + "</td>");
 						writer.write("<td>");
 					}
-					writer.write("<a href=\"/analysis?id=" + reportData.getId() + "\">" + reportData.getReportFileId().getName() + "</a> ");
+					writer.write("<a href=\"/analysis?id=" + reportData.getId() + "\"&highlight=" + accessionNumber + ">" + reportData.getReportFileId().getName() + "</a> ");
 				}
 				closePreviousRun(writer, previousSearchRun);
 
