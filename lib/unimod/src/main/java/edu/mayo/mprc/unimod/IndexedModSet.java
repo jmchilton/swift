@@ -5,7 +5,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.sun.istack.internal.NotNull;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.ComparisonChain;
 
@@ -258,7 +257,7 @@ public class IndexedModSet implements Set<Mod> {
 
 		public static final Function<ModSpecificityMatch, ModSpecificity> GET_MOD_SPECIFICITY = new Function<ModSpecificityMatch, ModSpecificity>() {
 			@Override
-			public ModSpecificity apply(@NotNull ModSpecificityMatch from) {
+			public ModSpecificity apply(ModSpecificityMatch from) {
 				return from.getMatchingModSpecificity();
 			}
 		};
