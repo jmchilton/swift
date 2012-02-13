@@ -244,12 +244,17 @@ public final class Analysis extends PersistableBase {
 
 			for (BiologicalSample sample : getBiologicalSamples()) {
 				for (SearchResult result : sample.getSearchResults()) {
+					ProteinGroup matchingGroup = null;
 					for (ProteinGroup g : result.getProteinGroups()) {
 						if (proteinSequences.getId().equals(g.getProteinSequences().getId())) {
-							r.cell(String.valueOf(g.getNumberOfTotalSpectra()));
-						} else {
-							r.cell("");
+							matchingGroup = g;
+							break;
 						}
+					}
+					if (matchingGroup != null) {
+						r.cell(String.valueOf(matchingGroup.getNumberOfTotalSpectra()));
+					} else {
+						r.cell("");
 					}
 				}
 			}
