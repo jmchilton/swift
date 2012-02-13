@@ -55,6 +55,7 @@ public final class GridEngineJobManager {
 		return gridEngineSession;
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
 		destroy();
 		super.finalize();

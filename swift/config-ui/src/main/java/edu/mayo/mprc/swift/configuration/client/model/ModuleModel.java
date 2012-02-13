@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public final class ModuleModel extends ResourceModel {
 	private static final int RUNNER = 0;
 	private static final int SERVICE = 1;
+	private static final long serialVersionUID = 6348206861156895486L;
 
 	public ModuleModel() {
 	}

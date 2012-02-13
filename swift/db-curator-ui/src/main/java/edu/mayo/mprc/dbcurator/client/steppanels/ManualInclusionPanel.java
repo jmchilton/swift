@@ -125,7 +125,7 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 		//if this includes a header then strip out between the header filter and th
 		if (toClean.charAt(0) == '>') {
 			int startChar = 1;
-			int endChar = toClean.indexOf("\n", 1);
+			int endChar = toClean.indexOf('\n', 1);
 			if (endChar < 0) {
 				endChar = startChar;
 			}

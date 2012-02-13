@@ -76,6 +76,7 @@ public class FileHolderTest {
 	}
 
 	static class TestClass2 extends TestClass {
+		private static final long serialVersionUID = -6085572690191248134L;
 		private File file2;
 		private Map<String, File> fileMap = new LinkedHashMap<String, File>();
 

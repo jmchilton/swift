@@ -11,6 +11,7 @@ public final class DaemonModel extends ResourceModel {
 	public static final String OS_NAME = "osName";
 	public static final String SHARED_FILE_SPACE_PATH = "sharedFileSpacePath";
 	public static final String TEMP_FOLDER_PATH = "tempFolderPath";
+	private static final long serialVersionUID = -3470019100042087509L;
 
 	public DaemonModel() {
 		super(null, "daemon");

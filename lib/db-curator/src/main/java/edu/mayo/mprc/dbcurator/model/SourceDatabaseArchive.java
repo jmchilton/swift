@@ -283,7 +283,7 @@ public class SourceDatabaseArchive implements Serializable {
 		if (filename == null) {
 			filename = "";
 		}
-		int firstDotIndex = filename.indexOf(".", 0);
+		int firstDotIndex = filename.indexOf('.', 0);
 		String name = filename.substring(0, firstDotIndex);
 		return name + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".fasta.gz";
 	}

@@ -5,6 +5,7 @@ import edu.mayo.mprc.daemon.files.FileHolder;
 import java.io.File;
 
 public final class ScafmlExport extends FileHolder {
+	private static final long serialVersionUID = 7906225867829407626L;
 	private File scaffoldOutputDir;
 
 	// Additional exports

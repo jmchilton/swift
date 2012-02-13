@@ -7,7 +7,7 @@ public interface KeyedTsvReader {
 	/**
 	 * @return A tab-separated header line (sans the Scan number column) for all columns in the data in proper format
 	 */
-	public String getHeaderLine();
+	String getHeaderLine();
 
 	/**
 	 * @return A sequence of tabs that matches the length of the header-1. Used to output missing information.

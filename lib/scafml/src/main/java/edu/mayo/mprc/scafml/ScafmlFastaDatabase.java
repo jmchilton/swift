@@ -7,6 +7,7 @@ import edu.mayo.mprc.utilities.xml.XMLUtilities;
 import java.io.File;
 
 public final class ScafmlFastaDatabase extends FileHolder {
+	private static final long serialVersionUID = -998645023951149560L;
 	private String id;
 	private File database;
 	private DatabaseAnnotation annotation;

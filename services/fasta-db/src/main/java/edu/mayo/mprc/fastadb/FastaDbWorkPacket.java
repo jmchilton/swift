@@ -9,26 +9,27 @@ import edu.mayo.mprc.daemon.WorkPacketBase;
  */
 public class FastaDbWorkPacket extends WorkPacketBase {
 
-    private int curationId;
+	private static final long serialVersionUID = -6506219790252689864L;
+	private int curationId;
 
-    public FastaDbWorkPacket(String taskId, boolean fromScratch) {
-        super(taskId, fromScratch);
-    }
+	public FastaDbWorkPacket(String taskId, boolean fromScratch) {
+		super(taskId, fromScratch);
+	}
 
-    /**
-     * @param taskId     ID of this task.
-     * @param curationId ID of the curation to deploy.
-     */
-    public FastaDbWorkPacket(String taskId, int curationId) {
-        super(taskId, false);
-        this.curationId = curationId;
-    }
+	/**
+	 * @param taskId     ID of this task.
+	 * @param curationId ID of the curation to deploy.
+	 */
+	public FastaDbWorkPacket(String taskId, int curationId) {
+		super(taskId, false);
+		this.curationId = curationId;
+	}
 
-    public int getCurationId() {
-        return curationId;
-    }
+	public int getCurationId() {
+		return curationId;
+	}
 
-    public void setCurationId(int curationId) {
-        this.curationId = curationId;
-    }
+	public void setCurationId(int curationId) {
+		this.curationId = curationId;
+	}
 }

@@ -7,6 +7,7 @@ import java.util.Iterator;
 public class UiChangesReplayer implements Serializable {
 	public static final String SET_PROPERTY = "setProperty";
 	public static final String DISPLAY_PROPERTY_ERROR = "displayPropertyError";
+	private static final long serialVersionUID = 3812490472211147945L;
 
 	private ArrayList<String> commands;
 

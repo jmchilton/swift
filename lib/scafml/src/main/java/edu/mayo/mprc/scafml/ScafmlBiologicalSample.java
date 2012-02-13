@@ -8,6 +8,7 @@ import edu.mayo.mprc.utilities.xml.XMLUtilities;
 import java.util.LinkedHashMap;
 
 public final class ScafmlBiologicalSample extends FileHolder {
+	private static final long serialVersionUID = -3662962867954398923L;
 	/**
 	 * identifier for biological sample, must be unique within experiment
 	 * contains InputFile's

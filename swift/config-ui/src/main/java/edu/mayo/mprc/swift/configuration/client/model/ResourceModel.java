@@ -10,6 +10,7 @@ public class ResourceModel implements Serializable {
 	private static int count = 0;
 	public static final String NAME = "_name";
 	public static final String TYPE = "_type";
+	private static final long serialVersionUID = -3201869140244160793L;
 	private String id;
 	private HashMap<String, String> properties = new HashMap<String, String>();
 	private ArrayList<ResourceModel> children = new ArrayList<ResourceModel>();

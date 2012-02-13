@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * </p>
  */
 public final class ApplicationModel extends ResourceModel {
+	private static final long serialVersionUID = -581997481411688812L;
 	private AvailableModules availableModules;
 
 	public ApplicationModel() {

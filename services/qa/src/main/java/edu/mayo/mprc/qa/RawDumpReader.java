@@ -135,7 +135,7 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 				if (line == null) {
 					break;
 				}
-				int firstTab = line.indexOf("\t");
+				int firstTab = line.indexOf('\t');
 				if (firstTab > 0) {
 					// We have data
 					final String scanNumStr = line.substring(0, firstTab);

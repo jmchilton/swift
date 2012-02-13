@@ -117,6 +117,7 @@ class MultiValidator implements Validator {
 	}
 
 	private class MyUiChanges implements UiChanges {
+		private static final long serialVersionUID = 5427348584970584338L;
 		private boolean error;
 		private final String value;
 

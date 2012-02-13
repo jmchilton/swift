@@ -23,6 +23,7 @@ import java.util.Map;
 
 public final class Benchmark extends HttpServlet {
 
+	private static final long serialVersionUID = -7751412622582020119L;
 	private transient SwiftDao swiftDao;
 
 	public Benchmark() {
@@ -52,9 +53,9 @@ public final class Benchmark extends HttpServlet {
 				outputStream = resp.getOutputStream();
 				printTaskTable(outputStream, taskDataList);
 				swiftDao.commit();
-			} catch (Throwable t) {
+			} catch (Exception e) {
 				swiftDao.rollback();
-				throw new MprcException("Could not create the report", t);
+				throw new MprcException("Could not create the report", e);
 			} finally {
 				FileUtilities.closeQuietly(outputStream);
 			}

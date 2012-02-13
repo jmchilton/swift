@@ -5,6 +5,7 @@ import edu.mayo.mprc.daemon.files.FileHolder;
 import java.io.File;
 
 public final class ScafmlInputFile extends FileHolder {
+	private static final long serialVersionUID = 8170940307629986726L;
 	private String _sID;
 	private File file;
 

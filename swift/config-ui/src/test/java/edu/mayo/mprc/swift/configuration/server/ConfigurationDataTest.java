@@ -70,6 +70,8 @@ public final class ConfigurationDataTest {
 		final DatabaseFactory.Config dbConfig = (DatabaseFactory.Config) getMainDaemon().getResources().get(0);
 		final UiChangesReplayer uiChangesReplayer = data.setProperty(dbConfig, USERNAME, TEST, false);
 		uiChangesReplayer.replay(new UiChanges() {
+			private static final long serialVersionUID = 8556656441048925831L;
+
 			@Override
 			public void setProperty(String resourceId, String propertyName, String newValue) {
 				Assert.assertEquals(propertyName, USERNAME);
@@ -102,6 +104,8 @@ public final class ConfigurationDataTest {
 
 		// The change has to be reflected to the UI
 		changes.replay(new UiChanges() {
+			private static final long serialVersionUID = -2006104357034795782L;
+
 			@Override
 			public void setProperty(String resourceId, String propertyName, String newValue) {
 				Assert.assertEquals(propertyName, XTandemWorker.TANDEM_EXECUTABLE);

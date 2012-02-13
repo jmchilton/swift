@@ -73,6 +73,8 @@ public final class Configuration implements EntryPoint, Context {
 				final StringBuilder message = new StringBuilder();
 
 				changes.replay(new UiChanges() {
+					private static final long serialVersionUID = -5054481989230026680L;
+
 					public void setProperty(String resourceId, String propertyName, String newValue) {
 					}
 

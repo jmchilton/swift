@@ -23,6 +23,7 @@ import java.util.List;
  * @author Roman Zenka
  */
 public class FindProtein extends HttpServlet {
+	private static final long serialVersionUID = -5627714065838335L;
 	private SearchDbDao searchDbDao;
 
 	public void init() throws ServletException {

@@ -97,8 +97,6 @@ public class MockParamsInfo extends ParamsInfo {
 		}
 	}
 
-	private Set<ModSpecificity> variableModsDefault;
-
 	@Override
 	public Set<ModSpecificity> getVariableModsAllowedValues(boolean includeHidden) {
 		initializeUnimod();

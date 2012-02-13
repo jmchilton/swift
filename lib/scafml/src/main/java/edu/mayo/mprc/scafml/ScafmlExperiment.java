@@ -13,6 +13,7 @@ import java.util.Map;
  * experiment contains biological samples
  */
 public final class ScafmlExperiment extends FileHolder {
+	private static final long serialVersionUID = 4851459805058267855L;
 	/**
 	 * can have more than one biological sample per experiment
 	 */

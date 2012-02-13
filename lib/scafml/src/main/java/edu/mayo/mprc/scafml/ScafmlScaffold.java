@@ -12,6 +12,7 @@ import edu.mayo.mprc.utilities.xml.XMLUtilities;
  * The document and all its parts are designated as FileHolder to enable sending the data as a part of work packet across the network.
  */
 public final class ScafmlScaffold extends FileHolder {
+	private static final long serialVersionUID = -8591840319884307949L;
 	/**
 	 * Definition of the experiment
 	 */

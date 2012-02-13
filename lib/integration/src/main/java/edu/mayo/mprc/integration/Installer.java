@@ -152,7 +152,6 @@ public class Installer {
 	);
 
 	private static final int EXECUTABLE = 0x1ed; // 0755
-	private static final String DIGEST_INSTANCE = "MD5";
 
 	/**
 	 * Install a given list of files into given folder.

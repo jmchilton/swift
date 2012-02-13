@@ -12,29 +12,30 @@ import java.io.File;
  * anyway.
  */
 public final class SearchDbWorkPacket extends WorkPacketBase {
-    /**
-     * ID of the particular Swift report that ties to the Scaffold file.
-     * Links to {@link ReportData} object.
-     * This way
-     */
-    private long reportDataId;
+	private static final long serialVersionUID = 100830535859947146L;
+	/**
+	 * ID of the particular Swift report that ties to the Scaffold file.
+	 * Links to {@link ReportData} object.
+	 * This way
+	 */
+	private long reportDataId;
 
-    /**
-     * Scaffold-produced spectrum report file.
-     */
-    private File scaffoldSpectrumReport;
+	/**
+	 * Scaffold-produced spectrum report file.
+	 */
+	private File scaffoldSpectrumReport;
 
-    public SearchDbWorkPacket(String taskId, boolean fromScratch, long reportDataId, File scaffoldSpectrumReport) {
-        super(taskId, fromScratch);
-        this.reportDataId = reportDataId;
-        this.scaffoldSpectrumReport = scaffoldSpectrumReport;
-    }
+	public SearchDbWorkPacket(String taskId, boolean fromScratch, long reportDataId, File scaffoldSpectrumReport) {
+		super(taskId, fromScratch);
+		this.reportDataId = reportDataId;
+		this.scaffoldSpectrumReport = scaffoldSpectrumReport;
+	}
 
-    public long getReportDataId() {
-        return reportDataId;
-    }
+	public long getReportDataId() {
+		return reportDataId;
+	}
 
-    public File getScaffoldSpectrumReport() {
-        return scaffoldSpectrumReport;
-    }
+	public File getScaffoldSpectrumReport() {
+		return scaffoldSpectrumReport;
+	}
 }

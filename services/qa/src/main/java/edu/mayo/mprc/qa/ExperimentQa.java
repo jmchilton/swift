@@ -9,6 +9,7 @@ import java.util.List;
  * Information about QA for a particular experiment.
  */
 public class ExperimentQa extends FileHolder {
+	private static final long serialVersionUID = 6226958874248391404L;
 	private String experimentName;
 	private File scaffoldSpectraFile;
 	private List<MgfQaFiles> mgfQaFiles;

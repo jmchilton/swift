@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
  * @author Roman Zenka
  */
 public class AnalysisReport extends HttpServlet {
+	private static final long serialVersionUID = -4840590656774162819L;
 	private SearchDbDao searchDbDao;
 
 	public void init() throws ServletException {
