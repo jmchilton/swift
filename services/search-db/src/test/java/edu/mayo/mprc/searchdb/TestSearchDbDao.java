@@ -113,7 +113,7 @@ public class TestSearchDbDao extends DaoTest {
 		StringWriter writer = new StringWriter();
 		Report r = new Report(writer);
 
-		analysis.htmlReport(r, searchDbDao);
+		analysis.htmlReport(r, searchDbDao, null);
 
 		// TODO: Check that the analysis is saved properly
 //        DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
