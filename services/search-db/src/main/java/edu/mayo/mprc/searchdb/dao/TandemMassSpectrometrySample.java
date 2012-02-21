@@ -32,9 +32,14 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	private int ms1Spectra;
 
 	/**
-	 * Number of MS2, MS3, etc.. spectra. This can be important for normalization.
+	 * Number of MS2 spectra. This can be important for normalization.
 	 */
-	private int msnSpectra;
+	private int ms2Spectra;
+
+	/**
+	 * MS3, etc.. spectra. This can be useful to determine if MS3 or other complex techniques were used.
+	 */
+	private int ms3PlusSpectra;
 
 	/**
 	 * Serial number of the instrument.
@@ -76,24 +81,21 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	private String errorLog;
 
 	/**
-	 * As the instrument processes the data, it reports current values for a lot of systems - e.g. temperatures,
-	 * pressures, voltages. This log summarizes this information over the entire run, containing a report of
-	 * minimum, maximum, average, standard deviation. This should allow us to spot issues without having to store
-	 * this data on a per-spectrum basis.
-	 */
-	private String statusLogRanges;
-
-	/**
 	 * Empty constructor for Hibernate.
 	 */
 	public TandemMassSpectrometrySample() {
 	}
 
-	public TandemMassSpectrometrySample(File file, Date lastModified, int ms1Spectra, int msnSpectra, String instrumentSerialNumber, Date startTime, double runTimeInSeconds, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog, String statusLogRanges) {
+	public TandemMassSpectrometrySample(File file, Date lastModified,
+	                                    int ms1Spectra, int ms2Spectra, int ms3PlusSpectra,
+	                                    String instrumentSerialNumber, Date startTime, double runTimeInSeconds,
+	                                    String tuneMethod, String instrumentMethod,
+	                                    String sampleInformation, String errorLog) {
 		this.file = file;
 		this.lastModified = lastModified;
 		this.ms1Spectra = ms1Spectra;
-		this.msnSpectra = msnSpectra;
+		this.ms2Spectra = ms2Spectra;
+		this.ms3PlusSpectra = ms3PlusSpectra;
 		this.instrumentSerialNumber = instrumentSerialNumber;
 		this.startTime = startTime;
 		this.runTimeInSeconds = runTimeInSeconds;
@@ -101,7 +103,6 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		this.instrumentMethod = instrumentMethod;
 		this.sampleInformation = sampleInformation;
 		this.errorLog = errorLog;
-		this.statusLogRanges = statusLogRanges;
 	}
 
 	public File getFile() {
@@ -128,12 +129,20 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		this.ms1Spectra = ms1Spectra;
 	}
 
-	public int getMsnSpectra() {
-		return msnSpectra;
+	public int getMs2Spectra() {
+		return ms2Spectra;
 	}
 
-	public void setMsnSpectra(int msnSpectra) {
-		this.msnSpectra = msnSpectra;
+	public void setMs2Spectra(int ms2Spectra) {
+		this.ms2Spectra = ms2Spectra;
+	}
+
+	public int getMs3PlusSpectra() {
+		return ms3PlusSpectra;
+	}
+
+	public void setMs3PlusSpectra(int ms3PlusSpectra) {
+		this.ms3PlusSpectra = ms3PlusSpectra;
 	}
 
 	public String getInstrumentSerialNumber() {
@@ -192,14 +201,6 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		this.errorLog = errorLog;
 	}
 
-	public String getStatusLogRanges() {
-		return statusLogRanges;
-	}
-
-	public void setStatusLogRanges(String statusLogRanges) {
-		this.statusLogRanges = statusLogRanges;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -214,7 +215,10 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		if (getMs1Spectra() != that.getMs1Spectra()) {
 			return false;
 		}
-		if (getMsnSpectra() != that.getMsnSpectra()) {
+		if (getMs2Spectra() != that.getMs2Spectra()) {
+			return false;
+		}
+		if (getMs3PlusSpectra() != that.getMs3PlusSpectra()) {
 			return false;
 		}
 		if (Double.compare(that.getRunTimeInSeconds(), getRunTimeInSeconds()) != 0) {
@@ -241,9 +245,6 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		if (getStartTime() != null ? !getStartTime().equals(that.getStartTime()) : that.getStartTime() != null) {
 			return false;
 		}
-		if (getStatusLogRanges() != null ? !getStatusLogRanges().equals(that.getStatusLogRanges()) : that.getStatusLogRanges() != null) {
-			return false;
-		}
 		if (getTuneMethod() != null ? !getTuneMethod().equals(that.getTuneMethod()) : that.getTuneMethod() != null) {
 			return false;
 		}
@@ -258,7 +259,8 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		result = getFile() != null ? getFile().hashCode() : 0;
 		result = 31 * result + (getLastModified() != null ? getLastModified().hashCode() : 0);
 		result = 31 * result + getMs1Spectra();
-		result = 31 * result + getMsnSpectra();
+		result = 31 * result + getMs2Spectra();
+		result = 31 * result + getMs3PlusSpectra();
 		result = 31 * result + (getInstrumentSerialNumber() != null ? getInstrumentSerialNumber().hashCode() : 0);
 		result = 31 * result + (getStartTime() != null ? getStartTime().hashCode() : 0);
 		temp = getRunTimeInSeconds() != +0.0d ? Double.doubleToLongBits(getRunTimeInSeconds()) : 0L;
@@ -267,7 +269,6 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		result = 31 * result + (getInstrumentMethod() != null ? getInstrumentMethod().hashCode() : 0);
 		result = 31 * result + (getSampleInformation() != null ? getSampleInformation().hashCode() : 0);
 		result = 31 * result + (getErrorLog() != null ? getErrorLog().hashCode() : 0);
-		result = 31 * result + (getStatusLogRanges() != null ? getStatusLogRanges().hashCode() : 0);
 		return result;
 	}
 }

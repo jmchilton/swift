@@ -11,7 +11,8 @@
             <property name="lastModified" type="timestamp" column="last_modified" not-null="true"/>
         </properties>
         <property name="ms1Spectra" type="integer" column="ms1_spectra"/>
-        <property name="msnSpectra" type="integer" column="msn_spectra"/>
+        <property name="ms2Spectra" type="integer" column="ms2_spectra"/>
+        <property name="ms3PlusSpectra" type="integer" column="ms3_plus_spectra"/>
         <property name="instrumentSerialNumber" type="string" length="20" column="instrument_serial_number"/>
         <property name="startTime" type="timestamp" column="start_time"/>
         <property name="runTimeInSeconds" type="double" column="run_time_seconds"/>
@@ -19,6 +20,5 @@
         <property name="instrumentMethod" type="text" column="instrument_method"/>
         <property name="sampleInformation" type="text" column="sample_information"/>
         <property name="errorLog" type="text" column="error_log"/>
-        <property name="statusLogRanges" type="text" column="status_log_ranges"/>
     </class>
 </hibernate-mapping>
