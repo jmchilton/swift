@@ -12,7 +12,8 @@ public class TandemMassSpectrometrySampleBuilder implements Builder<TandemMassSp
 	private File file;
 	private Date lastModified;
 	private int ms1Spectra;
-	private int msnSpectra;
+	private int ms2Spectra;
+	private int ms3PlusSpectra;
 	private String instrumentSerialNumber;
 	private Date startTime;
 	private double runTimeInSeconds;
@@ -24,7 +25,7 @@ public class TandemMassSpectrometrySampleBuilder implements Builder<TandemMassSp
 
 	@Override
 	public TandemMassSpectrometrySample build() {
-		return new TandemMassSpectrometrySample(file, lastModified, ms1Spectra, msnSpectra, instrumentSerialNumber,
+		return new TandemMassSpectrometrySample(file, lastModified, ms1Spectra, ms2Spectra, ms3PlusSpectra, instrumentSerialNumber,
 				startTime, runTimeInSeconds, tuneMethod, instrumentMethod, sampleInformation, errorLog, statusLogRanges);
 	}
 
@@ -42,7 +43,10 @@ public class TandemMassSpectrometrySampleBuilder implements Builder<TandemMassSp
 		if (ms1Spectra != that.ms1Spectra) {
 			return false;
 		}
-		if (msnSpectra != that.msnSpectra) {
+		if (ms2Spectra != that.ms2Spectra) {
+			return false;
+		}
+		if (ms3PlusSpectra != that.ms3PlusSpectra) {
 			return false;
 		}
 		if (Double.compare(that.runTimeInSeconds, runTimeInSeconds) != 0) {
@@ -86,7 +90,8 @@ public class TandemMassSpectrometrySampleBuilder implements Builder<TandemMassSp
 		result = file != null ? file.hashCode() : 0;
 		result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
 		result = 31 * result + ms1Spectra;
-		result = 31 * result + msnSpectra;
+		result = 31 * result + ms2Spectra;
+		result = 31 * result + ms3PlusSpectra;
 		result = 31 * result + (instrumentSerialNumber != null ? instrumentSerialNumber.hashCode() : 0);
 		result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
 		temp = runTimeInSeconds != +0.0d ? Double.doubleToLongBits(runTimeInSeconds) : 0L;
@@ -123,12 +128,20 @@ public class TandemMassSpectrometrySampleBuilder implements Builder<TandemMassSp
 		this.ms1Spectra = ms1Spectra;
 	}
 
-	public int getMsnSpectra() {
-		return msnSpectra;
+	public int getMs2Spectra() {
+		return ms2Spectra;
 	}
 
-	public void setMsnSpectra(int msnSpectra) {
-		this.msnSpectra = msnSpectra;
+	public void setMs2Spectra(int ms2Spectra) {
+		this.ms2Spectra = ms2Spectra;
+	}
+
+	public int getMs3PlusSpectra() {
+		return ms3PlusSpectra;
+	}
+
+	public void setMs3PlusSpectra(int ms3PlusSpectra) {
+		this.ms3PlusSpectra = ms3PlusSpectra;
 	}
 
 	public String getInstrumentSerialNumber() {

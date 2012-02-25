@@ -11,21 +11,22 @@ import java.util.Date;
  * @author Roman Zenka
  */
 public class DummyMassSpecDataExtractor implements MassSpecDataExtractor {
-    @Override
-    public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String fractionName) {
-        return new TandemMassSpectrometrySample(
-                new File(fractionName),
-                new Date(),
-                0,
-                0,
-                "Dummy",
-                new Date(),
-                0.0,
-                "",
-                "",
-                "",
-                "",
-                ""
-        );
-    }
+	@Override
+	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String fractionName) {
+		return new TandemMassSpectrometrySample(
+				new File(fractionName),
+				new Date(),
+				0,
+				0,
+				0,
+				"Dummy",
+				new Date(),
+				0.0,
+				"",
+				"",
+				"",
+				"",
+				""
+		);
+	}
 }
