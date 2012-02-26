@@ -109,6 +109,32 @@ spectrum.symbol <- function(accessionNumber, polymer) {
     ifelse(polymer, spectrum.polymer.symbol, ifelse(spectrum.rev.test(accessionNumber), spectrum.rev.symbol, ifelse(accessionNumber=="", 46, spectrum.id.symbol)))
 }
 
+# Color mapping for the chromatogram
+# The RGB values are mapped in log10 scale. 0->1, #ffffff->10^10. Retrieve the exponent in log scale:
+rgbToDouble <- function(rgb) { rgb<-col2rgb(rgb); val<-(rgb[1]*256+rgb[2])*256+rgb[3]; val<-val/(2^24-1)*10.0; }
+GradientEntry <- function(r, g, b, val) { c(log10(val), rgb(r, g, b, maxColorValue=255)) }
+chromaColors <- cbind(
+    GradientEntry(240, 240, 240, 1),
+    GradientEntry(200, 200, 200, 1e2),
+    GradientEntry(168, 168, 255, 1e3),
+    GradientEntry(180, 240, 240, 5e3),
+    GradientEntry(168, 255, 168, 1e4),
+    GradientEntry(255, 255, 168, 1e5),
+    GradientEntry(255, 168, 168, 1e6),
+    GradientEntry(255, 168, 255, 1e7),
+    GradientEntry(140, 140, 140, 1e100)
+)
+chromaIntensities <- as.numeric(chromaColors[1,])
+doubleToRgb <- function(v) { 
+    i<-findInterval(v, chromaIntensities);
+    t<-(v-chromaIntensities[i])/(chromaIntensities[i+1]-chromaIntensities[i]);
+    rgb1<-col2rgb(chromaColors[i]);
+    rgb2<-col2rgb(chromaColors[i+1]);
+    res<-rgb1*(1-t)+rgb2*t;
+    rgb(res[1], res[2], res[3], maxColorValue=255)
+}
+chromatogram.recolor <- function(color) { doubleToRgb(rgbToDouble(color)) }
+
 # Start a new plot (has default dimensions)
 startPlot <- function(plotName, fileName) {
     print(paste("Generating '", plotName, "' image file: ", fileName, sep="")) 
@@ -439,6 +465,7 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
             mzDims <- unlist(strsplit(chromatogram$comment[1], "[:,]"))            
             chromatogram.minMz <- as.double(mzDims[2])
             chromatogram.maxMz <- as.double(mzDims[3])
+            chromatogram$col <- sapply(chromatogram$col, chromatogram.recolor)
         }
 
         # Generate images
