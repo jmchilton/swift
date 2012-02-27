@@ -17,11 +17,19 @@ final class RAWDumpTask extends AsyncTaskBase {
 	private File rawInfoFile;
 	private File rawSpectraFile;
 	private File chromatogramFile;
+	private File tuneMethodFile;
+	private File instrumentMethodFile;
+	private File sampleInformationFile;
+	private File errorLogFile;
 	private File outputFolder;
 
 	public static final String RAW_INFO_FILE_SUFFIX = ".info.tsv";
 	public static final String RAW_SPECTRA_FILE_SUFFIX = ".spectra.tsv";
 	public static final String CHROMATOGRAM_FILE_SUFFIX = ".chroma.gif";
+	public static final String TUNE_METHOD_FILE_SUFFIX = ".tune.tsv";
+	public static final String INSTRUMENT_METHOD_FILE_SUFFIX = ".instrument.tsv";
+	public static final String SAMPLE_INFORMATION_FILE_SUFFIX = ".sample.tsv";
+	public static final String ERROR_LOG_FILE_SUFFIX = ".error.tsv";
 
 	public RAWDumpTask(File rawFile, File outputFolder, DaemonConnection daemonConnection, FileTokenFactory fileTokenFactory, boolean fromScratch) {
 		super(daemonConnection, fileTokenFactory, fromScratch);
@@ -31,6 +39,10 @@ final class RAWDumpTask extends AsyncTaskBase {
 		this.rawInfoFile = getExpectedRawInfoFile();
 		this.rawSpectraFile = getExpectedRawSpectraFile();
 		this.chromatogramFile = getExpectedChromatogramFile();
+		this.tuneMethodFile = getExpectedTuneMethodFile();
+		this.instrumentMethodFile = getExpectedInstrumentMethodFile();
+		this.sampleInformationFile = getExpectedSampleInformationFile();
+		this.errorLogFile = getExpectedErrorLogFile();
 
 		setName("RAW Dump");
 		updateDescription();
@@ -43,7 +55,10 @@ final class RAWDumpTask extends AsyncTaskBase {
 
 	@Override
 	public WorkPacket createWorkPacket() {
-		return new RAWDumpWorkPacket(rawFile, rawInfoFile, rawSpectraFile, chromatogramFile, getFullId(), isFromScratch());
+		return new RAWDumpWorkPacket(rawFile,
+				rawInfoFile, rawSpectraFile, chromatogramFile,
+				tuneMethodFile, instrumentMethodFile, sampleInformationFile, errorLogFile,
+				getFullId(), isFromScratch());
 	}
 
 	public File getOutputFolder() {
@@ -62,6 +77,22 @@ final class RAWDumpTask extends AsyncTaskBase {
 		return new File(outputFolder, rawFile.getName() + CHROMATOGRAM_FILE_SUFFIX);
 	}
 
+	public File getExpectedTuneMethodFile() {
+		return new File(outputFolder, rawFile.getName() + TUNE_METHOD_FILE_SUFFIX);
+	}
+
+	public File getExpectedInstrumentMethodFile() {
+		return new File(outputFolder, rawFile.getName() + INSTRUMENT_METHOD_FILE_SUFFIX);
+	}
+
+	public File getExpectedSampleInformationFile() {
+		return new File(outputFolder, rawFile.getName() + SAMPLE_INFORMATION_FILE_SUFFIX);
+	}
+
+	public File getExpectedErrorLogFile() {
+		return new File(outputFolder, rawFile.getName() + ERROR_LOG_FILE_SUFFIX);
+	}
+
 	public File getRawInfoFile() {
 		return rawInfoFile;
 	}
@@ -72,6 +103,22 @@ final class RAWDumpTask extends AsyncTaskBase {
 
 	public File getChromatogramFile() {
 		return chromatogramFile;
+	}
+
+	public File getTuneMethodFile() {
+		return tuneMethodFile;
+	}
+
+	public File getInstrumentMethodFile() {
+		return instrumentMethodFile;
+	}
+
+	public File getSampleInformationFile() {
+		return sampleInformationFile;
+	}
+
+	public File getErrorLogFile() {
+		return errorLogFile;
 	}
 
 	@Override

@@ -28,11 +28,16 @@ public final class RAWDumpWorker implements Worker {
 
 	private static final Logger LOGGER = Logger.getLogger(RAWDumpWorker.class);
 
-	public static final String RAW_FILE_CMDLINE_OPTION = "--raw";
-	public static final String INFO_FILE_CMDLINE_OPTION = "--info";
-	public static final String SPECTRA_FILE_CMDLINE_OPTION = "--spectra";
-	public static final String CHROMATOGRAM_FILE_CMDLINE_OPTION = "--chromatogram";
-	public static final String PARAM_FILE_CMDLINE_OPTION = "--params";
+	public static final String RAW_FILE_CMD = "--raw";
+	public static final String INFO_FILE_CMD = "--info";
+	public static final String SPECTRA_FILE_CMD = "--spectra";
+	public static final String CHROMATOGRAM_FILE_CMD = "--chromatogram";
+	public static final String TUNE_FILE_CMD = "--tune";
+	public static final String INSTRUMENT_METHOD_FILE_CMD = "--instrument";
+	public static final String SAMPLE_INFORMATION_FILE_CMD = "--sample";
+	public static final String ERROR_LOG_FILE_CMD = "--sample";
+	public static final String PARAM_FILE_CMD = "--params";
+
 	public static final String TYPE = "rawdump";
 	public static final String NAME = "RAW Dump";
 	public static final String DESC = "Extracts information about experiment and spectra from RAW files.";
@@ -105,7 +110,7 @@ public final class RAWDumpWorker implements Worker {
 
 		List<String> commandLineParams = new LinkedList<String>();
 		commandLineParams.add(rawDumpExecutable.getAbsolutePath());
-		commandLineParams.add(PARAM_FILE_CMDLINE_OPTION);
+		commandLineParams.add(PARAM_FILE_CMD);
 		commandLineParams.add(tempParamFile.getAbsolutePath());
 
 		return commandLineParams;
@@ -128,19 +133,19 @@ public final class RAWDumpWorker implements Worker {
 				bufferedWriter.write("\n");
 			}
 
-			bufferedWriter.write(RAW_FILE_CMDLINE_OPTION);
+			bufferedWriter.write(RAW_FILE_CMD);
 			bufferedWriter.write("\n");
 			bufferedWriter.write(rawFile.getAbsolutePath());
 			bufferedWriter.write("\n");
-			bufferedWriter.write(INFO_FILE_CMDLINE_OPTION);
+			bufferedWriter.write(INFO_FILE_CMD);
 			bufferedWriter.write("\n");
 			bufferedWriter.write(rawInfo.getAbsolutePath());
 			bufferedWriter.write("\n");
-			bufferedWriter.write(SPECTRA_FILE_CMDLINE_OPTION);
+			bufferedWriter.write(SPECTRA_FILE_CMD);
 			bufferedWriter.write("\n");
 			bufferedWriter.write(rawSpectra.getAbsolutePath());
 			bufferedWriter.write("\n");
-			bufferedWriter.write(CHROMATOGRAM_FILE_CMDLINE_OPTION);
+			bufferedWriter.write(CHROMATOGRAM_FILE_CMD);
 			bufferedWriter.write("\n");
 			bufferedWriter.write(chromatogramFile.getAbsolutePath());
 			bufferedWriter.write("\n");
@@ -303,7 +308,7 @@ public final class RAWDumpWorker implements Worker {
 		private static final String WRAPPER_SCRIPT = "wrapperScript";
 
 		private static final String DEFAULT_RAWDUMP_EXEC = "bin/rawExtract/MprcExtractRaw.exe";
-		private static final String DEFAULT_CMDLINE_OPTIONS = "--data";
+		private static final String DEFAULT_CMDS = "--data";
 
 		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, UiBuilder builder) {
 			builder.property("rawDumpExecutable", "Executable Path", "RAW Dump executable path."
@@ -316,7 +321,7 @@ public final class RAWDumpWorker implements Worker {
 					.property("commandLineOptions", "Command Line Options",
 							"<br/>Command line option --data is required for this application to generate RAW file information related files. Multiple command line options must be separated by commas.")
 					.required()
-					.defaultValue(DEFAULT_CMDLINE_OPTIONS);
+					.defaultValue(DEFAULT_CMDS);
 
 			builder.property(WINDOWS_EXEC_WRAPPER_SCRIPT, "Windows Program Wrapper Script",
 					"<p>This is needed only for Linux when running Windows executables. On Windows, leave this field blank.</p>" +

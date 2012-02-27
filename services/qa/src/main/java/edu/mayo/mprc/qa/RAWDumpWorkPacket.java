@@ -20,12 +20,18 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 	private File rawInfoFile;
 	private File rawSpectraFile;
 	private File chromatogramFile;
+	private File tuneMethodFile;
+	private File instrumentMethodFile;
+	private File sampleInformationFile;
+	private File errorLogFile;
 
 	public RAWDumpWorkPacket(String taskId, boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public RAWDumpWorkPacket(File rawFile, File rawInfoFile, File rawSpectraFile, File chromatogramFile, String taskId, boolean fromScratch) {
+	public RAWDumpWorkPacket(File rawFile, File rawInfoFile, File rawSpectraFile, File chromatogramFile,
+	                         File tuneMethodFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile,
+	                         String taskId, boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		assert rawFile != null : "Raw input file can not be null.";
@@ -36,6 +42,10 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 		this.rawInfoFile = rawInfoFile;
 		this.rawSpectraFile = rawSpectraFile;
 		this.chromatogramFile = chromatogramFile;
+		this.tuneMethodFile = tuneMethodFile;
+		this.instrumentMethodFile = instrumentMethodFile;
+		this.sampleInformationFile = sampleInformationFile;
+		this.errorLogFile = errorLogFile;
 	}
 
 	public File getRawFile() {
@@ -54,8 +64,20 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 		return chromatogramFile;
 	}
 
-	public void setChromatogramFile(File chromatogramFile) {
-		this.chromatogramFile = chromatogramFile;
+	public File getTuneMethodFile() {
+		return tuneMethodFile;
+	}
+
+	public File getInstrumentMethodFile() {
+		return instrumentMethodFile;
+	}
+
+	public File getSampleInformationFile() {
+		return sampleInformationFile;
+	}
+
+	public File getErrorLogFile() {
+		return errorLogFile;
 	}
 
 	@Override
@@ -63,6 +85,10 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 		uploadAndWait("rawInfoFile");
 		uploadAndWait("rawSpectraFile");
 		uploadAndWait("chromatogramFile");
+		uploadAndWait("tuneMethodFile");
+		uploadAndWait("instrumentMethodFile");
+		uploadAndWait("sampleInformationFile");
+		uploadAndWait("errorLogFile");
 	}
 
 	@Override
@@ -96,6 +122,10 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 				new File(wipFolder, getRawInfoFile().getName()),
 				new File(wipFolder, getRawSpectraFile().getName()),
 				new File(wipFolder, getChromatogramFile().getName()),
+				new File(wipFolder, getTuneMethodFile().getName()),
+				new File(wipFolder, getInstrumentMethodFile().getName()),
+				new File(wipFolder, getSampleInformationFile().getName()),
+				new File(wipFolder, getErrorLogFile().getName()),
 				getTaskId(),
 				isFromScratch()
 		);
@@ -106,15 +136,22 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 		return Arrays.asList(
 				getRawInfoFile().getName(),
 				getRawSpectraFile().getName(),
-				getChromatogramFile().getName());
+				getChromatogramFile().getName(),
+				getTuneMethodFile().getName(),
+				getInstrumentMethodFile().getName(),
+				getSampleInformationFile().getName(),
+				getErrorLogFile().getName());
 	}
 
 	@Override
-	public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+	public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 		final long inputFileModified = getRawFile().lastModified();
-		return inputFileModified > new File(subFolder, outputFiles.get(0)).lastModified() ||
-				inputFileModified > new File(subFolder, outputFiles.get(1)).lastModified() ||
-				inputFileModified > new File(subFolder, outputFiles.get(2)).lastModified();
+		for (final String file : outputFiles) {
+			if (inputFileModified > new File(subFolder, file).lastModified()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -122,7 +159,13 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 		final File rawInfoFile = new File(targetFolder, outputFiles.get(0));
 		final File rawSpectraFile = new File(targetFolder, outputFiles.get(1));
 		final File chromatogramFile = new File(targetFolder, outputFiles.get(2));
-		reporter.reportProgress(new RAWDumpResult(rawInfoFile, rawSpectraFile, chromatogramFile));
+		final File tuneMethodFile = new File(targetFolder, outputFiles.get(3));
+		final File instrumentMethodFile = new File(targetFolder, outputFiles.get(4));
+		final File sampleInformationFile = new File(targetFolder, outputFiles.get(5));
+		final File errorLogFile = new File(targetFolder, outputFiles.get(6));
+		reporter.reportProgress(
+				new RAWDumpResult(rawInfoFile, rawSpectraFile, chromatogramFile,
+						tuneMethodFile, instrumentMethodFile, sampleInformationFile, errorLogFile));
 	}
 
 }

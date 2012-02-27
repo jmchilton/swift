@@ -10,11 +10,19 @@ public final class RAWDumpResult extends FileHolder implements ProgressInfo {
 	private File rawInfoFile;
 	private File rawSpectraFile;
 	private File chromatogramFile;
+	private File tuneMethodFile;
+	private File instrumentMethodFile;
+	private File sampleInformationFile;
+	private File errorLogFile;
 
-	public RAWDumpResult(File rawInfoFile, File rawSpectraFile, File chromatogramFile) {
+	public RAWDumpResult(File rawInfoFile, File rawSpectraFile, File chromatogramFile, File tuneMethodFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) {
 		this.rawInfoFile = rawInfoFile;
 		this.rawSpectraFile = rawSpectraFile;
 		this.chromatogramFile = chromatogramFile;
+		this.tuneMethodFile = tuneMethodFile;
+		this.instrumentMethodFile = instrumentMethodFile;
+		this.sampleInformationFile = sampleInformationFile;
+		this.errorLogFile = errorLogFile;
 	}
 
 	public File getRawInfoFile() {
@@ -27,5 +35,21 @@ public final class RAWDumpResult extends FileHolder implements ProgressInfo {
 
 	public File getChromatogramFile() {
 		return chromatogramFile;
+	}
+
+	public File getTuneMethodFile() {
+		return tuneMethodFile;
+	}
+
+	public File getInstrumentMethodFile() {
+		return instrumentMethodFile;
+	}
+
+	public File getSampleInformationFile() {
+		return sampleInformationFile;
+	}
+
+	public File getErrorLogFile() {
+		return errorLogFile;
 	}
 }
