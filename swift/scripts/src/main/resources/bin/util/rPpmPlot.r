@@ -125,7 +125,10 @@ chromaColors <- cbind(
     GradientEntry(140, 140, 140, 1e100)
 )
 chromaIntensities <- as.numeric(chromaColors[1,])
-doubleToRgb <- function(v) { 
+doubleToRgb <- function(v) {
+    if(v==0.0) {
+        return("#FFFFFF");
+    }
     i<-findInterval(v, chromaIntensities);
     t<-(v-chromaIntensities[i])/(chromaIntensities[i+1]-chromaIntensities[i]);
     rgb1<-col2rgb(chromaColors[2,i]);
