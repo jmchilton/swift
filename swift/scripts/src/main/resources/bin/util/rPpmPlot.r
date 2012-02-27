@@ -128,8 +128,8 @@ chromaIntensities <- as.numeric(chromaColors[1,])
 doubleToRgb <- function(v) { 
     i<-findInterval(v, chromaIntensities);
     t<-(v-chromaIntensities[i])/(chromaIntensities[i+1]-chromaIntensities[i]);
-    rgb1<-col2rgb(chromaColors[i]);
-    rgb2<-col2rgb(chromaColors[i+1]);
+    rgb1<-col2rgb(chromaColors[2,i]);
+    rgb2<-col2rgb(chromaColors[2,i+1]);
     res<-rgb1*(1-t)+rgb2*t;
     rgb(res[1], res[2], res[3], maxColorValue=255)
 }
