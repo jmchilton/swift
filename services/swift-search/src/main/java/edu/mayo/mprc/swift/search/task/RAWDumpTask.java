@@ -93,6 +93,10 @@ final class RAWDumpTask extends AsyncTaskBase {
 		return new File(outputFolder, rawFile.getName() + ERROR_LOG_FILE_SUFFIX);
 	}
 
+	public File getRawFile() {
+		return rawFile;
+	}
+
 	public File getRawInfoFile() {
 		return rawInfoFile;
 	}

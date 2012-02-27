@@ -4,6 +4,7 @@ import edu.mayo.mprc.daemon.WorkPacketBase;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Load search results for Swift search report (read - Scaffold file) of given ID.
@@ -25,10 +26,16 @@ public final class SearchDbWorkPacket extends WorkPacketBase {
 	 */
 	private File scaffoldSpectrumReport;
 
-	public SearchDbWorkPacket(String taskId, boolean fromScratch, long reportDataId, File scaffoldSpectrumReport) {
+	/**
+	 * Map from raw file name
+	 */
+	private Map<String, RawFileMetaData> fileMetaDataMap;
+
+	public SearchDbWorkPacket(String taskId, boolean fromScratch, long reportDataId, File scaffoldSpectrumReport, Map<String, RawFileMetaData> fileMetaDataMap) {
 		super(taskId, fromScratch);
 		this.reportDataId = reportDataId;
 		this.scaffoldSpectrumReport = scaffoldSpectrumReport;
+		this.fileMetaDataMap = fileMetaDataMap;
 	}
 
 	public long getReportDataId() {
@@ -37,5 +44,9 @@ public final class SearchDbWorkPacket extends WorkPacketBase {
 
 	public File getScaffoldSpectrumReport() {
 		return scaffoldSpectrumReport;
+	}
+
+	public Map<String, RawFileMetaData> getFileMetaDataMap() {
+		return fileMetaDataMap;
 	}
 }

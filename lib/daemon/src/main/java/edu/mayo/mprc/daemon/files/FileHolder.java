@@ -15,7 +15,15 @@ import java.util.Map;
  * A class implementing the {@link FileTokenHolder} protocol that does not actually hold any {@link FileToken} objects
  * itself.
  * <p/>
- * Reflection is used to harvest a list of all files, other FileTokenHolders, and List<File> objects. The files are translated to FileToken
+ * Reflection is used to harvest:
+ * <ul>
+ * <li>{@link File} properties</li>
+ * <li>{@link FileTokenHolder} properties</li>
+ * <li>{@code List&lt;File>} properties</li>
+ * <li>{@code Map&lt;Serializable, File>} properties</li>
+ * </ul>
+ * <p/>
+ * The files are translated to FileToken
  * objects and stored in {@link #tokenMap}. The other side then automatically translates the FileToken instances back
  * to Files and sets the matching properties.
  * <p/>
