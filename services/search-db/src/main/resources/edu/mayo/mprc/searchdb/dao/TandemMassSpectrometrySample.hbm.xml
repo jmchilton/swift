@@ -13,7 +13,7 @@
         <property name="ms1Spectra" type="integer" column="ms1_spectra"/>
         <property name="ms2Spectra" type="integer" column="ms2_spectra"/>
         <property name="ms3PlusSpectra" type="integer" column="ms3_plus_spectra"/>
-        <property name="instrumentName" type="string" length="40" column="instrument_name"/> 
+        <property name="instrumentName" type="string" length="40" column="instrument_name"/>
         <property name="instrumentSerialNumber" type="string" length="20" column="instrument_serial_number"/>
         <property name="startTime" type="timestamp" column="start_time"/>
         <property name="runTimeInSeconds" type="double" column="run_time_seconds"/>
