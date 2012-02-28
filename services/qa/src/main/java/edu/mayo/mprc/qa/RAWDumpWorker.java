@@ -35,7 +35,7 @@ public final class RAWDumpWorker implements Worker {
 	public static final String TUNE_FILE_CMD = "--tune";
 	public static final String INSTRUMENT_METHOD_FILE_CMD = "--instrument";
 	public static final String SAMPLE_INFORMATION_FILE_CMD = "--sample";
-	public static final String ERROR_LOG_FILE_CMD = "--sample";
+	public static final String ERROR_LOG_FILE_CMD = "--errorlog";
 	public static final String PARAM_FILE_CMD = "--params";
 
 	public static final String TYPE = "rawdump";
