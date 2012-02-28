@@ -78,6 +78,10 @@ public final class RAWDumpWorker implements Worker {
 		File rawSpectra = rawDumpWorkPacket.getRawSpectraFile();
 		File rawFile = rawDumpWorkPacket.getRawFile();
 		File chromatogramFile = rawDumpWorkPacket.getChromatogramFile();
+		File tuneFile = rawDumpWorkPacket.getTuneMethodFile();
+		File instrumentMethodFile = rawDumpWorkPacket.getInstrumentMethodFile();
+		File sampleInformationFile = rawDumpWorkPacket.getSampleInformationFile();
+		File errorLogFile = rawDumpWorkPacket.getErrorLogFile();
 
 		FileUtilities.ensureFolderExists(rawInfo.getParentFile());
 		FileUtilities.ensureFolderExists(rawSpectra.getParentFile());
@@ -92,7 +96,8 @@ public final class RAWDumpWorker implements Worker {
 			}
 		}
 
-		final List<String> commandLine = getCommandLine(shortenedRawFile != null ? shortenedRawFile : rawFile, rawInfo, rawSpectra, chromatogramFile);
+		final List<String> commandLine = getCommandLine(shortenedRawFile != null ? shortenedRawFile : rawFile,
+				rawInfo, rawSpectra, chromatogramFile, tuneFile, instrumentMethodFile, sampleInformationFile, errorLogFile);
 		process(commandLine, true/*windows executable*/, wrapperScript, windowsExecWrapperScript);
 
 		if (shortenedRawFile != null) {
@@ -104,9 +109,10 @@ public final class RAWDumpWorker implements Worker {
 		}
 	}
 
-	private List<String> getCommandLine(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile) throws IOException {
+	private List<String> getCommandLine(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile,
+	                                    File tuneFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) throws IOException {
 
-		createParamFile(rawFile, rawInfo, rawSpectra, chromatogramFile);
+		createParamFile(rawFile, rawInfo, rawSpectra, chromatogramFile, tuneFile, instrumentMethodFile, sampleInformationFile, errorLogFile);
 
 		List<String> commandLineParams = new LinkedList<String>();
 		commandLineParams.add(rawDumpExecutable.getAbsolutePath());
@@ -116,7 +122,8 @@ public final class RAWDumpWorker implements Worker {
 		return commandLineParams;
 	}
 
-	private void createParamFile(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile) throws IOException {
+	private void createParamFile(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile,
+	                             File tuneFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) throws IOException {
 		tempParamFile = File.createTempFile("inputParamFile", null);
 
 		LOGGER.info("Creating parameter file: " + tempParamFile.getAbsolutePath() + ".");
@@ -133,28 +140,27 @@ public final class RAWDumpWorker implements Worker {
 				bufferedWriter.write("\n");
 			}
 
-			bufferedWriter.write(RAW_FILE_CMD);
-			bufferedWriter.write("\n");
-			bufferedWriter.write(rawFile.getAbsolutePath());
-			bufferedWriter.write("\n");
-			bufferedWriter.write(INFO_FILE_CMD);
-			bufferedWriter.write("\n");
-			bufferedWriter.write(rawInfo.getAbsolutePath());
-			bufferedWriter.write("\n");
-			bufferedWriter.write(SPECTRA_FILE_CMD);
-			bufferedWriter.write("\n");
-			bufferedWriter.write(rawSpectra.getAbsolutePath());
-			bufferedWriter.write("\n");
-			bufferedWriter.write(CHROMATOGRAM_FILE_CMD);
-			bufferedWriter.write("\n");
-			bufferedWriter.write(chromatogramFile.getAbsolutePath());
-			bufferedWriter.write("\n");
+			addFile(bufferedWriter, RAW_FILE_CMD, rawFile);
+			addFile(bufferedWriter, INFO_FILE_CMD, rawInfo);
+			addFile(bufferedWriter, SPECTRA_FILE_CMD, rawSpectra);
+			addFile(bufferedWriter, CHROMATOGRAM_FILE_CMD, chromatogramFile);
+			addFile(bufferedWriter, TUNE_FILE_CMD, tuneFile);
+			addFile(bufferedWriter, INSTRUMENT_METHOD_FILE_CMD, instrumentMethodFile);
+			addFile(bufferedWriter, SAMPLE_INFORMATION_FILE_CMD, sampleInformationFile);
+			addFile(bufferedWriter, ERROR_LOG_FILE_CMD, errorLogFile);
 
 		} catch (IOException e) {
 			throw new MprcException("Failed to created param file: " + tempParamFile.getAbsolutePath() + ".", e);
 		} finally {
 			FileUtilities.closeObjectQuietly(bufferedWriter);
 		}
+	}
+
+	private void addFile(BufferedWriter bufferedWriter, String commandLine, File file) throws IOException {
+		bufferedWriter.write(commandLine);
+		bufferedWriter.write("\n");
+		bufferedWriter.write(file.getAbsolutePath());
+		bufferedWriter.write("\n");
 	}
 
 	public File getWrapperScript() {
