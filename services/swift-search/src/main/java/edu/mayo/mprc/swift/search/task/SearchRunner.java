@@ -72,7 +72,7 @@ public final class SearchRunner implements Runnable {
 	 * Key: raw file<br/>
 	 * Value: RAW dump task
 	 */
-	private Map<File, RAWDumpTask> rawDumpTask = new HashMap<File, RAWDumpTask>();
+	private Map<File, RAWDumpTask> rawDumpTasks = new HashMap<File, RAWDumpTask>();
 
 	/**
 	 * Key: input file<br/>
@@ -242,7 +242,7 @@ public final class SearchRunner implements Runnable {
 			assert workflowEngine.getNumTasks() ==
 					rawToMgfConversions.size() +
 							mgfCleanups.size() +
-							rawDumpTask.size() +
+							rawDumpTasks.size() +
 							databaseDeployments.size() +
 							engineSearches.size() +
 							scaffoldCalls.size() +
@@ -257,7 +257,7 @@ public final class SearchRunner implements Runnable {
 		workflowEngine.addAllTasks(databaseDeployments.values());
 		workflowEngine.addAllTasks(rawToMgfConversions.values());
 		workflowEngine.addAllTasks(mgfCleanups.values());
-		workflowEngine.addAllTasks(rawDumpTask.values());
+		workflowEngine.addAllTasks(rawDumpTasks.values());
 		workflowEngine.addAllTasks(spectrumQaTasks.values());
 		workflowEngine.addAllTasks(engineSearches.values());
 		workflowEngine.addAllTasks(scaffoldCalls.values());
@@ -623,13 +623,13 @@ public final class SearchRunner implements Runnable {
 	}
 
 	private RAWDumpTask addRawDumpTask(File rawFile, File outputFolder) {
-		RAWDumpTask task = rawDumpTask.get(rawFile);
+		RAWDumpTask task = rawDumpTasks.get(rawFile);
 
 		if (task == null) {
 			task = new RAWDumpTask(rawFile, outputFolder, rawDumpDaemon, fileTokenFactory, isFromScratch());
 		}
 
-		rawDumpTask.put(rawFile, task);
+		rawDumpTasks.put(rawFile, task);
 
 		return task;
 	}
@@ -822,7 +822,7 @@ public final class SearchRunner implements Runnable {
 			task.addDependency(fastaDbTask);
 			task.addDependency(scaffold3Task);
 			// We depend on all raw dump tasks for loading metadata about the files
-			for (RAWDumpTask rawDumpTask : rawDumpTask.values()) {
+			for (final RAWDumpTask rawDumpTask : rawDumpTasks.values()) {
 				task.addRawDumpTask(rawDumpTask);
 				task.addDependency(rawDumpTask);
 			}
