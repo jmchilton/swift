@@ -814,6 +814,11 @@ public final class SearchRunner implements Runnable {
 			SearchDbTask task = new SearchDbTask(searchDbDaemon, fileTokenFactory, false, scaffold3Task);
 			task.addDependency(fastaDbTask);
 			task.addDependency(scaffold3Task);
+			// We depend on all raw dump tasks for loading metadata about the files
+			for (RAWDumpTask rawDumpTask : rawDumpTask.values()) {
+				task.addRawDumpTask(rawDumpTask);
+				task.addDependency(rawDumpTask);
+			}
 			searchDbCalls.put(file, task);
 			return task;
 		} else {

@@ -30,7 +30,10 @@ public class SearchDbTask extends AsyncTaskBase {
 		setDescription("Load " + fileTokenFactory.fileToTaggedDatabaseToken(getScaffoldSpectraFile()) + " into database");
 	}
 
-	private void addRawDumpTask(final RAWDumpTask task) {
+	/**
+	 * @param task Raw dump task to add to the map. The results are mapped based on file name.
+	 */
+	public void addRawDumpTask(final RAWDumpTask task) {
 		final String fileName = FileUtilities.stripExtension(task.getRawFile().getName());
 		if (rawDumpTaskMap.containsKey(fileName)) {
 			throw new MprcException("Two files of identical name: " + task.getRawFile().getName() + " cannot be distinguished in resulting analysis.");
