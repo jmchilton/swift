@@ -291,6 +291,17 @@ public final class SearchRunner implements Runnable {
 		if (fastaDbDaemon != null) {
 			addFastaDbCall(searchDefinition.getSearchParameters().getDatabase());
 		}
+
+		if (searchDbDaemon != null) {
+			// Find first scaffold3 task, hook it up with search db
+			for (ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
+				if (scaffoldTask instanceof Scaffold3Task) {
+					Scaffold3Task scaffold3Task = (Scaffold3Task) scaffoldTask;
+					addSearchDbCall(scaffold3Task, searchDefinition.getSearchParameters().getDatabase());
+					break;
+				}
+			}
+		}
 	}
 
 	private SearchEngine getSearchEngine(String code) {
@@ -408,10 +419,6 @@ public final class SearchRunner implements Runnable {
 
 					if (searchDefinition.getQa() != null) {
 						addQaTask(inputFile, scaffold3Task, mgfOutput);
-					}
-
-					if (searchDbDaemon != null) {
-						addSearchDbCall(scaffold3Task, searchDefinition.getSearchParameters().getDatabase());
 					}
 				}
 			}
