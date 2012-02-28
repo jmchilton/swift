@@ -20,8 +20,20 @@ public final class TsvStreamReader implements Closeable {
 
 	public TsvStreamReader(File tsvFile) {
 		try {
-			reader = new BufferedReader(new FileReader(tsvFile), BUFFER_SIZE);
-			lastLine = reader.readLine();
+			open(new FileReader(tsvFile));
+		} catch (IOException e) {
+			throw new MprcException("Cannot open tsv file [" + tsvFile.getAbsolutePath() + "]", e);
+		}
+	}
+
+	public TsvStreamReader(final Reader reader) {
+		open(reader);
+	}
+
+	private void open(Reader reader) {
+		try {
+			this.reader = new BufferedReader(reader, BUFFER_SIZE);
+			lastLine = this.reader.readLine();
 		} catch (IOException t) {
 			close();
 			throw new MprcException(t);

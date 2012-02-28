@@ -1,0 +1,74 @@
+package edu.mayo.mprc.searchdb;
+
+import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.io.TsvStreamReader;
+import edu.mayo.mprc.utilities.FileUtilities;
+
+import java.io.File;
+import java.io.Reader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+/**
+ * Parses data from the .RAW.info.tsv file.
+ *
+ * @author Roman Zenka
+ */
+public class InfoFileParser {
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+	/**
+	 * Parse .RAW.info file
+	 *
+	 * @param infoFile File to parse
+	 */
+	public InfoFileData parse(File infoFile) {
+		return parse(new TsvStreamReader(infoFile));
+	}
+
+	/**
+	 * Parse .RAW.info file data coming from a given reader.
+	 */
+	public InfoFileData parse(Reader reader) {
+		return parse(new TsvStreamReader(reader));
+	}
+
+	private InfoFileData parse(final TsvStreamReader reader) {
+		InfoFileData data = new InfoFileData();
+		try {
+			final int[] indices = {0, 1};
+			ArrayList<String> values = new ArrayList<String>(2);
+			while (reader.nextValues(indices, values)) {
+				final String key = values.size() > 0 ? values.get(0).trim() : "";
+				final String value = values.size() > 1 ? values.get(1).trim() : "";
+				if ("Creation Date".equals(key)) {
+					try {
+						data.setStartTime(DATE_FORMAT.parse(value));
+					} catch (ParseException e) {
+						throw new MprcException("Malformed .RAW file start date: " + value, e);
+					}
+				} else if ("MS1 Spectra".equals(key)) {
+					data.setMs1Spectra(Integer.parseInt(value));
+				} else if ("MS2 Spectra".equals(key)) {
+					data.setMs2Spectra(Integer.parseInt(value));
+				} else if ("MS3+ Spectra".equals(key)) {
+					data.setMs3PlusSpectra(Integer.parseInt(value));
+				} else if ("Instrument Serial".equals(key)) {
+					data.setInstrumentSerialNumber(value);
+				} else if ("Instrument Name".equals(key)) {
+					data.setInstrumentName(value);
+				} else if ("Run Time (seconds)".equals(key)) {
+					data.setRunTimeInSeconds(Double.parseDouble(value));
+				} else if ("Comment".equals(key)) {
+					data.setComment(value);
+				} else if ("Sample Id".equals(key)) {
+					data.setSampleId(value);
+				}
+			}
+		} finally {
+			FileUtilities.closeQuietly(reader);
+		}
+		return data;
+	}
+}
