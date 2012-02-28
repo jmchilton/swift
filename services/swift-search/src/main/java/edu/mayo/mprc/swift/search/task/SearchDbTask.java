@@ -1,7 +1,5 @@
 package edu.mayo.mprc.swift.search.task;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.WorkPacket;
@@ -12,7 +10,6 @@ import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,17 +47,14 @@ public class SearchDbTask extends AsyncTaskBase {
 		HashMap<String, RawFileMetaData> metaDataMap = new HashMap<String, RawFileMetaData>(rawDumpTaskMap.size());
 		for (final Map.Entry<String, RAWDumpTask> entry : rawDumpTaskMap.entrySet()) {
 			final RAWDumpTask task = entry.getValue();
-			try {
-				metaDataMap.put(entry.getKey(), new RawFileMetaData(
-						Files.toString(task.getRawInfoFile(), Charsets.ISO_8859_1),
-						Files.toString(task.getTuneMethodFile(), Charsets.ISO_8859_1),
-						Files.toString(task.getInstrumentMethodFile(), Charsets.ISO_8859_1),
-						Files.toString(task.getSampleInformationFile(), Charsets.ISO_8859_1),
-						Files.toString(task.getErrorLogFile(), Charsets.ISO_8859_1)
-				));
-			} catch (IOException e) {
-				throw new MprcException("Could not load .RAW file metadata", e);
-			}
+			metaDataMap.put(entry.getKey(), new RawFileMetaData(
+					task.getRawFile(),
+					task.getRawInfoFile(),
+					task.getTuneMethodFile(),
+					task.getInstrumentMethodFile(),
+					task.getSampleInformationFile(),
+					task.getErrorLogFile())
+			);
 		}
 
 		return new SearchDbWorkPacket(getFullId(), isFromScratch(), scaffold3Task.getReportData().getId(), getScaffoldSpectraFile(), metaDataMap);

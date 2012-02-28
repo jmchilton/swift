@@ -132,6 +132,17 @@ public final class FileUtilitiesTest {
 	}
 
 	@Test
+	public void shouldStripGzippedExtension() {
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("foo.txt"), "foo");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("a/b/c.jpg"), "a/b/c");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("a/b/c"), "a/b/c");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("a/b/c.tar.gz"), "a/b/c");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("foo.txt.gz"), "foo");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("a/b/c.jpg.gz"), "a/b/c");
+		Assert.assertEquals(FileUtilities.stripGzippedExtension("a/b/c.gz"), "a/b/c");
+	}
+
+	@Test
 	public void shouldDestroyContents() throws IOException {
 		File file = File.createTempFile("test", ".txt");
 		Files.write("hello world", file, Charsets.UTF_8);

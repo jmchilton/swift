@@ -1,21 +1,24 @@
 package edu.mayo.mprc.searchdb;
 
-import java.io.Serializable;
+import edu.mayo.mprc.daemon.files.FileHolder;
+
+import java.io.File;
 
 /**
- * A list of raw file metadata, transferred in string form as this info is small and not worth all the file upload/
- * download hassle.
+ * A list of raw file metadata stored as many data files.
  *
  * @author Roman Zenka
  */
-public class RawFileMetaData implements Serializable {
-	private String info;
-	private String tuneMethod;
-	private String instrumentMethod;
-	private String sampleInformation;
-	private String errorLog;
+public class RawFileMetaData extends FileHolder {
+	private File rawFile;
+	private File info;
+	private File tuneMethod;
+	private File instrumentMethod;
+	private File sampleInformation;
+	private File errorLog;
 
-	public RawFileMetaData(String info, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog) {
+	public RawFileMetaData(File rawFile, File info, File tuneMethod, File instrumentMethod, File sampleInformation, File errorLog) {
+		this.rawFile = rawFile;
 		this.info = info;
 		this.tuneMethod = tuneMethod;
 		this.instrumentMethod = instrumentMethod;
@@ -23,23 +26,27 @@ public class RawFileMetaData implements Serializable {
 		this.errorLog = errorLog;
 	}
 
-	public String getInfo() {
+	public File getRawFile() {
+		return rawFile;
+	}
+
+	public File getInfo() {
 		return info;
 	}
 
-	public String getTuneMethod() {
+	public File getTuneMethod() {
 		return tuneMethod;
 	}
 
-	public String getInstrumentMethod() {
+	public File getInstrumentMethod() {
 		return instrumentMethod;
 	}
 
-	public String getSampleInformation() {
+	public File getSampleInformation() {
 		return sampleInformation;
 	}
 
-	public String getErrorLog() {
+	public File getErrorLog() {
 		return errorLog;
 	}
 }

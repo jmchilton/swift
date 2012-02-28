@@ -12,9 +12,9 @@ import java.util.Date;
  */
 public class DummyMassSpecDataExtractor implements MassSpecDataExtractor {
 	@Override
-	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String fractionName) {
+	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String msmsSampleName) {
 		return new TandemMassSpectrometrySample(
-				new File(fractionName),
+				new File(msmsSampleName),
 				new Date(),
 				0,
 				0,
