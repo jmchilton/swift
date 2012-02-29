@@ -138,6 +138,10 @@ final class RAWDumpTask extends AsyncTaskBase {
 			rawSpectraFile = dumpResult.getRawSpectraFile();
 			updateDescription();
 			chromatogramFile = dumpResult.getChromatogramFile();
+			tuneMethodFile = dumpResult.getTuneMethodFile();
+			instrumentMethodFile = dumpResult.getInstrumentMethodFile();
+			sampleInformationFile = dumpResult.getSampleInformationFile();
+			errorLogFile = dumpResult.getErrorLogFile();
 		}
 	}
 }

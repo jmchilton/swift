@@ -26,7 +26,7 @@ public class MapMassSpecDataExtractor implements MassSpecDataExtractor {
 	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String msmsSampleName) {
 		final RawFileMetaData rawFileMetaData = metaDataMap.get(msmsSampleName);
 		if (rawFileMetaData == null) {
-			return new TandemMassSpectrometrySample(null, null, 0, 0, 0, null, null, 0.0, null, null, null, null, null);
+			return new TandemMassSpectrometrySample(null, null, 0, 0, 0, null, null, null, 0.0, null, null, null, null, null);
 		} else {
 			try {
 				InfoFileParser parser = new InfoFileParser();
@@ -37,6 +37,7 @@ public class MapMassSpecDataExtractor implements MassSpecDataExtractor {
 						data.getMs1Spectra(),
 						data.getMs2Spectra(),
 						data.getMs3PlusSpectra(),
+						data.getInstrumentName(),
 						data.getInstrumentSerialNumber(),
 						data.getStartTime(),
 						data.getRunTimeInSeconds(),
