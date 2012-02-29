@@ -229,6 +229,10 @@ public final class SearchRunner implements Runnable {
 		this.searchRun = searchRun;
 	}
 
+	public WorkflowEngine getWorkflowEngine() {
+		return workflowEngine;
+	}
+
 	private void yield() {
 		// Currently does nothing, the engine immediatelly keeps processing more work
 	}
@@ -240,14 +244,15 @@ public final class SearchRunner implements Runnable {
 		assert searchEngines != null : "Search engine set must not be null";
 		if (this.searchDefinition != null) {
 			assert workflowEngine.getNumTasks() ==
-					rawToMgfConversions.size() +
+					databaseDeployments.size() +
+							rawToMgfConversions.size() +
 							mgfCleanups.size() +
 							rawDumpTasks.size() +
-							databaseDeployments.size() +
+							spectrumQaTasks.size() +
 							engineSearches.size() +
 							scaffoldCalls.size() +
-							reportCalls.size() +
 							fastaDbCalls.size() +
+							reportCalls.size() +
 							searchDbCalls.size() +
 							(qaTask == null ? 0 : 1) : "All tasks must be a collection of *ALL* tasks";
 		}
@@ -409,14 +414,14 @@ public final class SearchRunner implements Runnable {
 					if (searchDefinition.getQa() != null) {
 						addQaTask(inputFile, scaffold3Task, mgfOutput);
 					}
-
-					if (searchDbDaemon != null && rawDumpDaemon != null) {
-						// Ask far dumping the .RAW file since the QA might be disabled
-						RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
-						addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
-					}
 				}
 			}
+		}
+
+		if (searchDbDaemon != null && rawDumpDaemon != null) {
+			// Ask far dumping the .RAW file since the QA might be disabled
+			RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
+			addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
 		}
 	}
 

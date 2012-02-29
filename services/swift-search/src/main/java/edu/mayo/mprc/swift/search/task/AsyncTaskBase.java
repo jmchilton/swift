@@ -30,7 +30,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 	 * @param fromScratch      Do not reuse old results, redo everything from scratch.
 	 */
 	protected AsyncTaskBase(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch) {
-		assert daemon != null : "The daemon has to be set";
+		assert daemon != null : "The daemon for the task has to be set";
 		this.daemon = daemon;
 		wasSubmitted = false;
 		taskEnqueued = null;
