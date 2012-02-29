@@ -239,7 +239,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		if (getFile() != null ? !getFile().equals(that.getFile()) : that.getFile() != null) {
 			return false;
 		}
-		if (getLastModified() != null ? !getLastModified().equals(that.getLastModified()) : that.getLastModified() != null) {
+		if (getLastModified() != null ? getLastModified().compareTo(that.getLastModified()) == 0 : that.getLastModified() != null) {
 			return false;
 		}
 

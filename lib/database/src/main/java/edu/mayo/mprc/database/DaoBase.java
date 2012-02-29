@@ -279,6 +279,8 @@ public abstract class DaoBase implements Dao {
 				throw new MprcException(item.getClass().getSimpleName() + " already exists");
 			} else if (item.equals(existingObject)) {
 				return updateSavedItem(existingObject, item, session);
+			} else {
+				int i = 0;
 			}
 		}
 
@@ -421,7 +423,7 @@ public abstract class DaoBase implements Dao {
 	 */
 	public static Criterion doubleEq(String propertyName, double value, double tolerance) {
 		if (Double.isNaN(value)) {
-			return Restrictions.isNull(propertyName);
+			return Restrictions.eq(propertyName, Double.NaN);
 		}
 		return new Conjunction()
 				.add(Restrictions.ge(propertyName, value - tolerance))
