@@ -46,10 +46,18 @@ final class QaTask extends AsyncTaskBase {
 		currentExperiment = e;
 
 		if (experimentList.size() == 1) {
-			this.qaReportFolder = new File(scaffoldXmlFile.getParentFile().getParentFile(), QA_SUBDIRECTORY);
+			this.qaReportFolder = getQaSubdirectory(scaffoldXmlFile);
 			this.reportFile = new File(qaReportFolder, "index.html");
 			setDescription("QA analysis report " + fileTokenFactory.fileToTaggedDatabaseToken(reportFile));
 		}
+	}
+
+	/**
+	 * @param scaffoldXmlFile Where the Scaffold .xml report is.
+	 * @return Where should the QA directory for the particular Scaffold file be.
+	 */
+	public static File getQaSubdirectory(File scaffoldXmlFile) {
+		return new File(scaffoldXmlFile.getParentFile().getParentFile(), QA_SUBDIRECTORY);
 	}
 
 	public void addMgfToRawEntry(MgfOutput mgfFile, File rawFile, RAWDumpTask rawDumpTask) {

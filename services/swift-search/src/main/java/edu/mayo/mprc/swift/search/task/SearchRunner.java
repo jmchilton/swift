@@ -115,7 +115,7 @@ public final class SearchRunner implements Runnable {
 	private QaTask qaTask;
 
 	/**
-	 * List of task reports.
+	 * List of tasks producing protein reports.
 	 */
 	private List<Task> reportCalls = new LinkedList<Task>();
 
@@ -291,17 +291,6 @@ public final class SearchRunner implements Runnable {
 		if (fastaDbDaemon != null) {
 			addFastaDbCall(searchDefinition.getSearchParameters().getDatabase());
 		}
-
-		if (searchDbDaemon != null) {
-			// Find first scaffold3 task, hook it up with search db
-			for (ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
-				if (scaffoldTask instanceof Scaffold3Task) {
-					Scaffold3Task scaffold3Task = (Scaffold3Task) scaffoldTask;
-					addSearchDbCall(scaffold3Task, searchDefinition.getSearchParameters().getDatabase());
-					break;
-				}
-			}
-		}
 	}
 
 	private SearchEngine getSearchEngine(String code) {
@@ -419,6 +408,12 @@ public final class SearchRunner implements Runnable {
 
 					if (searchDefinition.getQa() != null) {
 						addQaTask(inputFile, scaffold3Task, mgfOutput);
+					}
+
+					if (searchDbDaemon != null && rawDumpDaemon != null) {
+						// Ask far dumping the .RAW file since the QA might be disabled
+						RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
+						addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
 					}
 				}
 			}
@@ -634,6 +629,10 @@ public final class SearchRunner implements Runnable {
 		return task;
 	}
 
+	private RAWDumpTask getRawDumpTaskForInputFile(FileSearch inputFile) {
+		return rawDumpTasks.get(inputFile.getInputFile());
+	}
+
 	private static boolean isRawFile(FileSearch inputFile) {
 		return !inputFile.getInputFile().getName().endsWith(".mgf");
 	}
@@ -813,24 +812,21 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private SearchDbTask addSearchDbCall(Scaffold3Task scaffold3Task, Curation curation) {
-		File file = scaffold3Task.getScaffoldSpectraFile();
+	private SearchDbTask addSearchDbCall(final Scaffold3Task scaffold3Task, final RAWDumpTask rawDumpTask, final Curation curation) {
+		final File file = scaffold3Task.getScaffoldSpectraFile();
 		SearchDbTask searchDbTask = searchDbCalls.get(file);
 		if (searchDbTask == null) {
-			FastaDbTask fastaDbTask = addFastaDbCall(curation);
-			SearchDbTask task = new SearchDbTask(searchDbDaemon, fileTokenFactory, false, scaffold3Task);
+			final FastaDbTask fastaDbTask = addFastaDbCall(curation);
+			final SearchDbTask task = new SearchDbTask(searchDbDaemon, fileTokenFactory, false, scaffold3Task);
 			task.addDependency(fastaDbTask);
 			task.addDependency(scaffold3Task);
-			// We depend on all raw dump tasks for loading metadata about the files
-			for (final RAWDumpTask rawDumpTask : rawDumpTasks.values()) {
-				task.addRawDumpTask(rawDumpTask);
-				task.addDependency(rawDumpTask);
-			}
 			searchDbCalls.put(file, task);
-			return task;
-		} else {
-			return searchDbTask;
+			searchDbTask = task;
 		}
+		// We depend on all raw dump tasks for loading metadata about the files
+		searchDbTask.addRawDumpTask(rawDumpTask);
+		searchDbTask.addDependency(rawDumpTask);
+		return searchDbTask;
 	}
 
 	private static String getEngineSearchHashKey(SearchEngine engine, File file) {
