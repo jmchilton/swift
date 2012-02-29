@@ -11,6 +11,12 @@ import java.util.Date;
  * @author Roman Zenka
  */
 public class DummyMassSpecDataExtractor implements MassSpecDataExtractor {
+	private Date now;
+
+	public DummyMassSpecDataExtractor(Date now) {
+		this.now = now;
+	}
+
 	@Override
 	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String msmsSampleName) {
 		return new TandemMassSpectrometrySample(
@@ -21,7 +27,7 @@ public class DummyMassSpecDataExtractor implements MassSpecDataExtractor {
 				0,
 				"Dummy instrument",
 				"Dummy #",
-				new Date(),
+				now,
 				0.0,
 				"",
 				"",

@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -103,7 +104,7 @@ public class TestScaffoldSpectraSummarizer {
 		return new ScaffoldSpectraSummarizer(
 				unimod, scaffoldUnimod,
 				new DummyTranslator(),
-				new DummyMassSpecDataExtractor());
+				new DummyMassSpecDataExtractor(new Date()));
 	}
 
 	/**

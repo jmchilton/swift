@@ -10,6 +10,7 @@ import edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl;
 import edu.mayo.mprc.fastadb.FastaDbDaoHibernate;
 import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
 import edu.mayo.mprc.searchdb.dao.Analysis;
+import edu.mayo.mprc.searchdb.dao.PeptideSpectrumMatch;
 import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
@@ -22,15 +23,14 @@ import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
@@ -91,22 +91,11 @@ public class TestSearchDbDao extends DaoTest {
 	public void shouldSaveSmallAnalysis() throws DatabaseUnitException, SQLException, IOException {
 		loadUnimod();
 		loadScaffoldUnimod();
-		Curation currentSp = loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
+		loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
 
 		searchDbDao.begin();
 
-		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
-
-		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
-				new SingleDatabaseTranslator(fastaDbDao, curationDao),
-				new DummyMassSpecDataExtractor());
-		summarizer.load(reader, SINGLE, "3", null);
-		final Analysis analysis = summarizer.getAnalysis();
-
-		SearchRun searchRun = swiftDao.fillSearchRun(null);
-		ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
-
-		searchDbDao.addAnalysis(analysis, reportData);
+		final Analysis analysis = loadAnalysis(new Date());
 
 		getDatabasePlaceholder().getSession().flush();
 
@@ -129,6 +118,65 @@ public class TestSearchDbDao extends DaoTest {
 
 		searchDbDao.commit();
 	}
+
+	private Analysis loadAnalysis(Date now) {
+		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
+
+		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
+				new SingleDatabaseTranslator(fastaDbDao, curationDao),
+				new DummyMassSpecDataExtractor(now));
+		summarizer.load(reader, SINGLE, "3", null);
+		final Analysis analysis = summarizer.getAnalysis();
+
+		SearchRun searchRun = swiftDao.fillSearchRun(null);
+		ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
+
+		searchDbDao.addAnalysis(analysis, reportData);
+		return analysis;
+	}
+
+	/**
+	 * Make sure that if we save the same thing twice, the database stays unchanged.
+	 */
+	@Test
+	public void saveShouldBeIdempotent() throws DatabaseUnitException, SQLException, IOException {
+		loadUnimod();
+		loadScaffoldUnimod();
+		loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
+
+		Date now = new Date();
+
+		searchDbDao.begin();
+		final Analysis analysis = loadAnalysis(now);
+		getDatabasePlaceholder().getSession().flush();
+		searchDbDao.commit();
+
+		searchDbDao.begin();
+		final long psm1 = searchDbDao.rowCount(PeptideSpectrumMatch.class);
+		DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
+		FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database1.xml", false));
+		searchDbDao.commit();
+
+		searchDbDao.begin();
+		final Analysis analysis2 = loadAnalysis(now);
+		getDatabasePlaceholder().getSession().flush();
+		searchDbDao.commit();
+
+		searchDbDao.begin();
+		DatabaseConnection databaseConnection2 = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
+		FlatXmlDataSet.write(databaseConnection2.createDataSet(), new FileOutputStream("/Users/m044910/database2.xml", false));
+		searchDbDao.commit();
+
+		searchDbDao.begin();
+		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
+		Assert.assertEquals(searchRuns.size(), 2, "Must find two searches");
+		Assert.assertTrue(null != searchRuns.get(0), "Must return correct type");
+		final long psm2 = searchDbDao.rowCount(PeptideSpectrumMatch.class);
+		searchDbDao.commit();
+
+		Assert.assertEquals(psm2, psm1, "The oeptide spectrum match count has to stay the same");
+	}
+
 
 	private Curation loadFasta(String resource, String shortName) {
 		File file = null;
