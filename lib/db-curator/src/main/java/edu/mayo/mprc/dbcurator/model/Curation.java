@@ -3,11 +3,11 @@ package edu.mayo.mprc.dbcurator.model;
 import edu.mayo.mprc.database.EvolvableBase;
 import edu.mayo.mprc.fasta.DatabaseAnnotation;
 import edu.mayo.mprc.fasta.FastaFile;
-import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * the date that this series of curations was first run.  When a curation is copied for refresh then this will
 	 * also be copied.  This coupled with the shortName should be the natural key for.
 	 */
-	private DateTime firstRunDate;
+	private Date firstRunDate;
 	/**
 	 * the FASTA file that was created as a result of this curation.  This should not change after being set.
 	 */
@@ -48,11 +48,11 @@ public class Curation extends EvolvableBase implements Serializable {
 	/**
 	 * the date that the curation was last run.  If this is not null then the curation has been run and should not be modified.
 	 */
-	private DateTime runDate;
+	private Date runDate;
 	/**
 	 * the date that this curation was deployed
 	 */
-	private DateTime deploymentDate;
+	private Date deploymentDate;
 	/**
 	 * the steps involved in the curation
 	 */
@@ -116,7 +116,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @return the deploymentDate (type Date) of this Curation object.
 	 */
-	public DateTime getDeploymentDate() {
+	public Date getDeploymentDate() {
 		return deploymentDate;
 	}
 
@@ -125,7 +125,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param deploymentDate the deploymentDate of this Curation object.
 	 */
-	public void setDeploymentDate(DateTime deploymentDate) {
+	public void setDeploymentDate(Date deploymentDate) {
 		this.deploymentDate = deploymentDate;
 	}
 
@@ -134,7 +134,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @return the firstRunDate (type Date) of this Curation object.
 	 */
-	public DateTime getFirstRunDate() {
+	public Date getFirstRunDate() {
 		return firstRunDate;
 	}
 
@@ -143,7 +143,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param firstRunDate the firstRunDate of this Curation object.
 	 */
-	protected void setFirstRunDate(DateTime firstRunDate) {
+	protected void setFirstRunDate(Date firstRunDate) {
 		this.firstRunDate = firstRunDate;
 	}
 
@@ -190,7 +190,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @return the runDate (type Date) of this Curation object.
 	 */
-	public DateTime getRunDate() {
+	public Date getRunDate() {
 		return runDate;
 	}
 
@@ -365,7 +365,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param runDate the runDate of this Curation object.
 	 */
-	public void setRunDate(DateTime runDate) {
+	public void setRunDate(Date runDate) {
 		this.runDate = runDate;
 		if (firstRunDate == null) {
 			firstRunDate = runDate;
