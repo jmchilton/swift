@@ -4,6 +4,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -25,7 +26,8 @@ public final class DaoBaseTest extends DaoTest {
 			return Arrays.asList(
 					"edu/mayo/mprc/database/TestSet.hbm.xml",
 					"edu/mayo/mprc/database/TestSetMember.hbm.xml",
-					"edu/mayo/mprc/database/TestDouble.hbm.xml");
+					"edu/mayo/mprc/database/TestDouble.hbm.xml",
+					"edu/mayo/mprc/database/TestDate.hbm.xml");
 		}
 	}
 
@@ -113,7 +115,7 @@ public final class DaoBaseTest extends DaoTest {
 		d1 = base.save(d1, testDoubleEqualityCriteria(d1), false);
 		nextTransaction();
 		TestDouble d2 = new TestDouble(10.0001, 19.9999);
-		d2 = base.save(d2, testDoubleEqualityCriteria(d1), false);
+		d2 = base.save(d2, testDoubleEqualityCriteria(d2), false);
 		Assert.assertEquals(d2.getId(), d1.getId(), "Must be the same object");
 	}
 
@@ -122,5 +124,22 @@ public final class DaoBaseTest extends DaoTest {
 				.add(DaoBase.doubleEq("value1", d1.getValue1(), 0.1))
 				.add(DaoBase.doubleEq("value2", d1.getValue2(), 0.1));
 	}
+
+	@Test
+	public void shouldSaveDateTimes() {
+		TestDate d1 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30), new DateTime(2010, 10, 30, 13, 45, 59));
+		d1 = base.save(d1, testDateEqualityCriteria(d1), false);
+		nextTransaction();
+		TestDate d2 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30), new DateTime(2010, 10, 30, 13, 45, 59));
+		d2 = base.save(d2, testDateEqualityCriteria(d2), false);
+		Assert.assertEquals(d2.getId(), d1.getId(), "Must be the same object");
+	}
+
+	private Criterion testDateEqualityCriteria(TestDate d1) {
+		return Restrictions.conjunction()
+				.add(Restrictions.eq("value1", d1.getValue1()))
+				.add(Restrictions.eq("value2", d1.getValue2()));
+	}
+
 
 }
