@@ -16,8 +16,8 @@ import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -145,7 +145,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			curationDao.begin();
 			try {
 				final Curation curation = curationDao.findCuration(undeployerWorkPacket.getDbToUndeploy().getShortName());
-				curationDao.deleteCuration(curation, new Change("Undeploying curation " + curation.getShortName(), new Date()));
+				curationDao.deleteCuration(curation, new Change("Undeploying curation " + curation.getShortName(), new DateTime()));
 				curationDao.commit();
 			} catch (Exception e) {
 				curationDao.rollback();

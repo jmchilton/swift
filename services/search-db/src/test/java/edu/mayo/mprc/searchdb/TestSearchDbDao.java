@@ -25,6 +25,7 @@ import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -78,7 +79,7 @@ public class TestSearchDbDao extends DaoTest {
 		unimodDao.begin();
 		MockUnimodDao mockUnimodDao = new MockUnimodDao();
 		unimod = mockUnimodDao.load();
-		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
+		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new DateTime()));
 		unimodDao.commit();
 	}
 
