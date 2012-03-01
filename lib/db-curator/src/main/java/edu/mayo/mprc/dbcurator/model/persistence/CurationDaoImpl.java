@@ -338,7 +338,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 
 	public void addCuration(final Curation toSave) {
 		try {
-			save(toSave, new Change("Adding database " + toSave.getShortName(), new Date()), getCurationEqualityCriteria(toSave), true);
+			save(toSave, new Change("Adding database " + toSave.getShortName(), new DateTime()), getCurationEqualityCriteria(toSave), true);
 		} catch (Exception t) {
 			throw new MprcException("Could not save an object to hibernate.", t);
 		}
