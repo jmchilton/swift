@@ -29,6 +29,7 @@ import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -52,6 +53,9 @@ public class TestSearchDbDao extends DaoTest {
 	private FastaDbDaoHibernate fastaDbDao;
 
 	private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
+	private static final String TRIVIAL = "classpath:edu/mayo/mprc/searchdb/trivial.tsv";
+	private static final String TRIVIAL_NOTANDEM = "classpath:edu/mayo/mprc/searchdb/trivial_notandem.tsv";
+
 
 	@BeforeMethod
 	public void setup() {
@@ -96,7 +100,7 @@ public class TestSearchDbDao extends DaoTest {
 
 		searchDbDao.begin();
 
-		final Analysis analysis = loadAnalysis(new Date());
+		final Analysis analysis = loadAnalysis(new Date(), SINGLE);
 
 		getDatabasePlaceholder().getSession().flush();
 
@@ -120,13 +124,13 @@ public class TestSearchDbDao extends DaoTest {
 		searchDbDao.commit();
 	}
 
-	private Analysis loadAnalysis(Date now) {
-		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
+	private Analysis loadAnalysis(final Date now, final String reportToLoad) {
+		final Reader reader = ResourceUtilities.getReader(reportToLoad, TestScaffoldSpectraSummarizer.class);
 
 		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
 				new SingleDatabaseTranslator(fastaDbDao, curationDao),
 				new DummyMassSpecDataExtractor(now));
-		summarizer.load(reader, SINGLE, "3", null);
+		summarizer.load(reader, reportToLoad, "3", null);
 		final Analysis analysis = summarizer.getAnalysis();
 
 		SearchRun searchRun = swiftDao.fillSearchRun(null);
@@ -136,11 +140,20 @@ public class TestSearchDbDao extends DaoTest {
 		return analysis;
 	}
 
+	@DataProvider(name = "reports")
+	public Object[][] listReports() {
+		return new Object[][]{
+				{TRIVIAL},
+				{TRIVIAL_NOTANDEM},
+				{SINGLE}
+		};
+	}
+
 	/**
 	 * Make sure that if we save the same thing twice, the database stays unchanged.
 	 */
-	@Test
-	public void saveShouldBeIdempotent() throws DatabaseUnitException, SQLException, IOException {
+	@Test(dataProvider = "reports")
+	public void saveShouldBeIdempotent(String report) throws DatabaseUnitException, SQLException, IOException {
 		loadUnimod();
 		loadScaffoldUnimod();
 		loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
@@ -148,7 +161,7 @@ public class TestSearchDbDao extends DaoTest {
 		Date now = new Date();
 
 		searchDbDao.begin();
-		final Analysis analysis = loadAnalysis(now);
+		final Analysis analysis = loadAnalysis(now, report);
 		getDatabasePlaceholder().getSession().flush();
 		searchDbDao.commit();
 
@@ -159,7 +172,7 @@ public class TestSearchDbDao extends DaoTest {
 		searchDbDao.commit();
 
 		searchDbDao.begin();
-		final Analysis analysis2 = loadAnalysis(now);
+		final Analysis analysis2 = loadAnalysis(now, report);
 		getDatabasePlaceholder().getSession().flush();
 		searchDbDao.commit();
 
@@ -169,13 +182,13 @@ public class TestSearchDbDao extends DaoTest {
 		searchDbDao.commit();
 
 		searchDbDao.begin();
-		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
+		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("TERA_BOVIN");
 		Assert.assertEquals(searchRuns.size(), 2, "Must find two searches");
 		Assert.assertTrue(null != searchRuns.get(0), "Must return correct type");
 		final long psm2 = searchDbDao.rowCount(PeptideSpectrumMatch.class);
 		searchDbDao.commit();
 
-		Assert.assertEquals(psm2, psm1, "The oeptide spectrum match count has to stay the same");
+		Assert.assertEquals(psm2, psm1, "The peptide spectrum match count has to stay the same");
 	}
 
 

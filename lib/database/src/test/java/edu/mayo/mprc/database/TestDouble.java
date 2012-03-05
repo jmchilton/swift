@@ -32,4 +32,28 @@ public class TestDouble extends PersistableBase {
 	public void setValue2(double value2) {
 		this.value2 = value2;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		TestDouble that = (TestDouble) o;
+
+		if (Math.abs(that.value1 - value1) >= 0.01) return false;
+		if (Math.abs(that.value2 - value2) >= 0.01) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result;
+		long temp;
+		temp = value1 != +0.0d ? Double.doubleToLongBits(value1) : 0L;
+		result = (int) (temp ^ (temp >>> 32));
+		temp = value2 != +0.0d ? Double.doubleToLongBits(value2) : 0L;
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
 }

@@ -1,0 +1,58 @@
+## Notes (not part of the format):
+## This is a trivial analysis with only a single protein and peptide identified.
+## After this gets loaded, there should be only one instance of everything in the database
+testScaffoldLoader, Spectrum report created on 12/16/2011
+Experiment: testScaffoldLoader
+	Peak List Generator: extract_msn
+		Version: Unspecified
+		Charge States Calculated: unknown
+		Deisotoped: unknown
+		Textual Annotation:
+	Database Set: 2 Databases
+		Database Name: the Current_SP database
+			Version: unknown
+			Taxonomy: All Entries
+			Number of Proteins: 1033208
+		Database Name: the Current_SP database
+			Version: unknown
+			Taxonomy: All Entries
+			Number of Proteins: 1033208
+		Does database contain common contaminants?: unknown
+	Search Engine Set: 3 Search Engines
+		Search Engine: Mascot
+			Version: Mascot
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 10.0 PPM (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the Current_SP database (unknown version, 1033208 entries)
+			Digestion Enzyme: Trypsin
+			Max Missed Cleavages: 2
+		Search Engine: Sequest
+			Version: 27, rev. 12
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 0.026 Da (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the Current_SP database (unknown version, 1033208 entries)
+			Digestion Enzyme: Trypsin
+			Max Missed Cleavages: 2
+		Search Engine: X! Tandem
+			Version: CYCLONE (2010.12.01.1)
+			Samples: All Samples
+			Fragment Tolerance: 0.80 Da (Monoisotopic)
+			Parent Tolerance: 10.0 PPM (Monoisotopic)
+			Fixed Modifications:
+			Variable Modifications: +16 on M (Oxidation), +57 on C (Carbamidomethyl)
+			Database: the Current_SP database (unknown version, 1033208 entries)
+			Digestion Enzyme: stricttrypsin
+			Max Missed Cleavages: 2
+	Scaffold Version: Scaffold_3.3.1
+		Peptide Thresholds: 95.0% minimum
+		Protein Thresholds: 95.0% minimum and 2 peptides minimum
+
+Experiment name	Biological sample category	Biological sample name	MS/MS sample name	Protein name	Protein accession numbers	Database sources	Protein molecular weight (Da)	Protein identification probability	Number of unique peptides	Number of unique spectra	Number of total spectra	Percentage of total spectra	Percentage sequence coverage	Manual validation	Assigned	Spectrum name	Peptide sequence	Previous amino acid	Next amino acid	Peptide identification probability	Sequest deltaCn	Sequest XCorr	Sequest Sp	Sequest SpRank	Sequest Peptides Matched	X! Tandem Hyper Score	X! Tandem Ladder Score	Mascot Ion Score	Mascot Identity Score	Mascot Homology Score	Mascot Delta Ion Score	Number of enzymatic termini	Fixed modifications identified by spectrum	Variable modifications identified by spectrum	Observed m/z	Actual peptide mass (AMU)	Calculated +1H Peptide Mass (AMU)	Spectrum charge	Actual minus calculated peptide mass (AMU)	Actual minus calculated peptide mass (PPM)	Peptide start index	Peptide stop index	Exclusive	Other Proteins	Starred	Hidden
+testScaffoldLoader	none	test1	test1.tar.gz	Transitional endoplasmic reticulum ATPase OS=Bos taurus GN=VCP PE=1 SV=1 (sp) (Q3ZBT1)	TERA_BOVIN	Current_SP.fasta	89,332.7	100.0%	10	13	26	35.1%	14.5%	possibly correct	true	test1.96.98.2.dta	EDEEESLNEVGYDDIGGcR	R	K	95.0%	0.723	5.22	1010	1.000	652	73.0	0	112	27.5	22.6	110	2		c18: Carbamidomethyl (+57.02)	1,093.4448	2,184.8751	2,185.8829	2	-0.0005413	-0.2476	192	210	true			false	false
+END OF FILE

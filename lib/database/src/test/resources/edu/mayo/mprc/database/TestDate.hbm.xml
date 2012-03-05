@@ -2,8 +2,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.mayo.mprc.database">
-    <class name="TestDate" table="set">
-        <id name="id" type="integer" column="set_id">
+    <class name="TestDate" table="test_date">
+        <id name="id" type="integer" column="test_date_id">
             <generator class="native"/>
         </id>
         <property name="value1" column="value1" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
