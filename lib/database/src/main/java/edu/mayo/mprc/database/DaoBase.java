@@ -423,7 +423,7 @@ public abstract class DaoBase implements Dao {
 	 */
 	public static Criterion doubleEq(String propertyName, double value, double tolerance) {
 		if (Double.isNaN(value)) {
-			return Restrictions.eq(propertyName, Double.NaN);
+			return Restrictions.isNull(propertyName);
 		}
 		return new Conjunction()
 				.add(Restrictions.ge(propertyName, value - tolerance))

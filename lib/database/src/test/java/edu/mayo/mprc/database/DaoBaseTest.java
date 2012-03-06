@@ -109,14 +109,36 @@ public final class DaoBaseTest extends DaoTest {
 		Assert.assertEquals(finalCount, initialCount + 2, "One item has to be added");
 	}
 
+	/**
+	 * Save same object twice, only one gets written out. Double equality has ranges.
+	 */
 	@Test
-	public void shouldSaveNanDoubles() {
+	public void shouldIdempotentlySaveDoubles() {
 		TestDouble d1 = new TestDouble(10, 20);
 		d1 = base.save(d1, testDoubleEqualityCriteria(d1), false);
 		nextTransaction();
 		TestDouble d2 = new TestDouble(10.0001, 19.9999);
 		d2 = base.save(d2, testDoubleEqualityCriteria(d2), false);
 		Assert.assertEquals(d2.getId(), d1.getId(), "Must be the same object");
+		TestDouble d3 = new TestDouble(10.0001, Double.NaN);
+		d3 = base.save(d3, testDoubleEqualityCriteria(d3), false);
+		Assert.assertNotSame(d2.getId(), d3.getId(), "Must not be the same object");
+	}
+
+	/**
+	 * Save same object twice, only one gets written out. Double NaN is handled properly.
+	 */
+	@Test
+	public void shouldIdempotentlySaveNaNDoubles() {
+		TestDouble d1 = new TestDouble(10, Double.NaN);
+		d1 = base.save(d1, testDoubleEqualityCriteria(d1), false);
+		nextTransaction();
+		TestDouble d2 = new TestDouble(10.0001, Double.NaN);
+		d2 = base.save(d2, testDoubleEqualityCriteria(d2), false);
+		Assert.assertEquals(d2.getId(), d1.getId(), "Must be the same object");
+		TestDouble d3 = new TestDouble(Double.NaN, Double.NaN);
+		d3 = base.save(d3, testDoubleEqualityCriteria(d3), false);
+		Assert.assertNotSame(d2.getId(), d3.getId(), "Must not be the same object");
 	}
 
 	private Criterion testDoubleEqualityCriteria(TestDouble d1) {

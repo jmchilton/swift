@@ -1,6 +1,6 @@
 package edu.mayo.mprc.searchdb;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * Information contained in .RAW.info.tsv files.
@@ -13,7 +13,7 @@ public class InfoFileData {
 	private int ms3PlusSpectra = 0;
 	private String instrumentName = "<unknown>";
 	private String instrumentSerialNumber = "<unknown>";
-	private Date startTime = null;
+	private DateTime startTime = null;
 	private double runTimeInSeconds = 0.0;
 	private String comment = "";
 	private String sampleId = "";
@@ -76,11 +76,11 @@ public class InfoFileData {
 	/**
 	 * Time when the acquisition of the .RAW file started.
 	 */
-	public Date getStartTime() {
+	public DateTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateTime startTime) {
 		this.startTime = startTime;
 	}
 

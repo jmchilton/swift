@@ -11,13 +11,20 @@ public final class MprcDoubles {
 
 	/**
 	 * Check that a given double value is within tolerance from expected.
+	 * <p/>
+	 * <b>WARNING</b>: This is used to compare doubles for identity,
+	 * relaxing the precision. This is why {@code within(Double.NaN, Double.NaN, whatever)} is true - we assume that
+	 * NaN means "value missing" and if it is missing on both sides, it is within the range. Other special values (infinities)
+	 * are not supported.
 	 *
 	 * @param expected  Value we expect to see.
 	 * @param actual    Actual value.
 	 * @param tolerance Actual has to be within &lt;tolerance-expected, tolerance+expected&gt;
 	 * @return True if the actual value is within tolerance from expected.
 	 */
-	public static boolean within(double expected, double actual, double tolerance) {
-		return expected - tolerance <= actual && actual <= expected + tolerance;
+	public static boolean within(final double expected, final double actual, final double tolerance) {
+		return expected - tolerance <= actual && actual <= expected + tolerance
+				||
+				Double.isNaN(expected) && Double.isNaN(actual);
 	}
 }

@@ -4,9 +4,9 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySample;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ public class MapMassSpecDataExtractor implements MassSpecDataExtractor {
 				InfoFileData data = parser.parse(rawFileMetaData.getInfo());
 				return new TandemMassSpectrometrySample(
 						rawFileMetaData.getRawFile(),
-						new Date(rawFileMetaData.getRawFile().lastModified()),
+						new DateTime(rawFileMetaData.getRawFile().lastModified()),
 						data.getMs1Spectra(),
 						data.getMs2Spectra(),
 						data.getMs3PlusSpectra(),

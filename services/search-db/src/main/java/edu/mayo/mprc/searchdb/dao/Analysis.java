@@ -3,10 +3,10 @@ package edu.mayo.mprc.searchdb.dao;
 import edu.mayo.mprc.database.PersistableBase;
 import edu.mayo.mprc.searchdb.Report;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import org.joda.time.DateTime;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeMap;
@@ -36,7 +36,7 @@ public final class Analysis extends PersistableBase {
 	 * is somewhat duplicated (we know when the user submitted the search).
 	 * It can be null if the date could not be determined.
 	 */
-	private Date analysisDate;
+	private DateTime analysisDate;
 
 	/**
 	 * A list of all biological samples defined within the Scaffold analysis report.
@@ -49,7 +49,7 @@ public final class Analysis extends PersistableBase {
 	public Analysis() {
 	}
 
-	public Analysis(ReportData reportData, String scaffoldVersion, Date analysisDate, BiologicalSampleList biologicalSamples) {
+	public Analysis(ReportData reportData, String scaffoldVersion, DateTime analysisDate, BiologicalSampleList biologicalSamples) {
 		this.reportData = reportData;
 		this.scaffoldVersion = scaffoldVersion;
 		this.analysisDate = analysisDate;
@@ -72,11 +72,11 @@ public final class Analysis extends PersistableBase {
 		this.scaffoldVersion = scaffoldVersion;
 	}
 
-	public Date getAnalysisDate() {
+	public DateTime getAnalysisDate() {
 		return analysisDate;
 	}
 
-	public void setAnalysisDate(Date analysisDate) {
+	public void setAnalysisDate(DateTime analysisDate) {
 		this.analysisDate = analysisDate;
 	}
 

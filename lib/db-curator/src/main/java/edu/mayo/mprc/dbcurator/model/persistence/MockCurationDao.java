@@ -6,6 +6,7 @@ import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.FastaSource;
 import edu.mayo.mprc.dbcurator.model.HeaderTransform;
 import edu.mayo.mprc.dbcurator.model.SourceDatabaseArchive;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -55,7 +56,7 @@ public final class MockCurationDao implements CurationDao {
 	}
 
 	@Override
-	public SourceDatabaseArchive findSourceDatabaseInExistence(String s, Date urlLastMod) {
+	public SourceDatabaseArchive findSourceDatabaseInExistence(String s, DateTime urlLastMod) {
 		return null;
 	}
 

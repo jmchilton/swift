@@ -40,8 +40,8 @@ public class TestDouble extends PersistableBase {
 
 		TestDouble that = (TestDouble) o;
 
-		if (Math.abs(that.value1 - value1) >= 0.01) return false;
-		if (Math.abs(that.value2 - value2) >= 0.01) return false;
+		if (Math.abs(that.value1 - value1) >= 0.01 || Double.isNaN(that.value1) != Double.isNaN(value1)) return false;
+		if (Math.abs(that.value2 - value2) >= 0.01 || Double.isNaN(that.value2) != Double.isNaN(value2)) return false;
 
 		return true;
 	}

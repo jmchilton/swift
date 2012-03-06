@@ -7,6 +7,7 @@ import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
 import edu.mayo.mprc.utilities.AsyncFileWriter;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,12 +51,12 @@ public class SourceDatabaseArchive implements Serializable {
 	/**
 	 * supposedly when the file was placed on the ftp server
 	 */
-	private Date serverDate;
+	private DateTime serverDate;
 
 	/**
 	 * the date when we downloaded the file
 	 */
-	private Date downloadDate;
+	private DateTime downloadDate;
 
 	private static final String CLASSPATH_URL_PREFIX = "classpath:";
 
@@ -66,7 +67,7 @@ public class SourceDatabaseArchive implements Serializable {
 		super();
 	}
 
-	protected SourceDatabaseArchive(String url, File file, Date serverDate, Date downloadDate) {
+	protected SourceDatabaseArchive(String url, File file, DateTime serverDate, DateTime downloadDate) {
 		super();
 		this.setSourceURL(url);
 		this.setArchive(file);
@@ -129,8 +130,8 @@ public class SourceDatabaseArchive implements Serializable {
 
 				final File similarFile = FileUtilities.findSingleSimilarFile(dstFile, archFolder);
 				retSource = new SourceDatabaseArchive();
-				retSource.setDownloadDate(new Date());
-				retSource.setServerDate(new Date());
+				retSource.setDownloadDate(new DateTime());
+				retSource.setServerDate(new DateTime());
 				retSource.setSourceURL(urlString);
 				if (similarFile != null) {
 					if (status != null) {
@@ -147,7 +148,7 @@ public class SourceDatabaseArchive implements Serializable {
 			}
 
 		} else {
-			Date ftpLastModified = null;
+			DateTime ftpLastModified = null;
 			// ftp doesn't support mod date so I need to have a seperate path for getting the mod date if our url specifies an ftp protocol
 			if (url.getProtocol().equalsIgnoreCase("ftp")) {
 				FTPClient ftp = null;
@@ -170,7 +171,7 @@ public class SourceDatabaseArchive implements Serializable {
 							ftp.chdir(path[i]);
 						}
 					}
-					ftpLastModified = ftp.modtime(path[path.length - 1]);
+					ftpLastModified = new DateTime(ftp.modtime(path[path.length - 1]));
 
 				} catch (Exception e) {
 					LOGGER.debug(e);
@@ -189,7 +190,7 @@ public class SourceDatabaseArchive implements Serializable {
 			final URLConnection connection = url.openConnection();
 			connection.connect();
 
-			Date urlLastMod = (ftpLastModified == null ? new Date(connection.getLastModified()) : ftpLastModified);
+			DateTime urlLastMod = (ftpLastModified == null ? new DateTime(connection.getLastModified()) : ftpLastModified);
 
 			try {
 				retSource = curationDao.findSourceDatabaseInExistence(urlString, urlLastMod);
@@ -201,7 +202,7 @@ public class SourceDatabaseArchive implements Serializable {
 			}
 
 			//if retSource.getServerDate().getTime() returns -1 or 0 that means server date wasn't available and we should create a new one.
-			if (retSource == null || retSource.getArchive() == null || retSource.getServerDate().getTime() < 1 || !retSource.getArchive().exists()) {
+			if (retSource == null || retSource.getArchive() == null || retSource.getServerDate().toDate().getTime() < 1 || !retSource.getArchive().exists()) {
 
 				final AsyncFileWriter writeStatus = AsyncFileWriter.writeURLToFile(url, dstFile, null);
 
@@ -223,7 +224,7 @@ public class SourceDatabaseArchive implements Serializable {
 					final File similarFile = FileUtilities.findSingleSimilarFile(dstFile, archFolder);
 
 					retSource = new SourceDatabaseArchive();
-					retSource.setDownloadDate(new Date());
+					retSource.setDownloadDate(new DateTime());
 					retSource.setServerDate(urlLastMod);
 					retSource.setSourceURL(urlString);
 					if (similarFile != null) {
@@ -312,19 +313,19 @@ public class SourceDatabaseArchive implements Serializable {
 		this.sourceURL = sourceURL;
 	}
 
-	public Date getServerDate() {
+	public DateTime getServerDate() {
 		return serverDate;
 	}
 
-	public void setServerDate(Date serverDate) {
+	public void setServerDate(DateTime serverDate) {
 		this.serverDate = serverDate;
 	}
 
-	public Date getDownloadDate() {
+	public DateTime getDownloadDate() {
 		return downloadDate;
 	}
 
-	public void setDownloadDate(Date downloadDate) {
+	public void setDownloadDate(DateTime downloadDate) {
 		this.downloadDate = downloadDate;
 	}
 

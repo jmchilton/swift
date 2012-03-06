@@ -12,9 +12,13 @@ import edu.mayo.mprc.searchdb.dao.IdentifiedPeptide;
 import edu.mayo.mprc.searchdb.dao.LocalizedModList;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Roman Zenka
@@ -50,7 +54,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	 * is somewhat duplicated (we know when the user submitted the search).
 	 * It can be null if the date could not be determined.
 	 */
-	private Date analysisDate;
+	private DateTime analysisDate;
 
 	/**
 	 * A list of all biological samples defined within the Scaffold analysis report.
@@ -168,11 +172,11 @@ public class AnalysisBuilder implements Builder<Analysis> {
 		this.scaffoldVersion = scaffoldVersion;
 	}
 
-	public Date getAnalysisDate() {
+	public DateTime getAnalysisDate() {
 		return analysisDate;
 	}
 
-	public void setAnalysisDate(Date analysisDate) {
+	public void setAnalysisDate(DateTime analysisDate) {
 		this.analysisDate = analysisDate;
 	}
 
