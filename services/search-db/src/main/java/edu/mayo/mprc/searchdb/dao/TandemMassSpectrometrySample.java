@@ -1,9 +1,9 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
+import org.joda.time.DateTime;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * Information about a particular mass spectrometry sample. The sample corresponds to a single .RAW or .mgf file.
@@ -24,7 +24,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	 * When the file got last modified. Can store an old value in case only the modification time changed, but the
 	 * file contents remained identical.
 	 */
-	private Date lastModified;
+	private DateTime lastModified;
 
 	/**
 	 * Number of survey or MS1 spectra.
@@ -54,7 +54,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	/**
 	 * Time when the instrument started to collect the data.
 	 */
-	private Date startTime;
+	private DateTime startTime;
 
 	/**
 	 * For how long have the data been collected - in seconds.
@@ -96,7 +96,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	public TandemMassSpectrometrySample() {
 	}
 
-	public TandemMassSpectrometrySample(File file, Date lastModified, int ms1Spectra, int ms2Spectra, int ms3PlusSpectra, String instrumentName, String instrumentSerialNumber, Date startTime, double runTimeInSeconds, String comment, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog) {
+	public TandemMassSpectrometrySample(File file, DateTime lastModified, int ms1Spectra, int ms2Spectra, int ms3PlusSpectra, String instrumentName, String instrumentSerialNumber, DateTime startTime, double runTimeInSeconds, String comment, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog) {
 		this.file = file;
 		this.lastModified = lastModified;
 		this.ms1Spectra = ms1Spectra;
@@ -121,11 +121,11 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		this.file = file;
 	}
 
-	public Date getLastModified() {
+	public DateTime getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(Date lastModified) {
+	public void setLastModified(DateTime lastModified) {
 		this.lastModified = lastModified;
 	}
 
@@ -169,11 +169,11 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		this.instrumentSerialNumber = instrumentSerialNumber;
 	}
 
-	public Date getStartTime() {
+	public DateTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -236,7 +236,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 
 		TandemMassSpectrometrySample that = (TandemMassSpectrometrySample) o;
 
-		if (getFile() != null ? !getFile().equals(that.getFile()) : that.getFile() != null) {
+		if (getFile() != null ? !getFile().getAbsoluteFile().equals(that.getFile().getAbsoluteFile()) : that.getFile() != null) {
 			return false;
 		}
 		if (getLastModified() != null ? !getLastModified().equals(that.getLastModified()) : that.getLastModified() != null) {

@@ -6,6 +6,7 @@ import edu.mayo.mprc.swift.dbmapping.*;
 import edu.mayo.mprc.swift.params2.*;
 import edu.mayo.mprc.unimod.ModSet;
 import edu.mayo.mprc.utilities.testing.TestApplicationContext;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -130,7 +131,7 @@ public final class SwiftDaoTest {
 			Assert.assertEquals(folder2.getId(), folder1.getId(), "Folder searches has to be stored as one");
 
 			final SearchEngineConfig searchEngineConfig = new SearchEngineConfig("MASCOT");
-			swiftDao.addSearchEngineConfig(searchEngineConfig, new Change("Test search engine added", new Date()));
+			swiftDao.addSearchEngineConfig(searchEngineConfig, new Change("Test search engine added", new DateTime()));
 			EnabledEngines engines = new EnabledEngines();
 			engines.add(searchEngineConfig);
 
@@ -177,12 +178,12 @@ public final class SwiftDaoTest {
 	public void addSearchEngine() throws Throwable {
 		swiftDao.begin();
 		try {
-			Change change = new Change("Test search engine add", new Date());
+			Change change = new Change("Test search engine add", new DateTime());
 			SearchEngineConfig config = new SearchEngineConfig("TEST_ENGINE");
 			swiftDao.addSearchEngineConfig(config, change);
 			Assert.assertNotNull(config.getId(), "Save did not work");
 
-			Change change2 = new Change("Test search engine add 2", new Date());
+			Change change2 = new Change("Test search engine add 2", new DateTime());
 			SearchEngineConfig config2 = new SearchEngineConfig("TEST_ENGINE");
 			Assert.assertTrue(config.equals(config2), "The two changes must be identical");
 
@@ -200,7 +201,7 @@ public final class SwiftDaoTest {
 	public void addEnabledEngines() throws Throwable {
 		swiftDao.begin();
 		try {
-			Change change = new Change("Test enabled engines", new Date());
+			Change change = new Change("Test enabled engines", new DateTime());
 			SearchEngineConfig engine1 = new SearchEngineConfig("TEST_ENGINE1");
 			SearchEngineConfig engine2 = new SearchEngineConfig("TEST_ENGINE2");
 			swiftDao.addSearchEngineConfig(engine1, change);

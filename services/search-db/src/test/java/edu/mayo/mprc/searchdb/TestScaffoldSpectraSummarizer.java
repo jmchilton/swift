@@ -11,13 +11,13 @@ import edu.mayo.mprc.unimod.Unimod;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -104,7 +104,7 @@ public class TestScaffoldSpectraSummarizer {
 		return new ScaffoldSpectraSummarizer(
 				unimod, scaffoldUnimod,
 				new DummyTranslator(),
-				new DummyMassSpecDataExtractor(new Date()));
+				new DummyMassSpecDataExtractor(new DateTime()));
 	}
 
 	/**

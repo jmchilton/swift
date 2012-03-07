@@ -28,6 +28,10 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	private FastaDbDao fastaDbDao;
 
 	private final String MAP = "edu/mayo/mprc/searchdb/dao/";
+	/**
+	 * Max delta for storing the protein/peptide probability.
+	 */
+	private static final double PROBABILITY_DELTA = 1E-4;
 
 	public SearchDbDaoHibernate() {
 	}
@@ -120,7 +124,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(associationEq("peptide", match.getPeptide()))
 				.add(nullSafeEq("previousAminoAcid", match.getPreviousAminoAcid()))
 				.add(nullSafeEq("nextAminoAcid", match.getNextAminoAcid()))
-				.add(nullSafeEq("bestPeptideIdentificationProbability", match.getBestPeptideIdentificationProbability()))
+				.add(doubleEq("bestPeptideIdentificationProbability", match.getBestPeptideIdentificationProbability(), PROBABILITY_DELTA))
 
 				.add(doubleEq("bestSearchEngineScores.mascotDeltaIonScore", match.getBestSearchEngineScores().getMascotDeltaIonScore(), SearchEngineScores.DELTA))
 				.add(doubleEq("bestSearchEngineScores.mascotHomologyScore", match.getBestSearchEngineScores().getMascotHomologyScore(), SearchEngineScores.DELTA))
@@ -140,9 +144,9 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(Restrictions.eq("spectrumIdentificationCounts.numberOfIdentified3HSpectra", match.getSpectrumIdentificationCounts().getNumberOfIdentified3HSpectra()))
 				.add(Restrictions.eq("spectrumIdentificationCounts.numberOfIdentified4HSpectra", match.getSpectrumIdentificationCounts().getNumberOfIdentified4HSpectra()))
 
-				.add(nullSafeEq("bestSearchEngineScores", match.getBestSearchEngineScores()))
 				.add(nullSafeEq("spectrumIdentificationCounts", match.getSpectrumIdentificationCounts()))
 				.add(nullSafeEq("numberOfEnzymaticTerminii", match.getNumberOfEnzymaticTerminii()));
+
 	}
 
 	@Override
@@ -204,7 +208,8 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 */
 	private Criterion sampleEqualityCriteria(TandemMassSpectrometrySample sample) {
 		return Restrictions.conjunction()
-				.add(nullSafeEq("file", sample.getFile()));
+				.add(nullSafeEq("file", sample.getFile()))
+				.add(nullSafeEq("lastModified", sample.getLastModified()));
 	}
 
 	@Override
@@ -248,7 +253,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 	private Criterion biologicalSampleEqualityCriteria(BiologicalSample biologicalSample) {
 		return Restrictions.conjunction()
-				.add(nullSafeEq("sampleName", biologicalSample.getCategory()))
+				.add(nullSafeEq("sampleName", biologicalSample.getSampleName()))
 				.add(nullSafeEq("category", biologicalSample.getCategory()))
 				.add(associationEq("searchResults", biologicalSample.getSearchResults()));
 	}

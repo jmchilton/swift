@@ -10,10 +10,10 @@ import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.SearchEngineScores;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.utilities.FileUtilities;
+import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -109,7 +109,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 			int datePos = value.indexOf(REPORT_DATE_PREFIX_KEY);
 			if (datePos >= 0) {
 				String date = value.substring(datePos + REPORT_DATE_PREFIX_KEY.length());
-				final Date reportDate = parseAnalysisDate(date);
+				final DateTime reportDate = parseAnalysisDate(date);
 				analysis.setAnalysisDate(reportDate);
 			}
 		} else if (SCAFFOLD_VERSION_KEY.equalsIgnoreCase(key)) {
@@ -310,17 +310,17 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param date Date from Scaffold.
 	 * @return Parsed date.
 	 */
-	private static Date parseAnalysisDate(String date) {
-		Date parsedDate = tryParse(date, DateFormat.getDateTimeInstance(), null);
+	private static DateTime parseAnalysisDate(String date) {
+		DateTime parsedDate = tryParse(date, DateFormat.getDateTimeInstance(), null);
 		parsedDate = tryParse(date, DateFormat.getDateInstance(), parsedDate);
 		parsedDate = tryParse(date, DateFormat.getDateInstance(DateFormat.SHORT, Locale.US), parsedDate);
 		return parsedDate;
 	}
 
-	private static Date tryParse(String date, DateFormat format, Date parsedDate) {
+	private static DateTime tryParse(String date, DateFormat format, DateTime parsedDate) {
 		if (parsedDate == null) {
 			try {
-				parsedDate = format.parse(date);
+				parsedDate = new DateTime(format.parse(date));
 			} catch (ParseException ignore) {
 				// SWALLOWED - try another option
 			}

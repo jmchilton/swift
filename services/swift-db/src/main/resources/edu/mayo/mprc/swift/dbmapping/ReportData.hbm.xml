@@ -10,7 +10,7 @@
         </id>
 
         <property name="reportFileId" column="report_file" type="edu.mayo.mprc.database.FileType" length="1500"/>
-        <property name="dateCreated" type="timestamp" column="date_created"/>
+        <property name="dateCreated" type="org.joda.time.contrib.hibernate.PersistentDateTime" column="date_created"/>
         <many-to-one name="searchRun" class="SearchRun" column="transaction_id"
                      index="Report_transaction_index" not-null="true"/>
     </class>

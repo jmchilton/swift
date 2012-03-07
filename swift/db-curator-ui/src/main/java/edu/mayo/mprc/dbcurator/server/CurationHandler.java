@@ -8,12 +8,11 @@ import edu.mayo.mprc.dbcurator.model.persistence.CurationDao;
 import edu.mayo.mprc.fasta.DatabaseAnnotation;
 import edu.mayo.mprc.fasta.filter.MatchMode;
 import org.apache.log4j.Logger;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -121,9 +120,9 @@ public final class CurationHandler {
 			if (toSync.getLastRunDate() == null || toSync.getLastRunDate().trim().length() == 0) {
 				curation.setRunDate(null);
 			} else {
-				curation.setRunDate(dater.parse(toSync.getLastRunDate()));
+				curation.setRunDate(dater.parseDateTime(toSync.getLastRunDate()));
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			toSync.getErrorMessages().add("Run date error MM/dd/yyyy expected");
 		}
 
@@ -295,7 +294,7 @@ public final class CurationHandler {
 	/**
 	 * A simple date formatter that will format all dates as MM/dd/yyyy
 	 */
-	private DateFormat dater = new SimpleDateFormat("MM/dd/yyyy");
+	private final DateTimeFormatter dater = DateTimeFormat.forPattern("MM/dd/yyyy");
 
 	/**
 	 * use this method to create a stub for a curation.  Dates are outuput in MM/dd/yyyy format.
@@ -315,7 +314,7 @@ public final class CurationHandler {
 		result.setPathToResult(toStubify.getCurationFile() != null ? toStubify.getCurationFile().getAbsolutePath() : "");
 
 		if (toStubify.getRunDate() != null) {
-			result.setLastRunDate(dater.format(toStubify.getRunDate()));
+			result.setLastRunDate(dater.print(toStubify.getRunDate()));
 		}
 
 		result.setNotes(toStubify.getNotes());

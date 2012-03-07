@@ -46,7 +46,7 @@ public class Change {
 	public String toString() {
 		return "Change{" +
 				"reason='" + reason + '\'' +
-				", date=" + date +
+				", date=" + date.toString() +
 				'}';
 	}
 

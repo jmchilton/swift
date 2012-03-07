@@ -9,9 +9,7 @@ import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl;
 import edu.mayo.mprc.fastadb.FastaDbDaoHibernate;
 import edu.mayo.mprc.fastadb.SingleDatabaseTranslator;
-import edu.mayo.mprc.searchdb.dao.Analysis;
-import edu.mayo.mprc.searchdb.dao.PeptideSpectrumMatch;
-import edu.mayo.mprc.searchdb.dao.SearchDbDaoHibernate;
+import edu.mayo.mprc.searchdb.dao.*;
 import edu.mayo.mprc.swift.db.SwiftDaoHibernate;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 import edu.mayo.mprc.swift.dbmapping.SearchRun;
@@ -23,18 +21,22 @@ import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Exercises the Search-db DAO.
@@ -51,6 +53,21 @@ public class TestSearchDbDao extends DaoTest {
 	private FastaDbDaoHibernate fastaDbDao;
 
 	private static final String SINGLE = "classpath:edu/mayo/mprc/searchdb/single.tsv";
+	private static final String TRIVIAL = "classpath:edu/mayo/mprc/searchdb/trivial.tsv";
+	private static final String TRIVIAL_NOTANDEM = "classpath:edu/mayo/mprc/searchdb/trivial_notandem.tsv";
+
+	/**
+	 * @return All reports to test.
+	 */
+	@DataProvider(name = "reports")
+	private Object[][] listReports() {
+		return new Object[][]{
+				{TRIVIAL},
+				{TRIVIAL_NOTANDEM},
+				{SINGLE},
+		};
+	}
+
 
 	@BeforeMethod
 	public void setup() {
@@ -78,7 +95,7 @@ public class TestSearchDbDao extends DaoTest {
 		unimodDao.begin();
 		MockUnimodDao mockUnimodDao = new MockUnimodDao();
 		unimod = mockUnimodDao.load();
-		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new Date()));
+		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new DateTime()));
 		unimodDao.commit();
 	}
 
@@ -95,7 +112,7 @@ public class TestSearchDbDao extends DaoTest {
 
 		searchDbDao.begin();
 
-		final Analysis analysis = loadAnalysis(new Date());
+		final Analysis analysis = loadAnalysis(new DateTime(), SINGLE, saveNewReportData());
 
 		getDatabasePlaceholder().getSession().flush();
 
@@ -119,64 +136,103 @@ public class TestSearchDbDao extends DaoTest {
 		searchDbDao.commit();
 	}
 
-	private Analysis loadAnalysis(Date now) {
-		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
+	private ReportData saveNewReportData() {
+		SearchRun searchRun = swiftDao.fillSearchRun(null);
+		return swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
+	}
+
+	private Analysis loadAnalysis(final DateTime now, final String reportToLoad, ReportData reportData) {
+		final Reader reader = ResourceUtilities.getReader(reportToLoad, TestScaffoldSpectraSummarizer.class);
 
 		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
 				new SingleDatabaseTranslator(fastaDbDao, curationDao),
 				new DummyMassSpecDataExtractor(now));
-		summarizer.load(reader, SINGLE, "3", null);
+		summarizer.load(reader, reportToLoad, "3", null);
 		final Analysis analysis = summarizer.getAnalysis();
-
-		SearchRun searchRun = swiftDao.fillSearchRun(null);
-		ReportData reportData = swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
 
 		searchDbDao.addAnalysis(analysis, reportData);
 		return analysis;
 	}
 
 	/**
+	 * Memorizes how many rows were there for a particular set of classes.
+	 */
+	private class ClassCounts {
+		private HashMap<Class<?>, Long> counts = new HashMap<Class<?>, Long>(10);
+
+		public void add(Class<?> clazz) {
+			final long count = searchDbDao.rowCount(clazz);
+			counts.put(clazz, count);
+		}
+
+		public void assertSame(ClassCounts other) {
+			for (Map.Entry<Class<?>, Long> entry : this.counts.entrySet()) {
+				Long otherCount = other.counts.get(entry.getKey());
+				Assert.assertEquals(entry.getValue(), otherCount, "The count of [" + entry.getKey().getSimpleName() + "] should not change.");
+			}
+		}
+	}
+
+	/**
+	 * @return Loaded counts of all fields that should be idempotent (saving twice will not increase their amount).
+	 */
+	private ClassCounts countIdempotentClasses() {
+		final ClassCounts counts = new ClassCounts();
+		counts.add(Analysis.class);
+		counts.add(BiologicalSample.class);
+		counts.add(BiologicalSampleList.class);
+		counts.add(IdentifiedPeptide.class);
+		counts.add(LocalizedModification.class);
+		counts.add(LocalizedModList.class);
+		counts.add(PeptideSpectrumMatch.class);
+		counts.add(ProteinGroup.class);
+		counts.add(ProteinGroupList.class);
+		counts.add(ProteinSequenceList.class);
+		counts.add(PsmList.class);
+		counts.add(SearchResult.class);
+		counts.add(SearchResultList.class);
+		counts.add(TandemMassSpectrometrySample.class);
+		return counts;
+	}
+
+	/**
 	 * Make sure that if we save the same thing twice, the database stays unchanged.
 	 */
-	@Test
-	public void saveShouldBeIdempotent() throws DatabaseUnitException, SQLException, IOException {
+	@Test(dataProvider = "reports")
+	public void saveShouldBeIdempotent(String report) throws DatabaseUnitException, SQLException, IOException {
 		loadUnimod();
 		loadScaffoldUnimod();
 		loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
 
-		Date now = new Date();
+		DateTime now = new DateTime();
+		searchDbDao.begin();
+		final ReportData reportData = saveNewReportData();
+		searchDbDao.commit();
 
 		searchDbDao.begin();
-		final Analysis analysis = loadAnalysis(now);
+		final Analysis analysis = loadAnalysis(now, report, reportData);
 		getDatabasePlaceholder().getSession().flush();
 		searchDbDao.commit();
 
 		searchDbDao.begin();
-		final long psm1 = searchDbDao.rowCount(PeptideSpectrumMatch.class);
-		DatabaseConnection databaseConnection = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
-		FlatXmlDataSet.write(databaseConnection.createDataSet(), new FileOutputStream("/Users/m044910/database1.xml", false));
+		final ClassCounts classCounts = countIdempotentClasses();
 		searchDbDao.commit();
 
 		searchDbDao.begin();
-		final Analysis analysis2 = loadAnalysis(now);
+		final Analysis analysis2 = loadAnalysis(now, report, reportData);
 		getDatabasePlaceholder().getSession().flush();
 		searchDbDao.commit();
 
 		searchDbDao.begin();
-		DatabaseConnection databaseConnection2 = new DatabaseConnection(getDatabasePlaceholder().getSession().connection());
-		FlatXmlDataSet.write(databaseConnection2.createDataSet(), new FileOutputStream("/Users/m044910/database2.xml", false));
-		searchDbDao.commit();
-
-		searchDbDao.begin();
-		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("K1C10_HUMAN");
-		Assert.assertEquals(searchRuns.size(), 2, "Must find two searches");
+		final List<ReportData> searchRuns = searchDbDao.getSearchesForAccessionNumber("TERA_BOVIN");
+		Assert.assertEquals(searchRuns.size(), 1, "Must find single search");
 		Assert.assertTrue(null != searchRuns.get(0), "Must return correct type");
-		final long psm2 = searchDbDao.rowCount(PeptideSpectrumMatch.class);
+		final ClassCounts classCounts2 = countIdempotentClasses();
+		Assert.assertNotSame(analysis, analysis2, "Analysis differs because it points to a different report");
 		searchDbDao.commit();
 
-		Assert.assertEquals(psm2, psm1, "The oeptide spectrum match count has to stay the same");
+		classCounts.assertSame(classCounts2);
 	}
-
 
 	private Curation loadFasta(String resource, String shortName) {
 		File file = null;

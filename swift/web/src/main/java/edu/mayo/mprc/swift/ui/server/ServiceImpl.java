@@ -32,6 +32,7 @@ import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
 import edu.mayo.mprc.workspace.User;
 import edu.mayo.mprc.workspace.WorkspaceDao;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -383,7 +384,7 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 			if (!permanent) {
 				ret = cache.installTemporary(toCopy);
 			} else {
-				final Change change = new Change("Saving parameter set " + newName, new Date());
+				final Change change = new Change("Saving parameter set " + newName, new DateTime());
 
 				// Delete if already exists
 				SavedSearchEngineParameters params = getParamsDao().findSavedSearchEngineParameters(newName);
@@ -527,7 +528,7 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 			getParamsDao().begin();
 			final SavedSearchEngineParameters savedSearchEngineParameters = getParamsDao().findSavedSearchEngineParameters(paramSet.getName());
 			if (savedSearchEngineParameters != null) {
-				getParamsDao().deleteSavedSearchEngineParameters(savedSearchEngineParameters, new Change("Deleting saved search engine parameters [" + savedSearchEngineParameters.getName() + "] with id " + savedSearchEngineParameters.getId(), new Date()));
+				getParamsDao().deleteSavedSearchEngineParameters(savedSearchEngineParameters, new Change("Deleting saved search engine parameters [" + savedSearchEngineParameters.getName() + "] with id " + savedSearchEngineParameters.getId(), new DateTime()));
 				ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 				cache.removeFromCache(paramSet);
 			}

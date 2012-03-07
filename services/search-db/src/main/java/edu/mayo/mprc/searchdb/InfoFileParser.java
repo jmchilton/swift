@@ -3,6 +3,7 @@ package edu.mayo.mprc.searchdb;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.io.TsvStreamReader;
 import edu.mayo.mprc.utilities.FileUtilities;
+import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.Reader;
@@ -44,7 +45,7 @@ public class InfoFileParser {
 				final String value = values.size() > 1 ? values.get(1).trim() : "";
 				if ("Creation Date".equals(key)) {
 					try {
-						data.setStartTime(DATE_FORMAT.parse(value));
+						data.setStartTime(new DateTime(DATE_FORMAT.parse(value)));
 					} catch (ParseException e) {
 						throw new MprcException("Malformed .RAW file start date: " + value, e);
 					}
