@@ -1,6 +1,6 @@
 package edu.mayo.mprc.database;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * Reason for a change.
@@ -8,12 +8,12 @@ import java.util.Date;
 public class Change {
 	private Integer id;
 	private String reason;
-	private Date date;
+	private DateTime date;
 
 	public Change() {
 	}
 
-	public Change(String reason, Date date) {
+	public Change(String reason, DateTime date) {
 		this.reason = reason;
 		this.date = date;
 	}
@@ -34,11 +34,11 @@ public class Change {
 		this.reason = reason;
 	}
 
-	public Date getDate() {
+	public DateTime getDate() {
 		return date;
 	}
 
-	void setDate(Date date) {
+	void setDate(DateTime date) {
 		this.date = date;
 	}
 
@@ -61,7 +61,7 @@ public class Change {
 
 		Change change = (Change) obj;
 
-		if (getDate() != null ? getDate().getTime() != (change.getDate() == null ? 0 : change.getDate().getTime()) : change.getDate() != null) {
+		if (getDate() != null ? !getDate().equals(change.getDate()) : change.getDate() != null) {
 			return false;
 		}
 		if (getId() != null ? !getId().equals(change.getId()) : change.getId() != null) {

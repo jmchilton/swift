@@ -252,7 +252,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	}
 
 	@Override
-	public SourceDatabaseArchive findSourceDatabaseInExistence(final String url, final Date fileCreationDate) {
+	public SourceDatabaseArchive findSourceDatabaseInExistence(final String url, final DateTime fileCreationDate) {
 		List<SourceDatabaseArchive> archiveList = null;
 
 		Session session = getSession();
@@ -260,8 +260,8 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 			Criteria criteria = session.createCriteria(SourceDatabaseArchive.class);
 			criteria.add(Restrictions.eq("sourceURL", url));
 			// serverDate has to match with one second precision - never test timestamp for equality
-			criteria.add(Restrictions.ge("serverDate", new Date(fileCreationDate.getTime() - 1000)));
-			criteria.add(Restrictions.lt("serverDate", new Date(fileCreationDate.getTime() + 1000)));
+			criteria.add(Restrictions.ge("serverDate", fileCreationDate.minusSeconds(1)));
+			criteria.add(Restrictions.lt("serverDate", fileCreationDate.plusSeconds(1)));
 			archiveList = (List<SourceDatabaseArchive>) criteria.list();
 		} catch (Exception t) {
 			throw new MprcException("Cannot find source database for url: " + url + " and creation date " + fileCreationDate, t);

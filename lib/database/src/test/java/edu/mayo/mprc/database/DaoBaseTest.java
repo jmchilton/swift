@@ -2,6 +2,7 @@ package edu.mayo.mprc.database;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.testng.Assert;

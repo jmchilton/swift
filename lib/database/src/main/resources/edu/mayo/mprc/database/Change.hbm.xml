@@ -7,6 +7,6 @@
             <generator class="native"/>
         </id>
         <property name="reason" type="text" column="reason"/>
-        <property name="date" type="timestamp" column="change_date"/>
+        <property name="date" type="org.joda.time.contrib.hibernate.PersistentDateTime" column="change_date"/>
     </class>
 </hibernate-mapping>
