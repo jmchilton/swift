@@ -2,8 +2,8 @@ package edu.mayo.mprc.database;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 
 import java.io.File;
@@ -18,103 +18,103 @@ import java.sql.Types;
  */
 public final class FileType implements UserType {
 
-    private static FileTokenToDatabaseTranslator translator;
+	private static FileTokenToDatabaseTranslator translator;
 
-    public FileType() {
-    }
+	public FileType() {
+	}
 
-    public static void initialize(FileTokenToDatabaseTranslator translator) {
-        FileType.translator = translator;
-    }
+	public static void initialize(FileTokenToDatabaseTranslator translator) {
+		FileType.translator = translator;
+	}
 
-    public int[] sqlTypes() {
-        return new int[]{Hibernate.STRING.sqlType()};
-    }
+	public int[] sqlTypes() {
+		return new int[]{StandardBasicTypes.STRING.sqlType()};
+	}
 
-    public Class returnedClass() {
-        return File.class;
-    }
+	public Class returnedClass() {
+		return File.class;
+	}
 
-    public boolean equals(Object o, Object o1) throws HibernateException {
-        if (o == o1) {
-            return true;
-        }
-        if (o == null || o1 == null) {
-            return false;
-        }
-        return o.equals(o1);
-    }
+	public boolean equals(Object o, Object o1) throws HibernateException {
+		if (o == o1) {
+			return true;
+		}
+		if (o == null || o1 == null) {
+			return false;
+		}
+		return o.equals(o1);
+	}
 
-    public int hashCode(Object o) throws HibernateException {
-        return o.hashCode();
-    }
+	public int hashCode(Object o) throws HibernateException {
+		return o.hashCode();
+	}
 
-    public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner) throws HibernateException, SQLException {
-        String uriString = resultSet.getString(names[0]);
+	public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner) throws HibernateException, SQLException {
+		String uriString = resultSet.getString(names[0]);
 
-        if (resultSet.wasNull()) {
-            return null;
-        }
-        if (uriString == null) {
-            return null;
-        }
+		if (resultSet.wasNull()) {
+			return null;
+		}
+		if (uriString == null) {
+			return null;
+		}
 
-        try {
-            return assemble(uriString, null);
-        } catch (Exception t) {
-            throw new HibernateException(t);
-        }
-    }
+		try {
+			return assemble(uriString, null);
+		} catch (Exception t) {
+			throw new HibernateException(t);
+		}
+	}
 
-    public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index) throws HibernateException, SQLException {
-        if (null == value) {
-            preparedStatement.setNull(index, Types.VARCHAR);
-        } else {
-            checkTranslatorNotNull();
-            preparedStatement.setString(index, translator.fileToDatabaseToken((File) value));
-        }
-    }
+	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index) throws HibernateException, SQLException {
+		if (null == value) {
+			preparedStatement.setNull(index, Types.VARCHAR);
+		} else {
+			checkTranslatorNotNull();
+			preparedStatement.setString(index, translator.fileToDatabaseToken((File) value));
+		}
+	}
 
-    private void checkTranslatorNotNull() {
-        if (translator == null) {
-            throw new MprcException(this.getClass().getName() + " was not initialized with a translator for file tokens.\nUse for instance " + DummyFileTokenTranslator.class.getName() + " before you start storing file paths to database.");
-        }
-    }
+	private void checkTranslatorNotNull() {
+		if (translator == null) {
+			throw new MprcException(this.getClass().getName() + " was not initialized with a translator for file tokens.\nUse for instance " + DummyFileTokenTranslator.class.getName() + " before you start storing file paths to database.");
+		}
+	}
 
-    public Object deepCopy(Object o) throws HibernateException {
-        if (o == null) {
-            return null;
-        }
-        return new File(((File) o).getAbsoluteFile().toURI());
-    }
+	public Object deepCopy(Object o) throws HibernateException {
+		if (o == null) {
+			return null;
+		}
+		return new File(((File) o).getAbsoluteFile().toURI());
+	}
 
-    public boolean isMutable() {
-        return false;
-    }
+	public boolean isMutable() {
+		return false;
+	}
 
-    public Serializable disassemble(Object o) throws HibernateException {
-        try {
-            checkTranslatorNotNull();
-            return translator.fileToDatabaseToken((File) o);
-        } catch (Exception t) {
-            throw new HibernateException(t);
-        }
-    }
+	public Serializable disassemble(Object o) throws HibernateException {
+		try {
+			checkTranslatorNotNull();
+			return translator.fileToDatabaseToken((File) o);
+		} catch (Exception t) {
+			throw new HibernateException(t);
+		}
+	}
 
-    public Object assemble(Serializable serializable, Object o) throws HibernateException {
-        try {
-            if (!(serializable instanceof String)) {
-                ExceptionUtilities.throwCastException(serializable, String.class);
-                return null;
-            }
-            checkTranslatorNotNull();
-            return translator.databaseTokenToFile((String) serializable);
-        } catch (Exception t) {
-            throw new HibernateException(t);
-        }
-    }
+	public Object assemble(Serializable serializable, Object o) throws HibernateException {
+		try {
+			if (!(serializable instanceof String)) {
+				ExceptionUtilities.throwCastException(serializable, String.class);
+				return null;
+			}
+			checkTranslatorNotNull();
+			return translator.databaseTokenToFile((String) serializable);
+		} catch (Exception t) {
+			throw new HibernateException(t);
+		}
+	}
 
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
-        return original;
-    }
+	public Object replace(Object original, Object target, Object owner) throws HibernateException {
+		return original;
+	}
 }
