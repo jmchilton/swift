@@ -69,7 +69,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	private File getDeployableFile(File curationFile) {
 		File toDeploy = getDeployedFastaFile(curationFile);
 
-		FileUtilities.ensureFolderExists(curationFile.getParentFile());
+		FileUtilities.ensureFolderExists(toDeploy.getParentFile());
 
 		if (!toDeploy.exists()) {
 			FileUtilities.copyFile(curationFile, toDeploy, /*overwrite*/true);
