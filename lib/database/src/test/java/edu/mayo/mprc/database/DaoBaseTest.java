@@ -149,10 +149,10 @@ public final class DaoBaseTest extends DaoTest {
 
 	@Test
 	public void shouldSaveDateTimes() {
-		TestDate d1 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30), new DateTime(2010, 10, 30, 13, 45, 59));
+		TestDate d1 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30, 0), new DateTime(2010, 10, 30, 13, 45, 59, 0));
 		d1 = base.save(d1, testDateEqualityCriteria(d1), false);
 		nextTransaction();
-		TestDate d2 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30), new DateTime(2010, 10, 30, 13, 45, 59));
+		TestDate d2 = new TestDate(new DateTime(2012, 2, 29, 10, 20, 30, 0), new DateTime(2010, 10, 30, 13, 45, 59, 0));
 		d2 = base.save(d2, testDateEqualityCriteria(d2), false);
 		Assert.assertEquals(d2.getId(), d1.getId(), "Must be the same object");
 	}

@@ -60,7 +60,7 @@ public class TestScaffoldSpectraSummarizer {
 
 			summarizer.load(reader, SINGLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
-			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 16, 0, 0), "Report date");
+			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 16, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
 
 			Assert.assertEquals(analysis.getBiologicalSamples().size(), 1, "Biological samples");
@@ -117,7 +117,7 @@ public class TestScaffoldSpectraSummarizer {
 			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 			summarizer.load(reader, MULTIPLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
-			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 28, 0, 0), "Report date");
+			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 28, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
 
 			Assert.assertEquals(analysis.getBiologicalSamples().size(), 4, "Biological samples");
@@ -138,7 +138,7 @@ public class TestScaffoldSpectraSummarizer {
 			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 			summarizer.load(reader, LARGE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
-			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 10, 18, 0, 0), "Report date");
+			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 10, 18, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.2.0", "Scaffold version");
 
 			Assert.assertEquals(analysis.getBiologicalSamples().size(), 9, "Biological samples");
