@@ -66,11 +66,10 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	 * @param curationFile the file we want to make a deployable file from.
 	 * @return the file that can be used for indexing or may have already been indexed.
 	 */
-	protected File getDeployableFile(File curationFile) {
-		File deploymentFolder = getCurrentDeploymentFolder(curationFile);
-		FileUtilities.ensureFolderExists(deploymentFolder);
+	private File getDeployableFile(File curationFile) {
+		File toDeploy = getDeployedFastaFile(curationFile);
 
-		File toDeploy = new File(deploymentFolder, curationFile.getName().replace("FASTA", "fasta"));
+		FileUtilities.ensureFolderExists(curationFile.getParentFile());
 
 		if (!toDeploy.exists()) {
 			FileUtilities.copyFile(curationFile, toDeploy, /*overwrite*/true);
@@ -79,8 +78,18 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		return toDeploy;
 	}
 
-	private File getCurrentDeploymentFolder(File curationFile) {
-		return new File(getConfigDeploymentFolder(), FileUtilities.stripExtension(curationFile.getName()));
+	/**
+	 * Provide deployed database name for given input database.
+	 *
+	 * @param curationFile Input .fasta file that was/is to be deployed.
+	 * @return Where should the fasta be deployed to
+	 */
+	private File getDeployedFastaFile(File curationFile) {
+		File deploymentFolder = new File(
+				getConfigDeploymentFolder(),
+				FileUtilities.stripExtension(curationFile.getName()));
+
+		return new File(deploymentFolder, curationFile.getName().replace("FASTA", "fasta"));
 	}
 
 	/**
@@ -93,7 +102,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	 * @param deployableFile
 	 * @return a LockFile that must be deleted once deployment is complete.  If it was already deployed then null is returned.
 	 */
-	protected File checkForPreviousDeployment(final File deployableFile) {
+	private File checkForPreviousDeployment(final File deployableFile) {
 
 		//if we see a lock file already in place then we will wait for up to 5 minutes for an apparent already
 		//running deployment to complete before checking.
@@ -193,7 +202,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	@Override
 	public DeploymentResult performUndeployment(DeploymentRequest request) {
 		DeploymentResult reportResult = new DeploymentResult();
-		File deployedFile = getDeployableFile(request.getCurationFile());
+		File deployedFile = getDeployedFastaFile(request.getCurationFile());
 
 		this.cleanUpDeployedFiles(deployedFile, reportResult);
 
