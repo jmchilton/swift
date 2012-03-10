@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
+import edu.mayo.mprc.utilities.MprcDoubles;
 
 /**
  * Maps the following columns from the Scaffold spectrum report:
@@ -17,6 +18,7 @@ import edu.mayo.mprc.database.PersistableBase;
  * @author Roman Zenka
  */
 public class ProteinGroup extends PersistableBase {
+	public static final double PERCENT_TOLERANCE = 0.00001;
 	/**
 	 * List of protein sequences belonging to the group.
 	 */
@@ -157,13 +159,13 @@ public class ProteinGroup extends PersistableBase {
 		if (getNumberOfUniqueSpectra() != that.getNumberOfUniqueSpectra()) {
 			return false;
 		}
-		if (Double.compare(that.getPercentageOfTotalSpectra(), getPercentageOfTotalSpectra()) != 0) {
+		if (!MprcDoubles.within(that.getPercentageOfTotalSpectra(), getPercentageOfTotalSpectra(), PERCENT_TOLERANCE)) {
 			return false;
 		}
-		if (Double.compare(that.getPercentageSequenceCoverage(), getPercentageSequenceCoverage()) != 0) {
+		if (!MprcDoubles.within(that.getPercentageSequenceCoverage(), getPercentageSequenceCoverage(), PERCENT_TOLERANCE)) {
 			return false;
 		}
-		if (Double.compare(that.getProteinIdentificationProbability(), getProteinIdentificationProbability()) != 0) {
+		if (!MprcDoubles.within(that.getProteinIdentificationProbability(), getProteinIdentificationProbability(), PERCENT_TOLERANCE)) {
 			return false;
 		}
 		if (getPeptideSpectrumMatches() != null ? !getPeptideSpectrumMatches().equals(that.getPeptideSpectrumMatches()) : that.getPeptideSpectrumMatches() != null) {

@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.PersistableBase;
+import edu.mayo.mprc.utilities.MprcDoubles;
 
 /**
  * Information about how many times was a specific peptide matched to a spectrum.
@@ -34,6 +35,7 @@ import edu.mayo.mprc.database.PersistableBase;
  * @author Roman Zenka
  */
 public class PeptideSpectrumMatch extends PersistableBase {
+	public static final double PERCENT_TOLERANCE = 0.00001;
 	/**
 	 * Peptide that is identified by this PSM. This means peptide sequence + modifications.
 	 */
@@ -153,7 +155,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 
 		PeptideSpectrumMatch that = (PeptideSpectrumMatch) o;
 
-		if (Double.compare(that.getBestPeptideIdentificationProbability(), getBestPeptideIdentificationProbability()) != 0) {
+		if (!MprcDoubles.within(that.getBestPeptideIdentificationProbability(), getBestPeptideIdentificationProbability(), PERCENT_TOLERANCE)) {
 			return false;
 		}
 		if (getNextAminoAcid() != that.getNextAminoAcid()) {
