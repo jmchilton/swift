@@ -319,6 +319,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return Restrictions.conjunction()
 				.add(nullSafeEq("scaffoldVersion", analysis.getScaffoldVersion()))
 				.add(nullSafeEq("analysisDate", analysis.getAnalysisDate()))
+				.add(nullSafeEq("reportData.id", analysis.getReportData().getId()))
 				.add(associationEq("biologicalSamples", analysis.getBiologicalSamples()));
 	}
 
