@@ -37,7 +37,7 @@ public final class MSMSEvalTest {
 		if (FileUtilities.isWindowsPlatform()) {
 			return new File("c:\\svn\\src\\java\\swift\\install\\swift\\bin\\msmseval\\win\\msmsEval.exe");
 		} else {
-			return new File("/mnt/raid1/software/swift/swift_2.5.6/bin/msmseval/linux_x86_64/msmsEval");
+			return new File("/mnt/raid1/software/swift/prod/bin/msmseval/linux_x86_64/msmsEval");
 		}
 	}
 
