@@ -753,9 +753,7 @@ public final class SearchRunner implements Runnable {
 
 			// Depend on the .mgf to be done and on the database deployment
 			search.addDependency(mgfOutput);
-			// Sequest searches do NOT need the database deployed. They can start right away, they will just run
-			// much slower than if the deployment was performed.
-			if (deploymentResult instanceof Task && !sequest(engine)) {
+			if (deploymentResult instanceof Task) {
 				search.addDependency((Task) deploymentResult);
 			}
 			engineSearches.put(searchKey, search);
