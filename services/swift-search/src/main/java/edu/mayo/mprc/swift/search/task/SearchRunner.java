@@ -350,14 +350,14 @@ public final class SearchRunner implements Runnable {
 
 		SearchEngine scaffold = getScaffoldEngine();
 		DatabaseDeployment scaffoldDeployment = null;
-		if (scaffold != null && inputFile.isSearch("SCAFFOLD")) {
+		if (scaffold != null && searchWithScaffold2(inputFile)) {
 			scaffoldDeployment =
 					addDatabaseDeployment(scaffold, null/*scaffold has no param file*/,
 							searchDefinition.getSearchParameters().getDatabase());
 		}
 		SearchEngine scaffold3 = getScaffold3Engine();
 		DatabaseDeployment scaffold3Deployment = null;
-		if (scaffold3 != null && inputFile.isSearch("SCAFFOLD3")) {
+		if (scaffold3 != null && searchWithScaffold3(inputFile)) {
 			scaffold3Deployment =
 					addDatabaseDeployment(scaffold3, null/*scaffold has no param file*/,
 							searchDefinition.getSearchParameters().getDatabase());
@@ -374,15 +374,15 @@ public final class SearchRunner implements Runnable {
 				File paramFile = getParamFile(engine);
 
 				DatabaseDeploymentResult deploymentResult = null;
-				// Sometimes the database deployment is not needed for a particular tool.
-				if ("SEQUEST".equalsIgnoreCase(engine.getCode()) && noSequestDeployment()) {
+				// Sequest deployment is counter-productive for particular input fasta file
+				if (sequest(engine) && noSequestDeployment()) {
 					deploymentResult = new NoSequestDeploymentResult(curationDao.findCuration(searchDefinition.getSearchParameters().getDatabase().getShortName()).getCurationFile());
 				} else {
 					deploymentResult = addDatabaseDeployment(engine, paramFile, searchDefinition.getSearchParameters().getDatabase());
 				}
 				File outputFolder = getOutputFolderForSearchEngine(engine);
 				EngineSearchTask search = addEngineSearch(engine, paramFile, inputFile, outputFolder, mgfOutput, deploymentResult, publicSearchFiles);
-				if (inputFile.isSearch("SCAFFOLD")) {
+				if (searchWithScaffold2(inputFile)) {
 					if (scaffoldDeployment == null) {
 						throw new MprcException("Scaffold search submitted without having Scaffold service enabled.");
 					}
@@ -398,7 +398,7 @@ public final class SearchRunner implements Runnable {
 						addQaTask(inputFile, scaffoldTask, mgfOutput);
 					}
 				}
-				if (inputFile.isSearch("SCAFFOLD3")) {
+				if (searchWithScaffold3(inputFile)) {
 					if (scaffold3Deployment == null) {
 						throw new MprcException("Scaffold search submitted without having Scaffold 3 service enabled.");
 					}
@@ -423,6 +423,18 @@ public final class SearchRunner implements Runnable {
 			RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
 			addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
 		}
+	}
+
+	private boolean searchWithScaffold2(FileSearch inputFile) {
+		return inputFile.isSearch("SCAFFOLD");
+	}
+
+	private boolean searchWithScaffold3(FileSearch inputFile) {
+		return inputFile.isSearch("SCAFFOLD3");
+	}
+
+	private boolean sequest(SearchEngine engine) {
+		return "SEQUEST".equalsIgnoreCase(engine.getCode());
 	}
 
 	private boolean isScaffoldEngine(SearchEngine engine) {
@@ -741,7 +753,9 @@ public final class SearchRunner implements Runnable {
 
 			// Depend on the .mgf to be done and on the database deployment
 			search.addDependency(mgfOutput);
-			if (deploymentResult instanceof Task) {
+			// Sequest searches do NOT need the database deployed. They can start right away, they will just run
+			// much slower than if the deployment was performed.
+			if (deploymentResult instanceof Task && !sequest(engine)) {
 				search.addDependency((Task) deploymentResult);
 			}
 			engineSearches.put(searchKey, search);

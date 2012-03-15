@@ -85,7 +85,7 @@ final class DatabaseDeployment extends AsyncTaskBase implements DatabaseDeployme
 
 	//this may not be an hdrFile but actually a fasta file
 
-	public synchronized File getFileToDeploy() {
+	public synchronized File getSequestHdrFile() {
 		return hdrFile;
 	}
 

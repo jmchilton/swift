@@ -21,9 +21,9 @@ interface DatabaseDeploymentResult {
 	String getShortDbName();
 
 	/**
-	 * @return Sequest .hdr file, or (in case there was no Sequest deployment done) a path to the FASTA file.
+	 * @return Sequest .hdr file, or (in case there was no Sequest deployment done) a null.
 	 */
-	File getFileToDeploy();
+	File getSequestHdrFile();
 
 	/**
 	 * In some cases you may not want to deploy the fasta file but here is a handle to it.

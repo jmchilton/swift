@@ -20,10 +20,10 @@ final class NoSequestDeploymentResult implements DatabaseDeploymentResult {
 	}
 
 	/**
-	 * @return Sequest .hdr file, or (in case there was no Sequest deployment done) a path to the FASTA file.
+	 * @return We did not do deployment, so null is returned.
 	 */
-	public File getFileToDeploy() {
-		return getFastaFile();
+	public File getSequestHdrFile() {
+		return null;
 	}
 
 	/**

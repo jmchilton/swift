@@ -84,7 +84,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 					outputFile,
 					paramsFile,
 					mgfOutput.getFilteredMgfFile(),
-					deploymentResult.getFileToDeploy(),
+					getSequestDatabase(),
 					publicSearchFiles,
 					this.getFullId(),
 					isFromScratch());
@@ -129,6 +129,13 @@ final class EngineSearchTask extends AsyncTaskBase {
 		return workPacket;
 	}
 
+	/**
+	 * @return Either Sequest .hdr file (when database got indexed) or the .fasta file (no deployment done).
+	 */
+	private File getSequestDatabase() {
+		return deploymentResult.getSequestHdrFile() == null ? deploymentResult.getFastaFile() : deploymentResult.getSequestHdrFile();
+	}
+
 	private void updateDescription(String mascotResultLink) {
 		setDescription(engine.getFriendlyName() + " search: "
 				+ fileTokenFactory.fileToTaggedDatabaseToken(mgfOutput.getFilteredMgfFile())
@@ -141,7 +148,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 		if ("MASCOT".equalsIgnoreCase(engine.getCode())) {
 			return deploymentResult.getShortDbName();
 		} else if ("SEQUEST".equalsIgnoreCase(engine.getCode())) {
-			return deploymentResult.getFileToDeploy().getAbsolutePath();
+			return getSequestDatabase().getAbsolutePath();
 		} else if ("TANDEM".equalsIgnoreCase(engine.getCode())) {
 			return deploymentResult.getShortDbName();
 		} else if ("OMSSA".equalsIgnoreCase(engine.getCode())) {
