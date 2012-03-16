@@ -13,6 +13,11 @@
     font-size: 10px;
 }
 
+#db-curator .db-curator-properties {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
 #db-curator .shell-header-title {
     margin-left: 10px;
     text-align: left;

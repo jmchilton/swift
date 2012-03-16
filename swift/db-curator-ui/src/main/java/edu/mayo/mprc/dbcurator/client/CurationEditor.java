@@ -57,6 +57,7 @@ public final class CurationEditor extends Composite {
 	private TextArea textareaLog = new TextArea();
 	private TextBox txtShortName = new TextBox();
 	private TextBox txtTitle = new TextBox();
+	private TextArea txtNotes = new TextArea();
 	private TextBox txtDecoy = new TextBox();
 	private TextBox txtEmail = new TextBox();
 	private HTML htmlStepSelectionTitle = new HTML();
@@ -78,12 +79,12 @@ public final class CurationEditor extends Composite {
 	private CommonDataRequesterAsync commonDataRequester;
 
 	/**
-	 * this is an alternatie constructor that will load a given _curation and call a callback when the user clicks
+	 * this is an alternatie constructor that will load a given curation and call a callback when the user clicks
 	 * the close button.  This is used for "embedded mode" meaning that another GWT application can call and be notified
 	 * when certain events happen.
 	 *
-	 * @param curationToDisplay the id of the _curation you wanted loaded
-	 * @param closeCallback     a method we will call when the user clicks close.  As part of the callback will be the id of the currently open _curation.
+	 * @param curationToDisplay the id of the curation you wanted loaded
+	 * @param closeCallback     a method we will call when the user clicks close.  As part of the callback will be the id of the currently open curation.
 	 */
 	public CurationEditor(Integer curationToDisplay, String currentUserEmail, Map<String, String> userEmailInitialPairs, EditorCloseCallback closeCallback) {
 		this.commonDataRequester = (CommonDataRequesterAsync) GWT.create(CommonDataRequester.class);
@@ -101,7 +102,7 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * retrieves which _curation should be displayed from the server.
+	 * retrieves which curation should be displayed from the server.
 	 */
 	private void retreiveCuration(Integer requestedCurationID) {
 		messageManager.clearMessages();
@@ -126,11 +127,11 @@ public final class CurationEditor extends Composite {
 		Window.addWindowCloseListener(closeHandler = new WindowCloseListener() {
 
 			public String onWindowClosing() {
-				//if the _curation has not been run then make sure they are given a chance to abort.
+				//if the curation has not been run then make sure they are given a chance to abort.
 				if (curation.hasBeenRun()) {
 					return null; //don't prompt just close
 				} else {
-					return "In order to use this database its _curation must be run.\n" +
+					return "In order to use this database its curation must be run.\n" +
 							"To do so, press cancel below and then click run.";
 				}
 			}
@@ -142,7 +143,7 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * call this method to copy the displayed _curation for all except for the id and short name to allow further editing
+	 * call this method to copy the displayed curation for all except for the id and short name to allow further editing
 	 */
 	private void copyCuration() {
 		messageManager.clearMessages();
@@ -190,6 +191,7 @@ public final class CurationEditor extends Composite {
 		curation = new CurationStub();
 		curation.setShortName(txtShortName.getText());
 		curation.setTitle(txtTitle.getText());
+		curation.setNotes(txtNotes.getText());
 		curation.setDecoyRegex(txtDecoy.getText());
 		curation.setOwnerEmail(currentUserEmail);
 		messageManager.clearMessages();
@@ -244,11 +246,7 @@ public final class CurationEditor extends Composite {
 	private Panel getStepSelectionPanel() {
 		controlPanel = new VerticalPanel();
 
-		//Panel recognition = new VerticalPanel();
 		HTML title = new HTML("<h1 id=\"appTitle\">FASTA Database Curation Tool</h1>");
-		//HTML mprc = new HTML("<h3 id=\"mprcRecognition\">Mayo Clinic Proteomics Research Center</h3>");
-		//recognition.add(title);
-		//recognition.add(mprc);
 		controlPanel.add(title);
 
 		lblShortNameError.setText("Short name ok");
@@ -256,11 +254,13 @@ public final class CurationEditor extends Composite {
 		lblShortNameError.addStyleName("warning-label-ok");
 		controlPanel.add(lblShortNameError);
 
-		final HorizontalPanel tempPanel1 = new HorizontalPanel();
+		final Grid propGrid = new Grid(5, 2);
+		propGrid.setStyleName("db-curator-properties");
+		controlPanel.add(propGrid);
+
 		HTML shortName = new HTML("Short name<sup><font color=\"red\">*</font></sup>:");
 
 		shortName.setTitle("A name for submitting to search engines");
-		tempPanel1.add(shortName);
 
 		txtShortName.setMaxLength(CurationValidation.SHORTNAME_MAX_LENGTH);
 		txtShortName.addKeyboardListener(new KeyboardListener() {
@@ -274,30 +274,32 @@ public final class CurationEditor extends Composite {
 			public void onKeyPress(Widget widget, char c, int i) {
 			}
 		});
-		tempPanel1.add(txtShortName);
+		propGrid.setWidget(0, 0, shortName);
+		propGrid.setWidget(0, 1, txtShortName);
 
-		controlPanel.add(tempPanel1);
-
-		final HorizontalPanel descriptionPanel = new HorizontalPanel();
 		final Label lblDescription = new Label("Description: ");
 		lblDescription.setTitle("A short description for this database to help you find it later");
-		descriptionPanel.add(lblDescription);
-		descriptionPanel.add(txtTitle);
-		txtTitle.setVisibleLength(20);
-		controlPanel.add(descriptionPanel);
+		txtTitle.setVisibleLength(60);
+		propGrid.setWidget(1, 0, lblDescription);
+		propGrid.setWidget(1, 1, txtTitle);
 
-		final HorizontalPanel decoyPanel = new HorizontalPanel();
+		final Label lblNote = new Label("Notes: ");
+		lblNote.setTitle("Notes about this database");
+
+		txtNotes.setVisibleLines(3);
+		txtNotes.setCharacterWidth(43);
+		propGrid.setWidget(2, 0, lblNote);
+		propGrid.setWidget(2, 1, txtNotes);
+
 		final Label lblDecoy = new Label("Decoy regex: ");
 		lblDecoy.setTitle("A Scaffold-style regular expression describing which accession numbers in the database correspond to decoys");
-		decoyPanel.add(lblDecoy);
-		decoyPanel.add(txtDecoy);
 		txtDecoy.setVisibleLength(20);
-		controlPanel.add(decoyPanel);
+		propGrid.setWidget(3, 0, lblDecoy);
+		propGrid.setWidget(3, 1, txtDecoy);
 
-		final HorizontalPanel emailPanel = new HorizontalPanel();
 		final Label lblEmail = new Label("User Initials: ");
 		lblEmail.setTitle("User that created the database");
-		txtEmail.setVisibleLength(25);
+		txtEmail.setVisibleLength(3);
 
 		if (userEmailInitialPairs != null) {
 			txtEmail.setEnabled(false);
@@ -305,9 +307,8 @@ public final class CurationEditor extends Composite {
 			txtEmail.setEnabled(true);
 		}
 
-		emailPanel.add(lblEmail);
-		emailPanel.add(txtEmail);
-		controlPanel.add(emailPanel);
+		propGrid.setWidget(4, 0, lblEmail);
+		propGrid.setWidget(4, 1, txtEmail);
 
 		lblResultFilePath.setStyleName("resultfilepath");
 		lblResultFilePath.addMouseListener(new MouseListener() {
@@ -407,7 +408,7 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * creates the list box that users will choose steps to add to the _curation
+	 * creates the list box that users will choose steps to add to the curation
 	 *
 	 * @return the step choice list
 	 */
@@ -487,6 +488,7 @@ public final class CurationEditor extends Composite {
 		}
 		txtShortName.setEnabled(true);
 		txtTitle.setEnabled(true);
+		txtNotes.setEnabled(true);
 		lstStepChoice.setVisible(!(curation.hasBeenRun()));
 		htmlStepSelectionTitle.setHTML("<b>Select a step to add.</b>");
 		cmdView.setVisible(curation.hasBeenRun());
@@ -494,7 +496,7 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * creates all of the command buttons for dealing with a _curation that will appear at the bottom of the screen
+	 * creates all of the command buttons for dealing with a curation that will appear at the bottom of the screen
 	 */
 	private Panel createCommandPanel() {
 		HorizontalPanel commandPanel = new HorizontalPanel();
@@ -527,7 +529,7 @@ public final class CurationEditor extends Composite {
 		cmdRun.setTitle("To run the Curation and generate a FASTA file.");
 		cmdRun.addClickListener(new ClickListener() {
 			public void onClick(Widget widget) {
-				//call the server and perform a validation of the _curation.  When the validation is complete then this CurationEditor
+				//call the server and perform a validation of the curation.  When the validation is complete then this CurationEditor
 				//will be notified and it will need to tell the StepPanelContainer and it will forward the message to the steps that they
 				//should check for any error messages.
 				CurationEditor.this.runCuration();
@@ -588,9 +590,9 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * runs the currently loaded _curation as a test meaning that no files or other residuals will be retained.  Only test
-	 * runs are allowed from the Editor.  The Browser will be used for actually running a _curation.  I want to avoid the
-	 * ability to run a _curation when the use just wants to test it since running will prohibit any future changes.
+	 * runs the currently loaded curation as a test meaning that no files or other residuals will be retained.  Only test
+	 * runs are allowed from the Editor.  The Browser will be used for actually running a curation.  I want to avoid the
+	 * ability to run a curation when the use just wants to test it since running will prohibit any future changes.
 	 */
 	public void runCuration() {
 		if (curationIsRunning) {
@@ -634,21 +636,22 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * perform an update of the _curation by going to the form and requesting the updated state of the form
+	 * perform an update of the curation by going to the form and requesting the updated state of the form
 	 */
 	private void updateCurationFromForm() {
 		curation.setShortName(txtShortName.getText());
 		curation.setTitle(txtTitle.getText());
+		curation.setNotes(txtNotes.getText());
 		curation.setDecoyRegex(txtDecoy.getText());
 		curation.setOwnerEmail(currentUserEmail);
 		curation.setSteps(stepContainer.getContainedSteps());
 	}
 
 	/**
-	 * this method will refresh the panel with the current state of the _curation that we are displaying
+	 * this method will refresh the panel with the current state of the curation that we are displaying
 	 */
 	private void refreshPanel() {
-		//loadPanel all of the widgets with the values of _curation
+		//loadPanel all of the widgets with the values of curation
 		if (curation.getId() == null) {
 			lblID.setText("not saved");
 		} else {
@@ -656,6 +659,7 @@ public final class CurationEditor extends Composite {
 		}
 		txtShortName.setText(curation.getShortName());
 		txtTitle.setText(curation.getTitle());
+		txtNotes.setText(curation.getNotes());
 		txtDecoy.setText(curation.getDecoyRegex());
 
 		if (userEmailInitialPairs != null) {
@@ -678,7 +682,7 @@ public final class CurationEditor extends Composite {
 	}
 
 	/**
-	 * updates the status of the _curation to reflect any changes on the server side as well as update
+	 * updates the status of the curation to reflect any changes on the server side as well as update
 	 * the server side to reflect
 	 */
 	private void syncCuration() {
@@ -709,7 +713,7 @@ public final class CurationEditor extends Composite {
 // -------------------------- INNER CLASSES --------------------------
 
 	/**
-	 * A callback to use when trying to retreive a _curation
+	 * A callback to use when trying to retreive a curation
 	 */
 	private class RetreivalCallback implements AsyncCallback<CurationStub> {
 
@@ -743,7 +747,7 @@ public final class CurationEditor extends Composite {
 
 		/**
 		 * This will wait for a CurationStub to come back from the server and then tall the CurationEditor to display the
-		 * returned _curation.  Then it will hide the waiting box.
+		 * returned curation.  Then it will hide the waiting box.
 		 * <p/>
 		 * {@inheritDoc}
 		 */
