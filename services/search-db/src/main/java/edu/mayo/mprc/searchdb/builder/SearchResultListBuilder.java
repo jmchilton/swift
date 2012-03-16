@@ -36,6 +36,7 @@ public class SearchResultListBuilder implements Builder<SearchResultList> {
 	 * it is initialized and added to the biological sample.
 	 *
 	 * @param msmsSampleName The name of the tandem mass spectrometry sample.
+	 *                       Warning, Scaffold tends to prefix this with Mudpit_ in not-well understood circumstances.
 	 * @return Current tandem mass spec search result object.
 	 */
 	public SearchResultBuilder getTandemMassSpecResult(String msmsSampleName) {
