@@ -67,7 +67,7 @@ public class MapMassSpecDataExtractor implements MassSpecDataExtractor {
 			return metaData;
 		}
 		if (msmsSampleName.startsWith(MUDPIT_PREFIX)) {
-			final RawFileMetaData mudpitMetaData = metaDataMap.get(msmsSampleName);
+			final RawFileMetaData mudpitMetaData = metaDataMap.get(msmsSampleName.substring(MUDPIT_PREFIX.length()));
 			if (mudpitMetaData != null) {
 				return mudpitMetaData;
 			}
