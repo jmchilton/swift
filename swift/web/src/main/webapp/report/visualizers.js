@@ -206,21 +206,19 @@ SearchRunItemVisualizer.prototype.fillWithContents = function(fragment, id, obje
                 results = '<span class="result-status">No reports available</span>';
             }
             else {
-                if (object.results) {
-                    if (object.results.length > 0) {
-                        results += this.multiResultHeadTemplate.evaluate({id:"file_" + object.id});
-                        var fileInfo;
-                        for (var i = 0; i < object.results.length; i++) {
-                            fileInfo = object.results[i];
-                            this.splitPathIntoParts(fileInfo.path, fileInfo);
-                            if (fileInfo.analysis == 0) {
-                                results += this.multiResultEntryTemplate.evaluate(fileInfo);
-                            } else {
-                                results += this.multiResultEntryAnalysisTemplate.evaluate(fileInfo);
-                            }
+                if (object.results && object.results.length > 0) {
+                    results += this.multiResultHeadTemplate.evaluate({id:"file_" + object.id});
+                    var fileInfo;
+                    for (var i = 0; i < object.results.length; i++) {
+                        fileInfo = object.results[i];
+                        this.splitPathIntoParts(fileInfo.path, fileInfo);
+                        if (fileInfo.analysis == 0) {
+                            results += this.multiResultEntryTemplate.evaluate(fileInfo);
+                        } else {
+                            results += this.multiResultEntryAnalysisTemplate.evaluate(fileInfo);
                         }
-                        results += this.multiResultTailTemplate.evaluate(fileInfo);
                     }
+                    results += this.multiResultTailTemplate.evaluate(fileInfo);
                 } else {
                     results += "<span class='result-status'>" + statusMessage + "</span>";
                 }
