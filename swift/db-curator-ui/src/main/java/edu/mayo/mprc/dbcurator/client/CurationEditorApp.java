@@ -19,7 +19,7 @@ public final class CurationEditorApp implements EntryPoint {
 		if (TESTING) {
 			final RootPanel rootPanel = RootPanel.get("db-curator");
 			HashMap<String, String> userMap = new HashMap<String, String>(3);
-			userMap.put("test@test.com", "Tester Testovich Testinov");
+			userMap.put("test@test.com", "Test Test");
 			CurationEditor editor = new CurationEditor(0, "test@test.com", userMap, new EditorCloseCallback() {
 				@Override
 				public void editorClosed(Integer openCurationID) {
