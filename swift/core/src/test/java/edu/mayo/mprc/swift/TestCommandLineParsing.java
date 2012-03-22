@@ -31,15 +31,17 @@ public final class TestCommandLineParsing {
 	@Test
 	public void shouldProvideHelp() {
 		CommandLineParser parser = new CommandLineParser(new String[]{"--help"});
-		Assert.assertEquals(parser.getCommand(), "help");
-		Assert.assertEquals(parser.getError(), null);
+		SwiftCommandLine cmd = parser.getCommandLine();
+		Assert.assertEquals(cmd.getCommand(), "help");
+		Assert.assertEquals(cmd.getError(), null);
 	}
 
 	@Test
 	public void shouldNoticeMissingParams() {
-		CommandLineParser parser2 = new CommandLineParser(new String[]{"?"});
-		Assert.assertEquals(parser2.getCommand(), "help");
-		Assert.assertEquals(parser2.getError(), "You must specify either the --daemon, --sge or --run options.");
+		CommandLineParser parser = new CommandLineParser(new String[]{"?"});
+		SwiftCommandLine cmd = parser.getCommandLine();
+		Assert.assertEquals(cmd.getCommand(), "help");
+		Assert.assertEquals(cmd.getError(), "You must specify either the --daemon, --sge or --run options.");
 	}
 
 	@Test(expectedExceptions = MprcException.class)
@@ -50,23 +52,26 @@ public final class TestCommandLineParsing {
 	@Test
 	public void shouldNotAllowSgeRun() {
 		CommandLineParser parser = new CommandLineParser(new String[]{"--install", test.toString(), "--daemon", "main-daemon", "--sge", "sgefile", "--run", "run command"});
-		Assert.assertEquals(parser.getCommand(), "help");
-		Assert.assertNotNull(parser.getError());
+		SwiftCommandLine cmd = parser.getCommandLine();
+		Assert.assertEquals(cmd.getCommand(), "help");
+		Assert.assertNotNull(cmd.getError());
 	}
 
 	@Test
 	public void shouldLoadPresentConfig() {
 		CommandLineParser parser = new CommandLineParser(new String[]{"--install", test.toString(), "--daemon", "main-daemon"});
-		Assert.assertEquals(parser.getCommand(), "run-swift");
-		Assert.assertEquals(parser.getError(), null);
+		SwiftCommandLine cmd = parser.getCommandLine();
+		Assert.assertEquals(cmd.getCommand(), "run-swift");
+		Assert.assertEquals(cmd.getError(), null);
 	}
 
 	@Test
-	public void shouldSupportCustomCommand() throws IOException {
+	public void shouldSupportCustomCommand() {
 		CommandLineParser parser = new CommandLineParser(new String[]{"--install", test.toString(), "--run", "my-command command-params"});
-		Assert.assertEquals(parser.getCommand(), "my-command");
-		Assert.assertEquals(parser.getParameter(), "command-params");
-		Assert.assertEquals(parser.getError(), null);
+		SwiftCommandLine cmd = parser.getCommandLine();
+		Assert.assertEquals(cmd.getCommand(), "my-command");
+		Assert.assertEquals(cmd.getParameter(), "command-params");
+		Assert.assertEquals(cmd.getError(), null);
 	}
 
 }
