@@ -36,8 +36,9 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Swift daemon entrypoint. Obtains a parsed command line option set and runs Swift as a command-line daemon.
  */
-public class SwiftDaemon implements FileListener {
+public final class SwiftDaemon implements FileListener {
 	private static final Logger LOGGER = Logger.getLogger(SwiftDaemon.class);
+	public static final String LOAD_TO_SEARCH_DB = "load-to-search-db";
 
 	private final CountDownLatch configFileChanged = new CountDownLatch(1);
 	private FileTokenFactory fileTokenFactory;
@@ -47,14 +48,32 @@ public class SwiftDaemon implements FileListener {
 	/**
 	 * Runs the given daemon from the given install file. If the daemonId is null,
 	 * and there is only one daemon specified, it gets run, otherwise exception is thrown.
+	 *
+	 * @param commandLine Parsed command line.
 	 */
-	public void runSwiftDaemon(File installXmlFile, String daemonId) {
-		final ApplicationConfig swiftConfig = loadSwiftConfig(installXmlFile);
+	public void runSwiftCommand(SwiftCommandLine commandLine) {
+		final ApplicationConfig swiftConfig = loadSwiftConfig(commandLine.getInstallFile());
 
-		DaemonConfig config = getUserSpecifiedDaemonConfig(daemonId, swiftConfig);
+		DaemonConfig config = getUserSpecifiedDaemonConfig(commandLine.getDaemonId(), swiftConfig);
 
 		setupFileTokenFactory(swiftConfig, config, getFileTokenFactory());
 
+		if (SwiftCommandLine.COMMAND_RUN_SWIFT.equalsIgnoreCase(commandLine.getCommand())) {
+			startSwiftDaemonCommand(config, commandLine.getInstallFile());
+		} else if (LOAD_TO_SEARCH_DB.equalsIgnoreCase(commandLine.getCommand())) {
+			loadToSearchDbCommand(config, commandLine.getParameter());
+		} else {
+			throw new MprcException("Unknown command: " + commandLine.getCommand() + "\nSupported: " + SwiftCommandLine.COMMAND_RUN_SWIFT + ", " + LOAD_TO_SEARCH_DB);
+		}
+	}
+
+	/**
+	 * Run all workers configured for this daemon.
+	 *
+	 * @param config         Daemon configuration.
+	 * @param installXmlFile The config file (we watch this for changes to enable restarts)
+	 */
+	private void startSwiftDaemonCommand(DaemonConfig config, File installXmlFile) {
 		checkDoesNotContainWebModule(config);
 
 		Daemon daemon = getDaemonFactory().createDaemon(config);
@@ -89,6 +108,31 @@ public class SwiftDaemon implements FileListener {
 		}
 
 		System.exit(terminateDaemon ? Swift.EXIT_CODE_OK : Swift.EXIT_CODE_RESTART);
+	}
+
+	/**
+	 * Load given search results into the database.
+	 * This is equivalent to a "shortened" Swift search that:
+	 * 1) dumps .RAW metadata
+	 * 2) dumps Scaffold spectrum report (if missing) using Scaffold 3
+	 * 3) loads the FASTA database
+	 * 4) loads the Scaffold dump
+	 *
+	 * @param params The command parameters.
+	 */
+	private void loadToSearchDbCommand(DaemonConfig config, String params) {
+		try {
+			final List<ResourceConfig> searchers = config.getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
+			if (searchers.size() != 1) {
+				throw new MprcException("More than one Swift Searcher defined in this Swift install");
+			}
+			final SwiftSearcher.Config searcherConfig = (SwiftSearcher.Config) searchers.get(0);
+
+		} catch (Exception e) {
+			LOGGER.error("Could not load into the search database", e);
+			System.exit(Swift.EXIT_CODE_ERROR);
+		}
+		System.exit(Swift.EXIT_CODE_OK);
 	}
 
 	/**
