@@ -3,6 +3,7 @@ package edu.mayo.mprc.swift;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.*;
 import edu.mayo.mprc.daemon.Daemon;
+import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.MessageBroker;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.database.DatabaseFactory;
@@ -14,6 +15,7 @@ import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
 import edu.mayo.mprc.peaks.PeaksDeploymentService;
 import edu.mayo.mprc.peaks.PeaksWorker;
+import edu.mayo.mprc.qa.RAWDumpWorker;
 import edu.mayo.mprc.scaffold.ScaffoldWorker;
 import edu.mayo.mprc.sequest.SequestDeploymentService;
 import edu.mayo.mprc.sequest.SequestWorker;
@@ -127,12 +129,17 @@ public final class SwiftDaemon implements FileListener {
 				throw new MprcException("More than one Swift Searcher defined in this Swift install");
 			}
 			final SwiftSearcher.Config searcherConfig = (SwiftSearcher.Config) searchers.get(0);
+			DependencyResolver dependencyResolver = new DependencyResolver(swiftFactory);
+
+			if (searcherConfig.getRawdump() == null) {
+				throw new MprcException("The swift searcher does not define a " + RAWDumpWorker.NAME + " module");
+			}
+
+			DaemonConnection rawDump = (DaemonConnection) dependencyResolver.createSingleton(searcherConfig.getRawdump());
 
 		} catch (Exception e) {
-			LOGGER.error("Could not load into the search database", e);
-			System.exit(Swift.EXIT_CODE_ERROR);
+			throw new MprcException("Could not load into Swift search database", e);
 		}
-		System.exit(Swift.EXIT_CODE_OK);
 	}
 
 	/**
