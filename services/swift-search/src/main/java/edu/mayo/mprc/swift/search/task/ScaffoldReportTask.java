@@ -45,7 +45,7 @@ final class ScaffoldReportTask extends AsyncTaskBase {
 	}
 
 	public void onSuccess() {
-		completeWhenFileAppears(proteinReportFile);
+		completeWhenFilesAppear(proteinReportFile);
 	}
 
 	public void onProgress(ProgressInfo progressInfo) {

@@ -162,7 +162,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 	}
 
 	public void onSuccess() {
-		completeWhenFileAppears(outputFile);
+		completeWhenFilesAppear(outputFile);
 	}
 
 	public void onProgress(ProgressInfo progressInfo) {

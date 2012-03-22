@@ -154,9 +154,9 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 	}
 
 	public void onSuccess() {
-		completeWhenFileAppears(getResultingFile());
-		completeWhenFileAppears(getScaffoldSpectraFile());
+		// Store Scaffold report before we announce success
 		storeReportFile();
+		completeWhenFilesAppear(getResultingFile(), getScaffoldSpectraFile());
 	}
 
 	/**

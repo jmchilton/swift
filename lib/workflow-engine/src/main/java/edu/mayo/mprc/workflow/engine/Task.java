@@ -54,7 +54,16 @@ public interface Task {
 
 	Throwable getLastError();// Resumes given context when file appears.
 
-	void completeWhenFileAppears(File file);
+	/**
+	 * The task will switch its status to {@link TaskState#COMPLETED_SUCCESFULLY} when given
+	 * files  appear in the filesystem. By default we wait 2 minutes for each file to appear.
+	 * <p/>
+	 * The purpose of this method is to prevent errors in a network filesystem when a task complete notification from
+	 * another node arrives before the filesystem notices a change.
+	 *
+	 * @param files Files to wait for.
+	 */
+	void completeWhenFilesAppear(File... files);
 
 	/**
 	 * This task needs input from another task.

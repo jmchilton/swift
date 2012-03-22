@@ -142,8 +142,7 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 	}
 
 	public void onSuccess() {
-		completeWhenFileAppears(getResultingFile());
-		completeWhenFileAppears(getScaffoldSpectraFile());
+		completeWhenFilesAppear(getResultingFile(), getScaffoldSpectraFile());
 		swiftDao.begin();
 		try {
 			// Scaffold finished. Store the resulting file.

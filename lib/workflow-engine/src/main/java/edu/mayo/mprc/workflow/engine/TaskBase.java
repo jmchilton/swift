@@ -244,16 +244,17 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	// Resumes given context when file appears.
-	public void completeWhenFileAppears(File file) {
+	public void completeWhenFilesAppear(File... files) {
 		waitingForFileToAppear.set(true);
-		// TODO: Do this in a separate thread
-		FileUtilities.waitForFile(file, 2 * 60 * 1000);
-		if (!file.exists()) {
-			setError(new MprcException("The file " + file.getPath() + " did not appear even after 2 minutes."));
-		} else {
-			setState(TaskState.COMPLETED_SUCCESFULLY);
+		for (File file : files) {
+			// TODO: Do this in a separate thread
+			FileUtilities.waitForFile(file, 2 * 60 * 1000);
+			if (!file.exists()) {
+				setError(new MprcException("The file " + file.getPath() + " did not appear even after 2 minutes."));
+				return;
+			}
 		}
+		setState(TaskState.COMPLETED_SUCCESFULLY);
 	}
 
 	public void addDependency(Task task) {

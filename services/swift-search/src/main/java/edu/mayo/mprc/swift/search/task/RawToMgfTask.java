@@ -84,7 +84,7 @@ final class RawToMgfTask extends AsyncTaskBase implements MgfOutput {
 	}
 
 	public void onSuccess() {
-		completeWhenFileAppears(mgfFile);
+		completeWhenFilesAppear(mgfFile);
 	}
 
 	public void onProgress(ProgressInfo progressInfo) {
