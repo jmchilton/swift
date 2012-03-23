@@ -75,7 +75,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.3.0-1</version>
+                <version>2.4.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.google.gwt</groupId>
@@ -104,6 +104,7 @@
                 <configuration>
                     <extraJvmArgs>-Xmx1024m -Xss1024k</extraJvmArgs>
                     <inplace>false</inplace>
+                    <compileReport>true</compileReport>
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>edu.mayo.mprc:gwt-common</compileSourcesArtifact>
                         <compileSourcesArtifact>edu.mayo.mprc:db-curator-ui</compileSourcesArtifact>
@@ -123,7 +124,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -135,6 +135,21 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>compile-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <scm>
         <connection>scm:svn:https://bsisvn.mayo.edu/mprc/trunk/java/swift/web</connection>
