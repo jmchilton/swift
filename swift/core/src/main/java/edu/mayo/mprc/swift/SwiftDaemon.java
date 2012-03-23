@@ -109,7 +109,11 @@ public final class SwiftDaemon implements FileListener {
 			throw new MprcException("No daemons are configured in " + installXmlFile.getAbsolutePath() + ". Exiting.");
 		}
 
-		System.exit(terminateDaemon ? Swift.EXIT_CODE_OK : Swift.EXIT_CODE_RESTART);
+		if (terminateDaemon) {
+			Swift.ExitCode.Ok.exit();
+		} else {
+			Swift.ExitCode.Restart.exit();
+		}
 	}
 
 	/**

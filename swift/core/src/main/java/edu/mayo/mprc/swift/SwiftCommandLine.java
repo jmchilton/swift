@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * @author Roman Zenka
  */
-public class SwiftCommandLine {
+public final class SwiftCommandLine {
 	public static final String COMMAND_HELP = "help";
 	public static final String COMMAND_SGE = "sge";
 	public static final String COMMAND_RUN_SWIFT = "run-swift";

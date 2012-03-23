@@ -14,9 +14,41 @@ import java.io.File;
  */
 public final class Swift {
 	private static final Logger LOGGER = Logger.getLogger(Swift.class);
-	public static final int EXIT_CODE_OK = 0;
-	public static final int EXIT_CODE_ERROR = 1;
-	public static final int EXIT_CODE_RESTART = 2;
+
+	/**
+	 * Swift exit codes. Support exiting with the particular code for convenience.
+	 */
+	public enum ExitCode {
+		/**
+		 * Successful execution.
+		 */
+		Ok(0),
+
+		/**
+		 * Swift failed.
+		 */
+		Error(1),
+
+		/**
+		 * Swift should restart (the configuration changed).
+		 */
+		Restart(2);
+
+		private final int exitCode;
+
+		ExitCode(final int exitCode) {
+			this.exitCode = exitCode;
+		}
+
+		/**
+		 * Call {@code System.exit} with this exit code
+		 */
+		void exit() {
+			System.exit(exitCode);
+		}
+	}
+
+	public static final String CONFIG_FILE_NAME = "conf/swift.xml";
 
 	private Swift() {
 	}
@@ -25,11 +57,11 @@ public final class Swift {
 		try {
 			MainFactoryContext.initialize();
 			runSwift(args);
+			// Swift will exist with Ok code if everything is ok
 		} catch (Exception t) {
 			FileUtilities.err(MprcException.getDetailedMessage(t));
-			System.exit(EXIT_CODE_ERROR);
 		} finally {
-			System.exit(EXIT_CODE_ERROR);
+			ExitCode.Error.exit();
 		}
 	}
 
@@ -39,12 +71,12 @@ public final class Swift {
 		SwiftCommandLine commandLine = parser.getCommandLine();
 		if (commandLine.getError() != null) {
 			displayHelpMessage(parser.getOptionParser());
-			System.exit(EXIT_CODE_ERROR);
+			ExitCode.Error.exit();
 		}
 
 		if (SwiftCommandLine.COMMAND_HELP.equals(commandLine.getCommand())) {
 			displayHelpMessage(parser.getOptionParser());
-			System.exit(EXIT_CODE_OK);
+			ExitCode.Ok.exit();
 		}
 
 		if (SwiftCommandLine.COMMAND_SGE.equals(commandLine.getCommand())) {
@@ -57,7 +89,7 @@ public final class Swift {
 				swiftDaemon.runSwiftCommand(commandLine);
 			} catch (Exception e) {
 				LOGGER.error("Error running Swift", e);
-				System.exit(EXIT_CODE_ERROR);
+				ExitCode.Error.exit();
 			}
 		}
 	}
@@ -73,7 +105,7 @@ public final class Swift {
 			parser.printHelpOn(System.out);
 		} catch (Exception t) {
 			LOGGER.fatal("Could not display help message.", t);
-			System.exit(1);
+			ExitCode.Error.exit();
 		}
 	}
 }

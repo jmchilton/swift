@@ -15,7 +15,6 @@ import java.util.Arrays;
  * @author Roman Zenka
  */
 public final class CommandLineParser {
-	public static final String CONFIG_FILE_NAME = "conf/swift.xml";
 	private OptionParser parser;
 	private final SwiftCommandLine commandLine;
 
@@ -24,7 +23,7 @@ public final class CommandLineParser {
 	 */
 	OptionParser setupParser() {
 		parser = new OptionParser();
-		parser.accepts("install", "Installation config file. Default is " + CONFIG_FILE_NAME + ". Please run the Swift configuration to obtain this file.")
+		parser.accepts("install", "Installation config file. Default is " + Swift.CONFIG_FILE_NAME + ". Please run the Swift configuration to obtain this file.")
 				.withRequiredArg().ofType(File.class);
 		parser.accepts("daemon", "Specify the daemon (this describes the environment of the current run) as it was set up during the configuration. When no name is given, the configuration has to contain exactly one daemon, otherwise an error is produced.")
 				.withOptionalArg().ofType(String.class).describedAs("name");
@@ -58,7 +57,7 @@ public final class CommandLineParser {
 			command = SwiftCommandLine.COMMAND_SGE;
 			parameter = (String) options.valueOf("sge");
 		} else {
-			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", CONFIG_FILE_NAME, null);
+			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", Swift.CONFIG_FILE_NAME, null);
 			daemonId = (String) options.valueOf("daemon");
 			if (options.has("run")) {
 				final String[] parsedRun = parseRun((String) options.valueOf("run"));
