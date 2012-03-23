@@ -390,10 +390,13 @@
             <list>
                 <bean id="helpCommand" class="edu.mayo.mprc.swift.commands.DisplayHelp"/>
                 <bean id="swiftRunCommand" class="edu.mayo.mprc.swift.commands.RunSwift"/>
-                <bean id="loadToSearchDbCommand" class="edu.mayo.mprc.swift.commands.LoadToSearchDb"/>
                 <ref bean="sgeRunCommand"/>
+                <ref bean="loadToSearchDbCommand"/>
             </list>
         </property>
+    </bean>
+    <bean class="edu.mayo.mprc.swift.commands.LoadToSearchDb" id="loadToSearchDbCommand">
+        <property name="dao" ref="swiftDao"/>
     </bean>
 
     <bean class="edu.mayo.mprc.swift.commands.RunSge" id="sgeRunCommand">
