@@ -86,7 +86,7 @@ public class FindProtein extends HttpServlet {
 				writer.write("<td>" + searchRun.getEndTimestamp() + "</td>");
 				writer.write("<td>");
 			}
-			writer.write("<a href=\"/analysis?id=" + reportData.getId() + "&highlight=" + accessionNumber + "\">" + reportData.getReportFileId().getName() + "</a> ");
+			writer.write("<a href=\"/analysis?id=" + reportData.getId() + "&highlight=" + accessionNumber + "\">" + reportData.getReportFile().getName() + "</a> ");
 		}
 		closePreviousRun(writer, previousSearchRun);
 	}

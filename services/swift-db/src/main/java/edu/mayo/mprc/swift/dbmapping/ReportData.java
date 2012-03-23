@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 public class ReportData {
 
 	private Long id;
-	private File reportFileId;
+	private File reportFile;
 	private DateTime dateCreated;
 	private SearchRun searchRun;
 
@@ -23,7 +23,7 @@ public class ReportData {
 	}
 
 	public ReportData(File file, DateTime dateCreated, SearchRun searchRun) {
-		this.reportFileId = file;
+		this.reportFile = file;
 		this.dateCreated = dateCreated;
 		this.searchRun = searchRun;
 	}
@@ -36,12 +36,12 @@ public class ReportData {
 		this.id = id;
 	}
 
-	public File getReportFileId() {
-		return reportFileId;
+	public File getReportFile() {
+		return reportFile;
 	}
 
-	public void setReportFileId(File reportFileId) {
-		this.reportFileId = reportFileId;
+	public void setReportFile(File reportFile) {
+		this.reportFile = reportFile;
 	}
 
 	public DateTime getDateCreated() {
@@ -64,7 +64,7 @@ public class ReportData {
 		return MessageFormat.format("{0}: {1} {2}",
 				getId(),
 				getSearchRun() == null ? "no search run" : (getSearchRun().getTitle() + "(" + getSearchRun().getId() + ")"),
-				getReportFileId().toString());
+				getReportFile().toString());
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ReportData {
 		if (getDateCreated() != null ? !getDateCreated().equals(that.getDateCreated()) : that.getDateCreated() != null) {
 			return false;
 		}
-		if (getReportFileId() != null ? !getReportFileId().getAbsoluteFile().equals(that.getReportFileId().getAbsoluteFile()) : that.getReportFileId() != null) {
+		if (getReportFile() != null ? !getReportFile().getAbsoluteFile().equals(that.getReportFile().getAbsoluteFile()) : that.getReportFile() != null) {
 			return false;
 		}
 		if (getSearchRun() != null ? !getSearchRun().equals(that.getSearchRun()) : that.getSearchRun() != null) {
@@ -93,7 +93,7 @@ public class ReportData {
 
 	@Override
 	public int hashCode() {
-		int result = getReportFileId() != null ? getReportFileId().hashCode() : 0;
+		int result = getReportFile() != null ? getReportFile().hashCode() : 0;
 		result = 31 * result + (getDateCreated() != null ? getDateCreated().hashCode() : 0);
 		result = 31 * result + (getSearchRun() != null ? getSearchRun().hashCode() : 0);
 		return result;
