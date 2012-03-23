@@ -84,7 +84,7 @@ class SimpleQueueService implements Service {
 		return queueName;
 	}
 
-	public void sendRequest(Serializable request, ResponseListener listener) {
+	public void sendRequest(Serializable request, int priority, ResponseListener listener) {
 		try {
 			ObjectMessage objectMessage = session().createObjectMessage(request);
 
@@ -99,6 +99,8 @@ class SimpleQueueService implements Service {
 				objectMessage.setJMSReplyTo(responseQueue());
 				// Correlation ID matches the responses with the response listener
 				objectMessage.setJMSCorrelationID(correlationId);
+				// Default priority is 5
+				objectMessage.setJMSPriority(priority);
 			}
 			LOGGER.debug("Sending message " + objectMessage.toString() + " id: " + objectMessage.getJMSMessageID());
 			messageProducer().send(requestDestination(), objectMessage);

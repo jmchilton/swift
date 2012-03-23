@@ -119,6 +119,11 @@ public final class WorkCacheTest {
 
 		@Override
 		public void sendWork(WorkPacket workPacket, ProgressListener listener) {
+			sendWork(workPacket, 5, listener);
+		}
+
+		@Override
+		public void sendWork(WorkPacket workPacket, int priority, ProgressListener listener) {
 			final TestWorkPacket testPacket = (TestWorkPacket) workPacket;
 			listeners.add(listener);
 			workPackets.add(testPacket);

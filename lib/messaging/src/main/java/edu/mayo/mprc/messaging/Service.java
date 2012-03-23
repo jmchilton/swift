@@ -19,13 +19,14 @@ import java.io.Serializable;
  */
 public interface Service {
 	/**
-	 * Sends an object request to given target.
+	 * Sends an object request to given target with given priority. 5 is default, 0..5 low, 6..9 high.
 	 *
 	 * @param request  Message to be sent.
+	 * @param priority Priority of the request.
 	 * @param listener The object to be notified about the request sending progress.
 	 * @throws edu.mayo.mprc.MprcException Message could not be sent.
 	 */
-	void sendRequest(Serializable request, ResponseListener listener);
+	void sendRequest(Serializable request, int priority, ResponseListener listener);
 
 	/**
 	 * This methods returns the next request sent through this service object. The call to this method

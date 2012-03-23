@@ -24,6 +24,8 @@ import java.io.Serializable;
  * round robin connections or failover connections implemented as well.
  */
 final class DirectDaemonConnection implements DaemonConnection {
+	public static final int NORMAL_PRIORITY = 5;
+
 	private Service service = null;
 	private static int listenerNumber = 0;
 	private FileTokenFactory fileTokenFactory;
@@ -48,11 +50,16 @@ final class DirectDaemonConnection implements DaemonConnection {
 
 	@Override
 	public void sendWork(WorkPacket workPacket, ProgressListener listener) {
+		sendWork(workPacket, NORMAL_PRIORITY, listener);
+	}
+
+	@Override
+	public void sendWork(WorkPacket workPacket, int priority, ProgressListener listener) {
 		workPacket.translateOnSender(fileTokenFactory);
 
 		try {
 			listenerNumber++;
-			service.sendRequest(workPacket, new DaemonResponseListener(listener, "R#" + String.valueOf(listenerNumber), this));
+			service.sendRequest(workPacket, priority, new DaemonResponseListener(listener, "R#" + String.valueOf(listenerNumber), this));
 		} catch (MprcException e) {
 			// SWALLOWED: The exception is reported directly to the listener
 			listener.requestTerminated(new DaemonException(e));

@@ -18,6 +18,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 	private static final String REQUEST_2 = "Request 2!";
 	private static final String RESPONSE_2 = "Response 2!";
 	private static final int TOTAL_REQUESTS = 1023;
+	public static final int PRIORITY = 5;
 	private final AtomicInteger numRequests = new AtomicInteger(0);
 	private final AtomicInteger numResponses = new AtomicInteger(0);
 	private int expectedNumRequests;
@@ -80,7 +81,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 		// Not interested in response
 		LOGGER.debug("Sending single request");
-		service.sendRequest(REQUEST_1, null);
+		service.sendRequest(REQUEST_1, PRIORITY, null);
 		cleanup();
 	}
 
@@ -123,7 +124,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 		// Send request
 		logChatty("Sending request, waiting for response");
-		service.sendRequest(REQUEST_1, new ResponseListener() {
+		service.sendRequest(REQUEST_1, PRIORITY, new ResponseListener() {
 			public void responseReceived(Serializable response, boolean isClosing) {
 				Assert.assertEquals(response, RESPONSE_1, "Response does not match expectations");
 				Assert.assertTrue(isClosing, "This must be the only message sent");
@@ -185,7 +186,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 		for (int i = 1; i <= TOTAL_REQUESTS; i++) {
 			// Send request
 			logChatty("Sending request #" + i);
-			service.sendRequest("request " + Integer.toString(i), listener);
+			service.sendRequest("request " + Integer.toString(i), PRIORITY, listener);
 		}
 
 		thread.join(10000);
@@ -206,7 +207,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 		// Send two messages
 		for (int i = 1; i <= 2; i++) {
-			service.sendRequest(Integer.valueOf(i), new ResponseListener() {
+			service.sendRequest(Integer.valueOf(i), PRIORITY, new ResponseListener() {
 				@Override
 				public void responseReceived(Serializable response, boolean isLast) {
 					LOGGER.debug(response);
