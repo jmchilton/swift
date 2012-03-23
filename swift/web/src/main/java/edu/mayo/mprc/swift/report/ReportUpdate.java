@@ -277,7 +277,7 @@ public final class ReportUpdate extends HttpServlet {
 		for (ReportData report : searchRun.getReports()) {
 			reports.add(
 					new ReportInfo(report.getId(),
-							fileTokenFactory.fileToTaggedDatabaseToken(report.getReportFileId()),
+							fileTokenFactory.fileToTaggedDatabaseToken(report.getReportFile()),
 							searchDbDao.hasAnalysis(report.getId())
 					)
 			);
