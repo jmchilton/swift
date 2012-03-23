@@ -8,11 +8,12 @@ import java.io.File;
  * @author Roman Zenka
  */
 public class RunSge implements SwiftCommand {
+	public static final String COMMAND = "sge";
 	private SgeJobRunner swiftSge;
 
 	@Override
 	public String getName() {
-		return "sge";
+		return COMMAND;
 	}
 
 	@Override

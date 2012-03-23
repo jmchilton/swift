@@ -1,5 +1,7 @@
 package edu.mayo.mprc.swift;
 
+import edu.mayo.mprc.swift.commands.DisplayHelp;
+import edu.mayo.mprc.swift.commands.RunSge;
 import edu.mayo.mprc.swift.commands.SwiftCommandLine;
 import edu.mayo.mprc.utilities.CommandLine;
 import joptsimple.OptionParser;
@@ -47,15 +49,15 @@ public final class CommandLineParser {
 		String error = null;
 
 		if (options.has("?")) {
-			command = SwiftCommandLine.COMMAND_HELP;
+			command = DisplayHelp.COMMAND;
 		} else if (!options.has("daemon") && !options.has("sge") && !options.has("run")) {
 			error = "You must specify either the --daemon, --sge or --run options.";
-			command = SwiftCommandLine.COMMAND_HELP;
+			command = DisplayHelp.COMMAND;
 		} else if (options.has("sge") && options.has("run")) {
 			error = "--sge and --run options are mutually exclusive.";
-			command = SwiftCommandLine.COMMAND_HELP;
+			command = DisplayHelp.COMMAND;
 		} else if (options.has("sge")) {
-			command = SwiftCommandLine.COMMAND_SGE;
+			command = RunSge.COMMAND;
 			parameter = (String) options.valueOf("sge");
 		} else {
 			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", Swift.CONFIG_FILE_NAME, null);
@@ -69,7 +71,7 @@ public final class CommandLineParser {
 				parameter = "";
 			}
 		}
-		commandLine = new SwiftCommandLine(command, parameter, installFile, daemonId, error);
+		commandLine = new SwiftCommandLine(command, parameter, installFile, daemonId, error, parser);
 	}
 
 	/**
