@@ -400,7 +400,7 @@ public class ConfigurationData {
 		SerializingUiChanges uiChanges = new SerializingUiChanges(resolver);
 
 		final ApplicationConfig applicationConfig = getConfig();
-		final List<String> errorList = SwiftDaemon.validateSwiftConfig(applicationConfig);
+		final List<String> errorList = SwiftConfig.validateSwiftConfig(applicationConfig);
 
 		// Clear errors
 		uiChanges.displayPropertyError(applicationConfig, null, null);

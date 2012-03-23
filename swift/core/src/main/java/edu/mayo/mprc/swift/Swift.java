@@ -2,11 +2,11 @@ package edu.mayo.mprc.swift;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.ReleaseInfoCore;
+import edu.mayo.mprc.swift.commands.DisplayHelp;
+import edu.mayo.mprc.swift.commands.SwiftCommandLine;
+import edu.mayo.mprc.swift.commands.SwiftEnvironment;
 import edu.mayo.mprc.utilities.FileUtilities;
-import joptsimple.OptionParser;
 import org.apache.log4j.Logger;
-
-import java.io.File;
 
 /**
  * Central Swift entry point. Based on the command line options, instantiates either normal
@@ -43,7 +43,7 @@ public final class Swift {
 		/**
 		 * Call {@code System.exit} with this exit code
 		 */
-		void exit() {
+		public void exit() {
 			System.exit(exitCode);
 		}
 	}
@@ -70,42 +70,17 @@ public final class Swift {
 		CommandLineParser parser = new CommandLineParser(args);
 		SwiftCommandLine commandLine = parser.getCommandLine();
 		if (commandLine.getError() != null) {
-			displayHelpMessage(parser.getOptionParser());
+			FileUtilities.err(commandLine.getError() + "\nUse --" + DisplayHelp.COMMAND + " for more information.");
 			ExitCode.Error.exit();
 		}
 
-		if (SwiftCommandLine.COMMAND_HELP.equals(commandLine.getCommand())) {
-			displayHelpMessage(parser.getOptionParser());
-			ExitCode.Ok.exit();
-		}
-
-		if (SwiftCommandLine.COMMAND_SGE.equals(commandLine.getCommand())) {
-			final SgeJobRunner swiftSge = MainFactoryContext.getSwiftSge();
-			final String xmlConfigFilePath = commandLine.getParameter();
-			swiftSge.run(new File(xmlConfigFilePath));
-		} else {
-			final SwiftDaemon swiftDaemon = MainFactoryContext.getSwiftDaemon();
-			try {
-				swiftDaemon.runSwiftCommand(commandLine);
-			} catch (Exception e) {
-				LOGGER.error("Error running Swift", e);
-				ExitCode.Error.exit();
-			}
-		}
-	}
-
-	private static void displayHelpMessage(OptionParser parser) {
+		final SwiftEnvironment swiftEnvironment = MainFactoryContext.getSwiftEnvironment();
 		try {
-			FileUtilities.out(ReleaseInfoCore.infoString());
-			FileUtilities.out("");
-			FileUtilities.out("This command starts Swift with the provided configuration parameters.");
-			FileUtilities.out("If you do not have a configuration file yet, please run Swift's web configuration first.");
-			FileUtilities.out("");
-			FileUtilities.out("Usage:");
-			parser.printHelpOn(System.out);
-		} catch (Exception t) {
-			LOGGER.fatal("Could not display help message.", t);
+			swiftEnvironment.runSwiftCommand(commandLine);
+		} catch (Exception e) {
+			LOGGER.error("Error running Swift", e);
 			ExitCode.Error.exit();
 		}
 	}
+
 }

@@ -80,7 +80,7 @@ public final class SwiftWebContext {
 						throw new MprcException("The daemon " + daemonId + " does not define any web interface module.");
 					}
 
-					SwiftDaemon.setupFileTokenFactory(swiftConfig, daemonConfig, webUi.getFileTokenFactory());
+					SwiftConfig.setupFileTokenFactory(swiftConfig, daemonConfig, webUi.getFileTokenFactory());
 
 					// Initialize DB curator
 					CurationWebContext.initialize(

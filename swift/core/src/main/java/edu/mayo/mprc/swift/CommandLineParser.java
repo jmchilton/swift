@@ -1,5 +1,6 @@
 package edu.mayo.mprc.swift;
 
+import edu.mayo.mprc.swift.commands.SwiftCommandLine;
 import edu.mayo.mprc.utilities.CommandLine;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -64,7 +65,7 @@ public final class CommandLineParser {
 				command = parsedRun[0];
 				parameter = parsedRun[1];
 			} else {
-				command = SwiftCommandLine.COMMAND_RUN_SWIFT;
+				command = SwiftCommandLine.DEFAULT_RUN_COMMAND;
 				parameter = "";
 			}
 		}

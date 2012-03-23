@@ -1,4 +1,6 @@
-package edu.mayo.mprc.swift;
+package edu.mayo.mprc.swift.commands;
+
+import joptsimple.OptionParser;
 
 import java.io.File;
 
@@ -6,22 +8,23 @@ import java.io.File;
  * @author Roman Zenka
  */
 public final class SwiftCommandLine {
-	public static final String COMMAND_HELP = "help";
 	public static final String COMMAND_SGE = "sge";
-	public static final String COMMAND_RUN_SWIFT = "run-swift";
+	public static final String DEFAULT_RUN_COMMAND = RunSwift.RUN_SWIFT;
 
 	private final String command;
 	private final String parameter;
 	private final File installFile;
 	private final String daemonId;
 	private final String error;
+	private final OptionParser parser;
 
-	public SwiftCommandLine(String command, String parameter, File installFile, String daemonId, String error) {
+	public SwiftCommandLine(String command, String parameter, File installFile, String daemonId, String error, OptionParser parser) {
 		this.command = command;
 		this.parameter = parameter;
 		this.installFile = installFile;
 		this.daemonId = daemonId;
 		this.error = error;
+		this.parser = parser;
 	}
 
 	public String getCommand() {
@@ -42,5 +45,9 @@ public final class SwiftCommandLine {
 
 	public String getError() {
 		return error;
+	}
+
+	public OptionParser getParser() {
+		return parser;
 	}
 }

@@ -1,6 +1,7 @@
 package edu.mayo.mprc.swift;
 
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.swift.commands.SwiftCommandLine;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;

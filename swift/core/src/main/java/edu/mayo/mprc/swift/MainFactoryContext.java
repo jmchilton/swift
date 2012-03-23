@@ -1,6 +1,7 @@
 package edu.mayo.mprc.swift;
 
 import edu.mayo.mprc.daemon.Daemon;
+import edu.mayo.mprc.swift.commands.SwiftEnvironment;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -55,11 +56,7 @@ public final class MainFactoryContext {
 		return (ResourceTable) getBean("resourceTable");
 	}
 
-	public static SwiftDaemon getSwiftDaemon() {
-		return (SwiftDaemon) getBean("swiftDaemon");
-	}
-
-	public static SgeJobRunner getSwiftSge() {
-		return (SgeJobRunner) getBean("swiftSge");
+	public static SwiftEnvironment getSwiftEnvironment() {
+		return (SwiftEnvironment) getBean("swiftEnvironment");
 	}
 }
