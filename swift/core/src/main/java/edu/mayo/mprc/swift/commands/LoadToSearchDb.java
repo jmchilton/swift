@@ -60,8 +60,21 @@ public class LoadToSearchDb implements SwiftCommand {
 			final SwiftSearcher.Config config = getSearcher(environment);
 			initializeConnections(environment, config);
 
+			Object database = environment.createResource(config.getDatabase());
+
 			// This is the input parameter - which report to load into the database
 			final long reportDataId = getReportDataId(environment.getParameter());
+
+			loadData(reportDataId);
+
+		} catch (Exception e) {
+			throw new MprcException("Could not load into Swift search database", e);
+		}
+	}
+
+	private void loadData(long reportDataId) {
+		getDao().begin();
+		try {
 
 			// Scaffold file can be looked up using the id of the report
 			final File scaffoldFile = getScaffoldFile(reportDataId);
@@ -71,7 +84,7 @@ public class LoadToSearchDb implements SwiftCommand {
 					scaffoldFile.getParentFile(),
 					FileUtilities.getFileNameWithoutExtension(scaffoldFile) + ScaffoldSpectraReader.EXTENSION);
 
-			// We will ask Sccaffold3 to ensure the spectrum is exported properly
+			// We will ask Scaffold3 to ensure the spectrum is exported properly
 			final Scaffold3SpectrumExportWorkPacket spectrumExport = new Scaffold3SpectrumExportWorkPacket("export1", false,
 					scaffoldFile, scaffoldSpectrumExport);
 
@@ -80,9 +93,9 @@ public class LoadToSearchDb implements SwiftCommand {
 //			Map<String, RawFileMetaData> fileMetaDataMap = getFileMetaDataMap();
 //			new SearchDbWorkPacket("searchdb1", false, reportDataId, scaffoldSpectrumExport, fileMetaDataMap);
 
-
+			getDao().commit();
 		} catch (Exception e) {
-			throw new MprcException("Could not load into Swift search database", e);
+			getDao().rollback();
 		}
 	}
 
@@ -128,8 +141,8 @@ public class LoadToSearchDb implements SwiftCommand {
 	private long getReportDataId(final String parameter) {
 		try {
 			return Long.parseLong(parameter);
-		} catch (Throwable t) {
-			throw new MprcException("Could not parse report # [" + parameter + "]");
+		} catch (NumberFormatException e) {
+			throw new MprcException("Could not parse report # [" + parameter + "]", e);
 		}
 	}
 
