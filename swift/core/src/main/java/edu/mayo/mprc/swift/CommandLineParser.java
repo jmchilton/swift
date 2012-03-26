@@ -38,14 +38,12 @@ public final class CommandLineParser {
 		return parser;
 	}
 
-	CommandLineParser(final String[] args) {
+	public CommandLineParser(final String[] args) {
 		setupParser();
 		final OptionSet options = parser.parse(args);
 
 		String command = null;
 		String parameter = null;
-		File installFile = null;
-		String daemonId = null;
 		String error = null;
 
 		if (options.has("?")) {
@@ -60,8 +58,6 @@ public final class CommandLineParser {
 			command = RunSge.COMMAND;
 			parameter = (String) options.valueOf("sge");
 		} else {
-			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", Swift.CONFIG_FILE_NAME, null);
-			daemonId = (String) options.valueOf("daemon");
 			if (options.has("run")) {
 				final String[] parsedRun = parseRun((String) options.valueOf("run"));
 				command = parsedRun[0];
@@ -71,6 +67,11 @@ public final class CommandLineParser {
 				parameter = "";
 			}
 		}
+		File installFile = null;
+		if (!DisplayHelp.COMMAND.equals(command)) {
+			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", Swift.CONFIG_FILE_NAME, null);
+		}
+		final String daemonId = (String) options.valueOf("daemon");
 		commandLine = new SwiftCommandLine(command, parameter, installFile, daemonId, error, parser);
 	}
 

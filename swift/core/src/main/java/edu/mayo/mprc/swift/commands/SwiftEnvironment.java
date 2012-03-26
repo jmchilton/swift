@@ -1,6 +1,7 @@
 package edu.mayo.mprc.swift.commands;
 
 import edu.mayo.mprc.config.DaemonConfig;
+import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ServiceConfig;
 import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.daemon.DaemonConnection;
@@ -41,6 +42,14 @@ public interface SwiftEnvironment {
 	 * Creates a daemon of given configuration.
 	 */
 	Daemon createDaemon(DaemonConfig config);
+
+	/**
+	 * Create a resource from a given config.
+	 *
+	 * @param resourceConfig Configuration of the resource to create.
+	 * @return Singleton instance of the given resource.
+	 */
+	Object createResource(ResourceConfig resourceConfig);
 
 	/**
 	 * Provides a connection to a runner. The parameter you pass comes from your worker configuration.

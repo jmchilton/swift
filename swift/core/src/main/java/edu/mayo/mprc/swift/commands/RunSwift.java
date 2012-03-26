@@ -4,7 +4,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.DaemonConfig;
 import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.daemon.Daemon;
-import edu.mayo.mprc.swift.Swift;
+import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.swift.WebUi;
 import edu.mayo.mprc.utilities.FileListener;
 import edu.mayo.mprc.utilities.FileMonitor;
@@ -75,9 +75,9 @@ public class RunSwift implements FileListener, SwiftCommand {
 		}
 
 		if (terminateDaemon) {
-			Swift.ExitCode.Ok.exit();
+			ExitCode.Ok.exit();
 		} else {
-			Swift.ExitCode.Restart.exit();
+			ExitCode.Restart.exit();
 		}
 	}
 

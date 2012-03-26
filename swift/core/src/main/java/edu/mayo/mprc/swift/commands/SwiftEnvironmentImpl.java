@@ -14,8 +14,9 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Swift daemon entrypoint. Obtains a parsed command line option set and runs Swift as a command-line daemon.
- * Alternatively, if a user specifies a different command, Swift will execute that command and exit.
+ * Swift environment - knows of all the resources Swift has. Given a command line,
+ * it can initialize itself using the various switches and then run Swift using
+ * {@link #runSwiftCommand}.
  */
 public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	private FileTokenFactory fileTokenFactory;
@@ -69,9 +70,11 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 		}
 
 		configXmlFile = commandLine.getInstallFile();
-		final ApplicationConfig swiftConfig = loadSwiftConfig(configXmlFile, getSwiftFactory());
-		daemonConfig = SwiftConfig.getUserSpecifiedDaemonConfig(commandLine.getDaemonId(), swiftConfig);
-		SwiftConfig.setupFileTokenFactory(swiftConfig, daemonConfig, getFileTokenFactory());
+		if (configXmlFile != null) {
+			final ApplicationConfig swiftConfig = loadSwiftConfig(configXmlFile, getSwiftFactory());
+			daemonConfig = SwiftConfig.getUserSpecifiedDaemonConfig(commandLine.getDaemonId(), swiftConfig);
+			SwiftConfig.setupFileTokenFactory(swiftConfig, daemonConfig, getFileTokenFactory());
+		}
 
 		command.run(this);
 	}
@@ -147,6 +150,11 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	@Override
 	public Daemon createDaemon(final DaemonConfig config) {
 		return daemonFactory.createDaemon(config);
+	}
+
+	@Override
+	public Object createResource(final ResourceConfig resourceConfig) {
+		return dependencyResolver.createSingleton(resourceConfig);
 	}
 
 	@Override

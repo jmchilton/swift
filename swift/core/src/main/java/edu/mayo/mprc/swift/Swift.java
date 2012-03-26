@@ -15,39 +15,6 @@ import org.apache.log4j.Logger;
 public final class Swift {
 	private static final Logger LOGGER = Logger.getLogger(Swift.class);
 
-	/**
-	 * Swift exit codes. Support exiting with the particular code for convenience.
-	 */
-	public enum ExitCode {
-		/**
-		 * Successful execution.
-		 */
-		Ok(0),
-
-		/**
-		 * Swift failed.
-		 */
-		Error(1),
-
-		/**
-		 * Swift should restart (the configuration changed).
-		 */
-		Restart(2);
-
-		private final int exitCode;
-
-		ExitCode(final int exitCode) {
-			this.exitCode = exitCode;
-		}
-
-		/**
-		 * Call {@code System.exit} with this exit code
-		 */
-		public void exit() {
-			System.exit(exitCode);
-		}
-	}
-
 	public static final String CONFIG_FILE_NAME = "conf/swift.xml";
 
 	private Swift() {
@@ -78,7 +45,7 @@ public final class Swift {
 		try {
 			swiftEnvironment.runSwiftCommand(commandLine);
 		} catch (Exception e) {
-			LOGGER.error("Error running Swift", e);
+			LOGGER.error(MprcException.getDetailedMessage(e));
 			ExitCode.Error.exit();
 		}
 	}

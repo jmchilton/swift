@@ -1,7 +1,7 @@
 package edu.mayo.mprc.swift.commands;
 
 import edu.mayo.mprc.ReleaseInfoCore;
-import edu.mayo.mprc.swift.Swift;
+import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
 
@@ -32,10 +32,10 @@ public class DisplayHelp implements SwiftCommand {
 			FileUtilities.out("");
 			FileUtilities.out("Usage:");
 			environment.getOptionParser().printHelpOn(System.out);
-			Swift.ExitCode.Ok.exit();
+			ExitCode.Ok.exit();
 		} catch (Exception t) {
 			LOGGER.fatal("Could not display help message.", t);
-			Swift.ExitCode.Error.exit();
+			ExitCode.Error.exit();
 		}
 	}
 }
