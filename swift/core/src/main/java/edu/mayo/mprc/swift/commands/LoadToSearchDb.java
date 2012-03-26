@@ -230,6 +230,7 @@ public class LoadToSearchDb implements SwiftCommand {
 
 		@Override
 		public void userProgressInformation(final ProgressInfo progressInfo) {
+			LOGGER.debug(progressInfo);
 		}
 	}
 }
