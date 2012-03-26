@@ -17,7 +17,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.Iterator;
 
 /**
@@ -54,11 +54,11 @@ public class TestScaffoldSpectraSummarizer {
 	 */
 	@Test
 	public void shouldLoadSingleReport() throws IOException {
-		final Reader reader = ResourceUtilities.getReader(SINGLE, TestScaffoldSpectraSummarizer.class);
+		final InputStream stream = ResourceUtilities.getStream(SINGLE, TestScaffoldSpectraSummarizer.class);
 		try {
 			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 
-			summarizer.load(reader, SINGLE, "3", null);
+			summarizer.load(stream, -1, SINGLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 16, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
@@ -96,7 +96,7 @@ public class TestScaffoldSpectraSummarizer {
 			checkAnalysisMatch(analysis, SINGLE_EXPECTED);
 
 		} finally {
-			FileUtilities.closeQuietly(reader);
+			FileUtilities.closeQuietly(stream);
 		}
 	}
 
@@ -112,10 +112,10 @@ public class TestScaffoldSpectraSummarizer {
 	 */
 	@Test
 	public void shouldLoadMultipleReports() {
-		final Reader reader = ResourceUtilities.getReader(MULTIPLE, TestScaffoldSpectraSummarizer.class);
+		final InputStream stream = ResourceUtilities.getStream(MULTIPLE, TestScaffoldSpectraSummarizer.class);
 		try {
 			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
-			summarizer.load(reader, MULTIPLE, "3", null);
+			summarizer.load(stream, -1, MULTIPLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 28, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
@@ -124,7 +124,7 @@ public class TestScaffoldSpectraSummarizer {
 
 			checkAnalysisMatch(analysis, MULTIPLE_EXPECTED);
 		} finally {
-			FileUtilities.closeQuietly(reader);
+			FileUtilities.closeQuietly(stream);
 		}
 	}
 
@@ -133,10 +133,10 @@ public class TestScaffoldSpectraSummarizer {
 	 */
 	@Test
 	public void shouldLoadLargeReport() {
-		final Reader reader = ResourceUtilities.getReader(LARGE, TestScaffoldSpectraSummarizer.class);
+		final InputStream stream = ResourceUtilities.getStream(LARGE, TestScaffoldSpectraSummarizer.class);
 		try {
 			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
-			summarizer.load(reader, LARGE, "3", null);
+			summarizer.load(stream, -1, LARGE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 10, 18, 0, 0, 0, 0), "Report date");
 			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.2.0", "Scaffold version");
@@ -145,7 +145,7 @@ public class TestScaffoldSpectraSummarizer {
 
 			checkAnalysisMatch(analysis, LARGE_EXPECTED);
 		} finally {
-			FileUtilities.closeQuietly(reader);
+			FileUtilities.closeQuietly(stream);
 		}
 	}
 

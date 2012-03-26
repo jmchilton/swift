@@ -1,7 +1,9 @@
 package edu.mayo.mprc.scaffoldparser.spectra;
 
+import com.google.common.io.CountingInputStream;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
+import edu.mayo.mprc.utilities.progress.PercentDoneReporter;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.*;
@@ -21,6 +23,11 @@ public abstract class ScaffoldSpectraReader {
 	public static final String EXTENSION = ".spectra.txt";
 
 	/**
+	 * Report progress every X lines.
+	 */
+	public static final int REPORT_FREQUENCY = 10;
+
+	/**
 	 * Version of Scaffold that produced the report (Currently "2" for Scaffold 2 or "3" for Scaffold 3).
 	 */
 	private String scaffoldVersion;
@@ -34,6 +41,21 @@ public abstract class ScaffoldSpectraReader {
 	 * Current line number for exception handling.
 	 */
 	private int lineNumber;
+
+	/**
+	 * Total size of the input in bytes, <0 if not known.
+	 */
+	private long totalBytesToRead;
+
+	/**
+	 * A counting input stream wrapping the provided data source so we can report progress.
+	 */
+	private CountingInputStream countingInputStream;
+
+	/**
+	 * We use this to report percent done.
+	 */
+	private PercentDoneReporter percentDoneReporter;
 
 	// Scaffold files are terminated with this marker
 	private static final String END_OF_FILE = "END OF FILE";
@@ -109,38 +131,44 @@ public abstract class ScaffoldSpectraReader {
 	public void load(File scaffoldSpectraFile, String scaffoldVersion, ProgressReporter reporter) {
 		dataSourceName = scaffoldSpectraFile.getAbsolutePath();
 		this.scaffoldVersion = scaffoldVersion;
-		FileReader fileReader = null;
 		try {
-			fileReader = new FileReader(scaffoldSpectraFile);
-			processReader(fileReader);
+			totalBytesToRead = scaffoldSpectraFile.length();
+			// The processing method will close the stream
+			processStream(new FileInputStream(scaffoldSpectraFile), reporter);
 		} catch (Exception t) {
 			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
-		} finally {
-			FileUtilities.closeQuietly(fileReader);
 		}
 	}
 
 	/**
 	 * Start loading scaffold spectra file from a given reader.
 	 *
-	 * @param reader          Reader to load from. Will be closed upon load.
+	 * @param stream          Stream to load from. Will be closed upon load.
+	 * @param inputSize       The total size of the data in the input stream (in bytes).
 	 * @param dataSourceName  Information about where the spectra data came from - displayed when throwing exceptions.
 	 * @param scaffoldVersion {@link #scaffoldVersion}
 	 * @param reporter        To report the progress. Can be null.
 	 */
-	public void load(Reader reader, String dataSourceName, String scaffoldVersion, ProgressReporter reporter) {
+	public void load(InputStream stream, long inputSize, String dataSourceName, String scaffoldVersion, ProgressReporter reporter) {
 		this.dataSourceName = dataSourceName;
 		this.scaffoldVersion = scaffoldVersion;
+		this.totalBytesToRead = inputSize;
 		try {
-			processReader(reader);
+			processStream(stream, reporter);
 		} catch (Exception t) {
 			throw new MprcException("Cannot parse Scaffold spectra file [" + dataSourceName + "], error at line " + lineNumber, t);
-		} finally {
-			FileUtilities.closeQuietly(reader);
 		}
 	}
 
-	private void processReader(Reader reader) throws IOException {
+	private void processStream(InputStream stream, ProgressReporter reporter) throws IOException {
+		Reader reader;
+		if (totalBytesToRead > 0) {
+			countingInputStream = new CountingInputStream(stream);
+			reader = new InputStreamReader(countingInputStream);
+			percentDoneReporter = new PercentDoneReporter(reporter, "Parsing Scaffold spectra file: ");
+		} else {
+			reader = new InputStreamReader(stream);
+		}
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(reader);
@@ -207,6 +235,9 @@ public abstract class ScaffoldSpectraReader {
 				break;
 			}
 			processRow(line);
+			if (lineNumber % REPORT_FREQUENCY == 0 && percentDoneReporter != null) {
+				percentDoneReporter.reportProgress((float) ((double) countingInputStream.getCount() / (double) totalBytesToRead));
+			}
 		}
 	}
 

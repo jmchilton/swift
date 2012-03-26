@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -142,12 +142,12 @@ public class TestSearchDbDao extends DaoTest {
 	}
 
 	private Analysis loadAnalysis(final DateTime now, final String reportToLoad, ReportData reportData) {
-		final Reader reader = ResourceUtilities.getReader(reportToLoad, TestScaffoldSpectraSummarizer.class);
+		final InputStream stream = ResourceUtilities.getStream(reportToLoad, TestScaffoldSpectraSummarizer.class);
 
 		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
 				new SingleDatabaseTranslator(fastaDbDao, curationDao),
 				new DummyMassSpecDataExtractor(now));
-		summarizer.load(reader, reportToLoad, "3", null);
+		summarizer.load(stream, -1, reportToLoad, "3", null);
 		final Analysis analysis = summarizer.getAnalysis();
 
 		searchDbDao.addAnalysis(analysis, reportData);
