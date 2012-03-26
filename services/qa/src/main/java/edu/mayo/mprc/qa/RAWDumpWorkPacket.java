@@ -156,16 +156,16 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 
 	@Override
 	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
-		final File rawInfoFile = new File(targetFolder, outputFiles.get(0));
-		final File rawSpectraFile = new File(targetFolder, outputFiles.get(1));
-		final File chromatogramFile = new File(targetFolder, outputFiles.get(2));
-		final File tuneMethodFile = new File(targetFolder, outputFiles.get(3));
-		final File instrumentMethodFile = new File(targetFolder, outputFiles.get(4));
-		final File sampleInformationFile = new File(targetFolder, outputFiles.get(5));
-		final File errorLogFile = new File(targetFolder, outputFiles.get(6));
+		final File rawInfo = new File(targetFolder, outputFiles.get(0));
+		final File rawSpectra = new File(targetFolder, outputFiles.get(1));
+		final File chromatogram = new File(targetFolder, outputFiles.get(2));
+		final File tuneMethod = new File(targetFolder, outputFiles.get(3));
+		final File instrumentMethod = new File(targetFolder, outputFiles.get(4));
+		final File sampleInformation = new File(targetFolder, outputFiles.get(5));
+		final File errorLog = new File(targetFolder, outputFiles.get(6));
 		reporter.reportProgress(
-				new RAWDumpResult(rawInfoFile, rawSpectraFile, chromatogramFile,
-						tuneMethodFile, instrumentMethodFile, sampleInformationFile, errorLogFile));
+				new RAWDumpResult(rawInfo, rawSpectra, chromatogram,
+						tuneMethod, instrumentMethod, sampleInformation, errorLog));
 	}
 
 }
