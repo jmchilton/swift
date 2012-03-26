@@ -41,10 +41,10 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param format                {@link ScaffoldModificationFormat} that can parse the Scaffold's mods.
 	 */
 	public IdentifiedPeptide(
-			PeptideSequence sequence,
-			String fixedModifications,
-			String variableModifications,
-			ScaffoldModificationFormat format) {
+			final PeptideSequence sequence,
+			final String fixedModifications,
+			final String variableModifications,
+			final ScaffoldModificationFormat format) {
 		this.sequence = sequence;
 		modifications = format.parseModifications(sequence.getSequence(), fixedModifications, variableModifications);
 	}
@@ -55,7 +55,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @param sequence      Peptide sequence
 	 * @param modifications List of {@link LocalizedModification}
 	 */
-	public IdentifiedPeptide(PeptideSequence sequence, LocalizedModList modifications) {
+	public IdentifiedPeptide(final PeptideSequence sequence, final LocalizedModList modifications) {
 		this.sequence = sequence;
 		this.modifications = modifications;
 	}
@@ -64,7 +64,7 @@ public class IdentifiedPeptide extends PersistableBase {
 		return sequence;
 	}
 
-	public void setSequence(PeptideSequence sequence) {
+	public void setSequence(final PeptideSequence sequence) {
 		this.sequence = sequence;
 	}
 
@@ -72,7 +72,7 @@ public class IdentifiedPeptide extends PersistableBase {
 		return modifications;
 	}
 
-	public void setModifications(LocalizedModList modifications) {
+	public void setModifications(final LocalizedModList modifications) {
 		this.modifications = modifications;
 	}
 
@@ -80,8 +80,8 @@ public class IdentifiedPeptide extends PersistableBase {
 	 * @return List of mods as comma separated string, e.g. {@code c18: Carbamidomethyl(C)}
 	 */
 	public String getModificationsAsString() {
-		StringBuilder result = new StringBuilder(EXPECTED_MOD_SIZE * getModifications().size());
-		for (LocalizedModification modification : getModifications()) {
+		final StringBuilder result = new StringBuilder(EXPECTED_MOD_SIZE * getModifications().size());
+		for (final LocalizedModification modification : getModifications()) {
 			result.append(", ");
 			result.append(Character.toLowerCase(modification.getResidue())).append(modification.getPosition() + 1).append(": ").append(modification.getModSpecificity().toMascotString());
 		}
@@ -89,7 +89,7 @@ public class IdentifiedPeptide extends PersistableBase {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -97,7 +97,7 @@ public class IdentifiedPeptide extends PersistableBase {
 			return false;
 		}
 
-		IdentifiedPeptide that = (IdentifiedPeptide) o;
+		final IdentifiedPeptide that = (IdentifiedPeptide) o;
 
 		if (!getModifications().equals(that.getModifications())) {
 			return false;

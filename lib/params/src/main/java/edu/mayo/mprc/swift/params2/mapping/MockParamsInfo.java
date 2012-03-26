@@ -20,7 +20,7 @@ public class MockParamsInfo extends ParamsInfo {
 
 	@Override
 	public List<Curation> getDatabaseAllowedValues() {
-		List<Curation> list = new ArrayList<Curation>();
+		final List<Curation> list = new ArrayList<Curation>();
 
 		addCuration(list, "Current_SP");
 		addCuration(list, "Current_SP_Human");
@@ -71,8 +71,8 @@ public class MockParamsInfo extends ParamsInfo {
 		return list;
 	}
 
-	private void addCuration(List<Curation> list, String shortName) {
-		Curation curation = new Curation();
+	private void addCuration(final List<Curation> list, final String shortName) {
+		final Curation curation = new Curation();
 		curation.setShortName(shortName);
 		curation.setTitle("Test curation");
 		list.add(curation);
@@ -98,13 +98,13 @@ public class MockParamsInfo extends ParamsInfo {
 	}
 
 	@Override
-	public Set<ModSpecificity> getVariableModsAllowedValues(boolean includeHidden) {
+	public Set<ModSpecificity> getVariableModsAllowedValues(final boolean includeHidden) {
 		initializeUnimod();
 		return unimod.getAllSpecificities(includeHidden);
 	}
 
 	@Override
-	public Set<ModSpecificity> getFixedModsAllowedValues(boolean includeHidden) {
+	public Set<ModSpecificity> getFixedModsAllowedValues(final boolean includeHidden) {
 		initializeUnimod();
 		return unimod.getAllSpecificities(includeHidden);
 	}
@@ -122,8 +122,8 @@ public class MockParamsInfo extends ParamsInfo {
 
 	@Override
 	public Map<String, Instrument> getInstruments() {
-		Map<String, Instrument> result = new TreeMap<String, Instrument>();
-		for (Instrument instrument : getInstrumentAllowedValues()) {
+		final Map<String, Instrument> result = new TreeMap<String, Instrument>();
+		for (final Instrument instrument : getInstrumentAllowedValues()) {
 			result.put(instrument.getName(), instrument);
 		}
 		return result;
@@ -131,15 +131,15 @@ public class MockParamsInfo extends ParamsInfo {
 
 	@Override
 	public Map<String, IonSeries> getIons() {
-		Map<String, IonSeries> result = new TreeMap<String, IonSeries>();
-		for (IonSeries ionSeries : IonSeries.getInitial()) {
+		final Map<String, IonSeries> result = new TreeMap<String, IonSeries>();
+		for (final IonSeries ionSeries : IonSeries.getInitial()) {
 			result.put(ionSeries.getName(), ionSeries);
 		}
 		return result;
 	}
 
 	@Override
-	public Iterable getAllowedValues(ParamName param) {
+	public Iterable getAllowedValues(final ParamName param) {
 		return null; //TODO: implement me
 	}
 }

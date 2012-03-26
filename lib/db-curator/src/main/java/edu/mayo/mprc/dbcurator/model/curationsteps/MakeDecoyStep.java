@@ -111,7 +111,7 @@ public class MakeDecoyStep implements CurationStep {
 	 *
 	 * @param type
 	 */
-	public void setManipulatorType(int type) {
+	public void setManipulatorType(final int type) {
 		this.manipulatorType = type;
 	}
 
@@ -121,7 +121,7 @@ public class MakeDecoyStep implements CurationStep {
 	 *
 	 * @param mode true if you want to be in overwrite mode else false
 	 */
-	public void setOverwriteMode(boolean mode) {
+	public void setOverwriteMode(final boolean mode) {
 		this.overwriteMode = mode;
 	}
 
@@ -135,7 +135,7 @@ public class MakeDecoyStep implements CurationStep {
 	 * @param exec the CurationExecutor that we are performing this step for
 	 * @return the post validation.  This is the same object that will be returned by a call to postValidate()
 	 */
-	public StepValidation performStep(CurationExecutor exec) {
+	public StepValidation performStep(final CurationExecutor exec) {
 		return performStep(exec.getCurrentInStream(), exec.getCurrentOutStream(), exec.getStatusObject());
 	}
 
@@ -147,7 +147,7 @@ public class MakeDecoyStep implements CurationStep {
 	 * @param status The progress is updated here, we also take the amount of sequences from here.
 	 * @return Information about how the step performed.
 	 */
-	StepValidation performStep(DBInputStream in, DBOutputStream out, CurationStatus status) {
+	StepValidation performStep(final DBInputStream in, final DBOutputStream out, final CurationStatus status) {
 		//make sure we meet at least the pre validation criteria, this will also make sure our manipulator is set
 		this.lastRunValidation = this.preValidate(null);
 		if (!lastRunValidation.isOK()) {
@@ -155,7 +155,7 @@ public class MakeDecoyStep implements CurationStep {
 		}
 
 		//the the number of sequences we need to manipulate
-		int numberOfSequences = status.getLastStepSequenceCount();
+		final int numberOfSequences = status.getLastStepSequenceCount();
 		int currentSequence = 0;
 		try {
 			//if we want to append the sequences we need to first write out he origal sequences
@@ -171,7 +171,7 @@ public class MakeDecoyStep implements CurationStep {
 				}
 			}
 			in.beforeFirst();
-			float percentMultiplier = (this.overwriteMode ? 100f : 50f); //if we are doing an append then we only want to multiply the manipulation by 50% not 100%
+			final float percentMultiplier = (this.overwriteMode ? 100f : 50f); //if we are doing an append then we only want to multiply the manipulation by 50% not 100%
 			while (in.gotoNextSequence()) {
 				status.setCurrentStepProgress(percentMultiplier * ++currentSequence / numberOfSequences);
 
@@ -198,8 +198,8 @@ public class MakeDecoyStep implements CurationStep {
 	 * @param description Description of the change, e.g. <code>Reversed</code>
 	 * @return Modified header <code>&gt;Reversed_WHATEVER (Reversed) Whatever description</code>
 	 */
-	static String modifyHeader(String header, String description) {
-		String modifiedHeader;
+	static String modifyHeader(final String header, final String description) {
+		final String modifiedHeader;
 		final Matcher matcher = HEADER_TRANSFORM.matcher(header);
 		if (matcher.matches()) {
 
@@ -218,8 +218,8 @@ public class MakeDecoyStep implements CurationStep {
 	 * @param curationDao
 	 * @return the @see StepValidation to interrogate for issues
 	 */
-	public StepValidation preValidate(CurationDao curationDao) {
-		StepValidation prevalidation = new StepValidation();
+	public StepValidation preValidate(final CurationDao curationDao) {
+		final StepValidation prevalidation = new StepValidation();
 
 		//make sure we have a valid type set
 		if (this.getManipulator() == null) {
@@ -246,7 +246,7 @@ public class MakeDecoyStep implements CurationStep {
 	 * @return a cropy of this step
 	 */
 	public CurationStep createCopy() {
-		MakeDecoyStep copy = new MakeDecoyStep();
+		final MakeDecoyStep copy = new MakeDecoyStep();
 		copy.overwriteMode = this.overwriteMode;
 		copy.manipulatorType = this.manipulatorType;
 		return copy;
@@ -256,7 +256,7 @@ public class MakeDecoyStep implements CurationStep {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -269,7 +269,7 @@ public class MakeDecoyStep implements CurationStep {
 		return this.lastRunCompletionCount;
 	}
 
-	public void setLastRunCompletionCount(Integer count) {
+	public void setLastRunCompletionCount(final Integer count) {
 		this.lastRunCompletionCount = count;
 	}
 

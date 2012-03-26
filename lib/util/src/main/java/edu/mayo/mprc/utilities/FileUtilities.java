@@ -76,9 +76,9 @@ public final class FileUtilities {
 	 * @param folder Folder to inspect for files.
 	 * @return A list of all the files contained in the given parent folder. The folder is examined recursively.
 	 */
-	public static List<File> getFilesFromFolder(File folder) {
+	public static List<File> getFilesFromFolder(final File folder) {
 		if (folder.exists() && folder.isDirectory()) {
-			LinkedList<File> files = new LinkedList<File>();
+			final LinkedList<File> files = new LinkedList<File>();
 			getFilesRecursively(folder, files);
 			return files;
 		} else {
@@ -86,11 +86,11 @@ public final class FileUtilities {
 		}
 	}
 
-	private static void getFilesRecursively(File file, List<File> files) {
+	private static void getFilesRecursively(final File file, final List<File> files) {
 		if (!file.isDirectory()) {
 			files.add(file.getAbsoluteFile());
 		} else {
-			for (File childFile : file.listFiles()) {
+			for (final File childFile : file.listFiles()) {
 				getFilesRecursively(childFile, files);
 			}
 		}
@@ -104,16 +104,16 @@ public final class FileUtilities {
 	 * @return list of lines that match
 	 * @throws IOException Failing to read the file
 	 */
-	public static List<String> findLinesContaining(File file, String regExp) throws IOException {
+	public static List<String> findLinesContaining(final File file, final String regExp) throws IOException {
 		BufferedReader reader = null;
-		Pattern p = Pattern.compile(regExp);
+		final Pattern p = Pattern.compile(regExp);
 		try {
 			reader = new BufferedReader(new FileReader(file));
 
 			String line = reader.readLine();
-			List<String> retList = new ArrayList<String>();
+			final List<String> retList = new ArrayList<String>();
 			while (line != null) {
-				Matcher matcher = p.matcher(line);
+				final Matcher matcher = p.matcher(line);
 				if (matcher.find()) {
 					retList.add(line);
 				}
@@ -133,9 +133,9 @@ public final class FileUtilities {
 	 * @return String containing all the data.
 	 * @throws IOException Reading failed.
 	 */
-	public static String readIntoString(Reader reader, long maxLength) throws IOException {
-		StringBuilder builder = new StringBuilder(SMALL_FILE_BUFFER);
-		char[] buff = new char[BUFF_SIZE];
+	public static String readIntoString(final Reader reader, final long maxLength) throws IOException {
+		final StringBuilder builder = new StringBuilder(SMALL_FILE_BUFFER);
+		final char[] buff = new char[BUFF_SIZE];
 		int readBytes = reader.read(buff);
 		while (readBytes >= 0) {
 			builder.append(buff, 0, readBytes);
@@ -151,7 +151,7 @@ public final class FileUtilities {
 	 * @param file File to read lines from.
 	 * @return A list of all lines in the file. Wraps a Guava method.
 	 */
-	public static List<String> readLines(File file) {
+	public static List<String> readLines(final File file) {
 		try {
 			return Files.readLines(file, Charsets.UTF_8);
 		} catch (IOException e) {
@@ -164,8 +164,8 @@ public final class FileUtilities {
 	 * @return How many lines were there in the input file.
 	 * @throws IOException If reading failed.
 	 */
-	public static int countLines(File file) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+	public static int countLines(final File file) throws IOException {
+		final BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
 			int count = 0;
 			while (reader.readLine() != null) {
@@ -187,9 +187,9 @@ public final class FileUtilities {
 	 */
 	public static File findSingleSimilarFile(final File toFind, final File withinFolder) {
 
-		File[] matchingFileArray = withinFolder.listFiles(new FileFilter() {
+		final File[] matchingFileArray = withinFolder.listFiles(new FileFilter() {
 
-			public boolean accept(File pathname) {
+			public boolean accept(final File pathname) {
 				if (pathname.isDirectory() || pathname.equals(toFind) || !pathname.canRead()) {
 					return false;
 				} else {
@@ -202,7 +202,7 @@ public final class FileUtilities {
 			return null;
 		}
 
-		for (File file : matchingFileArray) {
+		for (final File file : matchingFileArray) {
 			try {
 				if (equalFiles(toFind, file)) {
 					return file;
@@ -231,13 +231,13 @@ public final class FileUtilities {
 	 * @throws IOException                   if there was an error when creating the link
 	 * @throws UnsupportedOperationException if we can't create sym links in the current environment
 	 */
-	public static void createLink(File linkSource, File linkTarget, boolean isSymLink) throws IOException {
+	public static void createLink(final File linkSource, final File linkTarget, final boolean isSymLink) throws IOException {
 		if (linkSource == null || linkTarget == null) {
 			throw new IllegalArgumentException("The createLink parameters must not be null.");
 		}
 
-		File canonicalLinkSource = linkSource.getCanonicalFile();
-		File canonicalLinkTarget = linkTarget.getCanonicalFile();
+		final File canonicalLinkSource = linkSource.getCanonicalFile();
+		final File canonicalLinkTarget = linkTarget.getCanonicalFile();
 
 		if (canonicalLinkTarget.equals(canonicalLinkSource)) {
 			// TODO: The link could be going the other way than we wanted!
@@ -256,9 +256,9 @@ public final class FileUtilities {
 		}
 	}
 
-	private static void makeUnixLink(boolean isSymLink, File canonicalLinkSource, File canonicalLinkTarget) throws IOException {
+	private static void makeUnixLink(final boolean isSymLink, final File canonicalLinkSource, final File canonicalLinkTarget) throws IOException {
 		if (!isSymLink) {
-			File commonPath = getCommonPath(canonicalLinkSource, canonicalLinkTarget);
+			final File commonPath = getCommonPath(canonicalLinkSource, canonicalLinkTarget);
 			if (commonPath == null) {
 				throw new IOException("Hard link failed, " + canonicalLinkSource.getAbsolutePath() + " and " + canonicalLinkTarget.getAbsolutePath() + " do not share any common subpath, therefore must be on different subsystems.");  //this shouldn't happen on linux
 			}
@@ -266,17 +266,17 @@ public final class FileUtilities {
 
 		// The link contains information how to get from the linkSource file to the linkTarget file.
 		// Therefore if the source and target both get moved, the link will keep working.
-		String actualLink = getRelativePath(canonicalLinkTarget.getParentFile().getAbsolutePath(), canonicalLinkSource.getAbsolutePath());
+		final String actualLink = getRelativePath(canonicalLinkTarget.getParentFile().getAbsolutePath(), canonicalLinkSource.getAbsolutePath());
 
 		if (canonicalLinkTarget.exists()) {
 			quietDelete(canonicalLinkTarget);
 		}
 
-		ProcessCaller caller = getUnixLinkCaller(isSymLink, canonicalLinkTarget, actualLink);
+		final ProcessCaller caller = getUnixLinkCaller(isSymLink, canonicalLinkTarget, actualLink);
 
 		caller.run();
 
-		boolean unexpectedResult = caller.getExitValue() != 0 || caller.getOutputLog().length() > 0 || caller.getErrorLog().length() > 0;
+		final boolean unexpectedResult = caller.getExitValue() != 0 || caller.getOutputLog().length() > 0 || caller.getErrorLog().length() > 0;
 
 		if (unexpectedResult && !canonicalLinkSource.exists()) {
 			throw new IOException(caller.getFailedCallDescription());
@@ -287,8 +287,8 @@ public final class FileUtilities {
 		}
 	}
 
-	private static ProcessCaller getUnixLinkCaller(boolean isSymLink, File target, String source) {
-		List<String> command = new ArrayList<String>(4);
+	private static ProcessCaller getUnixLinkCaller(final boolean isSymLink, final File target, final String source) {
+		final List<String> command = new ArrayList<String>(4);
 
 		command.add("ln");
 		if (isSymLink) {
@@ -297,7 +297,7 @@ public final class FileUtilities {
 		command.add(source);
 		command.add(target.getAbsolutePath());
 
-		ProcessBuilder pb = new ProcessBuilder()
+		final ProcessBuilder pb = new ProcessBuilder()
 				.directory(target.getParentFile())
 				.command(command);
 
@@ -319,7 +319,7 @@ public final class FileUtilities {
 	 * @return True if running on 64-bit windows, determined by checking that the OS name contains "windows" and "64" strings
 	 */
 	public static boolean isWindows64Platform() {
-		String osName = getOsNameLowerCase();
+		final String osName = getOsNameLowerCase();
 		return osName.contains("windows") && osName.contains("64");
 	}
 
@@ -346,9 +346,9 @@ public final class FileUtilities {
 	 * @param overwrite set to true if you want to overwrite any existing file else false to fail if the file already exists
 	 * @see #tryCopyFile
 	 */
-	public static void copyFile(File copyFrom, File copyTo, boolean overwrite) {
+	public static void copyFile(final File copyFrom, final File copyTo, final boolean overwrite) {
 		LOGGER.debug("Copying file from " + copyFrom.getAbsolutePath() + " to " + copyTo.getAbsolutePath());
-		String copyErrorPrefix = "copy '" + copyFrom.getAbsolutePath() + "' '" + copyTo.getAbsolutePath() + "' failed: ";
+		final String copyErrorPrefix = "copy '" + copyFrom.getAbsolutePath() + "' '" + copyTo.getAbsolutePath() + "' failed: ";
 
 		if (!copyFrom.isFile()) {
 			throw new MprcException(copyErrorPrefix + "the source file does not exist.");
@@ -391,7 +391,7 @@ public final class FileUtilities {
 	 * @return true if copyFrom now exists at copyTo as well else false.
 	 * @see #copyFile
 	 */
-	public static boolean tryCopyFile(File copyFrom, File copyTo, boolean overwrite) {
+	public static boolean tryCopyFile(final File copyFrom, final File copyTo, final boolean overwrite) {
 		try {
 			copyFile(copyFrom, copyTo, overwrite);
 		} catch (MprcException e) {
@@ -434,10 +434,10 @@ public final class FileUtilities {
 	 * @return The extension of the file, "" if none, special treatment of ".gz" able to correctly detect "tar.gz" case.
 	 */
 	public static String getGzippedExtension(final String filename) {
-		String extension = getExtension(filename);
+		final String extension = getExtension(filename);
 		if (extension.equalsIgnoreCase(GZIP_EXTENSION)) {
-			String base = filename.substring(0, filename.length() - 1 - GZIP_EXTENSION.length());
-			String prevExtension = getExtension(base);
+			final String base = filename.substring(0, filename.length() - 1 - GZIP_EXTENSION.length());
+			final String prevExtension = getExtension(base);
 			if (prevExtension.length() == 0) {
 				return extension;
 			} else {
@@ -477,7 +477,7 @@ public final class FileUtilities {
 	 * @param file Input file
 	 * @return File name without extension
 	 */
-	public static String getFileNameWithoutExtension(File file) {
+	public static String getFileNameWithoutExtension(final File file) {
 		if (file == null) {
 			return null;
 		}
@@ -489,11 +489,11 @@ public final class FileUtilities {
 	 * @param s         String to write.
 	 * @param overwrite If true, the file must not exist. If the file exists, it must be of zero length. Otherwise an exception is thrown.
 	 */
-	public static void writeStringToFile(File file, String s, boolean overwrite) {
+	public static void writeStringToFile(final File file, final String s, final boolean overwrite) {
 		if (!overwrite && file.exists() && file.length() > 0) {
 			throw new MprcException("File already exists: " + file.getAbsolutePath());
 		}
-		File parentFolder = file.getParentFile();
+		final File parentFolder = file.getParentFile();
 		if (parentFolder != null) {
 			ensureFolderExists(parentFolder);
 		}
@@ -511,12 +511,12 @@ public final class FileUtilities {
 	 * @param file   the file to write to
 	 * @throws IOException if there was a problem writing the stream to the file
 	 */
-	public static void writeStreamToFile(InputStream stream, File file) throws IOException {
+	public static void writeStreamToFile(final InputStream stream, final File file) throws IOException {
 		if (stream == null) {
 			throw new IllegalArgumentException("Stream given cannot be null.");
 		}
 
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
+		final FileOutputStream fileOutputStream = new FileOutputStream(file);
 		try {
 			ByteStreams.copy(stream, fileOutputStream);
 		} finally {
@@ -534,9 +534,9 @@ public final class FileUtilities {
 	 *
 	 * @param folder Folder to "refresh".
 	 */
-	public static void refreshFolder(File folder) {
+	public static void refreshFolder(final File folder) {
 		if (folder.isDirectory()) {
-			File parentFolder = folder.getParentFile();
+			final File parentFolder = folder.getParentFile();
 			if (parentFolder != null) {
 				refreshFolder(parentFolder);
 			}
@@ -551,7 +551,7 @@ public final class FileUtilities {
 	 * @param filename the name of the file to scrub
 	 * @return the scrubbed filename
 	 */
-	public static String removeFileUrlPrefix(String filename) {
+	public static String removeFileUrlPrefix(final String filename) {
 		if (filename.indexOf(FILE_URL_PREFIX) != -1) {
 			return filename.replace(FILE_URL_PREFIX, "");
 		}
@@ -564,7 +564,7 @@ public final class FileUtilities {
 	 * @param foldername the folder you want to get just the name of
 	 * @return the name of the folder without the path
 	 */
-	public static String getLastFolderName(String foldername) {
+	public static String getLastFolderName(final String foldername) {
 		return new File(foldername).getName();
 	}
 
@@ -576,7 +576,7 @@ public final class FileUtilities {
 	 * @param deleteOnExit optionally remove the directory (TODO: How is on exit useful for a Daemon?)
 	 * @return Temporary folder.
 	 */
-	public static File createTempFolder(File folder, String name, boolean deleteOnExit) {
+	public static File createTempFolder(final File folder, final String name, final boolean deleteOnExit) {
 		File tempDirFileLock = null;
 		try {
 			ensureFolderExists(folder);
@@ -584,13 +584,13 @@ public final class FileUtilities {
 		} catch (IOException e) {
 			throw new MprcException("Failure creating temporary file (to determine temporary folder name) named " + name + " in folder " + folder.getAbsolutePath(), e);
 		}
-		String dirName = tempDirFileLock.getPath().substring(0, tempDirFileLock.getPath().length() - 3);
+		final String dirName = tempDirFileLock.getPath().substring(0, tempDirFileLock.getPath().length() - 3);
 		try {
-			File tempDir = new File(dirName);
+			final File tempDir = new File(dirName);
 			if (deleteOnExit) {
 				tempDir.deleteOnExit();
 			}
-			boolean mkdirOk = tempDir.mkdir();
+			final boolean mkdirOk = tempDir.mkdir();
 			if (!tempDir.exists()) {
 				throw new MprcException(mkdirOk ? "The folder does not exist after successful mkdir (something is very wrong)." : "mkdir command failed");
 			}
@@ -609,7 +609,7 @@ public final class FileUtilities {
 	 * @param toDelete is the file or folder you want to delete
 	 * @return True if delete succeeded, false if there was any error. No exception is thrown.
 	 */
-	public static boolean deleteNow(File toDelete) {
+	public static boolean deleteNow(final File toDelete) {
 		Preconditions.checkNotNull(toDelete);
 		LOGGER.log(Level.DEBUG, "Deleting file: " + toDelete.getAbsolutePath());
 		try {
@@ -627,10 +627,10 @@ public final class FileUtilities {
 	 *
 	 * @param file - file of folder
 	 */
-	public static void quietDelete(File file) {
+	public static void quietDelete(final File file) {
 		if (file != null && file.exists()) {
 			// Ignore the output of file.delete
-			boolean ignore = file.delete();
+			final boolean ignore = file.delete();
 			if (!ignore) {
 				LOGGER.debug("Could not delete " + file.getAbsolutePath());
 			}
@@ -648,7 +648,7 @@ public final class FileUtilities {
 	 * @return true if they have the same contents else false
 	 * @throws IOException If any of the two files could not be read.
 	 */
-	public static boolean equalFiles(File f1, File f2) throws IOException {
+	public static boolean equalFiles(final File f1, final File f2) throws IOException {
 		return Files.equal(f1, f2);
 	}
 
@@ -660,7 +660,7 @@ public final class FileUtilities {
 	 * @param f2 Folder 2.
 	 * @return Which is the longest path that these two folders have in common.
 	 */
-	public static File getCommonPath(File f1, File f2) {
+	public static File getCommonPath(final File f1, final File f2) {
 		if (f1 == null || f2 == null) {
 			return null;
 		}
@@ -678,8 +678,8 @@ public final class FileUtilities {
 		} else if (f2.getPath().startsWith(f1.getPath())) {
 			return f1;
 		} else {
-			File followingF1 = getCommonPath(f1.getParentFile(), f2);
-			File followingF2 = getCommonPath(f1, f2.getParentFile());
+			final File followingF1 = getCommonPath(f1.getParentFile(), f2);
+			final File followingF2 = getCommonPath(f1, f2.getParentFile());
 
 			if (followingF1 == null && followingF2 == null) {
 				return null;
@@ -706,7 +706,7 @@ public final class FileUtilities {
 	 * @param symLink   true if this is a symbolic (not hard) link
 	 * @return if the link was successful
 	 */
-	public static boolean linkOrCopy(File copyFrom, File copyTo, boolean overwrite, boolean symLink) {
+	public static boolean linkOrCopy(final File copyFrom, final File copyTo, final boolean overwrite, final boolean symLink) {
 		if (!copyFrom.isFile()) {
 			throw new MprcException("Cannot copy " + copyFrom.getAbsolutePath() + " - it is not a file.");
 		}
@@ -724,7 +724,7 @@ public final class FileUtilities {
 		}
 
 		// TODO: This would be successful for many different reasons - cannot be used directly!
-		boolean linkSuccessful = copyTo.exists() && copyFrom.length() == copyTo.length();
+		final boolean linkSuccessful = copyTo.exists() && copyFrom.length() == copyTo.length();
 
 		if (linkSuccessful) {
 			LOGGER.debug("Have created a link at " + copyTo.getAbsolutePath() + " pointing to " + copyFrom.getAbsolutePath());
@@ -752,7 +752,7 @@ public final class FileUtilities {
 			}
 			return;
 		}
-		boolean mkdirOk = folder.mkdirs();
+		final boolean mkdirOk = folder.mkdirs();
 		if (!folder.exists()) {
 			throw new MprcException("Cannot create directory  " + folder.getAbsolutePath() + (mkdirOk ? " (did not appear after being created)" : ""));
 		}
@@ -783,7 +783,7 @@ public final class FileUtilities {
 	 * @param from Rename from.
 	 * @param to   Rename to. If the file exists, it is overwritten.
 	 */
-	public static void rename(File from, File to) {
+	public static void rename(final File from, final File to) {
 		if (from.equals(to)) {
 			return;
 		}
@@ -801,8 +801,8 @@ public final class FileUtilities {
 	 * @param msTimeout how long should we wait before throwing an exception
 	 * @throws MprcException if we have waited too long for the file to come around
 	 */
-	public static void waitForFile(File toWaitFor, int msTimeout) {
-		long startTime = new Date().getTime();
+	public static void waitForFile(final File toWaitFor, final int msTimeout) {
+		final long startTime = new Date().getTime();
 		long warnStartTime = startTime;
 		while (!toWaitFor.exists()) {
 			try {
@@ -844,11 +844,11 @@ public final class FileUtilities {
 	 * @param lines           the Strings to write out as individual lines
 	 * @param endOfLineMarker the character to be used as an end of line marker
 	 */
-	public static void writeStringsToFileNoBackup(File toWriteTo, List<String> lines, String endOfLineMarker) {
+	public static void writeStringsToFileNoBackup(final File toWriteTo, final List<String> lines, final String endOfLineMarker) {
 		Writer writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(toWriteTo));
-			for (String line : lines) {
+			for (final String line : lines) {
 				writer.write(line);
 				writer.write(endOfLineMarker);
 			}
@@ -867,7 +867,7 @@ public final class FileUtilities {
 	 * @param caseSensitive True on platforms where file names are case sensitive. Use {@link #isCaseSensitiveFilePlatform()}
 	 * @return True if the file names are equivalent.
 	 */
-	private static boolean fileNameEquals(String name1, String name2, boolean caseSensitive) {
+	private static boolean fileNameEquals(final String name1, final String name2, final boolean caseSensitive) {
 		if (name1 == null) {
 			return name2 == null;
 		}
@@ -896,7 +896,7 @@ public final class FileUtilities {
 	 * @param caseSensitive True on platforms where file names are case sensitive. Use {@link #isCaseSensitiveFilePlatform()}
 	 * @return the relative path between the two files
 	 */
-	public static String getRelativePathToParent(String basePath, String targetPath, String separator, boolean caseSensitive) {
+	public static String getRelativePathToParent(final String basePath, final String targetPath, final String separator, final boolean caseSensitive) {
 		return getRelativePath(basePath, targetPath, separator, caseSensitive, true);
 	}
 
@@ -913,9 +913,9 @@ public final class FileUtilities {
 	 * @param noDoubleDots  When true, no .. paths are produced. If the target is not within base, the method returns null.
 	 * @return the relative path between the two files
 	 */
-	public static String getRelativePath(String basePath, String targetPath, String separator, boolean caseSensitive, boolean noDoubleDots) {
-		String[] base = basePath.split(Pattern.quote(separator), 0);
-		String[] target = targetPath.split(Pattern.quote(separator), 0);
+	public static String getRelativePath(final String basePath, final String targetPath, final String separator, final boolean caseSensitive, final boolean noDoubleDots) {
+		final String[] base = basePath.split(Pattern.quote(separator), 0);
+		final String[] target = targetPath.split(Pattern.quote(separator), 0);
 
 		//  First get all the common elements. Store their total length
 		//  and also count how many of them there are.
@@ -939,9 +939,9 @@ public final class FileUtilities {
 			//  begin with / as in *nix.
 		}
 
-		StringBuilder relative = new StringBuilder();
+		final StringBuilder relative = new StringBuilder();
 		if (base.length != commonIndex) {
-			int numDirsUp = base.length - commonIndex;
+			final int numDirsUp = base.length - commonIndex;
 			if (noDoubleDots && numDirsUp > 0) {
 				return null;
 			}
@@ -964,7 +964,7 @@ public final class FileUtilities {
 	 * @param targetPath the path we want to find a relative path to
 	 * @return Relative path that when appended to {@code basePath} gets the user to {@code targetPath}.
 	 */
-	public static String getRelativePath(String basePath, String targetPath) {
+	public static String getRelativePath(final String basePath, final String targetPath) {
 		return getRelativePath(basePath, targetPath, File.separator, isCaseSensitiveFilePlatform(), false);
 	}
 
@@ -990,7 +990,7 @@ public final class FileUtilities {
 	 *
 	 * @param toDelete is the file or folder you want to delete
 	 */
-	public static void cleanupTempFile(File toDelete) {
+	public static void cleanupTempFile(final File toDelete) {
 		Preconditions.checkNotNull(toDelete);
 		LOGGER.log(Level.DEBUG, "Deleting file: " + toDelete.getAbsolutePath());
 		try {
@@ -1006,7 +1006,7 @@ public final class FileUtilities {
 	 * @param file File to get input stream from.
 	 * @return {@link FileInputStream} for the given file.
 	 */
-	public static FileInputStream getInputStream(File file) {
+	public static FileInputStream getInputStream(final File file) {
 		FileInputStream fi = null;
 		try {
 			fi = new FileInputStream(file);
@@ -1022,7 +1022,7 @@ public final class FileUtilities {
 	 * @param file File to get input stream from.
 	 * @return {@link FileOutputStream} for the given file.
 	 */
-	public static FileOutputStream getOutputStream(File file) {
+	public static FileOutputStream getOutputStream(final File file) {
 		FileOutputStream fo = null;
 		try {
 			fo = new FileOutputStream(file);
@@ -1032,7 +1032,7 @@ public final class FileUtilities {
 		return fo;
 	}
 
-	public static BufferedReader getReader(File file) {
+	public static BufferedReader getReader(final File file) {
 		if (file == null) {
 			throw new IllegalArgumentException("The file to read from was null.");
 		}
@@ -1045,7 +1045,7 @@ public final class FileUtilities {
 		return r;
 	}
 
-	public static FileWriter getWriter(File file) {
+	public static FileWriter getWriter(final File file) {
 		if (file == null) {
 			throw new IllegalArgumentException("The file to write into was null.");
 		}
@@ -1064,7 +1064,7 @@ public final class FileUtilities {
 	 *
 	 * @param closeable Object to run the {@link Closeable#close} method on.
 	 */
-	public static void closeQuietly(Closeable closeable) {
+	public static void closeQuietly(final Closeable closeable) {
 		if (closeable == null) {
 			return;
 		}
@@ -1089,14 +1089,14 @@ public final class FileUtilities {
 	 *
 	 * @param object Object to call {@code close()} method on.
 	 */
-	public static void closeObjectQuietly(Object object) {
+	public static void closeObjectQuietly(final Object object) {
 		if (object != null) {
 			if (object instanceof Closeable) {
 				closeQuietly((Closeable) object);
 			}
 
 			try {
-				Method closeMethod = object.getClass().getMethod("close");
+				final Method closeMethod = object.getClass().getMethod("close");
 				closeMethod.invoke(object);
 			} catch (Exception e) {
 				LOGGER.warn("Could not execute close() method on object of type " + object.getClass().getName(), e);
@@ -1113,7 +1113,7 @@ public final class FileUtilities {
 	 * @param url URL to download.
 	 * @return Input stream backed by a temporary file containing the URL contents.
 	 */
-	public static InputStream getStream(URL url) {
+	public static InputStream getStream(final URL url) {
 		try {
 			final File tmpFile = File.createTempFile("swift", "tmp");
 			quietDelete(tmpFile);
@@ -1137,7 +1137,7 @@ public final class FileUtilities {
 	 * @param recursive When true, r
 	 *                  estore rights recursively for this file and all subfolders.
 	 */
-	public static void restoreUmaskRights(File file, boolean recursive) {
+	public static void restoreUmaskRights(final File file, final boolean recursive) {
 		if (umask == UMASK_UNKNOWN) {
 			umask = getCurrentUmask();
 		}
@@ -1172,20 +1172,20 @@ public final class FileUtilities {
 	 *                  </dl>
 	 * @param recursive When true, restore the rights recursively for this folder and all its subfolders.
 	 */
-	public static void chmod(File file, int flags, char operation, boolean recursive) {
+	public static void chmod(final File file, final int flags, final char operation, final boolean recursive) {
 		if (isWindowsPlatform()) {
 			LOGGER.warn("Cannot execute chmod on windows for file: " + file.getAbsolutePath());
 			return;
 		}
-		String chmodString = flagsToChmodString(flags, operation);
+		final String chmodString = flagsToChmodString(flags, operation);
 
-		ProcessBuilder builder;
+		final ProcessBuilder builder;
 		if (recursive) {
 			builder = new ProcessBuilder("chmod", "-R", chmodString, file.getAbsolutePath());
 		} else {
 			builder = new ProcessBuilder("chmod", chmodString, file.getAbsolutePath());
 		}
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.run();
 		if (caller.getExitValue() != 0) {
 			LOGGER.info("Could not change permissions:" + caller.getFailedCallDescription());
@@ -1199,7 +1199,7 @@ public final class FileUtilities {
 	 * @param operation Operation to perform - +, - or =
 	 * @return chmod string
 	 */
-	static String flagsToChmodString(int flags, char operation) {
+	static String flagsToChmodString(final int flags, final char operation) {
 		String chmodRights = "";
 		if ((flags & 0700) != 0) {
 			chmodRights += "u" + operation +
@@ -1242,7 +1242,7 @@ public final class FileUtilities {
 		}
 		ProcessCaller caller = null;
 		try {
-			ProcessBuilder builder = new ProcessBuilder("bash", "-c", "umask");
+			final ProcessBuilder builder = new ProcessBuilder("bash", "-c", "umask");
 			caller = new ProcessCaller(builder);
 			caller.run();
 			if (caller.getExitValue() != 0) {
@@ -1278,7 +1278,7 @@ public final class FileUtilities {
 	 * @param file Executable file to be resolved to absolute path.
 	 * @return Absolute path to the executable file (unless only the file name is specified).
 	 */
-	public static File getAbsoluteFileForExecutables(File file) {
+	public static File getAbsoluteFileForExecutables(final File file) {
 		if (file.isAbsolute() || file.getParentFile() == null) {
 			return file;
 		}
@@ -1296,13 +1296,13 @@ public final class FileUtilities {
 	 * @return The link to the file.
 	 * @see #cleanupShortenedPath
 	 */
-	public static File shortenFilePath(File file) {
+	public static File shortenFilePath(final File file) {
 		if (!isLinuxPlatform()) {
 			throw new MprcException("File path shortening not supported anywhere but linux.");
 		}
 		try {
-			File tempFolder = createTempFolder();
-			File tempFile = new File(tempFolder, file.getName());
+			final File tempFolder = createTempFolder();
+			final File tempFile = new File(tempFolder, file.getName());
 			createLink(file, tempFile, true);
 			return tempFile;
 		} catch (Exception t) {
@@ -1315,12 +1315,12 @@ public final class FileUtilities {
 	 *
 	 * @param file The file whose path was shortened.
 	 */
-	public static void cleanupShortenedPath(File file) {
+	public static void cleanupShortenedPath(final File file) {
 		quietDelete(file);
 		quietDelete(file.getParentFile());
 	}
 
-	public static String removeFileUrlPrefix(URI filename) {
+	public static String removeFileUrlPrefix(final URI filename) {
 		if (filename.getScheme().equals("file")) {
 			return filename.getPath();
 		}
@@ -1363,7 +1363,7 @@ public final class FileUtilities {
 	 *
 	 * @param s String to print to {@code System.out.println}
 	 */
-	public static void out(String s) {
+	public static void out(final String s) {
 		System.out.println(s);
 	}
 
@@ -1373,7 +1373,7 @@ public final class FileUtilities {
 	 *
 	 * @param s String to print to {@code System.err.println}
 	 */
-	public static void err(String s) {
+	public static void err(final String s) {
 		System.err.println(s);
 	}
 
@@ -1383,7 +1383,7 @@ public final class FileUtilities {
 	 *
 	 * @param t Exception to print to {@code System.err}
 	 */
-	public static void stackTrace(Exception t) {
+	public static void stackTrace(final Exception t) {
 		t.printStackTrace(System.err);
 	}
 
@@ -1403,7 +1403,7 @@ public final class FileUtilities {
 	public static void listFolderContents(final File folder, final FilenameFilter filter, final List<File> dirs, final List<File> files) {
 		dirs.clear();
 		files.clear();
-		File fileEntries[] = folder.listFiles(new NotHiddenFilter());
+		final File[] fileEntries = folder.listFiles(new NotHiddenFilter());
 
 		if (fileEntries != null && fileEntries.length > MIN_FOLDER_SIZE_FOR_LS && isLinuxPlatform()) {
 			// Speed up on Linux
@@ -1411,14 +1411,14 @@ public final class FileUtilities {
 			// -p directories have trailing slash
 			// -1 single column
 			// -L dereference symlinks
-			ProcessBuilder builder =
+			final ProcessBuilder builder =
 					new ProcessBuilder("/bin/ls", "-p1L", "--", folder.getAbsolutePath())
 							.directory(folder);
-			ProcessCaller caller = new ProcessCaller(builder);
+			final ProcessCaller caller = new ProcessCaller(builder);
 			caller.setKillTimeout(FOLDER_LIST_TIMEOUT);
 			caller.setOutputMonitor(new LogMonitor() {
 				@Override
-				public void line(String line) {
+				public void line(final String line) {
 					if (line.endsWith("/")) {
 						dirs.add(new File(folder, line));
 					} else if (filter.accept(folder, line)) {
@@ -1429,7 +1429,7 @@ public final class FileUtilities {
 			caller.run();
 		} else {
 			if (fileEntries != null) {
-				for (File file : fileEntries) {
+				for (final File file : fileEntries) {
 					if (file.isDirectory()) {
 						dirs.add(file);
 					} else if (filter.accept(folder, file.getName())) {
@@ -1446,7 +1446,7 @@ public final class FileUtilities {
 	 * @param delimiter Delimiter to test
 	 * @return True if it is a potential path delimiter
 	 */
-	public static boolean isKnownPathDelimiter(char delimiter) {
+	public static boolean isKnownPathDelimiter(final char delimiter) {
 		return delimiter == '/' || delimiter == '\\';
 	}
 
@@ -1496,7 +1496,7 @@ public final class FileUtilities {
 	private static final class TempFileBackedInputStream extends FileInputStream {
 		private final File backingFile;
 
-		public TempFileBackedInputStream(File backingFile) throws FileNotFoundException {
+		public TempFileBackedInputStream(final File backingFile) throws FileNotFoundException {
 			super(backingFile);
 			this.backingFile = backingFile;
 		}
@@ -1516,7 +1516,7 @@ public final class FileUtilities {
 	 * @return Canonical file on Windows, do nothing on Linux. Used to resolve upper/lower case problem issues that do not
 	 *         manifest themselves on case-sensitive filesystem like Linux.
 	 */
-	public static File getCanonicalFileNoLinks(File file) {
+	public static File getCanonicalFileNoLinks(final File file) {
 		if (file == null) {
 			return null;
 		}
@@ -1539,7 +1539,7 @@ public final class FileUtilities {
 	 * @param uri File URI to open
 	 * @return File for the given URI
 	 */
-	public static File fileFromUri(URI uri) {
+	public static File fileFromUri(final URI uri) {
 		try {
 			return new File(uri);
 		} catch (Exception t) {
@@ -1560,19 +1560,19 @@ public final class FileUtilities {
 	 * @param date            Directory hierarchy is created out of this Date object. If null, current time is used.
 	 * @return The newly created year/month/day directory.
 	 */
-	public static File getDateBasedDirectory(File parentDirectory, Date date) {
-		Date myDate;
+	public static File getDateBasedDirectory(final File parentDirectory, final Date date) {
+		final Date myDate;
 		if (date == null) {
 			myDate = new Date();
 		} else {
 			myDate = date;
 		}
 
-		Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(myDate);
 
 		if (parentDirectory != null && parentDirectory.exists() && parentDirectory.isDirectory()) {
-			File folder = new File(new File(new File(parentDirectory, Integer.toString(calendar.get(Calendar.YEAR))), Integer.toString(calendar.get(Calendar.MONTH) + 1)), Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
+			final File folder = new File(new File(new File(parentDirectory, Integer.toString(calendar.get(Calendar.YEAR))), Integer.toString(calendar.get(Calendar.MONTH) + 1)), Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
 
 			ensureFolderExists(folder);
 
@@ -1588,7 +1588,7 @@ public final class FileUtilities {
 	 * @param file File to set the modified time to
 	 * @param time Time (obtain using e.g. {@link Date#getTime()}
 	 */
-	public static void setLastModified(File file, long time) {
+	public static void setLastModified(final File file, final long time) {
 		if (file == null) {
 			throw new MprcException("File to set last modified time was null");
 		}

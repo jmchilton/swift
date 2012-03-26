@@ -16,7 +16,7 @@ public final class ErrorEntry extends Entry {
 		this.errorMessage = "Unknown error occured.";
 	}
 
-	public ErrorEntry(String message) {
+	public ErrorEntry(final String message) {
 		super("");
 		this.errorMessage = message;
 	}
@@ -29,7 +29,7 @@ public final class ErrorEntry extends Entry {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 

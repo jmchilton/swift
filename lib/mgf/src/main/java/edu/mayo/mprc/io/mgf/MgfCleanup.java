@@ -28,7 +28,7 @@ public final class MgfCleanup {
 
 	private File inputMgf;
 
-	public MgfCleanup(File inputMgf) {
+	public MgfCleanup(final File inputMgf) {
 		this.inputMgf = inputMgf;
 	}
 
@@ -36,7 +36,7 @@ public final class MgfCleanup {
 	 * @param output where to put cleaned up mgf
 	 * @return true if cleanup was actually needed. If false, the cleaned mgf was not even created.
 	 */
-	public boolean produceCleanedMgf(File output) {
+	public boolean produceCleanedMgf(final File output) {
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 		boolean cleanupNeeded = false;
@@ -50,7 +50,7 @@ public final class MgfCleanup {
 				LOGGER.debug("Cleaning up " + inputMgf.getAbsolutePath() + " into " + output.getAbsolutePath());
 				FileUtilities.ensureFileExists(output);
 				writer = new BufferedWriter(new FileWriter(output));
-				String prefix = FileUtilities.stripExtension(inputMgf.getName());
+				final String prefix = FileUtilities.stripExtension(inputMgf.getName());
 				performCleanup(reader, writer, prefix);
 				LOGGER.debug("Cleanup finished");
 			}
@@ -63,14 +63,14 @@ public final class MgfCleanup {
 		return cleanupNeeded;
 	}
 
-	static boolean cleanupNeeded(BufferedReader reader) throws IOException {
+	static boolean cleanupNeeded(final BufferedReader reader) throws IOException {
 		boolean insideParamSection = false;
 		String title = null;
 		// We assume (according to MGF specification), that search parameters must
 		// follow BEGIN IONS section. Once the param section is over (queries start),
 		// there must be NO parameters until we encounter another BEGIN IONS section.
 		while (true) {
-			String line = reader.readLine();
+			final String line = reader.readLine();
 			if (line == null) {
 				break;
 			}
@@ -98,7 +98,7 @@ public final class MgfCleanup {
 		return false;
 	}
 
-	static void performCleanup(BufferedReader reader, BufferedWriter writer, String prefix) throws IOException {
+	static void performCleanup(final BufferedReader reader, final BufferedWriter writer, final String prefix) throws IOException {
 		int invalidTitleId = 0;
 		boolean insideParamSection = false;
 		String title = null;
@@ -141,15 +141,15 @@ public final class MgfCleanup {
 		writer.flush();
 	}
 
-	static int parseCharge(String line) {
-		Matcher m = CHARGE.matcher(line);
+	static int parseCharge(final String line) {
+		final Matcher m = CHARGE.matcher(line);
 		if (m.find()) {
 			return Integer.parseInt(m.group(1).intern());
 		}
 		return 0;
 	}
 
-	static String getTitleDtaIdentification(int runNumber, String prefix, int charge, int uniqueId) {
+	static String getTitleDtaIdentification(final int runNumber, final String prefix, final int charge, final int uniqueId) {
 		int fixedRunNumber = runNumber;
 		if (runNumber == -1) {
 			fixedRunNumber = uniqueId;

@@ -33,35 +33,35 @@ public final class PeriodicTableFactory {
 		return getDefaultPeriodicTable();
 	}
 
-	public static PeriodicTable parsePeriodicTable(String buffer) {
+	public static PeriodicTable parsePeriodicTable(final String buffer) {
 		int i;
-		PeriodicTable pt = new PeriodicTable();
+		final PeriodicTable pt = new PeriodicTable();
 		Element curr;
 		try {
-			BufferedReader reader = new BufferedReader(new StringReader(buffer));
+			final BufferedReader reader = new BufferedReader(new StringReader(buffer));
 			while (true) {
-				int EZNI;
-				String buff;
+				final int EZNI;
+				final String buff;
 				String line;
 				line = reader.readLine();
 				if (line == null) {
 					break;
 				}
 
-				String[] parts = line.split("\\s+", 2);
+				final String[] parts = line.split("\\s+", 2);
 				buff = parts[0];
 				EZNI = Integer.parseInt(parts[1]);
 				curr = new Element(buff, buff);
 				pt.addElement(curr);
 
 				for (i = 0; i < EZNI; i++) {
-					double EZM;
-					double EZP;
+					final double EZM;
+					final double EZP;
 					line = reader.readLine();
 					if (line == null) {
 						break;
 					}
-					String[] isotope = line.split("\\s+", 2);
+					final String[] isotope = line.split("\\s+", 2);
 					EZM = Double.parseDouble(isotope[0]);
 					EZP = Double.parseDouble(isotope[1]);
 					curr.addIsotope(new Isotope(EZM, EZP));

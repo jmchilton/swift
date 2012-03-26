@@ -128,7 +128,7 @@ public abstract class ScaffoldSpectraReader {
 	 * @param scaffoldSpectraFile Spectrum file to load.
 	 * @param scaffoldVersion     {@link #scaffoldVersion}
 	 */
-	public void load(File scaffoldSpectraFile, String scaffoldVersion, ProgressReporter reporter) {
+	public void load(final File scaffoldSpectraFile, final String scaffoldVersion, final ProgressReporter reporter) {
 		dataSourceName = scaffoldSpectraFile.getAbsolutePath();
 		this.scaffoldVersion = scaffoldVersion;
 		try {
@@ -149,7 +149,7 @@ public abstract class ScaffoldSpectraReader {
 	 * @param scaffoldVersion {@link #scaffoldVersion}
 	 * @param reporter        To report the progress. Can be null.
 	 */
-	public void load(InputStream stream, long inputSize, String dataSourceName, String scaffoldVersion, ProgressReporter reporter) {
+	public void load(final InputStream stream, final long inputSize, final String dataSourceName, final String scaffoldVersion, final ProgressReporter reporter) {
 		this.dataSourceName = dataSourceName;
 		this.scaffoldVersion = scaffoldVersion;
 		this.totalBytesToRead = inputSize;
@@ -160,8 +160,8 @@ public abstract class ScaffoldSpectraReader {
 		}
 	}
 
-	private void processStream(InputStream stream, ProgressReporter reporter) throws IOException {
-		Reader reader;
+	private void processStream(final InputStream stream, final ProgressReporter reporter) throws IOException {
+		final Reader reader;
 		if (totalBytesToRead > 0 && reporter != null) {
 			countingInputStream = new CountingInputStream(stream);
 			reader = new InputStreamReader(countingInputStream);
@@ -181,7 +181,7 @@ public abstract class ScaffoldSpectraReader {
 					throw new MprcException("End of file reached before we could find the header line");
 				}
 
-				int colonPos = line.indexOf(':');
+				final int colonPos = line.indexOf(':');
 				if (colonPos >= 0) {
 					final String key = line.substring(0, colonPos);
 					final String value = line.substring(colonPos + 1);
@@ -233,9 +233,9 @@ public abstract class ScaffoldSpectraReader {
 	 */
 	public abstract boolean processRow(String line);
 
-	private void loadContents(BufferedReader reader) throws IOException {
+	private void loadContents(final BufferedReader reader) throws IOException {
 		while (true) {
-			String line = reader.readLine();
+			final String line = reader.readLine();
 			lineNumber++;
 			if (line == null) {
 				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker.");
@@ -257,7 +257,7 @@ public abstract class ScaffoldSpectraReader {
 	 *
 	 * @param scaffoldVersion Detected scaffold version.
 	 */
-	public void setScaffoldVersion(String scaffoldVersion) {
+	public void setScaffoldVersion(final String scaffoldVersion) {
 		this.scaffoldVersion = scaffoldVersion;
 	}
 
@@ -272,7 +272,7 @@ public abstract class ScaffoldSpectraReader {
 	 * @param s String with commas denoting thousands.
 	 * @return String without the commas.
 	 */
-	public static String fixCommaSeparatedThousands(String s) {
+	public static String fixCommaSeparatedThousands(final String s) {
 		return THOUSANDS_REGEX.matcher(s).replaceAll("$1");
 	}
 }

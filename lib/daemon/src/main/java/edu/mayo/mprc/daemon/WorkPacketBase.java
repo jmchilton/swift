@@ -24,7 +24,7 @@ public class WorkPacketBase extends FileHolder implements WorkPacket {
 	 * @param taskId      Task identifier to be used for nested diagnostic context when logging.
 	 * @param fromScratch
 	 */
-	public WorkPacketBase(String taskId, boolean fromScratch) {
+	public WorkPacketBase(final String taskId, final boolean fromScratch) {
 		this.taskId = taskId;
 		this.fromScratch = fromScratch;
 	}
@@ -44,7 +44,7 @@ public class WorkPacketBase extends FileHolder implements WorkPacket {
 	 * However, for testing it is useful to directly create both packet and consumer and call both ends
 	 * at once, as if local transfer took place.
 	 */
-	public static void simulateTransfer(FileTokenHolder workPacket) {
+	public static void simulateTransfer(final FileTokenHolder workPacket) {
 		workPacket.translateOnSender(NULL_TOKEN_FACTORY);
 		workPacket.translateOnReceiver(NULL_TOKEN_FACTORY, NULL_TOKEN_FACTORY);
 	}

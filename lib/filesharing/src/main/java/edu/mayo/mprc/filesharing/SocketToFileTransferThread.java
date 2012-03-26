@@ -23,7 +23,7 @@ public final class SocketToFileTransferThread extends FileTransferThread {
 	private Socket socket;
 	private long uniqueId;
 
-	public SocketToFileTransferThread(FileInfo fileInfo, Socket socket) {
+	public SocketToFileTransferThread(final FileInfo fileInfo, final Socket socket) {
 		super("SocketToFileTransfer: " + fileInfo.getFilePath());
 		this.fileInfo = fileInfo;
 		this.socket = socket;
@@ -35,14 +35,14 @@ public final class SocketToFileTransferThread extends FileTransferThread {
 		return listener;
 	}
 
-	public void setTransferCompleteListener(TransferCompleteListener listener) {
+	public void setTransferCompleteListener(final TransferCompleteListener listener) {
 		this.listener = listener;
 	}
 
 	public void run() {
 		Exception exception = null;
 		InputStream is = null;
-		File file = new File(fileInfo.getFilePath());
+		final File file = new File(fileInfo.getFilePath());
 
 		LOGGER.debug("Starting to transfer data from socket [" + socket.toString() + "] to file [" + fileInfo.getFilePath() + "]. Thread id: " + uniqueId);
 

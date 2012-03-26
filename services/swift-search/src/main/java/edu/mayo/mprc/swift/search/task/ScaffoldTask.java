@@ -38,9 +38,9 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 	private final SwiftDao swiftDao;
 	private final SearchRun searchRun;
 
-	public ScaffoldTask(String experiment, SwiftSearchDefinition definition, DaemonConnection scaffoldDaemon,
-	                    SwiftDao swiftDao, SearchRun searchRun,
-	                    File outputFolder, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public ScaffoldTask(final String experiment, final SwiftSearchDefinition definition, final DaemonConnection scaffoldDaemon,
+	                    final SwiftDao swiftDao, final SearchRun searchRun,
+	                    final File outputFolder, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(scaffoldDaemon, fileTokenFactory, fromScratch);
 		this.experiment = experiment;
 		this.swiftSearchDefinition = definition;
@@ -51,7 +51,7 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 		setDescription("Scaffold search " + this.experiment);
 	}
 
-	public void addInput(FileSearch fileSearch, EngineSearchTask search) {
+	public void addInput(final FileSearch fileSearch, final EngineSearchTask search) {
 		InputFileSearches searches = inputs.get(fileSearch);
 		if (searches == null) {
 			searches = new InputFileSearches();
@@ -60,12 +60,12 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 		searches.addSearch(search);
 	}
 
-	public void addDatabase(String id, DatabaseDeployment dbDeployment) {
+	public void addDatabase(final String id, final DatabaseDeployment dbDeployment) {
 		databases.put(id, dbDeployment);
 	}
 
 	@Override
-	public void setReportData(ReportData reportData) {
+	public void setReportData(final ReportData reportData) {
 		// Do nothing. We do not care for .sfd file
 	}
 
@@ -81,12 +81,12 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 	 */
 	public WorkPacket createWorkPacket() {
 		setDescription("Scaffold search " + this.experiment);
-		File scaffoldFile = new File(outputFolder, experiment + ".sfd");
+		final File scaffoldFile = new File(outputFolder, experiment + ".sfd");
 		if (!isFromScratch() && scaffoldFile.exists() && scaffoldFile.isFile() && scaffoldFile.length() > 0) {
 			return null;
 		}
 
-		for (Map.Entry<String, DatabaseDeployment> entry : databases.entrySet()) {
+		for (final Map.Entry<String, DatabaseDeployment> entry : databases.entrySet()) {
 			if (entry.getValue() == null || entry.getValue().getFastaFile() == null) {
 				throw new DaemonException("Scaffold deployer probably returned invalid data - null fasta path for database " + entry.getKey());
 			}
@@ -97,14 +97,14 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 			throw new DaemonException("There are no files defined for this experiment");
 		}
 
-		Map<String, File> fastaFiles = new HashMap<String, File>();
-		for (Map.Entry<String, DatabaseDeployment> entry : databases.entrySet()) {
+		final Map<String, File> fastaFiles = new HashMap<String, File>();
+		for (final Map.Entry<String, DatabaseDeployment> entry : databases.entrySet()) {
 			fastaFiles.put(entry.getKey(), entry.getValue().getFastaFile());
 		}
-		SearchResults searchResults = new SearchResults();
-		for (Map.Entry<FileSearch, InputFileSearches> entry : inputs.entrySet()) {
-			FileSearchResult result = new FileSearchResult(entry.getKey().getInputFile());
-			for (EngineSearchTask search : entry.getValue().getSearches()) {
+		final SearchResults searchResults = new SearchResults();
+		for (final Map.Entry<FileSearch, InputFileSearches> entry : inputs.entrySet()) {
+			final FileSearchResult result = new FileSearchResult(entry.getKey().getInputFile());
+			for (final EngineSearchTask search : entry.getValue().getSearches()) {
 				result.addResult(
 						search.getSearchEngine().getCode(),
 						search.getOutputFile());
@@ -154,7 +154,7 @@ final class ScaffoldTask extends AsyncTaskBase implements ScaffoldTaskI {
 		}
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 	}
 
 }

@@ -13,11 +13,11 @@ import org.ggf.drmaa.JobInfo;
 public final class GridEngineWorkPacket extends GridWorkPacket {
 	private JobInfo jobInfo = null;
 
-	protected GridEngineWorkPacket(GridWorkPacket packet) {
+	protected GridEngineWorkPacket(final GridWorkPacket packet) {
 		super(packet);
 	}
 
-	public void setJobInfo(JobInfo pJobInfo) {
+	public void setJobInfo(final JobInfo pJobInfo) {
 		jobInfo = pJobInfo;
 	}
 

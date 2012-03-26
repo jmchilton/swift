@@ -49,11 +49,11 @@ public final class SpectrumInfoJoiner {
 	 * @param rawFileName
 	 * @return Number of rows in output file, not including the column headers.
 	 */
-	public static int joinSpectrumData(File mgfFile, ScaffoldQaSpectraReader scaffold, RawDumpReader rawDumpReader, MSMSEvalOutputReader msmsEvalReader, MyrimatchPepXmlReader myrimatchReader, File outputFile, String rawFileName) {
+	public static int joinSpectrumData(final File mgfFile, final ScaffoldQaSpectraReader scaffold, final RawDumpReader rawDumpReader, final MSMSEvalOutputReader msmsEvalReader, final MyrimatchPepXmlReader myrimatchReader, final File outputFile, final String rawFileName) {
 		FileWriter fileWriter = null;
 
 		int rowCount = 0;
-		Map<String, MgfSpectrum> mgfSpectrumMap = new HashMap<String, MgfSpectrum>();
+		final Map<String, MgfSpectrum> mgfSpectrumMap = new HashMap<String, MgfSpectrum>();
 
 		try {
 			fileWriter = new FileWriter(outputFile);
@@ -85,9 +85,9 @@ public final class SpectrumInfoJoiner {
 				// We have a raw output file, use it to drive the output
 				final Map<Long, List<MgfSpectrum>> mgfMapByScanId = indexMgfSpectraByScanId(mgfSpectrumMap);
 				final String scaffoldVersion = scaffold == null ? null : scaffold.getScaffoldVersion();
-				for (String scanIdStr : rawDumpReader) {
-					long scanId = Long.parseLong(scanIdStr);
-					List<MgfSpectrum> matchingSpectra = mgfMapByScanId.get(scanId);
+				for (final String scanIdStr : rawDumpReader) {
+					final long scanId = Long.parseLong(scanIdStr);
+					final List<MgfSpectrum> matchingSpectra = mgfMapByScanId.get(scanId);
 					if (matchingSpectra == null) {
 						writeSpectrumLine(
 								fileWriter,
@@ -100,7 +100,7 @@ public final class SpectrumInfoJoiner {
 								scaffoldVersion);
 						rowCount++;
 					} else {
-						for (MgfSpectrum mgfSpectrum : matchingSpectra) {
+						for (final MgfSpectrum mgfSpectrum : matchingSpectra) {
 							rowCount = writeMgfWithScaffoldInfos(
 									scaffold,
 									fileWriter,
@@ -117,7 +117,7 @@ public final class SpectrumInfoJoiner {
 			} else {
 				// No raw data, drive the output by mgf spectra
 				//Output gather information for output file.
-				for (MgfSpectrum mgfSpectrum : mgfSpectrumMap.values()) {
+				for (final MgfSpectrum mgfSpectrum : mgfSpectrumMap.values()) {
 					rowCount = writeMgfWithScaffoldInfos(
 							scaffold,
 							fileWriter,
@@ -138,7 +138,7 @@ public final class SpectrumInfoJoiner {
 		return rowCount;
 	}
 
-	private static int writeMgfWithScaffoldInfos(ScaffoldQaSpectraReader scaffold, FileWriter fileWriter, int rowCount, MSMSEvalOutputReader msmsEvalReader, RawDumpReader rawDumpReader, MyrimatchPepXmlReader myrimatchReader, String scanId, MgfSpectrum mgfSpectrum, String rawFileName) throws IOException {
+	private static int writeMgfWithScaffoldInfos(final ScaffoldQaSpectraReader scaffold, final FileWriter fileWriter, int rowCount, final MSMSEvalOutputReader msmsEvalReader, final RawDumpReader rawDumpReader, final MyrimatchPepXmlReader myrimatchReader, final String scanId, final MgfSpectrum mgfSpectrum, final String rawFileName) throws IOException {
 		final String scaffoldVersion = scaffold == null ? null : scaffold.getScaffoldVersion();
 		if (mgfSpectrum.getScaffoldInfos() == null || mgfSpectrum.getScaffoldInfos().size() == 0) {
 			writeSpectrumLine(
@@ -153,7 +153,7 @@ public final class SpectrumInfoJoiner {
 					scaffoldVersion);
 			rowCount++;
 		} else {
-			for (String scaffoldInfo : mgfSpectrum.getScaffoldInfos()) {
+			for (final String scaffoldInfo : mgfSpectrum.getScaffoldInfos()) {
 				writeSpectrumLine(
 						fileWriter,
 						msmsEvalReader,
@@ -171,15 +171,15 @@ public final class SpectrumInfoJoiner {
 	}
 
 	private static void writeSpectrumLine(
-			FileWriter fileWriter,
-			MSMSEvalOutputReader msmsEvalReader,
-			RawDumpReader rawDumpReader,
-			MyrimatchPepXmlReader myrimatchReader,
-			String scanIdStr,
-			MgfSpectrum mgfSpectrum,
-			String scaffoldInfo,
-			String rawFileName,
-			String scaffoldVersion) throws IOException {
+			final FileWriter fileWriter,
+			final MSMSEvalOutputReader msmsEvalReader,
+			final RawDumpReader rawDumpReader,
+			final MyrimatchPepXmlReader myrimatchReader,
+			final String scanIdStr,
+			final MgfSpectrum mgfSpectrum,
+			final String scaffoldInfo,
+			final String rawFileName,
+			final String scaffoldVersion) throws IOException {
 		fileWriter.write(scanIdStr
 				+ "\t" + (mgfSpectrum != null ? mgfSpectrum.getMgfMz() : "")
 				+ "\t" + (mgfSpectrum != null ? mgfSpectrum.getMgfCharge() : "")
@@ -202,14 +202,14 @@ public final class SpectrumInfoJoiner {
 		fileWriter.write("\n");
 	}
 
-	private static Map<Long, List<MgfSpectrum>> indexMgfSpectraByScanId(Map<String, MgfSpectrum> mgfSpectrumMap) {
-		Map<Long, List<MgfSpectrum>> mgfSpectraByScan = new HashMap<Long, List<MgfSpectrum>>();
-		for (MgfSpectrum mgfSpectrum : mgfSpectrumMap.values()) {
+	private static Map<Long, List<MgfSpectrum>> indexMgfSpectraByScanId(final Map<String, MgfSpectrum> mgfSpectrumMap) {
+		final Map<Long, List<MgfSpectrum>> mgfSpectraByScan = new HashMap<Long, List<MgfSpectrum>>();
+		for (final MgfSpectrum mgfSpectrum : mgfSpectrumMap.values()) {
 
 			if (mgfSpectraByScan.containsKey(mgfSpectrum.getScanId())) {
 				mgfSpectraByScan.get(mgfSpectrum.getScanId()).add(mgfSpectrum);
 			} else {
-				List<MgfSpectrum> list = new ArrayList<MgfSpectrum>(2);
+				final List<MgfSpectrum> list = new ArrayList<MgfSpectrum>(2);
 				list.add(mgfSpectrum);
 				mgfSpectraByScan.put(mgfSpectrum.getScanId(), list);
 			}
@@ -224,12 +224,12 @@ public final class SpectrumInfoJoiner {
 	 * @param mgfSpectrumMap      Map from spectrum name (when usingSpectrumNameAsKey is set) or from spectrum ID to Ms2Data
 	 * @param spectrumNameAsKey   If true, the map is indexed by full spectrum name, not just spectrum ID.
 	 */
-	public static void addScaffoldInformation(ScaffoldQaSpectraReader scaffoldSpectraInfo, Map<String, MgfSpectrum> mgfSpectrumMap, boolean spectrumNameAsKey) {
+	public static void addScaffoldInformation(final ScaffoldQaSpectraReader scaffoldSpectraInfo, final Map<String, MgfSpectrum> mgfSpectrumMap, final boolean spectrumNameAsKey) {
 
 		LOGGER.debug("Matching with scaffold spectra file.");
-		for (String spectrumName : scaffoldSpectraInfo) {
+		for (final String spectrumName : scaffoldSpectraInfo) {
 			final String scaffoldInfo = scaffoldSpectraInfo.getLineForKey(spectrumName);
-			MgfSpectrum mgfSpectrum = mgfSpectrumMap.get(spectrumNameAsKey ? getSpectrum(spectrumName) : Long.toString(getScanIdFromScaffoldSpectrum(spectrumName)));
+			final MgfSpectrum mgfSpectrum = mgfSpectrumMap.get(spectrumNameAsKey ? getSpectrum(spectrumName) : Long.toString(getScanIdFromScaffoldSpectrum(spectrumName)));
 			if (mgfSpectrum != null) {
 				mgfSpectrum.addScaffoldInfo(scaffoldInfo);
 			}
@@ -244,7 +244,7 @@ public final class SpectrumInfoJoiner {
 	 * @param mgfSpectrumMap    Map from either spectrum name or scan id to information about MS2 spectrum. The map is being created from scratch, existing values will be overwritten.
 	 * @param spectrumNameAsKey If true, the map is indexed by full spectrum name, otherwise it is indexed by scan id
 	 */
-	public static void getMgfInformation(File mgfFile, Map<String, MgfSpectrum> mgfSpectrumMap, boolean spectrumNameAsKey) {
+	public static void getMgfInformation(final File mgfFile, final Map<String, MgfSpectrum> mgfSpectrumMap, final boolean spectrumNameAsKey) {
 		MgfSpectrum mgfSpectrum = null;
 		MGFPeakListReader peakListReader = null;
 		MascotGenericFormatPeakList peakList = null;
@@ -280,13 +280,13 @@ public final class SpectrumInfoJoiner {
 		LOGGER.debug("Done reading mgf files.");
 	}
 
-	private static long getScanId(String spectrum) {
+	private static long getScanId(final String spectrum) {
 		String str = spectrum.substring(0, spectrum.lastIndexOf(".dta)"));
 		str = str.substring(0, str.lastIndexOf('.'));
 		return Long.parseLong(str.substring(str.lastIndexOf('.') + 1).trim());
 	}
 
-	private static long getScanIdFromScaffoldSpectrum(String spectrum) {
+	private static long getScanIdFromScaffoldSpectrum(final String spectrum) {
 		String str = spectrum.substring(0, spectrum.lastIndexOf('.'));
 		str = str.substring(0, str.lastIndexOf('.'));
 		return Long.parseLong(str.substring(str.lastIndexOf('.') + 1).trim());
@@ -298,7 +298,7 @@ public final class SpectrumInfoJoiner {
 	 * @param title Title to extract spectrum info from
 	 * @return Extracted spectrum name in form <code>file.scan1.scan2.charge.dta</code>
 	 */
-	public static String getSpectrum(String title) {
+	public static String getSpectrum(final String title) {
 		final Matcher matcher = SPECTRUM_FROM_TITLE.matcher(title);
 		if (matcher.matches()) {
 			return matcher.group(1);
@@ -307,15 +307,15 @@ public final class SpectrumInfoJoiner {
 		}
 	}
 
-	private static int getCharge(String charge) {
+	private static int getCharge(final String charge) {
 		if (charge == null) {
 			return 0;
 		}
-		String str = charge.substring(charge.indexOf('=') + 1).trim();
+		final String str = charge.substring(charge.indexOf('=') + 1).trim();
 		return Integer.parseInt(str.substring(0, str.length() - (str.endsWith("+") ? 1 : 0)).trim());
 	}
 
-	private static double getMz(String mz) {
+	private static double getMz(final String mz) {
 		if (mz == null) {
 			return 0.0;
 		}

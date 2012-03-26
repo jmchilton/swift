@@ -34,7 +34,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	}
 
 	public List<HeaderTransformStub> getHeaderTransformers() {
-		List<HeaderTransform> transforms;
+		final List<HeaderTransform> transforms;
 		if (curationDao == null) {
 			return new ArrayList<HeaderTransformStub>(0);
 		}
@@ -46,8 +46,8 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 
 			abstractList = new ArrayList<HeaderTransformStub>();
 			if (transforms != null) {
-				for (HeaderTransform transform : transforms) {
-					HeaderTransformStub stub = new HeaderTransformStub();
+				for (final HeaderTransform transform : transforms) {
+					final HeaderTransformStub stub = new HeaderTransformStub();
 					stub.description = transform.getName();
 					stub.matchPattern = transform.getGroupString();
 					stub.subPattern = transform.getSubstitutionPattern();
@@ -70,11 +70,11 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		Map<String, String> sourceMap = null;
 		curationDao.begin();
 		try {
-			List<FastaSource> sources = curationDao.getCommonSources();
+			final List<FastaSource> sources = curationDao.getCommonSources();
 
 			sourceMap = new HashMap<String, String>();
 
-			for (FastaSource source : sources) {
+			for (final FastaSource source : sources) {
 				sourceMap.put(source.getName(), source.getUrl());
 			}
 			curationDao.commit();
@@ -86,10 +86,10 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		return sourceMap;
 	}
 
-	public Boolean isShortnameUnique(String toCheck) {
+	public Boolean isShortnameUnique(final String toCheck) {
 		curationDao.begin();
 		try {
-			Boolean result = isShortnameUniqueBody(toCheck);
+			final Boolean result = isShortnameUniqueBody(toCheck);
 			curationDao.commit();
 			return result;
 		} catch (Exception t) {
@@ -98,7 +98,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	private static Boolean isShortnameUniqueBody(String toCheck) {
+	private static Boolean isShortnameUniqueBody(final String toCheck) {
 		return (0 == curationDao.getCurationsByShortname(toCheck, /*ignoreCase*/true).size());
 	}
 
@@ -110,10 +110,10 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	 * @param toUpdate the stub that you want to have updated
 	 * @return the updated stub
 	 */
-	public CurationStub performUpdate(CurationStub toUpdate) {
+	public CurationStub performUpdate(final CurationStub toUpdate) {
 		curationDao.begin();
 		try {
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			final CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
 			final CurationStub curationStub = handler.syncCuration(toUpdate);
 			curationDao.commit();
 			return curationStub;
@@ -135,7 +135,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	public CurationStub getCurationByID(Integer id) {
+	public CurationStub getCurationByID(final Integer id) {
 		curationDao.begin();
 		try {
 			final CurationStub curationStub = getHandler().getCurationByID(id);
@@ -148,12 +148,12 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	}
 
 
-	public CurationStub copyCurationStub(CurationStub toCopy) {
+	public CurationStub copyCurationStub(final CurationStub toCopy) {
 		curationDao.begin();
 		try {
 			getHandler().syncCuration(toCopy);
-			Curation curation = getHandler().getCachedCuration();
-			Curation retCuration = curation.createCopy(false);
+			final Curation curation = getHandler().getCachedCuration();
+			final Curation retCuration = curation.createCopy(false);
 			final CurationStub stub = getHandler().createStub(retCuration);
 			curationDao.commit();
 			return stub;
@@ -174,7 +174,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	 * @param toMatch the CurationStub that you want to find matches for
 	 * @return a list of matching CurationStubs
 	 */
-	public List<CurationStub> getMatches(CurationStub toMatch) {
+	public List<CurationStub> getMatches(final CurationStub toMatch) {
 		curationDao.begin();
 		try {
 			final List<CurationStub> list = this.getMatches(toMatch, null, null);
@@ -195,10 +195,10 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	 * @param latestRun   the latest run date you want returned
 	 * @return a list of CurationStubs that meet the criteria
 	 */
-	public List<CurationStub> getMatches(CurationStub toMatch, Date earliestRun, Date latestRun) {
+	public List<CurationStub> getMatches(final CurationStub toMatch, final Date earliestRun, final Date latestRun) {
 		curationDao.begin();
 		try {
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			final CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
 			final List<CurationStub> curations = handler.getMatchingCurations(toMatch, earliestRun, latestRun);
 			curationDao.commit();
 			return curations;
@@ -213,7 +213,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 	 *
 	 * @param toRun the curation you want to have run
 	 */
-	public CurationStub runCuration(CurationStub toRun) {
+	public CurationStub runCuration(final CurationStub toRun) {
 		curationDao.begin();
 		try {
 			if (!isShortnameUniqueBody(toRun.getShortName())) {
@@ -224,7 +224,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 				return toRun;
 			}
 
-			CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
+			final CurationHandler handler = CurationHandler.getInstance(getThreadLocalRequest().getSession());
 			final CurationStub curationStub = handler.executeCuration(toRun);
 			curationDao.commit();
 			return curationStub;
@@ -234,7 +234,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	public String testPattern(String pattern) {
+	public String testPattern(final String pattern) {
 		try {
 			Pattern.compile(pattern);
 			return "";
@@ -243,7 +243,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	public String[] getLines(String sharedPath, int startLineInclusive, int numberOfLines, String pattern) throws GWTServiceException {
+	public String[] getLines(final String sharedPath, final int startLineInclusive, final int numberOfLines, String pattern) throws GWTServiceException {
 		RandomAccessFile raf = null;
 		try {
 			this.setCancelMessage(false);
@@ -256,13 +256,13 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 				compiledPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
 			}
 
-			SortedMap<Integer, Long> currentPositionMap = getCurrentPositionMap(sharedPath, pattern);
+			final SortedMap<Integer, Long> currentPositionMap = getCurrentPositionMap(sharedPath, pattern);
 
 			raf = new RandomAccessFile(new File(sharedPath), "r");
 			Long startLinePosition = currentPositionMap.get(startLineInclusive);
 			if (startLinePosition == null) {
 				//todo: find the position of this line
-				SortedMap<Integer, Long> headMap = currentPositionMap.headMap(startLineInclusive);
+				final SortedMap<Integer, Long> headMap = currentPositionMap.headMap(startLineInclusive);
 
 				Integer closestLessThanLine = 0;
 				if (headMap.size() == 0) {
@@ -283,8 +283,8 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 
 				int matchCounter = closestLessThanLine;
 				while (closestLessThanLine < startLineInclusive) {
-					long position = raf.getFilePointer();
-					String line = raf.readLine();
+					final long position = raf.getFilePointer();
+					final String line = raf.readLine();
 					if (line == null) {
 						break;
 					}
@@ -303,15 +303,15 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 			int resultCounter = 0;
 			int fromStart = 0;
 			while (resultCounter < numberOfLines && !getCancelMessage()) {
-				Long cachedPosition = currentPositionMap.get(startLineInclusive + fromStart);
+				final Long cachedPosition = currentPositionMap.get(startLineInclusive + fromStart);
 				fromStart++;
 				if (cachedPosition != null) {
 					raf.seek(cachedPosition);
 					addResult(raf.readLine());
 					resultCounter++;
 				} else {
-					long position = raf.getFilePointer();
-					String line = raf.readLine();
+					final long position = raf.getFilePointer();
+					final String line = raf.readLine();
 					if (line == null) { //if we have reached the end of the file then just don't get any more.
 						break;
 					}
@@ -336,9 +336,9 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		this.getThreadLocalRequest().getSession().setAttribute("results", null);
 	}
 
-	protected synchronized void addResult(String result) {
-		List<String> results;
-		Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
+	protected synchronized void addResult(final String result) {
+		final List<String> results;
+		final Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
 
 		if (o == null) {
 			results = new ArrayList<String>();
@@ -352,8 +352,8 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 
 	public synchronized String[] getResults() throws GWTServiceException {
 		try {
-			List<String> results;
-			Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
+			final List<String> results;
+			final Object o = this.getThreadLocalRequest().getSession().getAttribute("results");
 
 			if (o == null) {
 				results = new ArrayList<String>();
@@ -362,7 +362,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 				results = (List<String>) o;
 			}
 
-			String[] retArray = new String[results.size()];
+			final String[] retArray = new String[results.size()];
 			for (int i = 0; i < results.size(); i++) {
 				retArray[i] = results.get(i);
 			}
@@ -374,7 +374,7 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		}
 	}
 
-	public void setCancelMessage(boolean cancelMessage) throws GWTServiceException {
+	public void setCancelMessage(final boolean cancelMessage) throws GWTServiceException {
 		try {
 			this.getThreadLocalRequest().getSession().setAttribute("cancelRequest", (cancelMessage ? true : null));
 		} catch (Exception t) {
@@ -387,14 +387,14 @@ public final class CommonDataRequesterImpl extends RemoteServiceServlet implemen
 		return !(this.getThreadLocalRequest().getSession().getAttribute("cancelRequest") == null);
 	}
 
-	private SortedMap<Integer, Long> getCurrentPositionMap(String filePath, String pattern) {
-		Map<String, SortedMap<Integer, Long>> allPositionMaps = getPositionMaps();
-		String currentKey = (pattern == null || pattern.length() == 0 ? filePath : filePath + "_" + pattern);
+	private SortedMap<Integer, Long> getCurrentPositionMap(final String filePath, final String pattern) {
+		final Map<String, SortedMap<Integer, Long>> allPositionMaps = getPositionMaps();
+		final String currentKey = (pattern == null || pattern.length() == 0 ? filePath : filePath + "_" + pattern);
 
 		SortedMap<Integer, Long> currentPositionLookup = null;
 
 		//get rid of the maps we are no longer interested in
-		for (Map.Entry<String, SortedMap<Integer, Long>> entry : allPositionMaps.entrySet()) {
+		for (final Map.Entry<String, SortedMap<Integer, Long>> entry : allPositionMaps.entrySet()) {
 			if (!entry.getKey().equals(currentKey)) {
 				allPositionMaps.remove(entry.getKey());
 			} else {

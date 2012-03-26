@@ -29,7 +29,7 @@ public class SearchResult extends PersistableBase {
 	public SearchResult() {
 	}
 
-	public SearchResult(TandemMassSpectrometrySample massSpecSample, ProteinGroupList proteinGroups) {
+	public SearchResult(final TandemMassSpectrometrySample massSpecSample, final ProteinGroupList proteinGroups) {
 		this.setMassSpecSample(massSpecSample);
 		this.setProteinGroups(proteinGroups);
 	}
@@ -38,7 +38,7 @@ public class SearchResult extends PersistableBase {
 		return massSpecSample;
 	}
 
-	public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
+	public void setMassSpecSample(final TandemMassSpectrometrySample massSpecSample) {
 		this.massSpecSample = massSpecSample;
 	}
 
@@ -46,12 +46,12 @@ public class SearchResult extends PersistableBase {
 		return proteinGroups;
 	}
 
-	public void setProteinGroups(ProteinGroupList proteinGroups) {
+	public void setProteinGroups(final ProteinGroupList proteinGroups) {
 		this.proteinGroups = proteinGroups;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -59,7 +59,7 @@ public class SearchResult extends PersistableBase {
 			return false;
 		}
 
-		SearchResult that = (SearchResult) o;
+		final SearchResult that = (SearchResult) o;
 
 		if (getMassSpecSample() != null ? !getMassSpecSample().equals(that.getMassSpecSample()) : that.getMassSpecSample() != null) {
 			return false;

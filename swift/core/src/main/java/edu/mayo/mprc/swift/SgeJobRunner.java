@@ -46,15 +46,15 @@ public final class SgeJobRunner {
 	 *
 	 * @param workPacketXmlFile File containing the serialized work packet.
 	 */
-	public void run(File workPacketXmlFile) {
+	public void run(final File workPacketXmlFile) {
 		// Wait for the work packet to fully materialize in case it was transferred over a shared filesystem
 		FileUtilities.waitForFile(workPacketXmlFile, INPUT_FILE_TIMEOUT);
 
 		FileInputStream fileInputStream = null;
 		GridDaemonWorkerAllocatorInputObject daemonWorkerAllocatorInputObject = null;
 		BoundMessenger<OneWayMessenger> boundMessenger = null;
-		RemoteObjectHandler handler = new RemoteObjectHandler();
-		MessengerFactory messengerFactory = new MessengerFactory(handler);
+		final RemoteObjectHandler handler = new RemoteObjectHandler();
+		final MessengerFactory messengerFactory = new MessengerFactory(handler);
 
 		try {
 			LOGGER.info("Running grid job in host: " + InetAddress.getLocalHost().getHostName());
@@ -66,7 +66,7 @@ public final class SgeJobRunner {
 			LOGGER.debug(ReleaseInfoCore.infoString());
 			LOGGER.info("Parsing xml file: " + workPacketXmlFile.getAbsolutePath());
 
-			XStream xStream = new XStream(new DomDriver());
+			final XStream xStream = new XStream(new DomDriver());
 
 			fileInputStream = new FileInputStream(workPacketXmlFile);
 
@@ -75,8 +75,8 @@ public final class SgeJobRunner {
 			//If the work packet is an instance of a FileTokenHolder, set the the FileTokenFactory on it. The FileTokenFactory object
 			//needs to be reset because it is a transient object.
 			if (daemonWorkerAllocatorInputObject.getWorkPacket() instanceof FileTokenHolder) {
-				FileTokenHolder fileTokenHolder = (FileTokenHolder) daemonWorkerAllocatorInputObject.getWorkPacket();
-				FileTokenFactory fileTokenFactory = new FileTokenFactory(daemonWorkerAllocatorInputObject.getDaemonConfigInfo());
+				final FileTokenHolder fileTokenHolder = (FileTokenHolder) daemonWorkerAllocatorInputObject.getWorkPacket();
+				final FileTokenFactory fileTokenFactory = new FileTokenFactory(daemonWorkerAllocatorInputObject.getDaemonConfigInfo());
 
 				if (daemonWorkerAllocatorInputObject.getSharedTempDirectory() != null) {
 					fileTokenFactory.setTempFolderRepository(new File(daemonWorkerAllocatorInputObject.getSharedTempDirectory()));
@@ -88,11 +88,11 @@ public final class SgeJobRunner {
 
 			boundMessenger = messengerFactory.getOneWayMessenger(daemonWorkerAllocatorInputObject.getMessengerInfo());
 
-			DependencyResolver dependencies = new DependencyResolver(resourceTable);
-			Worker daemonWorker = (Worker) resourceTable.createSingleton(daemonWorkerAllocatorInputObject.getWorkerFactoryConfig(), dependencies);
+			final DependencyResolver dependencies = new DependencyResolver(resourceTable);
+			final Worker daemonWorker = (Worker) resourceTable.createSingleton(daemonWorkerAllocatorInputObject.getWorkerFactoryConfig(), dependencies);
 			daemonWorker.processRequest((WorkPacket) daemonWorkerAllocatorInputObject.getWorkPacket(), new DaemonWorkerProgressReporter(boundMessenger));
 		} catch (Exception e) {
-			String errorMessage = "Failed to process work packet " + ((daemonWorkerAllocatorInputObject == null || daemonWorkerAllocatorInputObject.getWorkPacket() == null) ? "null" : daemonWorkerAllocatorInputObject.getWorkPacket().toString());
+			final String errorMessage = "Failed to process work packet " + ((daemonWorkerAllocatorInputObject == null || daemonWorkerAllocatorInputObject.getWorkPacket() == null) ? "null" : daemonWorkerAllocatorInputObject.getWorkPacket().toString());
 			LOGGER.error(errorMessage, e);
 
 			try {
@@ -122,18 +122,18 @@ public final class SgeJobRunner {
 		return resourceTable;
 	}
 
-	public void setResourceTable(ResourceTable resourceTable) {
+	public void setResourceTable(final ResourceTable resourceTable) {
 		this.resourceTable = resourceTable;
 	}
 
-	private static void reportProgress(BoundMessenger<OneWayMessenger> boundMessenger, Serializable serializable) throws RemoteException {
+	private static void reportProgress(final BoundMessenger<OneWayMessenger> boundMessenger, final Serializable serializable) throws RemoteException {
 		boundMessenger.getMessenger().sendMessage(serializable);
 	}
 
 	static class DaemonWorkerProgressReporter implements ProgressReporter {
 		private BoundMessenger<OneWayMessenger> boundMessenger;
 
-		DaemonWorkerProgressReporter(BoundMessenger<OneWayMessenger> boundMessenger) {
+		DaemonWorkerProgressReporter(final BoundMessenger<OneWayMessenger> boundMessenger) {
 			this.boundMessenger = boundMessenger;
 		}
 
@@ -152,7 +152,7 @@ public final class SgeJobRunner {
 			}
 		}
 
-		public void reportProgress(ProgressInfo progressInfo) {
+		public void reportProgress(final ProgressInfo progressInfo) {
 			try {
 				SgeJobRunner.reportProgress(boundMessenger, new DaemonProgressMessage(DaemonProgress.UserSpecificProgressInfo, progressInfo));
 			} catch (RemoteException e) {
@@ -165,7 +165,7 @@ public final class SgeJobRunner {
 			//Do nothing. GridRunner gets notified of completion by SGE.
 		}
 
-		public void reportFailure(Throwable t) {
+		public void reportFailure(final Throwable t) {
 			try {
 				SgeJobRunner.reportProgress(boundMessenger, t);
 			} catch (RemoteException e) {

@@ -15,8 +15,8 @@ public final class MprcFileFactory {
 	public MprcFileFactory() {
 	}
 
-	public MprcFile getFile(URI uri) {
-		MprcFile file = new MprcFile(FileUtilities.fileFromUri(uri));
+	public MprcFile getFile(final URI uri) {
+		final MprcFile file = new MprcFile(FileUtilities.fileFromUri(uri));
 		MprcFile resultingFile = daoMap.putIfAbsent(uri, file);
 		if (resultingFile == null) {
 			resultingFile = file;

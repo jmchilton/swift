@@ -16,14 +16,14 @@ public final class MessengerFactory {
 	private AtomicLong messengerIdentifier = new AtomicLong();
 	private RemoteObjectHandler remoteObjectHandler;
 
-	public MessengerFactory(RemoteObjectHandler handler) {
+	public MessengerFactory(final RemoteObjectHandler handler) {
 		this.remoteObjectHandler = handler;
 	}
 
 	public BoundMessenger<SimpleOneWayMessenger> createMessenger() throws RemoteException, UnknownHostException {
 
-		SimpleOneWayMessenger simpleMessenger = new SimpleOneWayMessenger();
-		String messengerName = SimpleOneWayMessenger.class.getName() + messengerIdentifier.incrementAndGet();
+		final SimpleOneWayMessenger simpleMessenger = new SimpleOneWayMessenger();
+		final String messengerName = SimpleOneWayMessenger.class.getName() + messengerIdentifier.incrementAndGet();
 		remoteObjectHandler.registerRemoteObject(messengerName, simpleMessenger);
 
 		return new BoundMessenger<SimpleOneWayMessenger>(new MessengerInfo(remoteObjectHandler.getLocalRegistryInfo(), messengerName), simpleMessenger, remoteObjectHandler);
@@ -31,8 +31,8 @@ public final class MessengerFactory {
 
 	public BoundMessenger<SimpleOneWayMessenger> createOneWayMessenger() throws RemoteException, UnknownHostException {
 
-		SimpleOneWayMessenger simpleOneWayMessenger = new SimpleOneWayMessenger();
-		String messengerName = SimpleOneWayMessenger.class.getName() + messengerIdentifier.incrementAndGet();
+		final SimpleOneWayMessenger simpleOneWayMessenger = new SimpleOneWayMessenger();
+		final String messengerName = SimpleOneWayMessenger.class.getName() + messengerIdentifier.incrementAndGet();
 		remoteObjectHandler.registerRemoteObject(messengerName, simpleOneWayMessenger);
 
 		return new BoundMessenger<SimpleOneWayMessenger>(
@@ -41,7 +41,7 @@ public final class MessengerFactory {
 				remoteObjectHandler);
 	}
 
-	public BoundMessenger<OneWayMessenger> getOneWayMessenger(MessengerInfo messengerInfo) throws NotBoundException, RemoteException {
+	public BoundMessenger<OneWayMessenger> getOneWayMessenger(final MessengerInfo messengerInfo) throws NotBoundException, RemoteException {
 
 		final Remote remoteObject = remoteObjectHandler.getRemoteObject(messengerInfo.getRegistryInfo(), messengerInfo.getMessengerRemoteName());
 		if (remoteObject instanceof OneWayMessenger) {

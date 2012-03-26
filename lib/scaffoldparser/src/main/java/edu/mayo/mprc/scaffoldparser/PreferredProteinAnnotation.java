@@ -23,7 +23,7 @@ public final class PreferredProteinAnnotation {
 		return accessionNumber;
 	}
 
-	public void setAccessionNumber(String accessionNumber) {
+	public void setAccessionNumber(final String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
 
@@ -31,7 +31,7 @@ public final class PreferredProteinAnnotation {
 		return proteinName;
 	}
 
-	public void setProteinName(String proteinName) {
+	public void setProteinName(final String proteinName) {
 		this.proteinName = proteinName;
 	}
 
@@ -39,7 +39,7 @@ public final class PreferredProteinAnnotation {
 		return nameAdjusted;
 	}
 
-	public void setNameAdjusted(String nameAdjusted) {
+	public void setNameAdjusted(final String nameAdjusted) {
 		this.nameAdjusted = nameAdjusted;
 	}
 
@@ -47,7 +47,7 @@ public final class PreferredProteinAnnotation {
 		return numberAdjusted;
 	}
 
-	public void setNumberAdjusted(String numberAdjusted) {
+	public void setNumberAdjusted(final String numberAdjusted) {
 		this.numberAdjusted = numberAdjusted;
 	}
 }

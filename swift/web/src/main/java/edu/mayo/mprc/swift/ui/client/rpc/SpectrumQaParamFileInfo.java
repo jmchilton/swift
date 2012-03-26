@@ -16,7 +16,7 @@ public final class SpectrumQaParamFileInfo implements Serializable {
 	public SpectrumQaParamFileInfo() {
 	}
 
-	public SpectrumQaParamFileInfo(String path, String description) {
+	public SpectrumQaParamFileInfo(final String path, final String description) {
 		this.path = path;
 		this.description = description;
 	}

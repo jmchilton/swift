@@ -36,7 +36,7 @@ public final class FASTAOutputStream implements DBOutputStream {
 	 * @param file the file that should be used as on output stream
 	 * @throws IOException if there was a problem opening the file
 	 */
-	public FASTAOutputStream(File file) throws IOException {
+	public FASTAOutputStream(final File file) throws IOException {
 		this.file = file;
 		this.out = new FileWriter(this.file);
 	}
@@ -51,7 +51,7 @@ public final class FASTAOutputStream implements DBOutputStream {
 	 * @param sequence the actual sequence that should be written out
 	 * @throws java.io.IOException if there was a problem performing the output
 	 */
-	public void appendSequence(String header, String sequence) throws IOException {
+	public void appendSequence(final String header, final String sequence) throws IOException {
 		//check to make sure the header contains a > since this is what denotes a header
 		if (header.length() == 0 || header.charAt(0) != '>') {
 			this.out.write('>');
@@ -61,7 +61,7 @@ public final class FASTAOutputStream implements DBOutputStream {
 		this.out.write("\n");
 
 		//find out how many lines there eare and print out each but the last line in a loop
-		int steps = sequence.length() / LINE_WIDTH;
+		final int steps = sequence.length() / LINE_WIDTH;
 		int i = 0;
 		for (; i < steps; i++) {
 			this.out.write(sequence, i * LINE_WIDTH, LINE_WIDTH);
@@ -83,7 +83,7 @@ public final class FASTAOutputStream implements DBOutputStream {
 	 * @param inputStream the stream to copy to this stream
 	 * @throws IOException if there was a problem openning or working with either stream
 	 */
-	public void appendRemaining(DBInputStream inputStream) throws IOException {
+	public void appendRemaining(final DBInputStream inputStream) throws IOException {
 		if (inputStream != null) {
 			while (inputStream.gotoNextSequence()) {
 				this.appendSequence(inputStream.getHeader(), inputStream.getSequence());

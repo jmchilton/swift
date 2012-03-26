@@ -22,66 +22,66 @@ public final class NNLSTest {
 
 	@Test
 	public void shouldSolveIdentityMatrix() {
-		NNLS nnls = new NNLS(unit3x3, 0, 5);
+		final NNLS nnls = new NNLS(unit3x3, 0, 5);
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, 2, 3});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, 2, 3});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{1, 2, 3}, 0);
 	}
 
 	@Test
 	public void shouldSolveWithNegativeNumbers() {
-		NNLS nnls = new NNLS(unit3x3, 0x5, 5);
+		final NNLS nnls = new NNLS(unit3x3, 0x5, 5);
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{1, 0, 3}, 0);
 	}
 
 	@Test
 	public void shouldSolveWithAllowedNegativeNumbers() {
-		NNLS nnls = new NNLS(unit3x3, 1 << 1, 5); // Second allowed to be negative
+		final NNLS nnls = new NNLS(unit3x3, 1 << 1, 5); // Second allowed to be negative
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{1, -200, 3}, 0);
 	}
 
 	@Test
 	public void shouldSolveWithAllowedNegativeNumbers2() {
-		NNLS nnls = new NNLS(unit3x3, 1 << 2, 5); // Third allowed to be negative
+		final NNLS nnls = new NNLS(unit3x3, 1 << 2, 5); // Third allowed to be negative
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, -100});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, -100});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{1, 0, -100}, 0);
 	}
 
 	@Test
 	public void shouldSolveWithAllNegative() {
-		NNLS nnls = new NNLS(unit3x3, 0x7, 5); // All can be negative
+		final NNLS nnls = new NNLS(unit3x3, 0x7, 5); // All can be negative
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{1, -200, 3});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{1, -200, 3}, 0);
 	}
 
 	@Test
 	public void shouldSolveWithAllNegative2() {
-		NNLS nnls = new NNLS(test1, 0x7, 5); // All can be negative
+		final NNLS nnls = new NNLS(test1, 0x7, 5); // All can be negative
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{3, -5, 8});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{3, -5, 8});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{2, -1, 1}, 1E-10);
 	}
@@ -95,21 +95,21 @@ public final class NNLSTest {
 
 	@Test
 	public void shouldSolveNonSquare() {
-		NNLS nnls = new NNLS(test2, 0x7, 5); // All can be negative
+		final NNLS nnls = new NNLS(test2, 0x7, 5); // All can be negative
 
-		DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{6, 2, 9, 12});
+		final DoubleMatrix1D y = DoubleFactory1D.dense.make(new double[]{6, 2, 9, 12});
 
-		NNLS.Fit f = new NNLS.Fit();
+		final NNLS.Fit f = new NNLS.Fit();
 		nnls.fit(y, f);
 		assertMatrixEquals(f.coefs, new double[]{2, -1, 1}, 1E-10);
 	}
 
-	public static void assertMatrixEquals(DoubleMatrix1D matrix, double[] expected, double precision) {
-		StringBuilder expectedString = new StringBuilder();
-		for (double anExpected : expected) {
+	public static void assertMatrixEquals(final DoubleMatrix1D matrix, final double[] expected, final double precision) {
+		final StringBuilder expectedString = new StringBuilder();
+		for (final double anExpected : expected) {
 			expectedString.append(anExpected).append(' ');
 		}
-		String difference = "Expected:\n\t" + expectedString.toString() + "\nActual:\n\t" + matrix.toString();
+		final String difference = "Expected:\n\t" + expectedString.toString() + "\nActual:\n\t" + matrix.toString();
 		Assert.assertEquals(matrix.size(), expected.length, "The expected dimensions do not match:\n" + difference);
 		for (int i = 0; i < expected.length; i++) {
 			Assert.assertEquals(matrix.get(i), expected[i], precision, "Mismatched element #" + (i + 1) + " when comparing:\n" + difference);

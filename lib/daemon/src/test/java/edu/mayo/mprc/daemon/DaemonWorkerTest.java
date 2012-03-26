@@ -14,13 +14,13 @@ public final class DaemonWorkerTest {
 
 	@Test
 	public void shouldDoSimpleWork() throws InterruptedException {
-		DaemonWorkerTester tester = new DaemonWorkerTester(createSimpleWorker());
+		final DaemonWorkerTester tester = new DaemonWorkerTester(createSimpleWorker());
 		runTest(tester, 2);
 	}
 
 	@Test
 	public void shouldDoSimpleWorkInThreadPool() throws InterruptedException {
-		DaemonWorkerTester tester = new DaemonWorkerTester(new WorkerFactory() {
+		final DaemonWorkerTester tester = new DaemonWorkerTester(new WorkerFactory() {
 			public Worker createWorker() {
 				return createSimpleWorker();
 			}
@@ -36,7 +36,7 @@ public final class DaemonWorkerTest {
 		private static final long serialVersionUID = 20101221L;
 		private String value;
 
-		private StringWorkPacket(String value) {
+		private StringWorkPacket(final String value) {
 			super(value, false);
 			this.value = value;
 		}
@@ -50,7 +50,7 @@ public final class DaemonWorkerTest {
 		return new Worker() {
 			private AtomicInteger concurrentRequests = new AtomicInteger(0);
 
-			public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+			public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 				try {
 					progressReporter.reportStart();
 					process(workPacket);
@@ -61,7 +61,7 @@ public final class DaemonWorkerTest {
 				}
 			}
 
-			private void process(WorkPacket wp) {
+			private void process(final WorkPacket wp) {
 				Assert.assertEquals(concurrentRequests.incrementAndGet(), 1, "The amount of requests must start at 1. The worker calls are not serialized.");
 				try {
 					Thread.sleep(1);
@@ -73,8 +73,8 @@ public final class DaemonWorkerTest {
 		};
 	}
 
-	private static void runTest(DaemonWorkerTester tester, int iterations) throws InterruptedException {
-		Object[] token = new Object[iterations];
+	private static void runTest(final DaemonWorkerTester tester, final int iterations) throws InterruptedException {
+		final Object[] token = new Object[iterations];
 		for (int i = 0; i < iterations; i++) {
 			token[i] = tester.sendWork(new StringWorkPacket("hello #" + String.valueOf(i)), null);
 		}

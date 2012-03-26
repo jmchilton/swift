@@ -56,7 +56,7 @@ public class TestScaffoldSpectraSummarizer {
 	public void shouldLoadSingleReport() throws IOException {
 		final InputStream stream = ResourceUtilities.getStream(SINGLE, TestScaffoldSpectraSummarizer.class);
 		try {
-			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
+			final ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 
 			summarizer.load(stream, -1, SINGLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
@@ -114,7 +114,7 @@ public class TestScaffoldSpectraSummarizer {
 	public void shouldLoadMultipleReports() {
 		final InputStream stream = ResourceUtilities.getStream(MULTIPLE, TestScaffoldSpectraSummarizer.class);
 		try {
-			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
+			final ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 			summarizer.load(stream, -1, MULTIPLE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 28, 0, 0, 0, 0), "Report date");
@@ -135,7 +135,7 @@ public class TestScaffoldSpectraSummarizer {
 	public void shouldLoadLargeReport() {
 		final InputStream stream = ResourceUtilities.getStream(LARGE, TestScaffoldSpectraSummarizer.class);
 		try {
-			ScaffoldSpectraSummarizer summarizer = makeSummarizer();
+			final ScaffoldSpectraSummarizer summarizer = makeSummarizer();
 			summarizer.load(stream, -1, LARGE, "3", null);
 			final Analysis analysis = summarizer.getAnalysis();
 			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 10, 18, 0, 0, 0, 0), "Report date");
@@ -155,9 +155,9 @@ public class TestScaffoldSpectraSummarizer {
 	 * @param analysis         Analysis to check.
 	 * @param expectedResource Resource to load the expected value from.
 	 */
-	private void checkAnalysisMatch(Analysis analysis, String expectedResource) {
-		String actual;
-		String expected;
+	private void checkAnalysisMatch(final Analysis analysis, final String expectedResource) {
+		final String actual;
+		final String expected;
 		try {
 			actual = analysis.peptideReport();
 			expected = Resources.toString(Resources.getResource(getClass(), expectedResource), Charsets.ISO_8859_1);
@@ -167,7 +167,7 @@ public class TestScaffoldSpectraSummarizer {
 		Assert.assertEquals(TestingUtilities.compareStringsByLine(actual, expected, true), null, "The peptide report does not match");
 	}
 
-	public static void assertNear(double d1, double d2, String message) {
+	public static void assertNear(final double d1, final double d2, final String message) {
 		final double delta = d1 - d2;
 		Assert.assertTrue(-EPSILON < delta && delta < EPSILON, message);
 	}
@@ -175,7 +175,7 @@ public class TestScaffoldSpectraSummarizer {
 	private static class DummyTranslator implements ProteinSequenceTranslator {
 
 		@Override
-		public ProteinSequence getProteinSequence(String accessionNumber, String databaseSources) {
+		public ProteinSequence getProteinSequence(final String accessionNumber, final String databaseSources) {
 			return new ProteinSequence("CAT");
 		}
 	}

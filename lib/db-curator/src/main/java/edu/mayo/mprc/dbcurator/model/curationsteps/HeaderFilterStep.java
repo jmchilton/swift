@@ -81,16 +81,16 @@ public class HeaderFilterStep implements CurationStep {
 	 * @param exec the executor that we are working for and will need to query to get information from
 	 * @return the post validation.  This is the same object that will be returned by a call to postValidate()
 	 */
-	public StepValidation performStep(CurationExecutor exec) {
+	public StepValidation performStep(final CurationExecutor exec) {
 
 		//create a new validation object for this run
 		this.runValidation = new StepValidation();
 
-		DBInputStream in = exec.getCurrentInStream(); //the file we should be reading from (may be null)
-		DBOutputStream out = exec.getCurrentOutStream(); // the file we should be writing to
-		CurationStatus status = exec.getStatusObject(); //the status objec we want to update
-		TextFilter filter = this.getAppropriateTextFilter();
-		float sequencesToFilter = status.getLastStepSequenceCount();
+		final DBInputStream in = exec.getCurrentInStream(); //the file we should be reading from (may be null)
+		final DBOutputStream out = exec.getCurrentOutStream(); // the file we should be writing to
+		final CurationStatus status = exec.getStatusObject(); //the status objec we want to update
+		final TextFilter filter = this.getAppropriateTextFilter();
+		final float sequencesToFilter = status.getLastStepSequenceCount();
 		int numberFilteredSoFar = 0;
 
 		//iterate through each sequence in the database and if the sequence matches
@@ -119,15 +119,15 @@ public class HeaderFilterStep implements CurationStep {
 	 * @param curationDao
 	 * @return the @see StepValidation to interrogate for issues
 	 */
-	public StepValidation preValidate(CurationDao curationDao) {
+	public StepValidation preValidate(final CurationDao curationDao) {
 		//the validation we will return
-		StepValidation preValidation = new StepValidation();
+		final StepValidation preValidation = new StepValidation();
 
 		//create a test filter from the current set of properties
-		TextFilter toTest = this.getAppropriateTextFilter();
+		final TextFilter toTest = this.getAppropriateTextFilter();
 
 		//ask the TextFilter to check itself for validity
-		String testResults = toTest.testCriteria();
+		final String testResults = toTest.testCriteria();
 
 		//if the criteria is valid then just return a successful step validation
 		//if not valid then we want to report the problems with the filter expression
@@ -156,7 +156,7 @@ public class HeaderFilterStep implements CurationStep {
 	 * @return a cropy of this step
 	 */
 	public CurationStep createCopy() {
-		HeaderFilterStep copy = new HeaderFilterStep();
+		final HeaderFilterStep copy = new HeaderFilterStep();
 		copy.matchMode = this.matchMode;
 		copy.textMode = this.textMode;
 		copy.criteriaString = this.criteriaString;
@@ -171,7 +171,7 @@ public class HeaderFilterStep implements CurationStep {
 	 * @return an appropriate TextFilter object
 	 */
 	protected TextFilter getAppropriateTextFilter() {
-		TextFilter toCreate;
+		final TextFilter toCreate;
 		if (this.textMode == TextMode.SIMPLE) {
 			toCreate = new SimpleStringTextFilter(this.criteriaString);
 		} else if (this.textMode == TextMode.REG_EX) {
@@ -198,7 +198,7 @@ public class HeaderFilterStep implements CurationStep {
 	 * @param matchMode the mode to use
 	 * @see MatchMode
 	 */
-	public void setMatchMode(MatchMode matchMode) {
+	public void setMatchMode(final MatchMode matchMode) {
 		this.matchMode = matchMode;
 	}
 
@@ -216,7 +216,7 @@ public class HeaderFilterStep implements CurationStep {
 	 *
 	 * @param textMode the text mode to use
 	 */
-	public void setTextMode(TextMode textMode) {
+	public void setTextMode(final TextMode textMode) {
 		this.textMode = textMode;
 	}
 
@@ -234,7 +234,7 @@ public class HeaderFilterStep implements CurationStep {
 	 *
 	 * @param criteriaString the current criteria
 	 */
-	public void setCriteriaString(String criteriaString) {
+	public void setCriteriaString(final String criteriaString) {
 		this.criteriaString = criteriaString;
 	}
 
@@ -242,7 +242,7 @@ public class HeaderFilterStep implements CurationStep {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -255,7 +255,7 @@ public class HeaderFilterStep implements CurationStep {
 		return this.lastRunCompletionCount;
 	}
 
-	public void setLastRunCompletionCount(Integer count) {
+	public void setLastRunCompletionCount(final Integer count) {
 		this.lastRunCompletionCount = count;
 	}
 

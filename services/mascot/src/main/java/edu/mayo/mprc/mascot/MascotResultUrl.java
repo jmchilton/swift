@@ -10,7 +10,7 @@ public final class MascotResultUrl implements ProgressInfo {
 	public MascotResultUrl() {
 	}
 
-	public MascotResultUrl(String mascotUrl) {
+	public MascotResultUrl(final String mascotUrl) {
 		this.mascotUrl = mascotUrl;
 	}
 
@@ -18,7 +18,7 @@ public final class MascotResultUrl implements ProgressInfo {
 		return mascotUrl;
 	}
 
-	public void setMascotUrl(String mascotUrl) {
+	public void setMascotUrl(final String mascotUrl) {
 		this.mascotUrl = mascotUrl;
 	}
 }

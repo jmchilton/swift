@@ -47,7 +47,7 @@ public final class SearchDbWorker implements Worker {
 	private static final String DATABASE = "database";
 	private static final String SCAFFOLD_MOD_SET = "scaffoldModSet";
 
-	public SearchDbWorker(SearchDbDao dao, FastaDbDao fastaDbDao, CurationDao curationDao, UnimodDao unimodDao, SwiftDao swiftDao, File scaffoldModSet) {
+	public SearchDbWorker(final SearchDbDao dao, final FastaDbDao fastaDbDao, final CurationDao curationDao, final UnimodDao unimodDao, final SwiftDao swiftDao, final File scaffoldModSet) {
 		this.dao = dao;
 		this.fastaDbDao = fastaDbDao;
 		this.curationDao = curationDao;
@@ -69,13 +69,13 @@ public final class SearchDbWorker implements Worker {
 		}
 	}
 
-	private void loadScaffoldUnimod(File scaffoldModSet) {
+	private void loadScaffoldUnimod(final File scaffoldModSet) {
 		scaffoldUnimod = new Unimod();
 		scaffoldUnimod.parseUnimodXML(FileUtilities.getInputStream(scaffoldModSet));
 	}
 
 	@Override
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -86,15 +86,15 @@ public final class SearchDbWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket wp, ProgressReporter reporter) {
-		SearchDbWorkPacket workPacket = (SearchDbWorkPacket) wp;
+	private void process(final WorkPacket wp, final ProgressReporter reporter) {
+		final SearchDbWorkPacket workPacket = (SearchDbWorkPacket) wp;
 		dao.begin();
 		try {
-			ReportData reportData = swiftDao.getReportForId(workPacket.getReportDataId());
+			final ReportData reportData = swiftDao.getReportForId(workPacket.getReportDataId());
 
-			ProteinSequenceTranslator translator = new SingleDatabaseTranslator(fastaDbDao, curationDao);
-			MassSpecDataExtractor dataExtractor = new MapMassSpecDataExtractor(workPacket.getFileMetaDataMap());
-			ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(databaseUnimod, scaffoldUnimod, translator, dataExtractor);
+			final ProteinSequenceTranslator translator = new SingleDatabaseTranslator(fastaDbDao, curationDao);
+			final MassSpecDataExtractor dataExtractor = new MapMassSpecDataExtractor(workPacket.getFileMetaDataMap());
+			final ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(databaseUnimod, scaffoldUnimod, translator, dataExtractor);
 			summarizer.load(workPacket.getScaffoldSpectrumReport(), "3", reporter);
 
 			dao.addAnalysis(summarizer.getAnalysis(), reportData);
@@ -122,7 +122,7 @@ public final class SearchDbWorker implements Worker {
 			return searchDbDao;
 		}
 
-		public void setSearchDbDao(SearchDbDao searchDbDao) {
+		public void setSearchDbDao(final SearchDbDao searchDbDao) {
 			this.searchDbDao = searchDbDao;
 		}
 
@@ -130,7 +130,7 @@ public final class SearchDbWorker implements Worker {
 			return fastaDbDao;
 		}
 
-		public void setFastaDbDao(FastaDbDao fastaDbDao) {
+		public void setFastaDbDao(final FastaDbDao fastaDbDao) {
 			this.fastaDbDao = fastaDbDao;
 		}
 
@@ -138,7 +138,7 @@ public final class SearchDbWorker implements Worker {
 			return curationDao;
 		}
 
-		public void setCurationDao(CurationDao curationDao) {
+		public void setCurationDao(final CurationDao curationDao) {
 			this.curationDao = curationDao;
 		}
 
@@ -146,7 +146,7 @@ public final class SearchDbWorker implements Worker {
 			return unimodDao;
 		}
 
-		public void setUnimodDao(UnimodDao unimodDao) {
+		public void setUnimodDao(final UnimodDao unimodDao) {
 			this.unimodDao = unimodDao;
 		}
 
@@ -154,13 +154,13 @@ public final class SearchDbWorker implements Worker {
 			return swiftDao;
 		}
 
-		public void setSwiftDao(SwiftDao swiftDao) {
+		public void setSwiftDao(final SwiftDao swiftDao) {
 			this.swiftDao = swiftDao;
 		}
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			SearchDbWorker worker = new SearchDbWorker(searchDbDao, fastaDbDao, curationDao, unimodDao, swiftDao,
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final SearchDbWorker worker = new SearchDbWorker(searchDbDao, fastaDbDao, curationDao, unimodDao, swiftDao,
 					new File(config.getScaffoldModSet()));
 			return worker;
 		}
@@ -182,15 +182,15 @@ public final class SearchDbWorker implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(DATABASE, resolver.getIdFromConfig(database));
 			map.put(SCAFFOLD_MOD_SET, scaffoldModSet);
 			return map;
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			database = (DatabaseFactory.Config) resolver.getConfigFromId(values.get(DATABASE));
 			scaffoldModSet = values.get(SCAFFOLD_MOD_SET);
 		}
@@ -204,8 +204,8 @@ public final class SearchDbWorker implements Worker {
 	public static final class Ui implements ServiceUiFactory {
 
 		@Override
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
-			DatabaseFactory.Config database = (DatabaseFactory.Config) daemon.firstResourceOfType(DatabaseFactory.Config.class);
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
+			final DatabaseFactory.Config database = (DatabaseFactory.Config) daemon.firstResourceOfType(DatabaseFactory.Config.class);
 
 			builder.property(DATABASE, "Database", "Database we will be storing data into")
 					.reference(DatabaseFactory.TYPE, UiBuilder.NONE_TYPE)

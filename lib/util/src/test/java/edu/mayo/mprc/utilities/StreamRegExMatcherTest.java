@@ -34,8 +34,8 @@ public final class StreamRegExMatcherTest {
 		matcher.replaceAll("$1");
 		matcher.close();
 
-		String results = matcher.getContents().split("\\r?\\n")[0];
-		String expectedResults = ">P31946|1433B_HUMAN 14-3-3 beta/alpha sapiens (Human)";
+		final String results = matcher.getContents().split("\\r?\\n")[0];
+		final String expectedResults = ">P31946|1433B_HUMAN 14-3-3 beta/alpha sapiens (Human)";
 
 		Assert.assertEquals(results, expectedResults, "Replacement didn't work properly");
 	}
@@ -43,8 +43,8 @@ public final class StreamRegExMatcherTest {
 	@Test
 	public void testReplacementInPlace() throws IOException {
 		StreamRegExMatcher matcher = null;
-		File originalFile = getSomeHeadersFile();
-		File copiedFile = TestingUtilities.getUniqueTempFile(true, null, ".tmp");
+		final File originalFile = getSomeHeadersFile();
+		final File copiedFile = TestingUtilities.getUniqueTempFile(true, null, ".tmp");
 
 		FileUtilities.tryCopyFile(originalFile, copiedFile, true);
 		try {
@@ -56,40 +56,40 @@ public final class StreamRegExMatcherTest {
 
 		matcher.replaceAll("$1");
 
-		String results = matcher.getContents().split("\\r?\\n")[0];
-		String expectedResults = ">P31946|1433B_HUMAN 14-3-3 beta/alpha sapiens (Human)";
+		final String results = matcher.getContents().split("\\r?\\n")[0];
+		final String expectedResults = ">P31946|1433B_HUMAN 14-3-3 beta/alpha sapiens (Human)";
 		Assert.assertEquals(results.trim(), expectedResults.trim(), "Replacement didn't work properly");
 
 		matcher.writeContentsToFile(copiedFile);
 
 		matcher.close();
 
-		String fileResults = Files.toString(copiedFile, Charsets.UTF_8).split("\\r?\\n")[0];
+		final String fileResults = Files.toString(copiedFile, Charsets.UTF_8).split("\\r?\\n")[0];
 		Assert.assertEquals(fileResults, expectedResults, "File did not get properly saved");
 	}
 
 	@Test
 	public void testReplaceAllMap() throws IOException {
 
-		File testInput = TestingUtilities.getTempFileMarker(null);
+		final File testInput = TestingUtilities.getTempFileMarker(null);
 
-		String sampleFileContents =
+		final String sampleFileContents =
 				"I saw my dog take a jump off of the cliff.  Where is Spot?";
 
 
-		Map<Pattern, String> replacements = new HashMap<Pattern, String>();
+		final Map<Pattern, String> replacements = new HashMap<Pattern, String>();
 
 		replacements.put(Pattern.compile("dog take"), "a\\\\");
 		replacements.put(Pattern.compile("j\\S{3}\\soff"), "b");
 		replacements.put(Pattern.compile("c(\\S*)f"), "C$1$1F");
 
 		FileUtilities.writeStringToFile(testInput, sampleFileContents, false);
-		StreamRegExMatcher matcher = new StreamRegExMatcher(testInput);
+		final StreamRegExMatcher matcher = new StreamRegExMatcher(testInput);
 		matcher.replaceAll(replacements);
 
-		String result = matcher.getContents();
+		final String result = matcher.getContents();
 
-		String expected = "I saw my a\\ a b of the CliflifF.  Where is Spot?";
+		final String expected = "I saw my a\\ a b of the CliflifF.  Where is Spot?";
 
 		Assert.assertEquals(result, expected);
 

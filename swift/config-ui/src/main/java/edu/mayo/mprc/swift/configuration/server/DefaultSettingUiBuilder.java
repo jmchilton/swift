@@ -17,7 +17,7 @@ class DefaultSettingUiBuilder implements UiBuilder {
 	private Map<String, String> values;
 	private DependencyResolver resolver;
 
-	public DefaultSettingUiBuilder(Map<String, String> initialValues, DependencyResolver resolver) {
+	public DefaultSettingUiBuilder(final Map<String, String> initialValues, final DependencyResolver resolver) {
 		this.values = initialValues;
 		this.resolver = resolver;
 	}
@@ -27,12 +27,12 @@ class DefaultSettingUiBuilder implements UiBuilder {
 	}
 
 	@Override
-	public UiBuilder nativeInterface(String className) {
+	public UiBuilder nativeInterface(final String className) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder property(String name, String displayName, String description) {
+	public UiBuilder property(final String name, final String displayName, final String description) {
 		// Remember the property name
 		lastPropertyName = name;
 		return this;
@@ -44,30 +44,30 @@ class DefaultSettingUiBuilder implements UiBuilder {
 	}
 
 	@Override
-	public UiBuilder defaultValue(String value) {
+	public UiBuilder defaultValue(final String value) {
 		// Store the default value to the last property
 		values.put(lastPropertyName, value);
 		return this;
 	}
 
 	@Override
-	public UiBuilder defaultValue(ResourceConfig value) {
+	public UiBuilder defaultValue(final ResourceConfig value) {
 		values.put(lastPropertyName, resolver.getIdFromConfig(value));
 		return this;
 	}
 
 	@Override
-	public UiBuilder addChangeListener(PropertyChangeListener listener) {
+	public UiBuilder addChangeListener(final PropertyChangeListener listener) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder addDaemonChangeListener(PropertyChangeListener listener) {
+	public UiBuilder addDaemonChangeListener(final PropertyChangeListener listener) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder validateOnDemand(PropertyChangeListener validator) {
+	public UiBuilder validateOnDemand(final PropertyChangeListener validator) {
 		return this;
 	}
 
@@ -87,22 +87,22 @@ class DefaultSettingUiBuilder implements UiBuilder {
 	}
 
 	@Override
-	public UiBuilder integerValue(Integer minimum, Integer maximum) {
+	public UiBuilder integerValue(final Integer minimum, final Integer maximum) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder executable(List<String> commandLineParams) {
+	public UiBuilder executable(final List<String> commandLineParams) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder reference(String... type) {
+	public UiBuilder reference(final String... type) {
 		return this;
 	}
 
 	@Override
-	public UiBuilder enable(String propertyName, boolean synchronous) {
+	public UiBuilder enable(final String propertyName, final boolean synchronous) {
 		return this;
 	}
 }

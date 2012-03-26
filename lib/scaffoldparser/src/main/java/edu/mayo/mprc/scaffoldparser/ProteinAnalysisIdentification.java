@@ -35,7 +35,7 @@ public final class ProteinAnalysisIdentification {
 		return accessionNumber;
 	}
 
-	public void setAccessionNumber(String accessionNumber) {
+	public void setAccessionNumber(final String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
 
@@ -43,7 +43,7 @@ public final class ProteinAnalysisIdentification {
 		return proteinName;
 	}
 
-	public void setProteinName(String proteinName) {
+	public void setProteinName(final String proteinName) {
 		this.proteinName = proteinName;
 	}
 
@@ -51,7 +51,7 @@ public final class ProteinAnalysisIdentification {
 		return matchProbability;
 	}
 
-	public void setMatchProbability(double matchProbability) {
+	public void setMatchProbability(final double matchProbability) {
 		this.matchProbability = matchProbability;
 	}
 
@@ -59,7 +59,7 @@ public final class ProteinAnalysisIdentification {
 		return sequenceCoverageFraction;
 	}
 
-	public void setSequenceCoverageFraction(double sequenceCoverageFraction) {
+	public void setSequenceCoverageFraction(final double sequenceCoverageFraction) {
 		this.sequenceCoverageFraction = sequenceCoverageFraction;
 	}
 
@@ -67,7 +67,7 @@ public final class ProteinAnalysisIdentification {
 		return peptideGroupIdentifications;
 	}
 
-	public void setPeptideGroupIdentifications(List<PeptideGroupIdentification> peptideGroupIdentifications) {
+	public void setPeptideGroupIdentifications(final List<PeptideGroupIdentification> peptideGroupIdentifications) {
 		this.peptideGroupIdentifications = peptideGroupIdentifications;
 	}
 }

@@ -16,20 +16,20 @@ public final class TestIOFramework {
 
 	@Test(enabled = true, groups = {"fast", "integration"})
 	public void testMzXMLWriter() {
-		File tempfolder = FileUtilities.createTempFolder();
-		File mzXmlFile = new File(tempfolder, "peaklist.mzXML");
+		final File tempfolder = FileUtilities.createTempFolder();
+		final File mzXmlFile = new File(tempfolder, "peaklist.mzXML");
 		try {
 
-			MzXMLPeakListWriter w = new MzXMLPeakListWriter(mzXmlFile.getAbsolutePath());
+			final MzXMLPeakListWriter w = new MzXMLPeakListWriter(mzXmlFile.getAbsolutePath());
 
-			RawPeak p1 = new RawPeak();
+			final RawPeak p1 = new RawPeak();
 
 
 			p1.setCharge(2);
 			p1.setIntensity(10102.0);
 			p1.setMassOverCharge(1000.0);
 
-			MzXMLPeakList plist;
+			final MzXMLPeakList plist;
 
 			plist = new MzXMLPeakList();
 			plist.setBasePeakIntensity("" + p1.getIntensity());
@@ -45,19 +45,19 @@ public final class TestIOFramework {
 
 			w.setUse32BitPrecision(true);
 
-			MsRun msrun = new MsRun();
+			final MsRun msrun = new MsRun();
 			msrun.setScanCount("1");
 
 			plist.setMsRun(msrun);
 
 			// need to add DataProcessing
-			DataProcessing dataProc = new DataProcessing();
+			final DataProcessing dataProc = new DataProcessing();
 			dataProc.setCentroided("1");
 
 			msrun.addDataProcessing(dataProc);
 
-			MzXMLPeakList plist1;
-			RawPeak p2 = new RawPeak();
+			final MzXMLPeakList plist1;
+			final RawPeak p2 = new RawPeak();
 
 			// the precursor ion
 			//p1.setCentroided(RawPeak.CENTROIDED);

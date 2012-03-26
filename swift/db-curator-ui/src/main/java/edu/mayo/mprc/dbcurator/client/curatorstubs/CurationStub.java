@@ -37,7 +37,7 @@ public final class CurationStub implements Serializable {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -48,7 +48,7 @@ public final class CurationStub implements Serializable {
 		return shortName;
 	}
 
-	public void setShortName(String shortName) {
+	public void setShortName(final String shortName) {
 		this.shortName = shortName;
 	}
 
@@ -59,7 +59,7 @@ public final class CurationStub implements Serializable {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -70,7 +70,7 @@ public final class CurationStub implements Serializable {
 		return ownerEmail;
 	}
 
-	public void setOwnerEmail(String ownerEmail) {
+	public void setOwnerEmail(final String ownerEmail) {
 		this.ownerEmail = ownerEmail;
 	}
 
@@ -81,7 +81,7 @@ public final class CurationStub implements Serializable {
 		return lastRunDate;
 	}
 
-	public void setLastRunDate(String lastRunDate) {
+	public void setLastRunDate(final String lastRunDate) {
 		this.lastRunDate = lastRunDate;
 	}
 
@@ -92,7 +92,7 @@ public final class CurationStub implements Serializable {
 		return pathToResult;
 	}
 
-	public void setPathToResult(String pathToResult) {
+	public void setPathToResult(final String pathToResult) {
 		this.pathToResult = pathToResult;
 	}
 
@@ -104,7 +104,7 @@ public final class CurationStub implements Serializable {
 		return errorMessages;
 	}
 
-	public void setErrorMessages(List<String> errorMessages) {
+	public void setErrorMessages(final List<String> errorMessages) {
 		this.errorMessages = errorMessages;
 	}
 
@@ -112,7 +112,7 @@ public final class CurationStub implements Serializable {
 		return notes;
 	}
 
-	public void setNotes(String notes) {
+	public void setNotes(final String notes) {
 		this.notes = notes;
 	}
 
@@ -120,7 +120,7 @@ public final class CurationStub implements Serializable {
 		return steps;
 	}
 
-	public void setSteps(List<CurationStepStub> steps) {
+	public void setSteps(final List<CurationStepStub> steps) {
 		this.steps = steps;
 	}
 
@@ -134,7 +134,7 @@ public final class CurationStub implements Serializable {
 	/**
 	 * @param decoyRegex A Scaffold-style regex for marking decoy sequences.
 	 */
-	public void setDecoyRegex(String decoyRegex) {
+	public void setDecoyRegex(final String decoyRegex) {
 		this.decoyRegex = decoyRegex;
 	}
 }

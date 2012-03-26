@@ -148,23 +148,23 @@ public final class SearchRunner implements Runnable {
 	private static final String DEFAULT_PARAMS_FOLDER = "params";
 
 	public SearchRunner(
-			SwiftSearchWorkPacket packet,
-			SwiftSearchDefinition searchDefinition,
-			DaemonConnection raw2mgfDaemon,
-			DaemonConnection mgfCleanupDaemon,
-			DaemonConnection rawDumpDaemon,
-			DaemonConnection msmsEvalDaemon,
-			DaemonConnection scaffoldReportDaemon,
-			DaemonConnection qaDaemon,
-			DaemonConnection fastaDbDaemon,
-			DaemonConnection searchDbDaemon,
-			Collection<SearchEngine> searchEngines,
-			ProgressReporter reporter,
-			ExecutorService service,
-			CurationDao curationDao,
-			SwiftDao swiftDao,
-			FileTokenFactory fileTokenFactory,
-			SearchRun searchRun) {
+			final SwiftSearchWorkPacket packet,
+			final SwiftSearchDefinition searchDefinition,
+			final DaemonConnection raw2mgfDaemon,
+			final DaemonConnection mgfCleanupDaemon,
+			final DaemonConnection rawDumpDaemon,
+			final DaemonConnection msmsEvalDaemon,
+			final DaemonConnection scaffoldReportDaemon,
+			final DaemonConnection qaDaemon,
+			final DaemonConnection fastaDbDaemon,
+			final DaemonConnection searchDbDaemon,
+			final Collection<SearchEngine> searchEngines,
+			final ProgressReporter reporter,
+			final ExecutorService service,
+			final CurationDao curationDao,
+			final SwiftDao swiftDao,
+			final FileTokenFactory fileTokenFactory,
+			final SearchRun searchRun) {
 		this.searchDefinition = searchDefinition;
 		this.packet = packet;
 		this.raw2mgfDaemon = raw2mgfDaemon;
@@ -225,7 +225,7 @@ public final class SearchRunner implements Runnable {
 		return searchRun;
 	}
 
-	public void setSearchRun(SearchRun searchRun) {
+	public void setSearchRun(final SearchRun searchRun) {
 		this.searchRun = searchRun;
 	}
 
@@ -274,17 +274,17 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private void addReportTasks(SwiftSearchDefinition searchDefinition) {
+	private void addReportTasks(final SwiftSearchDefinition searchDefinition) {
 		if (searchDefinition.getPeptideReport() != null) {
 			addScaffoldReportStep(searchDefinition);
 		}
 	}
 
-	private void searchDefinitionToLists(SwiftSearchDefinition searchDefinition) {
+	private void searchDefinitionToLists(final SwiftSearchDefinition searchDefinition) {
 		// Now let us fill in all the lists
 		File file = null;
 
-		for (FileSearch inputFile : searchDefinition.getInputFiles()) {
+		for (final FileSearch inputFile : searchDefinition.getInputFiles()) {
 			file = inputFile.getInputFile();
 			if (file.exists()) {
 				addInputFileToLists(inputFile, Boolean.TRUE.equals(searchDefinition.getPublicSearchFiles()));
@@ -298,8 +298,8 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private SearchEngine getSearchEngine(String code) {
-		for (SearchEngine engine : searchEngines) {
+	private SearchEngine getSearchEngine(final String code) {
+		for (final SearchEngine engine : searchEngines) {
 			if (engine.getCode().equalsIgnoreCase(code)) {
 				return engine;
 			}
@@ -321,22 +321,22 @@ public final class SearchRunner implements Runnable {
 	private void createParameterFiles() {
 		// Obtain a set of all search engines that were requested
 		// This way we only create config files that we need
-		Set<String> enabledEngines = new HashSet<String>();
-		for (FileSearch fileSearch : searchDefinition.getInputFiles()) {
+		final Set<String> enabledEngines = new HashSet<String>();
+		for (final FileSearch fileSearch : searchDefinition.getInputFiles()) {
 			if (fileSearch != null) {
-				for (SearchEngineConfig config : fileSearch.getEnabledEngines().getEngineConfigs()) {
+				for (final SearchEngineConfig config : fileSearch.getEnabledEngines().getEngineConfigs()) {
 					enabledEngines.add(config.getCode());
 				}
 			}
 		}
 
-		File paramFolder = new File(searchDefinition.getOutputFolder(), DEFAULT_PARAMS_FOLDER);
+		final File paramFolder = new File(searchDefinition.getOutputFolder(), DEFAULT_PARAMS_FOLDER);
 		FileUtilities.ensureFolderExists(paramFolder);
 		parameterFiles = new HashMap<SearchEngine, File>();
-		SearchEngineParameters params = searchDefinition.getSearchParameters();
+		final SearchEngineParameters params = searchDefinition.getSearchParameters();
 		if (!enabledEngines.isEmpty()) {
 			FileUtilities.ensureFolderExists(paramFolder);
-			for (String engineCode : enabledEngines) {
+			for (final String engineCode : enabledEngines) {
 				final SearchEngine engine = getSearchEngine(engineCode);
 				final File file = engine.writeSearchEngineParameterFile(paramFolder, params, null /*We do not validate, validation should be already done*/);
 				addParamFile(engineCode, file);
@@ -344,18 +344,18 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	void addInputFileToLists(FileSearch inputFile, boolean publicSearchFiles) {
-		MgfOutput mgfOutput = addMgfProducingProcess(inputFile);
+	void addInputFileToLists(final FileSearch inputFile, final boolean publicSearchFiles) {
+		final MgfOutput mgfOutput = addMgfProducingProcess(inputFile);
 		addInputAnalysis(inputFile, mgfOutput);
 
-		SearchEngine scaffold = getScaffoldEngine();
+		final SearchEngine scaffold = getScaffoldEngine();
 		DatabaseDeployment scaffoldDeployment = null;
 		if (scaffold != null && searchWithScaffold2(inputFile)) {
 			scaffoldDeployment =
 					addDatabaseDeployment(scaffold, null/*scaffold has no param file*/,
 							searchDefinition.getSearchParameters().getDatabase());
 		}
-		SearchEngine scaffold3 = getScaffold3Engine();
+		final SearchEngine scaffold3 = getScaffold3Engine();
 		DatabaseDeployment scaffold3Deployment = null;
 		if (scaffold3 != null && searchWithScaffold3(inputFile)) {
 			scaffold3Deployment =
@@ -367,11 +367,11 @@ public final class SearchRunner implements Runnable {
 		Scaffold3Task scaffold3Task = null;
 
 		// Go through all possible search engines this file requires
-		for (SearchEngine engine : searchEngines) {
+		for (final SearchEngine engine : searchEngines) {
 			// All non-scaffold searches get normal entries
 			// While building these, the Scaffold search entry itself is initialized in a separate list
 			if (!isScaffoldEngine(engine) && inputFile.getEnabledEngines().isEnabled(engine.getCode())) {
-				File paramFile = getParamFile(engine);
+				final File paramFile = getParamFile(engine);
 
 				DatabaseDeploymentResult deploymentResult = null;
 				// Sequest deployment is counter-productive for particular input fasta file
@@ -380,14 +380,14 @@ public final class SearchRunner implements Runnable {
 				} else {
 					deploymentResult = addDatabaseDeployment(engine, paramFile, searchDefinition.getSearchParameters().getDatabase());
 				}
-				File outputFolder = getOutputFolderForSearchEngine(engine);
-				EngineSearchTask search = addEngineSearch(engine, paramFile, inputFile, outputFolder, mgfOutput, deploymentResult, publicSearchFiles);
+				final File outputFolder = getOutputFolderForSearchEngine(engine);
+				final EngineSearchTask search = addEngineSearch(engine, paramFile, inputFile, outputFolder, mgfOutput, deploymentResult, publicSearchFiles);
 				if (searchWithScaffold2(inputFile)) {
 					if (scaffoldDeployment == null) {
 						throw new MprcException("Scaffold search submitted without having Scaffold service enabled.");
 					}
 
-					ScaffoldTaskI scaffoldTaskI = addScaffoldCall(inputFile, search, scaffoldDeployment);
+					final ScaffoldTaskI scaffoldTaskI = addScaffoldCall(inputFile, search, scaffoldDeployment);
 					if (!(scaffoldTaskI instanceof ScaffoldTask)) {
 						ExceptionUtilities.throwCastException(scaffoldTaskI, ScaffoldTask.class);
 						return;
@@ -403,7 +403,7 @@ public final class SearchRunner implements Runnable {
 						throw new MprcException("Scaffold search submitted without having Scaffold 3 service enabled.");
 					}
 
-					ScaffoldTaskI scaffoldTaskI = addScaffold3Call(inputFile, search, scaffold3Deployment);
+					final ScaffoldTaskI scaffoldTaskI = addScaffold3Call(inputFile, search, scaffold3Deployment);
 					if (!(scaffoldTaskI instanceof Scaffold3Task)) {
 						ExceptionUtilities.throwCastException(scaffoldTaskI, Scaffold3Task.class);
 						return;
@@ -420,32 +420,32 @@ public final class SearchRunner implements Runnable {
 
 		if (searchDbDaemon != null && rawDumpDaemon != null) {
 			// Ask far dumping the .RAW file since the QA might be disabled
-			RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
+			final RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
 			addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
 		}
 	}
 
-	private boolean searchWithScaffold2(FileSearch inputFile) {
+	private boolean searchWithScaffold2(final FileSearch inputFile) {
 		return inputFile.isSearch("SCAFFOLD");
 	}
 
-	private boolean searchWithScaffold3(FileSearch inputFile) {
+	private boolean searchWithScaffold3(final FileSearch inputFile) {
 		return inputFile.isSearch("SCAFFOLD3");
 	}
 
-	private boolean sequest(SearchEngine engine) {
+	private boolean sequest(final SearchEngine engine) {
 		return "SEQUEST".equalsIgnoreCase(engine.getCode());
 	}
 
-	private boolean isScaffoldEngine(SearchEngine engine) {
+	private boolean isScaffoldEngine(final SearchEngine engine) {
 		return "SCAFFOLD".equalsIgnoreCase(engine.getCode()) || "SCAFFOLD3".equalsIgnoreCase(engine.getCode());
 	}
 
-	private void addParamFile(String engineCode, File file) {
+	private void addParamFile(final String engineCode, final File file) {
 		parameterFiles.put(getSearchEngine(engineCode), file);
 	}
 
-	private File getParamFile(SearchEngine engine) {
+	private File getParamFile(final SearchEngine engine) {
 		return parameterFiles.get(engine);
 	}
 
@@ -456,7 +456,7 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile Input file to analyze.
 	 * @param mgf       Mgf of the input file.
 	 */
-	private void addInputAnalysis(FileSearch inputFile, MgfOutput mgf) {
+	private void addInputAnalysis(final FileSearch inputFile, final MgfOutput mgf) {
 		// TODO: Extract metadata from the input file
 
 		// Analyze spectrum quality if requested
@@ -465,7 +465,7 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private File getOutputFolderForSearchEngine(SearchEngine engine) {
+	private File getOutputFolderForSearchEngine(final SearchEngine engine) {
 		return new File(searchDefinition.getOutputFolder(), engine.getOutputDirName());
 	}
 
@@ -489,8 +489,8 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile file to convert.
 	 * @return Task capable of producing an mgf (either by conversion or by cleaning up an existing mgf).
 	 */
-	MgfOutput addMgfProducingProcess(FileSearch inputFile) {
-		File file = inputFile.getInputFile();
+	MgfOutput addMgfProducingProcess(final FileSearch inputFile) {
+		final File file = inputFile.getInputFile();
 
 		MgfOutput mgfOutput = null;
 		// First, make sure we have a valid mgf, no matter what input we got
@@ -502,13 +502,13 @@ public final class SearchRunner implements Runnable {
 		return mgfOutput;
 	}
 
-	private MgfOutput addRaw2MgfConversionStep(FileSearch inputFile) {
-		File file = inputFile.getInputFile();
+	private MgfOutput addRaw2MgfConversionStep(final FileSearch inputFile) {
+		final File file = inputFile.getInputFile();
 		final Tuple<String, File> hashKey = getRawToMgfConversionHashKey(file, searchDefinition.getSearchParameters().getExtractMsnSettings());
 		RawToMgfTask task = rawToMgfConversions.get(hashKey);
 
 		if (task == null) {
-			File mgfFile = getMgfFileLocation(inputFile);
+			final File mgfFile = getMgfFileLocation(inputFile);
 
 			task = new RawToMgfTask(
 					/*Input file*/ file,
@@ -526,11 +526,11 @@ public final class SearchRunner implements Runnable {
 	/**
 	 * We have already made .mgf file. Because it can be problematic, we need to clean it up
 	 */
-	private MgfOutput addMgfCleanupStep(FileSearch inputFile) {
-		File file = inputFile.getInputFile();
+	private MgfOutput addMgfCleanupStep(final FileSearch inputFile) {
+		final File file = inputFile.getInputFile();
 		MgfOutput mgfOutput = mgfCleanups.get(getMgfCleanupHashKey(file));
 		if (mgfOutput == null) {
-			File outputFile = getMgfFileLocation(inputFile);
+			final File outputFile = getMgfFileLocation(inputFile);
 			mgfOutput = new MgfTitleCleanupTask(mgfCleanupDaemon, file, outputFile, fileTokenFactory, isFromScratch());
 			mgfCleanups.put(getMgfCleanupHashKey(file), mgfOutput);
 		}
@@ -543,7 +543,7 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile Input file
 	 * @param mgf       .mgf for the input file
 	 */
-	private void addSpectrumQualityAnalysis(FileSearch inputFile, MgfOutput mgf) {
+	private void addSpectrumQualityAnalysis(final FileSearch inputFile, final MgfOutput mgf) {
 		if (inputFile == null) {
 			throw new MprcException("Bug: Input file must not be null");
 		}
@@ -553,10 +553,10 @@ public final class SearchRunner implements Runnable {
 			throw new MprcException("Bug: The spectrum QA step must be enabled to be used");
 		}
 		// TODO: Check for spectrumQa.paramFile to be != null. Current code is kind of a hack.
-		File file = inputFile.getInputFile();
+		final File file = inputFile.getInputFile();
 
 		if (spectrumQaTasks.get(getSpectrumQaHashKey(file)) == null) {
-			SpectrumQaTask spectrumQaTask = new SpectrumQaTask(
+			final SpectrumQaTask spectrumQaTask = new SpectrumQaTask(
 					msmsEvalDaemon,
 					mgf,
 					spectrumQa.paramFile() == null ? null : spectrumQa.paramFile().getAbsoluteFile(),
@@ -568,20 +568,20 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private void addScaffoldReportStep(SwiftSearchDefinition searchDefinition) {
+	private void addScaffoldReportStep(final SwiftSearchDefinition searchDefinition) {
 
-		List<File> scaffoldOutputFiles = new ArrayList<File>(scaffoldCalls.size());
+		final List<File> scaffoldOutputFiles = new ArrayList<File>(scaffoldCalls.size());
 
-		for (ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
+		for (final ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
 			scaffoldOutputFiles.add(scaffoldTask.getScaffoldPeptideReportFile());
 		}
 
-		File peptideReportFile = new File(scaffoldOutputFiles.get(0).getParentFile(), "Swift Peptide Report For " + searchDefinition.getTitle() + ".xls");
-		File proteinReportFile = new File(scaffoldOutputFiles.get(0).getParentFile(), "Swift Protein Report For " + searchDefinition.getTitle() + ".xls");
+		final File peptideReportFile = new File(scaffoldOutputFiles.get(0).getParentFile(), "Swift Peptide Report For " + searchDefinition.getTitle() + ".xls");
+		final File proteinReportFile = new File(scaffoldOutputFiles.get(0).getParentFile(), "Swift Protein Report For " + searchDefinition.getTitle() + ".xls");
 
-		ScaffoldReportTask scaffoldReportTask = new ScaffoldReportTask(scaffoldReportDaemon, scaffoldOutputFiles, peptideReportFile, proteinReportFile, fileTokenFactory, isFromScratch());
+		final ScaffoldReportTask scaffoldReportTask = new ScaffoldReportTask(scaffoldReportDaemon, scaffoldOutputFiles, peptideReportFile, proteinReportFile, fileTokenFactory, isFromScratch());
 
-		for (ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
+		for (final ScaffoldTaskI scaffoldTask : scaffoldCalls.values()) {
 			scaffoldReportTask.addDependency(scaffoldTask);
 		}
 
@@ -592,7 +592,7 @@ public final class SearchRunner implements Runnable {
 		return packet.isFromScratch();
 	}
 
-	private void addQaTask(FileSearch inputFile, ScaffoldTaskI scaffoldTask, MgfOutput mgfOutput) {
+	private void addQaTask(final FileSearch inputFile, final ScaffoldTaskI scaffoldTask, final MgfOutput mgfOutput) {
 		if (qaDaemon != null) {
 			if (qaTask == null) {
 				qaTask = new QaTask(qaDaemon, fileTokenFactory, isFromScratch());
@@ -604,7 +604,7 @@ public final class SearchRunner implements Runnable {
 			qaTask.addDependency(mgfOutput);
 
 			if (isRawFile(inputFile)) {
-				File file = inputFile.getInputFile();
+				final File file = inputFile.getInputFile();
 
 				RAWDumpTask rawDumpTask = null;
 
@@ -634,7 +634,7 @@ public final class SearchRunner implements Runnable {
 		}
 	}
 
-	private RAWDumpTask addRawDumpTask(File rawFile, File outputFolder) {
+	private RAWDumpTask addRawDumpTask(final File rawFile, final File outputFolder) {
 		RAWDumpTask task = rawDumpTasks.get(rawFile);
 
 		if (task == null) {
@@ -646,11 +646,11 @@ public final class SearchRunner implements Runnable {
 		return task;
 	}
 
-	private RAWDumpTask getRawDumpTaskForInputFile(FileSearch inputFile) {
+	private RAWDumpTask getRawDumpTaskForInputFile(final FileSearch inputFile) {
 		return rawDumpTasks.get(inputFile.getInputFile());
 	}
 
-	private static boolean isRawFile(FileSearch inputFile) {
+	private static boolean isRawFile(final FileSearch inputFile) {
 		return !inputFile.getInputFile().getName().endsWith(".mgf");
 	}
 
@@ -658,12 +658,12 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile The input file entry from the search definition.
 	 * @return
 	 */
-	private File getMgfFileLocation(FileSearch inputFile) {
-		File file = inputFile.getInputFile();
-		String mgfOutputDir = new File(
+	private File getMgfFileLocation(final FileSearch inputFile) {
+		final File file = inputFile.getInputFile();
+		final String mgfOutputDir = new File(
 				new File(searchDefinition.getOutputFolder(), "dta"),
 				getFileTitle(file)).getPath();
-		File mgfFile = new File(mgfOutputDir, replaceFileExtension(file, ".mgf").getName());
+		final File mgfFile = new File(mgfOutputDir, replaceFileExtension(file, ".mgf").getName());
 		// Make sure we never produce same mgf file twice (for instance when we get two identical input mgf file names as input that differ only in the folder).
 		return distinctFiles.getDistinctFile(mgfFile);
 	}
@@ -672,11 +672,11 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile The input file entry from the search definition.
 	 * @return The location of the msmsEval filtered output for the given input file
 	 */
-	private File getSpectrumQaOutputFolder(FileSearch inputFile) {
-		File file = inputFile.getInputFile();
+	private File getSpectrumQaOutputFolder(final FileSearch inputFile) {
+		final File file = inputFile.getInputFile();
 		// msmsEval directory should be right next to the "dta" folder
-		File msmsEvalFolder = getSpectrumQaOutputDirLocation();
-		File outputFolder =
+		final File msmsEvalFolder = getSpectrumQaOutputDirLocation();
+		final File outputFolder =
 				new File(
 						msmsEvalFolder,
 						getFileTitle(file));
@@ -694,27 +694,27 @@ public final class SearchRunner implements Runnable {
 	/**
 	 * Returns output file given search engine, search output folder and name of the input file.
 	 */
-	private File getSearchResultLocation(SearchEngine engine, File searchOutputFolder, File file) {
-		String fileTitle = FileUtilities.stripExtension(file.getName());
-		String newFileName = fileTitle + engine.getResultExtension();
-		File resultFile = new File(searchOutputFolder, newFileName);
+	private File getSearchResultLocation(final SearchEngine engine, final File searchOutputFolder, final File file) {
+		final String fileTitle = FileUtilities.stripExtension(file.getName());
+		final String newFileName = fileTitle + engine.getResultExtension();
+		final File resultFile = new File(searchOutputFolder, newFileName);
 		// Make sure we never produce two identical result files.
 		return distinctFiles.getDistinctFile(resultFile);
 	}
 
-	private static String getFileTitle(File file) {
+	private static String getFileTitle(final File file) {
 		return FileUtilities.stripExtension(file.getName());
 	}
 
-	private static File replaceFileExtension(File file, String newExtension) {
+	private static File replaceFileExtension(final File file, final String newExtension) {
 		return new File(FileUtilities.stripExtension(file.getName()) + newExtension);
 	}
 
 	/**
 	 * Make a record for db deployment, if we do not have one already
 	 */
-	DatabaseDeployment addDatabaseDeployment(SearchEngine engine, File paramFile, Curation dbToDeploy) {
-		SearchEngine hashKey;
+	DatabaseDeployment addDatabaseDeployment(final SearchEngine engine, final File paramFile, final Curation dbToDeploy) {
+		final SearchEngine hashKey;
 		// The DB deployment is defined by engine for which it is done
 		hashKey = getDbDeploymentHashKey(engine);
 
@@ -733,12 +733,12 @@ public final class SearchRunner implements Runnable {
 	 * <p/>
 	 * The search also knows about the conversion and db deployment so it can determine when it can run.
 	 */
-	private EngineSearchTask addEngineSearch(SearchEngine engine, File paramFile, FileSearch inputFile, File searchOutputFolder, MgfOutput mgfOutput, DatabaseDeploymentResult deploymentResult, boolean publicSearchFiles) {
-		File rawOrMgfFile = inputFile.getInputFile();
-		String searchKey = getEngineSearchHashKey(engine, rawOrMgfFile);
+	private EngineSearchTask addEngineSearch(final SearchEngine engine, final File paramFile, final FileSearch inputFile, final File searchOutputFolder, final MgfOutput mgfOutput, final DatabaseDeploymentResult deploymentResult, final boolean publicSearchFiles) {
+		final File rawOrMgfFile = inputFile.getInputFile();
+		final String searchKey = getEngineSearchHashKey(engine, rawOrMgfFile);
 		EngineSearchTask search = engineSearches.get(searchKey);
 		if (search == null) {
-			File outputFile = getSearchResultLocation(engine, searchOutputFolder, rawOrMgfFile);
+			final File outputFile = getSearchResultLocation(engine, searchOutputFolder, rawOrMgfFile);
 			search = new EngineSearchTask(
 					engine,
 					rawOrMgfFile.getName(),
@@ -765,12 +765,12 @@ public final class SearchRunner implements Runnable {
 	 * Add a scaffold call (or update existing one) that depends on this input file to be sought through
 	 * the given engine search.
 	 */
-	private ScaffoldTaskI addScaffoldCall(FileSearch inputFile, EngineSearchTask search, DatabaseDeployment scaffoldDbDeployment) {
-		String experiment = inputFile.getExperiment();
+	private ScaffoldTaskI addScaffoldCall(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
+		final String experiment = inputFile.getExperiment();
 		final ScaffoldCall key = new ScaffoldCall(experiment, "2");
 		ScaffoldTaskI scaffoldTask = scaffoldCalls.get(key);
 		if (scaffoldTask == null) {
-			File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffoldEngine());
+			final File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffoldEngine());
 			scaffoldTask = new ScaffoldTask(
 					experiment,
 					searchDefinition,
@@ -793,12 +793,12 @@ public final class SearchRunner implements Runnable {
 	 * Add a scaffold 3 call (or update existing one) that depends on this input file to be sought through
 	 * the given engine search.
 	 */
-	private ScaffoldTaskI addScaffold3Call(FileSearch inputFile, EngineSearchTask search, DatabaseDeployment scaffoldDbDeployment) {
-		String experiment = inputFile.getExperiment();
+	private ScaffoldTaskI addScaffold3Call(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
+		final String experiment = inputFile.getExperiment();
 		final ScaffoldCall key = new ScaffoldCall(experiment, "3");
 		ScaffoldTaskI scaffoldTask = scaffoldCalls.get(key);
 		if (scaffoldTask == null) {
-			File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffold3Engine());
+			final File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffold3Engine());
 			scaffoldTask = new Scaffold3Task(
 					experiment,
 					searchDefinition,
@@ -817,11 +817,11 @@ public final class SearchRunner implements Runnable {
 		return scaffoldTask;
 	}
 
-	private FastaDbTask addFastaDbCall(Curation curation) {
-		int id = curation.getId();
-		FastaDbTask task = fastaDbCalls.get(id);
+	private FastaDbTask addFastaDbCall(final Curation curation) {
+		final int id = curation.getId();
+		final FastaDbTask task = fastaDbCalls.get(id);
 		if (task == null) {
-			FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, curation);
+			final FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, curation);
 			fastaDbCalls.put(id, newTask);
 			return newTask;
 		} else {
@@ -846,23 +846,23 @@ public final class SearchRunner implements Runnable {
 		return searchDbTask;
 	}
 
-	private static String getEngineSearchHashKey(SearchEngine engine, File file) {
+	private static String getEngineSearchHashKey(final SearchEngine engine, final File file) {
 		return engine.getCode() + ':' + file.getAbsolutePath();
 	}
 
-	private static File getMgfCleanupHashKey(File file) {
+	private static File getMgfCleanupHashKey(final File file) {
 		return file.getAbsoluteFile();
 	}
 
-	private static File getSpectrumQaHashKey(File file) {
+	private static File getSpectrumQaHashKey(final File file) {
 		return file.getAbsoluteFile();
 	}
 
-	private static Tuple<String, File> getRawToMgfConversionHashKey(File inputFile, ExtractMsnSettings extractMsnSettings) {
+	private static Tuple<String, File> getRawToMgfConversionHashKey(final File inputFile, final ExtractMsnSettings extractMsnSettings) {
 		return new Tuple<String, File>(extractMsnSettings.getCommandLineSwitches(), inputFile);
 	}
 
-	private static SearchEngine getDbDeploymentHashKey(SearchEngine engine) {
+	private static SearchEngine getDbDeploymentHashKey(final SearchEngine engine) {
 		return engine;
 	}
 
@@ -870,14 +870,14 @@ public final class SearchRunner implements Runnable {
 		return searchDefinition;
 	}
 
-	public void addSearchMonitor(SearchMonitor monitor) {
+	public void addSearchMonitor(final SearchMonitor monitor) {
 		this.workflowEngine.addMonitor(monitor);
 	}
 
 	private static final class MyResumer implements Resumer {
 		private SearchRunner runner;
 
-		private MyResumer(SearchRunner runner) {
+		private MyResumer(final SearchRunner runner) {
 			this.runner = runner;
 		}
 

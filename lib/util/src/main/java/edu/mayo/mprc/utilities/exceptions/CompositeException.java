@@ -22,27 +22,27 @@ public final class CompositeException extends MprcException {
 		super();
 	}
 
-	public CompositeException(Exception cause) {
+	public CompositeException(final Exception cause) {
 		super(cause);
 	}
 
-	public CompositeException(String message) {
+	public CompositeException(final String message) {
 		super(message);
 	}
 
-	public CompositeException(String message, Exception cause) {
+	public CompositeException(final String message, final Exception cause) {
 		super(message, cause);
 	}
 
-	public CompositeException(Collection<Exception> causes) {
+	public CompositeException(final Collection<Exception> causes) {
 		this.causes.addAll(causes);
 	}
 
-	public void addCauses(Collection<Exception> causes) {
+	public void addCauses(final Collection<Exception> causes) {
 		this.causes.addAll(causes);
 	}
 
-	public void addCause(Throwable cause) {
+	public void addCause(final Throwable cause) {
 		this.causes.add(cause);
 	}
 
@@ -65,10 +65,10 @@ public final class CompositeException extends MprcException {
 
 	@Override
 	public String getMessage() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(getMainMessage()).append(":");
 		int num = 1;
-		for (Throwable t : this.causes) {
+		for (final Throwable t : this.causes) {
 			sb.append("\n").append(num).append(") ").append(MprcException.getDetailedMessage(t));
 			num++;
 		}
@@ -77,24 +77,24 @@ public final class CompositeException extends MprcException {
 
 	@Override
 	public void printStackTrace() {
-		for (Throwable t : this.causes) {
+		for (final Throwable t : this.causes) {
 			t.printStackTrace();
 		}
 	}
 
 	@Override
-	public void printStackTrace(PrintWriter p) {
+	public void printStackTrace(final PrintWriter p) {
 		int i = 1;
 		final int total = this.causes.size();
-		for (Throwable t : this.causes) {
+		for (final Throwable t : this.causes) {
 			LOGGER.error(getMainMessage() + " (" + i + "/" + total + ")", t);
 			i++;
 		}
 	}
 
 	@Override
-	public void printStackTrace(PrintStream s) {
-		for (Throwable t : this.causes) {
+	public void printStackTrace(final PrintStream s) {
+		for (final Throwable t : this.causes) {
 			t.printStackTrace(s);
 		}
 	}

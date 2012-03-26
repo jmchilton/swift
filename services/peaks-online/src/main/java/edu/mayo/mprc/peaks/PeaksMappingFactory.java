@@ -32,7 +32,7 @@ public final class PeaksMappingFactory implements MappingFactory {
 		return enzymeMapping;
 	}
 
-	public void setEnzymeMapping(Map<String, String> enzymeMapping) {
+	public void setEnzymeMapping(final Map<String, String> enzymeMapping) {
 		this.enzymeMapping = enzymeMapping;
 	}
 
@@ -40,7 +40,7 @@ public final class PeaksMappingFactory implements MappingFactory {
 		return instrumentMapping;
 	}
 
-	public void setInstrumentMapping(Map<String, String> instrumentMapping) {
+	public void setInstrumentMapping(final Map<String, String> instrumentMapping) {
 		this.instrumentMapping = instrumentMapping;
 	}
 }

@@ -15,11 +15,11 @@ public final class DaemonProgressMessage implements Serializable {
 	private ProgressInfo progressData;
 	private String host;
 
-	public DaemonProgressMessage(DaemonProgress progress) {
+	public DaemonProgressMessage(final DaemonProgress progress) {
 		this(progress, null);
 	}
 
-	public DaemonProgressMessage(DaemonProgress progress, ProgressInfo progressData) {
+	public DaemonProgressMessage(final DaemonProgress progress, final ProgressInfo progressData) {
 		if (DaemonProgress.UserSpecificProgressInfo != progress && null != progressData) {
 			throw new IllegalArgumentException("You cannot specify user progress data on a request that is not marked as user-specific.");
 		}

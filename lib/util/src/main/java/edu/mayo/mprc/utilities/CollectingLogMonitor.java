@@ -7,7 +7,7 @@ public class CollectingLogMonitor implements LogMonitor {
 	private final List<String> lines = new ArrayList<String>(100);
 
 	@Override
-	public void line(String line) {
+	public void line(final String line) {
 		lines.add(line);
 	}
 

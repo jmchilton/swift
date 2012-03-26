@@ -87,8 +87,8 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param translator            Can translate accession number + database name into a protein sequence.
 	 * @param massSpecDataExtractor Can obtain metadata about the .RAW files.
 	 */
-	public ScaffoldSpectraSummarizer(IndexedModSet modSet, IndexedModSet scaffoldModSet, ProteinSequenceTranslator translator,
-	                                 MassSpecDataExtractor massSpecDataExtractor) {
+	public ScaffoldSpectraSummarizer(final IndexedModSet modSet, final IndexedModSet scaffoldModSet, final ProteinSequenceTranslator translator,
+	                                 final MassSpecDataExtractor massSpecDataExtractor) {
 		format = new ScaffoldModificationFormat(modSet, scaffoldModSet);
 		analysis = new AnalysisBuilder(format, translator, massSpecDataExtractor);
 	}
@@ -101,11 +101,11 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	}
 
 	@Override
-	public boolean processMetadata(String key, String value) {
+	public boolean processMetadata(final String key, final String value) {
 		if (key == null) {
-			int datePos = value.indexOf(REPORT_DATE_PREFIX_KEY);
+			final int datePos = value.indexOf(REPORT_DATE_PREFIX_KEY);
 			if (datePos >= 0) {
-				String date = value.substring(datePos + REPORT_DATE_PREFIX_KEY.length());
+				final String date = value.substring(datePos + REPORT_DATE_PREFIX_KEY.length());
 				final DateTime reportDate = parseAnalysisDate(date);
 				analysis.setAnalysisDate(reportDate);
 			}
@@ -122,8 +122,8 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param line Scaffold spectra file header, defining all the data columns. The header is tab-separated.
 	 */
 	@Override
-	public boolean processHeader(String line) {
-		HashMap<String, Integer> map = buildColumnMap(line);
+	public boolean processHeader(final String line) {
+		final HashMap<String, Integer> map = buildColumnMap(line);
 		numColumns = map.size();
 		currentLine = new String[numColumns];
 
@@ -168,7 +168,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param columnName      Name of the column to find.
 	 * @return Index of the column. If a matching column not found, throws an exception.
 	 */
-	private int getColumn(HashMap<String, Integer> columnPositions, String columnName) {
+	private int getColumn(final HashMap<String, Integer> columnPositions, final String columnName) {
 		final Integer column = getColumnNumber(columnPositions, columnName);
 		if (null == column) {
 			throw new MprcException("Missing column [" + columnName + "]");
@@ -180,17 +180,17 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	/**
 	 * @return -1 if the column name is not found, column number otherwise.
 	 */
-	private int getColumnOptional(HashMap<String, Integer> columnPositions, String columnName) {
+	private int getColumnOptional(final HashMap<String, Integer> columnPositions, final String columnName) {
 		final Integer column = getColumnNumber(columnPositions, columnName);
 		return column == null ? -1 : column;
 	}
 
-	private Integer getColumnNumber(HashMap<String, Integer> columnPositions, String columnName) {
+	private Integer getColumnNumber(final HashMap<String, Integer> columnPositions, final String columnName) {
 		return columnPositions.get(columnName.toUpperCase(Locale.US));
 	}
 
 	@Override
-	public boolean processRow(String line) {
+	public boolean processRow(final String line) {
 		fillCurrentLine(line);
 		final BiologicalSampleBuilder biologicalSample = analysis.getBiologicalSamples().getBiologicalSample(currentLine[biologicalSampleName], currentLine[biologicalSampleCategory]);
 		final SearchResultBuilder searchResult = biologicalSample.getSearchResults().getTandemMassSpecResult(FileUtilities.stripGzippedExtension(currentLine[msmsSampleName]));
@@ -241,18 +241,18 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param s String to check.
 	 * @return One-char amino acid code.
 	 */
-	private char parseAminoAcid(String s) {
+	private char parseAminoAcid(final String s) {
 		if (s == null || s.length() != 1) {
 			throw new MprcException("Wrong single-letter format for an amino acid: [" + s + "]");
 		}
-		char aminoAcid = s.charAt(0);
+		final char aminoAcid = s.charAt(0);
 		if (aminoAcid != '-' && SUPPORTED_AMINO_ACIDS.getForSingleLetterCode(s) == null) {
 			throw new MprcException("Unsupported amino acid code [" + aminoAcid + "]");
 		}
 		return Character.toUpperCase(aminoAcid);
 	}
 
-	private int parseInt(String s) {
+	private int parseInt(final String s) {
 		try {
 			return Integer.parseInt(fixCommaSeparatedThousands(s));
 		} catch (NumberFormatException e) {
@@ -267,7 +267,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @return The number parsed. If the number is missing. {@link Double#NaN} is returned. Commas separating thousands
 	 *         are handled as if they were not present. Trailing percent sign is removed if present.
 	 */
-	private Double parseDouble(String s) {
+	private Double parseDouble(final String s) {
 		if ("".equals(s)) {
 			return Double.NaN;
 		}
@@ -282,18 +282,18 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param column Column index to convert to double.
 	 * @return If column not defined (-1), return Double.NaN, otherwise parse the value for the column and return that.
 	 */
-	private double parseOptionalDouble(int column) {
+	private double parseOptionalDouble(final int column) {
 		if (column < 0) {
 			return Double.NaN;
 		}
 		return parseDouble(currentLine[column]);
 	}
 
-	private static String cutPercentSign(String s) {
+	private static String cutPercentSign(final String s) {
 		return s.endsWith("%") ? s.substring(0, s.length() - 1) : s;
 	}
 
-	private void fillCurrentLine(String line) {
+	private void fillCurrentLine(final String line) {
 		final Iterator<String> iterator = SPLITTER.split(line).iterator();
 		for (int i = 0; i < currentLine.length; i++) {
 			if (iterator.hasNext()) {
@@ -310,14 +310,14 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param date Date from Scaffold.
 	 * @return Parsed date.
 	 */
-	private static DateTime parseAnalysisDate(String date) {
+	private static DateTime parseAnalysisDate(final String date) {
 		DateTime parsedDate = tryParse(date, DateFormat.getDateTimeInstance(), null);
 		parsedDate = tryParse(date, DateFormat.getDateInstance(), parsedDate);
 		parsedDate = tryParse(date, DateFormat.getDateInstance(DateFormat.SHORT, Locale.US), parsedDate);
 		return parsedDate;
 	}
 
-	private static DateTime tryParse(String date, DateFormat format, DateTime parsedDate) {
+	private static DateTime tryParse(final String date, final DateFormat format, DateTime parsedDate) {
 		if (parsedDate == null) {
 			try {
 				parsedDate = new DateTime(format.parse(date));
@@ -328,10 +328,10 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		return parsedDate;
 	}
 
-	private static HashMap<String, Integer> buildColumnMap(String line) {
-		HashMap<String, Integer> columnPositions = new HashMap<String, Integer>(30);
+	private static HashMap<String, Integer> buildColumnMap(final String line) {
+		final HashMap<String, Integer> columnPositions = new HashMap<String, Integer>(30);
 		int position = 0;
-		for (String column : SPLITTER.split(line)) {
+		for (final String column : SPLITTER.split(line)) {
 			columnPositions.put(column.toUpperCase(Locale.US), position);
 			position++;
 		}

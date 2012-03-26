@@ -16,19 +16,19 @@ public final class GZipUtilities {
 	}
 
 
-	public static boolean isGZipped(File f) throws IOException {
+	public static boolean isGZipped(final File f) throws IOException {
 		return isGZipped(new FileInputStream(f));
 	}
 
-	public static boolean isGZipped(InputStream s) throws IOException {
+	public static boolean isGZipped(final InputStream s) throws IOException {
 		try {
-			byte[] toRead = new byte[2];
-			int readBytes = s.read(toRead);
+			final byte[] toRead = new byte[2];
+			final int readBytes = s.read(toRead);
 			if (readBytes < 2) {
 				return false;
 			}
-			byte b1 = (byte) 0x1f;
-			byte b2 = (byte) 0x8b;
+			final byte b1 = (byte) 0x1f;
+			final byte b2 = (byte) 0x8b;
 			return (toRead[0] == b1 && toRead[1] == b2);
 		} finally {
 			s.close();
@@ -42,7 +42,7 @@ public final class GZipUtilities {
 	 * @param destinationFile the the file you want to compress into.
 	 * @throws java.io.IOException if there was a problem or if you were trying to overwrite an existing file.
 	 */
-	public static void compressFile(File toCompress, File destinationFile) throws IOException {
+	public static void compressFile(final File toCompress, final File destinationFile) throws IOException {
 		streamToCompressedFile(new FileInputStream(toCompress), destinationFile);
 	}
 
@@ -54,7 +54,7 @@ public final class GZipUtilities {
 	 * @param destinationFile the file you want to put the compressed stream into.
 	 * @throws IOException if there
 	 */
-	public static void streamToCompressedFile(InputStream istream, File destinationFile) throws IOException {
+	public static void streamToCompressedFile(final InputStream istream, final File destinationFile) throws IOException {
 		if (destinationFile.exists()) {
 			throw new IOException("Refusing to overwrite an existing file.");
 		}
@@ -82,7 +82,7 @@ public final class GZipUtilities {
 	 * @param destinationFile
 	 * @throws IOException if there was a problem.
 	 */
-	public static void decompressFile(File toDecompress, File destinationFile) throws IOException {
+	public static void decompressFile(final File toDecompress, final File destinationFile) throws IOException {
 
 		if (destinationFile.exists()) {
 			throw new IOException("Refusing to overwrite an existing file.");
@@ -112,7 +112,7 @@ public final class GZipUtilities {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream getCompressedFileAsStream(File file) throws IOException {
+	public static InputStream getCompressedFileAsStream(final File file) throws IOException {
 		return new GZIPInputStream(new BufferedInputStream(new FileInputStream(file)));
 	}
 
@@ -123,8 +123,8 @@ public final class GZipUtilities {
 	 * @param ostream
 	 * @throws IOException
 	 */
-	protected static void transferStream(InputStream istream, OutputStream ostream) throws IOException {
-		byte[] inBuf = new byte[BUFF_SIZE];
+	protected static void transferStream(final InputStream istream, final OutputStream ostream) throws IOException {
+		final byte[] inBuf = new byte[BUFF_SIZE];
 		int readBytes = istream.read(inBuf);
 		while (readBytes >= 0) {
 			ostream.write(inBuf, 0, readBytes);

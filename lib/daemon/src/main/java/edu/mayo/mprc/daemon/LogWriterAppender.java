@@ -23,21 +23,21 @@ class LogWriterAppender extends WriterAppender {
 	private static Layout appenderLayout;
 
 	static {
-		Enumeration appenders = Logger.getRootLogger().getAllAppenders();
+		final Enumeration appenders = Logger.getRootLogger().getAllAppenders();
 
 		if (appenders.hasMoreElements()) {
-			Appender appender = (Appender) appenders.nextElement();
+			final Appender appender = (Appender) appenders.nextElement();
 			appenderLayout = appender.getLayout();
 		} else {
 			appenderLayout = new SimpleLayout();
 		}
 	}
 
-	public LogWriterAppender(OutputStream outputStream) {
+	public LogWriterAppender(final OutputStream outputStream) {
 		this(new OutputStreamWriter(outputStream));
 	}
 
-	public LogWriterAppender(Writer writer) {
+	public LogWriterAppender(final Writer writer) {
 		super(appenderLayout, writer);
 
 		allowedThreadNames = new HashSet<String>(4);
@@ -45,7 +45,7 @@ class LogWriterAppender extends WriterAppender {
 		notAllowedLevels = new HashSet<Level>(10);
 	}
 
-	public void setAllowedMDCKey(String key, Object value) {
+	public void setAllowedMDCKey(final String key, final Object value) {
 		this.allowedMDCKey = key;
 		this.mdcValue = value;
 	}
@@ -55,32 +55,32 @@ class LogWriterAppender extends WriterAppender {
 		this.mdcValue = null;
 	}
 
-	public void addAllowedThreadName(String threadName) {
+	public void addAllowedThreadName(final String threadName) {
 		allowedThreadNames.add(threadName);
 	}
 
-	public void removeAllowedThreadName(String threadName) {
+	public void removeAllowedThreadName(final String threadName) {
 		allowedThreadNames.remove(threadName);
 	}
 
-	public void addAllowedLevel(Level level) {
+	public void addAllowedLevel(final Level level) {
 		allowedLevels.add(level);
 	}
 
-	public void removeAllowedLevel(Level level) {
+	public void removeAllowedLevel(final Level level) {
 		allowedLevels.remove(level);
 	}
 
-	public void addNotAllowedLevel(Level level) {
+	public void addNotAllowedLevel(final Level level) {
 		notAllowedLevels.add(level);
 	}
 
-	public void removeNotAllowedLevel(Level level) {
+	public void removeNotAllowedLevel(final Level level) {
 		notAllowedLevels.remove(level);
 	}
 
 	@Override
-	public void append(LoggingEvent loggingEvent) {
+	public void append(final LoggingEvent loggingEvent) {
 		if (allowedThreadNames.size() == 0 || allowedThreadNames.contains(loggingEvent.getThreadName())) {
 			if ((allowedLevels.size() == 0 || allowedLevels.contains(loggingEvent.getLevel())) && (notAllowedLevels.size() == 0 || !notAllowedLevels.contains(loggingEvent.getLevel()))) {
 				if (allowedMDCKey == null || mdcValue.equals(loggingEvent.getMDC(allowedMDCKey))) {

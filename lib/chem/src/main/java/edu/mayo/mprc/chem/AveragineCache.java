@@ -26,7 +26,7 @@ public final class AveragineCache {
 	 *                      and if there is any averagine for the resulting number, it is returned.
 	 * @param periodicTable Periodic table to do the calculations with.
 	 */
-	public AveragineCache(double precision, PeriodicTable periodicTable) {
+	public AveragineCache(final double precision, final PeriodicTable periodicTable) {
 		this.periodicTable = periodicTable;
 		this.precision = precision;
 		this.averagine = new Averagine(periodicTable);
@@ -42,7 +42,7 @@ public final class AveragineCache {
 	 * @param charge        Charge - we add charge amount of protons to the formula.
 	 * @return Isotopic distribution for given combination of charge and mass.
 	 */
-	public IsotopicDistribution getDistribution(double averagineMass, int charge) {
+	public IsotopicDistribution getDistribution(final double averagineMass, final int charge) {
 		final Request key = new Request(averagineMass, charge, precision);
 		final IsotopicDistribution cached = cache.get(key);
 		if (cached != null) {
@@ -56,9 +56,9 @@ public final class AveragineCache {
 			throw new MprcException(e);
 		}
 		avg.addElement(chargeUnit.getChargeCarrier(), charge);
-		double mass = avg.getMonoisotopicMass();
+		final double mass = avg.getMonoisotopicMass();
 		avg.multiply(averagineMass / mass);
-		Chemical avgInt = new Chemical(periodicTable);
+		final Chemical avgInt = new Chemical(periodicTable);
 		// First fill in integral counts for all the elements
 		for (int element = 0; element < avg.getNumElements(); element++) {
 			avgInt.addElement(avg.getElement(element), Math.round(avg.getElementCount(element)));
@@ -76,13 +76,13 @@ public final class AveragineCache {
 		private final int mass;
 		private final int charge;
 
-		private Request(double mass, int charge, double precision) {
+		private Request(final double mass, final int charge, final double precision) {
 			this.mass = (int) (mass / precision);
 			this.charge = charge;
 		}
 
 		@Override
-		public boolean equals(Object o) {
+		public boolean equals(final Object o) {
 			if (this == o) {
 				return true;
 			}
@@ -90,7 +90,7 @@ public final class AveragineCache {
 				return false;
 			}
 
-			Request request = (Request) o;
+			final Request request = (Request) o;
 
 			if (mass != request.mass) {
 				return false;

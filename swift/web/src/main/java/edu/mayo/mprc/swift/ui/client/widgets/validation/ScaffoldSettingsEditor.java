@@ -67,7 +67,7 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		goAnnotations = new CheckBox("GO Annotations");
 		goAnnotations.setStyleName("scaffold-setting-group");
 		goAnnotations.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				onChange(sender);
 			}
 		});
@@ -85,7 +85,7 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 
 		starredDialog = new StarredProteinsDialog();
 		starredDialog.setOkListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				onChange(sender);
 			}
 		});
@@ -97,7 +97,7 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		return scaffoldSettings;
 	}
 
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		if (!(value instanceof ClientScaffoldSettings)) {
 			ExceptionUtilities.throwCastException(value, ClientScaffoldSettings.class);
 			return;
@@ -117,7 +117,7 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		proteinProbability.setFocus(true);
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		ValidationController.setValidationSeverity(validationSeverity, this);
 	}
 
@@ -125,11 +125,11 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		return null; // No such thing
 	}
 
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		// ignore
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		proteinProbability.setEnabled(enabled);
 		minPeptideCount.setEnabled(enabled);
 		peptideProbability.setEnabled(enabled);
@@ -139,15 +139,15 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		saveSpectra.setEnabled(enabled);
 	}
 
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		changeListenerCollection.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		changeListenerCollection.remove(changeListener);
 	}
 
-	public void onChange(Widget widget) {
+	public void onChange(final Widget widget) {
 		scaffoldSettings.setProteinProbability(proteinProbability.getDoubleValue() / 100.0);
 		scaffoldSettings.setMinimumPeptideCount(minPeptideCount.getIntegerValue());
 		scaffoldSettings.setPeptideProbability(peptideProbability.getDoubleValue() / 100.0);
@@ -164,7 +164,7 @@ public final class ScaffoldSettingsEditor extends Composite implements Validatab
 		changeListenerCollection.fireChange(this);
 	}
 
-	public void onClick(Widget sender) {
+	public void onClick(final Widget sender) {
 		if (starredCheckbox.equals(sender)) {
 			if (starredCheckbox.isChecked()) {
 				scaffoldSettings.setStarredProteins(starredDialog.getLastValue());

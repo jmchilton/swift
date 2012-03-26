@@ -33,7 +33,7 @@ public final class ProgressReport implements Serializable {
 	 * @param failed            Failed - either by themselves or because their initialization failed
 	 * @param initFailed        Out of failed how many did not even start (failed because dependency failed)
 	 */
-	public ProgressReport(int total, int sent, int queued, int executing, double fromExecutingDone, int succeeded, int failed, int initFailed) {
+	public ProgressReport(final int total, final int sent, final int queued, final int executing, final double fromExecutingDone, final int succeeded, final int failed, final int initFailed) {
 		this.total = total;
 		this.sent = sent;
 		this.queued = queued;
@@ -89,12 +89,12 @@ public final class ProgressReport implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj == null) {
 			return false;
 		}
 		if (obj instanceof ProgressReport) {
-			ProgressReport report = (ProgressReport) obj;
+			final ProgressReport report = (ProgressReport) obj;
 			return total == report.getTotal() &&
 					sent == report.getSent() &&
 					queued == report.getQueued() &&

@@ -27,7 +27,7 @@ public class Protease extends EvolvableBase implements Serializable, Comparable<
 	public Protease() {
 	}
 
-	public Protease(String name, String rnminus1, String rn) {
+	public Protease(final String name, final String rnminus1, final String rn) {
 		this.name = name;
 		this.rnminus1 = rnminus1;
 		this.rn = rn;
@@ -37,7 +37,7 @@ public class Protease extends EvolvableBase implements Serializable, Comparable<
 		return name;
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		if (name != null && name.length() > MAX_PROTEASE_NAME_LENGTH) {
 			throw new MprcException("Protease name " + name + "is too long");
 		}
@@ -48,7 +48,7 @@ public class Protease extends EvolvableBase implements Serializable, Comparable<
 		return rn;
 	}
 
-	void setRn(String rn) {
+	void setRn(final String rn) {
 		if (rn != null && rn.length() > MAX_RN_LENGTH) {
 			throw new MprcException("Protease Rn-1 " + rn + "is too long");
 		}
@@ -59,18 +59,18 @@ public class Protease extends EvolvableBase implements Serializable, Comparable<
 		return rnminus1;
 	}
 
-	void setRnminus1(String rnminus1) {
+	void setRnminus1(final String rnminus1) {
 		if (rnminus1 != null && rnminus1.length() > MAX_RN_LENGTH) {
 			throw new MprcException("Protease Rn-1 " + rnminus1 + "is too long");
 		}
 		this.rnminus1 = Strings.nullToEmpty(rnminus1);
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof Protease)) {
 			return false;
 		}
-		Protease p = (Protease) o;
+		final Protease p = (Protease) o;
 		return Objects.equal(p.getName(), getName()) &&
 				Objects.equal(p.getRnminus1(), getRnminus1());
 	}
@@ -84,7 +84,7 @@ public class Protease extends EvolvableBase implements Serializable, Comparable<
 		return getName() + ": " + rnminus1 + " " + rn;
 	}
 
-	public int compareTo(Protease o) {
+	public int compareTo(final Protease o) {
 		return ComparisonChain.start().nullsFirst()
 				.compare(getName(), o.getName())
 				.compare(getRnminus1(), o.getRnminus1())

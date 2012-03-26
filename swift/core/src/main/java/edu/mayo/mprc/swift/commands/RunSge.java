@@ -22,7 +22,7 @@ public class RunSge implements SwiftCommand {
 	}
 
 	@Override
-	public void run(SwiftEnvironment environment) {
+	public void run(final SwiftEnvironment environment) {
 		final String xmlConfigFilePath = environment.getParameter();
 		swiftSge.run(new File(xmlConfigFilePath));
 	}
@@ -31,7 +31,7 @@ public class RunSge implements SwiftCommand {
 		return swiftSge;
 	}
 
-	public void setSwiftSge(SgeJobRunner swiftSge) {
+	public void setSwiftSge(final SgeJobRunner swiftSge) {
 		this.swiftSge = swiftSge;
 	}
 }

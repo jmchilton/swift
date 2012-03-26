@@ -15,7 +15,7 @@ final class ScaffoldOutputReader implements Closeable {
 	private static final char DELIMITER = '\t';
 	private TsvStreamReader reader;
 
-	public ScaffoldOutputReader(File scaffoldOutputFile) {
+	public ScaffoldOutputReader(final File scaffoldOutputFile) {
 		try {
 			this.reader = new TsvStreamReader(scaffoldOutputFile);
 		} catch (Exception e) {
@@ -34,15 +34,15 @@ final class ScaffoldOutputReader implements Closeable {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getRowSortedDataTableContent(boolean includeHeaders, int[] columns, int groupByColumnIndex, Comparator<List<String>> comparator, int minColumns) throws IOException {
-		StringBuilder sb = new StringBuilder();
+	public String getRowSortedDataTableContent(final boolean includeHeaders, final int[] columns, final int groupByColumnIndex, final Comparator<List<String>> comparator, final int minColumns) throws IOException {
+		final StringBuilder sb = new StringBuilder();
 
 		List<String> row = null;
 
-		TreeSet<List<String>> rows = new TreeSet<List<String>>(comparator);
+		final TreeSet<List<String>> rows = new TreeSet<List<String>>(comparator);
 
 		//Get header row which is the first row of the data table.
-		List<String> headerRow = nextRow(minColumns, columns);
+		final List<String> headerRow = nextRow(minColumns, columns);
 
 		while ((row = nextRow(minColumns, columns)) != null) {
 			rows.add(row);
@@ -50,7 +50,7 @@ final class ScaffoldOutputReader implements Closeable {
 
 		if (includeHeaders) {
 			boolean first = true;
-			for (String str : headerRow) {
+			for (final String str : headerRow) {
 				if (!first) {
 					sb.append(DELIMITER);
 				}
@@ -61,22 +61,22 @@ final class ScaffoldOutputReader implements Closeable {
 			sb.append("\n");
 		}
 
-		boolean group = groupByColumnIndex != -1;
+		final boolean group = groupByColumnIndex != -1;
 
 		if (rows.size() > 0) {
 			String currentGroupByColumnValue = group ? rows.first().get(groupByColumnIndex) : null;
 
-			for (Iterator<List<String>> rowIterator = rows.iterator(); rowIterator.hasNext();) {
+			for (Iterator<List<String>> rowIterator = rows.iterator(); rowIterator.hasNext(); ) {
 
-				List<String> sortedRow = rowIterator.next();
+				final List<String> sortedRow = rowIterator.next();
 
 				if (group && !currentGroupByColumnValue.equals(sortedRow.get(groupByColumnIndex))) {
 					sb.append("\n");
 					currentGroupByColumnValue = sortedRow.get(groupByColumnIndex);
 				}
 
-				for (Iterator<String> iterator = sortedRow.iterator(); iterator.hasNext();) {
-					String str = iterator.next();
+				for (Iterator<String> iterator = sortedRow.iterator(); iterator.hasNext(); ) {
+					final String str = iterator.next();
 
 					sb.append(str);
 
@@ -94,12 +94,12 @@ final class ScaffoldOutputReader implements Closeable {
 		return sb.toString();
 	}
 
-	public String getRowSortedDataTableContent(boolean includeHeaders, int[] columns, int groupByColumnIndex, Comparator<List<String>> comparator) throws IOException {
+	public String getRowSortedDataTableContent(final boolean includeHeaders, final int[] columns, final int groupByColumnIndex, final Comparator<List<String>> comparator) throws IOException {
 		return getRowSortedDataTableContent(includeHeaders, columns, groupByColumnIndex, comparator, columns.length);
 	}
 
-	private List<String> nextRow(int minColumns, int[] columns) throws IOException {
-		ArrayList<String> rowBuffer = new ArrayList<String>(Math.max(minColumns, columns.length));
+	private List<String> nextRow(final int minColumns, final int[] columns) throws IOException {
+		final ArrayList<String> rowBuffer = new ArrayList<String>(Math.max(minColumns, columns.length));
 		while (reader.nextValues(columns, rowBuffer)) {
 			if (rowBuffer.size() >= minColumns) {
 				return rowBuffer;

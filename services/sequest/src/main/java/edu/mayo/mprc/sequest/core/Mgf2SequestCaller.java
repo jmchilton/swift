@@ -69,10 +69,10 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @return the sequest call length
 	 */
 	public static synchronized long resetMaxCallLength() {
-		Date startTime = new Date();
+		final Date startTime = new Date();
 		long maxCallLength = MaxCommandLine.findMaxCallLength(MAX_CALL_LENGTH_SEED, null);
-		Date endTime = new Date();
-		long runTime = endTime.getTime() - startTime.getTime();
+		final Date endTime = new Date();
+		final long runTime = endTime.getTime() - startTime.getTime();
 
 		LOGGER.debug("time to find max call length =" + runTime);
 
@@ -98,28 +98,28 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param startTimeOut    - the start time out
 	 * @param watchDogTimeOut - the watch dog time out
 	 */
-	public void callSequest(File tarFile, File paramsFile, File mgfFile, long startTimeOut, long watchDogTimeOut, File hdrFile) {
+	public void callSequest(final File tarFile, final File paramsFile, final File mgfFile, final long startTimeOut, final long watchDogTimeOut, final File hdrFile) {
 		assert hostsFile != null : "Path to pvm_hosts file is not set.";
 		validateInputsToSequestCaller(mgfFile, paramsFile, hdrFile);
 
 		// create a temporary folder for the dta files
 		// and .out files
-		File tempFolder = FileUtilities.createTempFolder();
-		String tempFolderName = tempFolder.getAbsolutePath();
+		final File tempFolder = FileUtilities.createTempFolder();
+		final String tempFolderName = tempFolder.getAbsolutePath();
 
-		File searchParamsFile = prepareParamsFile(paramsFile, hdrFile, tempFolderName);
+		final File searchParamsFile = prepareParamsFile(paramsFile, hdrFile, tempFolderName);
 
-		File outputDir = this.getOutputDir(tarFile);
+		final File outputDir = this.getOutputDir(tarFile);
 
 		// find the max allowable command line length and reduce it by 1000
 		if (this.maxCommandLineLength == 0) {
 			this.maxCommandLineLength = (int) getMaxCallLength();
 		}
 
-		File tarFileName = prepareTarFileLocation(tarFile);
-		SequestSubmitterInterface s = new SequestSubmit(maxCommandLineLength, searchParamsFile, outputDir, tarFileName, hostsFile);
+		final File tarFileName = prepareTarFileLocation(tarFile);
+		final SequestSubmitterInterface s = new SequestSubmit(maxCommandLineLength, searchParamsFile, outputDir, tarFileName, hostsFile);
 
-		SequestRunner sc = new SequestRunner(tempFolder, paramsFile, new ArrayList<String>(), hostsFile);
+		final SequestRunner sc = new SequestRunner(tempFolder, paramsFile, new ArrayList<String>(), hostsFile);
 
 		sc.setSequestExe(this.sequestExe);
 		sc.setWatchDogTimeOut(watchDogTimeOut);
@@ -130,12 +130,12 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 		s.setSequestCaller(sc);
 
 
-		IonsModellerInterface i = new MgfIonsModeller();
+		final IonsModellerInterface i = new MgfIonsModeller();
 
 		i.setWorkingDir(tempFolderName);
 
 
-		MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, tempFolderName);
+		final MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, tempFolderName);
 
 
 		parser.setMgfFileName(mgfFile.getAbsolutePath());
@@ -165,8 +165,8 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param tarFile - specified tar file name and location
 	 * @return - output directory for sequest tar'd search result
 	 */
-	private File getOutputDir(File tarFile) {
-		File outputDir = tarFile.getParentFile();
+	private File getOutputDir(final File tarFile) {
+		final File outputDir = tarFile.getParentFile();
 
 		if (!outputDir.isDirectory()) {
 			throw new MprcException("Output directory " + outputDir.getAbsolutePath() + " not found");
@@ -181,21 +181,21 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param mgfFile    - the mgf file name
 	 * @param paramsFile - the params file name
 	 */
-	private void validateInputsToSequestCaller(File mgfFile, File paramsFile, File hdrFile) {
+	private void validateInputsToSequestCaller(final File mgfFile, final File paramsFile, final File hdrFile) {
 
 		// validate that mgf file exists
-		boolean haveMgf = mgfFile.isFile();
+		final boolean haveMgf = mgfFile.isFile();
 		if (!haveMgf) {
 			throw new MprcException(mgfFile + " not found");
 		}
 
 		// validate that the params file exists
-		boolean haveParams = paramsFile.isFile();
+		final boolean haveParams = paramsFile.isFile();
 		if (!haveParams) {
 			throw new MprcException(paramsFile + " not found");
 		}
 		// validate that the hdr file exists
-		boolean haveHdr = hdrFile.isFile();
+		final boolean haveHdr = hdrFile.isFile();
 		if (!haveHdr) {
 			throw new MprcException(hdrFile + " not found");
 		}
@@ -209,9 +209,9 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param tempFolderName - the temporary folder name
 	 * @return the search parameters file
 	 */
-	private File prepareParamsFile(File paramsFile, File hdrFile, String tempFolderName) {
+	private File prepareParamsFile(final File paramsFile, final File hdrFile, final String tempFolderName) {
 		// copy the params file to the temporary folder
-		File tempParamsFile = new File(new File(tempFolderName), paramsFile.getName());
+		final File tempParamsFile = new File(new File(tempFolderName), paramsFile.getName());
 
 		FileUtilities.copyFile(paramsFile, tempParamsFile, true);
 
@@ -226,32 +226,32 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param tarFile - the tar file
 	 * @return - the corrected tar file location
 	 */
-	private File prepareTarFileLocation(File tarFile) {
+	private File prepareTarFileLocation(final File tarFile) {
 
 		// if there is a .gz in the name then strip it
 		String tarFileName = tarFile.getAbsolutePath();
 		// if contain .gz remove it
-		String ext = FileUtilities.getExtension(tarFileName);
+		final String ext = FileUtilities.getExtension(tarFileName);
 		if ("gz".equals(ext)) {
 			tarFileName = FileUtilities.stripExtension(tarFileName);
 		}
 		// if tarFile already exists then delete it
-		File existingTar = new File(tarFileName);
+		final File existingTar = new File(tarFileName);
 		if (existingTar.exists()) {
 			FileUtilities.quietDelete(existingTar);
 		}
 		return existingTar;
 	}
 
-	public void setSequestExe(String sequestExe) {
+	public void setSequestExe(final String sequestExe) {
 		this.sequestExe = sequestExe;
 	}
 
-	public void setHostsFile(File hostsFile) {
+	public void setHostsFile(final File hostsFile) {
 		this.hostsFile = hostsFile;
 	}
 
-	public void setMaxCommandLineLength(int commandLineLength) {
+	public void setMaxCommandLineLength(final int commandLineLength) {
 		this.maxCommandLineLength = commandLineLength;
 	}
 
@@ -263,10 +263,10 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param hdrFile - the database hdr file
 	 * @return
 	 */
-	public static boolean isDataBaseNametooLong(File hdrFile) {
-		String hdrFileNameChecked = hdrFile.getName();
+	public static boolean isDataBaseNametooLong(final File hdrFile) {
+		final String hdrFileNameChecked = hdrFile.getName();
 		// strip the extension
-		String strippedDone = FileUtilities.stripExtension(hdrFileNameChecked);
+		final String strippedDone = FileUtilities.stripExtension(hdrFileNameChecked);
 		// there might be two extensions
 		return (FileUtilities.stripExtension(strippedDone).length() > MAX_HEADER_FILE_LENGTH);
 	}
@@ -278,7 +278,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 	 * @param hdrFile          - the database hdr file
 	 * @return - the corrected params file
 	 */
-	public static synchronized File replaceDatabaseInParamFile(File searchParamsFile, File hdrFile) {
+	public static synchronized File replaceDatabaseInParamFile(final File searchParamsFile, final File hdrFile) {
 		LOGGER.debug("searchParamsFile=" + searchParamsFile + ",  hdrFile=" + hdrFile);
 
 		// there might be two extensions
@@ -287,7 +287,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 		}
 		//  looking for ${DBPath:...} or ${DB:...}
 		try {
-			File result = new File(searchParamsFile.getAbsolutePath() + ".replaced");
+			final File result = new File(searchParamsFile.getAbsolutePath() + ".replaced");
 			if (result.exists()) {
 				FileUtilities.quietDelete(result);
 			}
@@ -295,7 +295,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 			//    LOGGER.debug("file already exists="+result.getAbsolutePath());
 			//    return result;
 			//}
-			StreamRegExMatcher replaceEngine = new StreamRegExMatcher(Pattern.compile("\\$\\{(DB|DBPath):[^}]+\\}"), searchParamsFile);
+			final StreamRegExMatcher replaceEngine = new StreamRegExMatcher(Pattern.compile("\\$\\{(DB|DBPath):[^}]+\\}"), searchParamsFile);
 			replaceEngine.replaceAll(Matcher.quoteReplacement(hdrFile.getAbsolutePath()));
 
 			replaceEngine.writeContentsToFile(result, true);
@@ -304,7 +304,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 		} catch (IOException e) {
 			// find the hostName
 			String hostName = "unknown";
-			InetAddress host;
+			final InetAddress host;
 			try {
 				host = InetAddress.getLocalHost();
 				hostName = host.getHostName();
@@ -312,7 +312,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 				// ignore here since not the on the main path SWALLOWED
 			}
 			// find the userName
-			String userName = getProperty("user.name");
+			final String userName = getProperty("user.name");
 			// and add these to the message
 			throw new MprcException("At hostName=" + hostName + ",userName=" + userName + ", could not replace database in the " + searchParamsFile.getAbsolutePath(), e);
 		}

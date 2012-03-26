@@ -4,7 +4,7 @@ package edu.mayo.mprc.swift.ui.client.widgets;
 public final class SearchType {
 	private int type;
 
-	private SearchType(int type) {
+	private SearchType(final int type) {
 		this.type = type;
 	}
 
@@ -12,7 +12,7 @@ public final class SearchType {
 		return type;
 	}
 
-	public static SearchType fromType(int i) {
+	public static SearchType fromType(final int i) {
 		switch (i) {
 			case 0:
 				return OneToOne;

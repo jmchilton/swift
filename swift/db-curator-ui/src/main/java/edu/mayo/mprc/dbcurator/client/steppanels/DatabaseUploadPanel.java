@@ -50,7 +50,7 @@ public final class DatabaseUploadPanel extends AbstractStepPanel {
 			 * there is no progress indicator for this.  Maybe we can find another widget, someday.
 			 * @param event
 			 */
-			public void onSubmit(FormSubmitEvent event) {
+			public void onSubmit(final FormSubmitEvent event) {
 				if (lblClientPath.getText().trim().length() == 0) {
 					lblNotification.setText("You must select a file first");
 					event.setCancelled(true);
@@ -67,8 +67,8 @@ public final class DatabaseUploadPanel extends AbstractStepPanel {
 			 * display the location of the new file on the server
 			 * @param event contains the result (from Response.Writer) which contains ther error messages or the path to the file
 			 */
-			public void onSubmitComplete(FormSubmitCompleteEvent event) {
-				String results = event.getResults();
+			public void onSubmitComplete(final FormSubmitCompleteEvent event) {
+				final String results = event.getResults();
 				if (results.indexOf("<Error>") != -1) {
 					containedStep.serverFilePath = null;
 					lblNotification.setText(removeTags(results));
@@ -110,9 +110,9 @@ public final class DatabaseUploadPanel extends AbstractStepPanel {
 		lblClientPath.addStyleName("uploadpanel-clientpath");
 		mainPanel.add(lblClientPath);
 
-		Button cmdStart = new Button("Upload");
+		final Button cmdStart = new Button("Upload");
 		cmdStart.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				containedStep.clientFilePath = uploadWidget.getFilename();
 				lblClientPath.setText(uploadWidget.getFilename());
 				form.submit();
@@ -138,7 +138,7 @@ public final class DatabaseUploadPanel extends AbstractStepPanel {
 		return containedStep;
 	}
 
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof DatabaseUploadStepStub)) {
 			ExceptionUtilities.throwCastException(step, DatabaseUploadStepStub.class);
 			return;

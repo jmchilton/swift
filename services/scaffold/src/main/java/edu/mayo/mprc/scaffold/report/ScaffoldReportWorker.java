@@ -41,7 +41,7 @@ public final class ScaffoldReportWorker implements Worker {
 	 * @param workPacket       Work packet to be processed.
 	 * @param progressReporter To report progress, success or failures.
 	 */
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket);
@@ -52,22 +52,22 @@ public final class ScaffoldReportWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket) {
+	private void process(final WorkPacket workPacket) {
 		if (workPacket instanceof ScaffoldReportWorkPacket) {
 
-			ScaffoldReportWorkPacket scaffoldReportWorkPacket = ScaffoldReportWorkPacket.class.cast(workPacket);
+			final ScaffoldReportWorkPacket scaffoldReportWorkPacket = ScaffoldReportWorkPacket.class.cast(workPacket);
 
-			File peptideReport = scaffoldReportWorkPacket.getPeptideReportFile();
-			File proteinReport = scaffoldReportWorkPacket.getProteinReportFile();
+			final File peptideReport = scaffoldReportWorkPacket.getPeptideReportFile();
+			final File proteinReport = scaffoldReportWorkPacket.getProteinReportFile();
 
 			if (peptideReport.exists() && peptideReport.length() > 0 && proteinReport.exists() && proteinReport.length() > 0) {
 				LOGGER.info("Scaffold report output files: " + peptideReport.getName() + " and " + proteinReport.getName() + " already exist. Skipping scaffold report generation.");
 				return;
 			}
 
-			List<File> fileArrayList = new ArrayList<File>(scaffoldReportWorkPacket.getScaffoldOutputFiles().size());
+			final List<File> fileArrayList = new ArrayList<File>(scaffoldReportWorkPacket.getScaffoldOutputFiles().size());
 
-			for (File file : scaffoldReportWorkPacket.getScaffoldOutputFiles()) {
+			for (final File file : scaffoldReportWorkPacket.getScaffoldOutputFiles()) {
 				fileArrayList.add(file);
 			}
 
@@ -89,7 +89,7 @@ public final class ScaffoldReportWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			return new ScaffoldReportWorker();
 		}
 	}
@@ -103,12 +103,12 @@ public final class ScaffoldReportWorker implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			return new TreeMap<String, String>();
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			//Do nothing
 		}
 
@@ -119,7 +119,7 @@ public final class ScaffoldReportWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			// No UI needed
 		}
 	}

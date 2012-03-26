@@ -4,14 +4,14 @@ public final class ValidatedIntegerTextBox extends ValidatedTextBox {
 	private static class IntegerValidator extends TextBoxValidator {
 		private int low, high;
 
-		public IntegerValidator(int low, int high) {
+		public IntegerValidator(final int low, final int high) {
 			this.low = low;
 			this.high = high;
 		}
 
 		@Override
-		public boolean isValueValid(String data) {
-			int val;
+		public boolean isValueValid(final String data) {
+			final int val;
 
 			try {
 				val = Integer.parseInt(data);
@@ -40,7 +40,7 @@ public final class ValidatedIntegerTextBox extends ValidatedTextBox {
 	 * @param low  The lowest possible integer this input will accept; use Integer.MIN_VALUE to ignore the lower limit (except for that imposed by the JRE)
 	 * @param high The highest possible integer this input will accept; use Integer.MAX_VALUE to ignore the upper limit (except for that imposed by the JRE)
 	 */
-	public ValidatedIntegerTextBox(int low, int high, int defaultValue) {
+	public ValidatedIntegerTextBox(final int low, final int high, final int defaultValue) {
 		super(new IntegerValidator(low, high));
 		this.low = low;
 		this.high = high;

@@ -54,14 +54,14 @@ public final class RawToMgfWorker implements Worker {
 
 	private static final Pattern FIRST_LAST_SPECTRUM = Pattern.compile("^-[FfLl]\\d*$");
 
-	public static File[] getDtaFiles(File dtaFolder) {
+	public static File[] getDtaFiles(final File dtaFolder) {
 		if (!dtaFolder.isDirectory()) {
 			throw new MprcException("Dat file location is not a directory: " + dtaFolder.getAbsolutePath());
 		}
 
-		File[] files = dtaFolder.listFiles(new FilenameFilter() {
+		final File[] files = dtaFolder.listFiles(new FilenameFilter() {
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(final File dir, final String name) {
 				return name.endsWith(".dta");
 			}
 		});
@@ -70,7 +70,7 @@ public final class RawToMgfWorker implements Worker {
 		return files;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket);
@@ -81,18 +81,18 @@ public final class RawToMgfWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket) {
+	private void process(final WorkPacket workPacket) {
 		if (!(workPacket instanceof RawToMgfWorkPacket)) {
 			throw new DaemonException("Unknown request type: " + workPacket.getClass().getName());
 		}
 
-		RawToMgfWorkPacket batchWorkPacket = (RawToMgfWorkPacket) workPacket;
+		final RawToMgfWorkPacket batchWorkPacket = (RawToMgfWorkPacket) workPacket;
 
 		//	steps are
 		//	call the extract_msn utility to convert from raw to dta
 		//	call dta to mgf converter to make the mgf file
 
-		File mgfFile = batchWorkPacket.getOutputFile();
+		final File mgfFile = batchWorkPacket.getOutputFile();
 
 		final String origParams = batchWorkPacket.getParams();
 		final Long firstSpectrum = getParamValue("-F", origParams);
@@ -111,7 +111,7 @@ public final class RawToMgfWorker implements Worker {
 		// will use the temporary folder to get dta files then make mgf file in the
 		// output_dir
 		FileUtilities.ensureFolderExists(tempFolder);
-		File fulltempfolder = getMirrorFolderonTemp(tempFolder);
+		final File fulltempfolder = getMirrorFolderonTemp(tempFolder);
 		FileUtilities.ensureFolderExists(fulltempfolder);
 
 		boolean temporaryLinkMade = false;
@@ -139,7 +139,7 @@ public final class RawToMgfWorker implements Worker {
 				// Extract .dta files
 				File[] dtaFiles = null;
 
-				File ex_msn_exe = getExtractMsnExecutable();
+				final File ex_msn_exe = getExtractMsnExecutable();
 
 				FileUtilities.ensureFolderExists(mgfFile.getParentFile());
 
@@ -177,11 +177,11 @@ public final class RawToMgfWorker implements Worker {
 		}
 	}
 
-	static Long getParamValue(String paramName, String params) {
+	static Long getParamValue(final String paramName, final String params) {
 		final String lcParamName = paramName.toLowerCase();
-		for (String parameter : Splitter.on(" ").omitEmptyStrings().trimResults().split(params)) {
+		for (final String parameter : Splitter.on(" ").omitEmptyStrings().trimResults().split(params)) {
 			if (parameter.toLowerCase().startsWith(lcParamName)) {
-				String value = parameter.substring(paramName.length()).trim();
+				final String value = parameter.substring(paramName.length()).trim();
 				if (value.length() != 0 && value.charAt(0) >= '0' && value.charAt(0) <= '9') {
 					try {
 						return Long.valueOf(value);
@@ -201,9 +201,9 @@ public final class RawToMgfWorker implements Worker {
 	 * @param params Parameter list to clean from -F and -L
 	 * @return Cleaned up parameter list.
 	 */
-	static String cleanupFromToParams(String params) {
-		StringBuilder result = new StringBuilder(params.length());
-		for (String parameter : Splitter.on(" ").omitEmptyStrings().trimResults().split(params)) {
+	static String cleanupFromToParams(final String params) {
+		final StringBuilder result = new StringBuilder(params.length());
+		for (final String parameter : Splitter.on(" ").omitEmptyStrings().trimResults().split(params)) {
 			if (!FIRST_LAST_SPECTRUM.matcher(parameter).matches()) {
 				if (result.length() > 0) {
 					result.append(' ');
@@ -214,10 +214,10 @@ public final class RawToMgfWorker implements Worker {
 		return result.toString();
 	}
 
-	private boolean isConversionDone(RawToMgfWorkPacket batchWorkPacket, File rawFile) {
+	private boolean isConversionDone(final RawToMgfWorkPacket batchWorkPacket, final File rawFile) {
 		//  check if already exists (skip condition)
 		if (batchWorkPacket.isSkipIfExists()) {
-			File mgf_file = batchWorkPacket.getOutputFile();
+			final File mgf_file = batchWorkPacket.getOutputFile();
 			if (mgf_file.exists()) {
 				LOGGER.info(rawFile.getAbsolutePath() + " conversion already done.");
 				return true;
@@ -226,8 +226,8 @@ public final class RawToMgfWorker implements Worker {
 		return false;
 	}
 
-	private File getRawFile(RawToMgfWorkPacket batchWorkPacket) {
-		File rawFile = batchWorkPacket.getInputFile();
+	private File getRawFile(final RawToMgfWorkPacket batchWorkPacket) {
+		final File rawFile = batchWorkPacket.getInputFile();
 
 		// check that we got real raw file to work with
 		checkRawFile(rawFile);
@@ -244,9 +244,9 @@ public final class RawToMgfWorker implements Worker {
 	 * @param rawfile         - the raw file
 	 * @return Number of extracted spectra. If there are genuinely no spectra, returns 0. Throws an exception if things go wrong.
 	 */
-	synchronized void runExtractMsnJob(File fileToExec, File thermoOutputDir, String params, File rawfile, long firstSpectrum, long lastSpectrum, String wrapperScript, String xvfbWrapperScript) {
+	synchronized void runExtractMsnJob(final File fileToExec, final File thermoOutputDir, final String params, final File rawfile, final long firstSpectrum, final long lastSpectrum, final String wrapperScript, final String xvfbWrapperScript) {
 		final String spectrumRangeParams = (params.length() == 0 ? "" : params + " ") + "-F" + firstSpectrum + " -L" + lastSpectrum;
-		ExtractMsnWrapper extractMsn = new ExtractMsnWrapper(fileToExec, spectrumRangeParams, rawfile, wrapperScript, xvfbWrapperScript);
+		final ExtractMsnWrapper extractMsn = new ExtractMsnWrapper(fileToExec, spectrumRangeParams, rawfile, wrapperScript, xvfbWrapperScript);
 		extractMsn.setOutputDir(thermoOutputDir);
 
 		try {
@@ -265,11 +265,11 @@ public final class RawToMgfWorker implements Worker {
 	 * @param wine            - if should use wine or not
 	 * @throws edu.mayo.mprc.MprcException
 	 */
-	private void dtaToMgf(File thermoOutputDir, File[] dtaFiles, File finalOutputFile, boolean wine) {
+	private void dtaToMgf(final File thermoOutputDir, final File[] dtaFiles, final File finalOutputFile, final boolean wine) {
 		// now do mgf file creation...
-		File finalOutputDir = finalOutputFile.getParentFile();
+		final File finalOutputDir = finalOutputFile.getParentFile();
 
-		DTAToMGFConverter pDTAtoMGF =
+		final DTAToMGFConverter pDTAtoMGF =
 				new DTAToMGFConverter(
 						dtaFiles,
 						finalOutputFile);
@@ -284,7 +284,7 @@ public final class RawToMgfWorker implements Worker {
 		} catch (Exception t) {
 			throw new MprcException("dta to MGF conversion failed", t);
 		}
-		File file = pDTAtoMGF.getResultFile();
+		final File file = pDTAtoMGF.getResultFile();
 		if (!file.exists() || !file.isFile()) {
 			throw new MprcException("The MGF file does not exist " + file.getAbsolutePath());
 		}
@@ -295,11 +295,11 @@ public final class RawToMgfWorker implements Worker {
 		}
 	}
 
-	private static void copyRemainingFiles(File fromfolder, File tofolder) {
-		String[] fromfiles = fromfolder.list();
-		for (String fromfile : fromfiles) {
-			File to = new File(tofolder, FileUtilities.getLastFolderName(fromfile));
-			File localfile = new File(fromfolder, fromfile);
+	private static void copyRemainingFiles(final File fromfolder, final File tofolder) {
+		final String[] fromfiles = fromfolder.list();
+		for (final String fromfile : fromfiles) {
+			final File to = new File(tofolder, FileUtilities.getLastFolderName(fromfile));
+			final File localfile = new File(fromfolder, fromfile);
 			try {
 				FileUtilities.copyFile(localfile, to, true);
 			} catch (Exception e) {
@@ -310,7 +310,7 @@ public final class RawToMgfWorker implements Worker {
 		FileUtilities.quietDelete(fromfolder);
 	}
 
-	private static File getMirrorFolderonTemp(File tempfolder) {
+	private static File getMirrorFolderonTemp(final File tempfolder) {
 		try {
 			return FileUtilities.createTempFolder(tempfolder, "raw2mgf", false);
 		} catch (Exception t) {
@@ -318,26 +318,26 @@ public final class RawToMgfWorker implements Worker {
 		}
 	}
 
-	private void deleteDTAFiles(File dir) {
+	private void deleteDTAFiles(final File dir) {
 
-		ExtensionFilter filter = new ExtensionFilter("dta");
+		final ExtensionFilter filter = new ExtensionFilter("dta");
 
-		String[] list = dir.list(filter);
+		final String[] list = dir.list(filter);
 		File file;
 		if (list.length == 0) {
 			return;
 		}
 
-		for (String aList : list) {
+		for (final String aList : list) {
 			file = new File(dir, aList);
-			boolean isdeleted = file.delete();
+			final boolean isdeleted = file.delete();
 			if (!isdeleted) {
 				LOGGER.warn("Deletion of dta file failed with name=" + dir.getAbsolutePath() + File.separator + aList);
 			}
 		}
 	}
 
-	private static void checkRawFile(File pFile) {
+	private static void checkRawFile(final File pFile) {
 		if (pFile.exists()) {
 			if (pFile.isDirectory()) {
 				throw new DaemonException("Raw to MGF convertor cannot convert a directory");
@@ -347,7 +347,7 @@ public final class RawToMgfWorker implements Worker {
 		}
 	}
 
-	public void setExtractMsnExecutable(File extractMsnExecutable) {
+	public void setExtractMsnExecutable(final File extractMsnExecutable) {
 		this.extractMsnExecutable = extractMsnExecutable;
 	}
 
@@ -359,7 +359,7 @@ public final class RawToMgfWorker implements Worker {
 		return tempFolder;
 	}
 
-	public void setTempFolder(File tempFolder) {
+	public void setTempFolder(final File tempFolder) {
 		this.tempFolder = tempFolder;
 	}
 
@@ -367,7 +367,7 @@ public final class RawToMgfWorker implements Worker {
 		return wrapperScript;
 	}
 
-	public void setWrapperScript(String wrapperScript) {
+	public void setWrapperScript(final String wrapperScript) {
 		this.wrapperScript = wrapperScript;
 	}
 
@@ -375,7 +375,7 @@ public final class RawToMgfWorker implements Worker {
 		return xvfbWrapperScript;
 	}
 
-	public void setXvfbWrapperScript(File xvfbWrapperScript) {
+	public void setXvfbWrapperScript(final File xvfbWrapperScript) {
 		this.xvfbWrapperScript = xvfbWrapperScript;
 	}
 
@@ -383,7 +383,7 @@ public final class RawToMgfWorker implements Worker {
 		return MessageFormat.format("Batch conversion:\n\ttemp={0}\n\textract_msn path={1}\n\twrapper={2}", tempFolder.getPath(), extractMsnExecutable, wrapperScript);
 	}
 
-	public void setSpectrumBatchSize(int spectrumBatchSize) {
+	public void setSpectrumBatchSize(final int spectrumBatchSize) {
 		this.spectrumBatchSize = spectrumBatchSize;
 	}
 
@@ -396,8 +396,8 @@ public final class RawToMgfWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			RawToMgfWorker worker = new RawToMgfWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final RawToMgfWorker worker = new RawToMgfWorker();
 			worker.setTempFolder(new File(config.getTempFolder()));
 			worker.setWrapperScript(config.getWrapperScript());
 			worker.setXvfbWrapperScript(new File(config.getXvfbWrapperScript()));
@@ -419,7 +419,7 @@ public final class RawToMgfWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String tempFolder, String wrapperScript, String xvfbWrapperScript, String extractMsnExecutable) {
+		public Config(final String tempFolder, final String wrapperScript, final String xvfbWrapperScript, final String extractMsnExecutable) {
 			this.tempFolder = tempFolder;
 			this.wrapperScript = wrapperScript;
 			this.xvfbWrapperScript = xvfbWrapperScript;
@@ -430,7 +430,7 @@ public final class RawToMgfWorker implements Worker {
 			return tempFolder;
 		}
 
-		public void setTempFolder(String tempFolder) {
+		public void setTempFolder(final String tempFolder) {
 			this.tempFolder = tempFolder;
 		}
 
@@ -438,7 +438,7 @@ public final class RawToMgfWorker implements Worker {
 			return wrapperScript;
 		}
 
-		public void setWrapperScript(String wrapperScript) {
+		public void setWrapperScript(final String wrapperScript) {
 			this.wrapperScript = wrapperScript;
 		}
 
@@ -446,7 +446,7 @@ public final class RawToMgfWorker implements Worker {
 			return extractMsnExecutable;
 		}
 
-		public void setExtractMsnExecutable(String extractMsnExecutable) {
+		public void setExtractMsnExecutable(final String extractMsnExecutable) {
 			this.extractMsnExecutable = extractMsnExecutable;
 		}
 
@@ -454,12 +454,12 @@ public final class RawToMgfWorker implements Worker {
 			return xvfbWrapperScript;
 		}
 
-		public void setXvfbWrapperScript(String xvfbWrapperScript) {
+		public void setXvfbWrapperScript(final String xvfbWrapperScript) {
 			this.xvfbWrapperScript = xvfbWrapperScript;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(TEMP_FOLDER, tempFolder);
 			map.put(WRAPPER_SCRIPT, wrapperScript);
 			map.put(XVFB_WRAPPER_SCRIPT, xvfbWrapperScript);
@@ -467,7 +467,7 @@ public final class RawToMgfWorker implements Worker {
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			tempFolder = values.get(TEMP_FOLDER);
 			wrapperScript = values.get(WRAPPER_SCRIPT);
 			xvfbWrapperScript = values.get(XVFB_WRAPPER_SCRIPT);
@@ -483,7 +483,7 @@ public final class RawToMgfWorker implements Worker {
 	public static final class Ui implements ServiceUiFactory {
 		private static final String PROVIDED_EXTRACT_MSN = "bin/extract_msn/extract_msn.exe";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(EXTRACT_MSN_EXECUTABLE, "<tt>extract_msn.exe</tt> path", "Location of XCalibur's <tt>extract_msn.exe</tt>."
 					+ "<p>Typically installed at <tt>C:\\XCalibur\\System\\Programs\\extract_msn.exe</tt></p>"
 					+ "<p>For your convenience, a copy is in <tt>" + PROVIDED_EXTRACT_MSN + "</tt></p>")

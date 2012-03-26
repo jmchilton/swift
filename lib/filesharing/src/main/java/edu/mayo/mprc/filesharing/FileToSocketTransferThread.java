@@ -25,7 +25,7 @@ public final class FileToSocketTransferThread extends FileTransferThread {
 	private Socket socket;
 	private long uniqueId;
 
-	public FileToSocketTransferThread(File file, Socket socket) {
+	public FileToSocketTransferThread(final File file, final Socket socket) {
 		super("FileToSocketTransfer: " + file.getAbsolutePath());
 		this.file = file;
 		this.socket = socket;
@@ -37,7 +37,7 @@ public final class FileToSocketTransferThread extends FileTransferThread {
 		return listener;
 	}
 
-	public void setTransferCompleteListener(TransferCompleteListener listener) {
+	public void setTransferCompleteListener(final TransferCompleteListener listener) {
 		this.listener = listener;
 	}
 

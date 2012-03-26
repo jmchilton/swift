@@ -15,7 +15,7 @@ public final class MessageBrokerValidationTest {
 		JmsBrokerThread broker = null;
 		try {
 			broker = new JmsBrokerThread(new URI("tcp://localhost:8783"), null);
-			MessageBroker.Config config = new MessageBroker.Config();
+			final MessageBroker.Config config = new MessageBroker.Config();
 			config.setBrokerUrl(broker.getURI().toString());
 			Assert.assertNull(config.validate(), "JMS broker validation failed. Validation should had been successful.");
 		} catch (Exception e) {
@@ -29,7 +29,7 @@ public final class MessageBrokerValidationTest {
 
 	@Test(dependsOnMethods = {"validateJMSBrokerTest"})
 	public void validateJMSBrokerFailedTest() {
-		MessageBroker.Config config = new MessageBroker.Config();
+		final MessageBroker.Config config = new MessageBroker.Config();
 		config.setBrokerUrl("http://localhost:1234");
 		Assert.assertNotNull(config.validate(), "JMS broker validation did not fail. Validation should had failed.");
 	}

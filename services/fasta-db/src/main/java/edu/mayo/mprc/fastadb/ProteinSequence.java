@@ -6,10 +6,10 @@ package edu.mayo.mprc.fastadb;
  * @author Roman Zenka
  */
 public final class ProteinSequence extends Sequence {
-    ProteinSequence() {
-    }
+	ProteinSequence() {
+	}
 
-    public ProteinSequence(String sequence) {
-        super(sequence);
-    }
+	public ProteinSequence(final String sequence) {
+		super(sequence);
+	}
 }

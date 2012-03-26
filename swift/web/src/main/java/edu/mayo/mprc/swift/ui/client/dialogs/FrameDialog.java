@@ -11,13 +11,13 @@ public abstract class FrameDialog extends DialogBox {
 	private Button cancelButton;
 	private Label dialogTitleLabel;
 
-	protected FrameDialog(String title, boolean enableOk, boolean enableCancel, boolean clickOutsideCancels, boolean modal) {
+	protected FrameDialog(final String title, final boolean enableOk, final boolean enableCancel, final boolean clickOutsideCancels, final boolean modal) {
 		// Closed by clicking outside only if we do not provide closing buttons
 		super(clickOutsideCancels, modal);
 
-		VerticalPanel vp = new VerticalPanel();
+		final VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("frameDialog");
-		DockPanel dp = new DockPanel();
+		final DockPanel dp = new DockPanel();
 		dialogTitleLabel = new Label(title);
 		dp.add(dialogTitleLabel, DockPanel.CENTER);
 		// TODO: close box.
@@ -26,14 +26,14 @@ public abstract class FrameDialog extends DialogBox {
 		vp.add(contentPanel);
 		dp.setStyleName("frameDialogHeader");
 
-		FlowPanel buttonPanel = new FlowPanel();
+		final FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("ok-cancel-button-panel");
 
 		if (enableOk) {
 			okayButton = new Button("OK");
 			buttonPanel.add(okayButton);
 			okayButton.addClickListener(new ClickListener() {
-				public void onClick(Widget widget) {
+				public void onClick(final Widget widget) {
 					okay();
 				}
 			});
@@ -43,7 +43,7 @@ public abstract class FrameDialog extends DialogBox {
 			cancelButton = new Button("Cancel");
 			buttonPanel.add(cancelButton);
 			cancelButton.addClickListener(new ClickListener() {
-				public void onClick(Widget widget) {
+				public void onClick(final Widget widget) {
 					cancel();
 				}
 			});
@@ -56,15 +56,15 @@ public abstract class FrameDialog extends DialogBox {
 		setWidget(vp);
 	}
 
-	protected FrameDialog(boolean enableOk, boolean enableCancel, boolean clickOutsideCancels) {
+	protected FrameDialog(final boolean enableOk, final boolean enableCancel, final boolean clickOutsideCancels) {
 		this("", enableOk, enableCancel, clickOutsideCancels, false);
 	}
 
-	protected FrameDialog(String title, boolean enableOk, boolean enableCancel) {
+	protected FrameDialog(final String title, final boolean enableOk, final boolean enableCancel) {
 		this(title, enableOk, enableCancel, !enableOk && !enableCancel, false);
 	}
 
-	protected FrameDialog(boolean enableOk, boolean enableCancel) {
+	protected FrameDialog(final boolean enableOk, final boolean enableCancel) {
 		this("", enableOk, enableCancel, !enableOk && !enableCancel, false);
 	}
 
@@ -72,24 +72,24 @@ public abstract class FrameDialog extends DialogBox {
 		return dialogTitleLabel.getText();
 	}
 
-	public void setDialogTitle(String title) {
+	public void setDialogTitle(final String title) {
 		dialogTitleLabel.setText(title);
 	}
 
-	public void setContent(Widget contentPanel) {
+	public void setContent(final Widget contentPanel) {
 		this.contentPanel.setWidget(contentPanel);
 	}
 
-	protected void enableOkButton(boolean enabled) {
+	protected void enableOkButton(final boolean enabled) {
 		okayButton.setEnabled(enabled);
 	}
 
-	protected void enableCancelButton(boolean enabled) {
+	protected void enableCancelButton(final boolean enabled) {
 		cancelButton.setEnabled(enabled);
 	}
 
 
-	public void setOkListener(ClickListener listener) {
+	public void setOkListener(final ClickListener listener) {
 		this.okayButton.addClickListener(listener);
 	}
 

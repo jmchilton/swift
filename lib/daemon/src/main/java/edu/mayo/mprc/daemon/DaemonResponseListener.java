@@ -27,13 +27,13 @@ class DaemonResponseListener implements ResponseListener {
 	private String terminateCause = null;
 	private String contextInfo = "(unknown)";
 
-	public DaemonResponseListener(ProgressListener progressListener, String contextInfo, DaemonConnection daemonConnection) {
+	public DaemonResponseListener(final ProgressListener progressListener, final String contextInfo, final DaemonConnection daemonConnection) {
 		this.progressListener = progressListener;
 		this.contextInfo = contextInfo;
 		this.daemonConnection = daemonConnection;
 	}
 
-	public void responseReceived(Serializable response, boolean isLast) {
+	public void responseReceived(final Serializable response, final boolean isLast) {
 		try {
 			NDC.push(contextInfo);
 			processResponse(response);
@@ -47,7 +47,7 @@ class DaemonResponseListener implements ResponseListener {
 	 *
 	 * @param response Daemon response to be parsed and fed to the listener. We assume the listener is set.
 	 */
-	private void processResponse(Serializable response) {
+	private void processResponse(final Serializable response) {
 		if (null == progressListener) {
 			return;
 		}
@@ -62,7 +62,7 @@ class DaemonResponseListener implements ResponseListener {
 		}
 	}
 
-	private void processProgressMessage(DaemonProgressMessage msg) {
+	private void processProgressMessage(final DaemonProgressMessage msg) {
 		switch (msg.getProgress()) {
 			case RequestCompleted:
 				requestCompleted(msg);
@@ -81,7 +81,7 @@ class DaemonResponseListener implements ResponseListener {
 		}
 	}
 
-	private void requestCompleted(DaemonProgressMessage msg) {
+	private void requestCompleted(final DaemonProgressMessage msg) {
 		logProgress(msg, "completed");
 		if (terminateCause == null) {
 			terminateCause = "REQUEST_COMPLETED " + (msg.getProgressData() == null ? "null" : msg.getProgressData().toString());
@@ -91,29 +91,29 @@ class DaemonResponseListener implements ResponseListener {
 		}
 	}
 
-	private void requestEnqueued(DaemonProgressMessage msg) {
+	private void requestEnqueued(final DaemonProgressMessage msg) {
 		logProgress(msg, "enqueued");
 		progressListener.requestEnqueued(msg.getHostString());
 	}
 
-	private void requestProcessingStarted(DaemonProgressMessage msg) {
+	private void requestProcessingStarted(final DaemonProgressMessage msg) {
 		logProgress(msg, "processing started");
 		progressListener.requestProcessingStarted();
 	}
 
-	private void userSpecificProgressInfo(DaemonProgressMessage msg) {
+	private void userSpecificProgressInfo(final DaemonProgressMessage msg) {
 		logProgress(msg, "progress info");
 
 		//If response if a FileTokenHolder, set FileTokenFactory.
 		if (msg.getProgressData() instanceof FileTokenHolder) {
-			FileTokenHolder fileTokenHolder = (FileTokenHolder) msg.getProgressData();
+			final FileTokenHolder fileTokenHolder = (FileTokenHolder) msg.getProgressData();
 			fileTokenHolder.translateOnReceiver(daemonConnection.getFileTokenFactory(), daemonConnection.getFileTokenFactory());
 		}
 
 		progressListener.userProgressInformation(msg.getProgressData());
 	}
 
-	private void processException(DaemonException response) {
+	private void processException(final DaemonException response) {
 		LOGGER.debug("Request " + contextInfo + " progress info failed with daemon exception ", response);
 		if (terminateCause == null) {
 			terminateCause = "Exception " + MprcException.getDetailedMessage(response);
@@ -123,7 +123,7 @@ class DaemonResponseListener implements ResponseListener {
 		}
 	}
 
-	private void logProgress(DaemonProgressMessage msg, String status) {
+	private void logProgress(final DaemonProgressMessage msg, final String status) {
 		LOGGER.debug("Request " + contextInfo + " " + status + ": " + (msg.getProgressData() == null ? "null" : msg.getProgressData().toString()));
 	}
 }

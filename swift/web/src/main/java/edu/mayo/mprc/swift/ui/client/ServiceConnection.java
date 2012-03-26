@@ -13,8 +13,8 @@ public final class ServiceConnection {
 		if (browsingService == null) {
 			browsingService = (ServiceAsync) GWT.create(Service.class);
 
-			ServiceDefTarget endpoint = (ServiceDefTarget) browsingService;
-			String moduleRelativeURL = GWT.getModuleBaseURL() + "Service";
+			final ServiceDefTarget endpoint = (ServiceDefTarget) browsingService;
+			final String moduleRelativeURL = GWT.getModuleBaseURL() + "Service";
 			endpoint.setServiceEntryPoint(moduleRelativeURL);
 		}
 		return browsingService;

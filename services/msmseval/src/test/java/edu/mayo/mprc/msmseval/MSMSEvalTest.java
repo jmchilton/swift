@@ -92,12 +92,12 @@ public final class MSMSEvalTest {
 
 	@Test(dependsOnMethods = {"msmsEvalTest"}, enabled = true)
 	public void msmsEvalOutputFormatTest() throws IOException {
-		File formattedMsmsOutputFile = MSMSEvalOutputFileFormatter.replaceMzXMLScanIdsWithMgfNumbers(new File(msmsEval.getMsmsEvalOutputFileName())
+		final File formattedMsmsOutputFile = MSMSEvalOutputFileFormatter.replaceMzXMLScanIdsWithMgfNumbers(new File(msmsEval.getMsmsEvalOutputFileName())
 				, new File(msmsEval.getMsmsEvalOutputFileName().substring(0, msmsEval.getMsmsEvalOutputFileName().lastIndexOf('.')) + ".mod.csv"), scanToTitleMapping);
 
 
 		String difference = null;
-		for (File outputFile : outputFiles) {
+		for (final File outputFile : outputFiles) {
 			difference = TestingUtilities.compareFilesByLine(formattedMsmsOutputFile, outputFile);
 			if (difference == null) {
 				break;

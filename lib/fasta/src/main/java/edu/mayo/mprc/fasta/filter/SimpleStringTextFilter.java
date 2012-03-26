@@ -32,12 +32,12 @@ public final class SimpleStringTextFilter implements TextFilter {
 	 *
 	 * @param filterString the string to search for in the strings passed int matches()
 	 */
-	public SimpleStringTextFilter(String filterString) {
+	public SimpleStringTextFilter(final String filterString) {
 		//we are ignoring case to lowercase every thing
-		String lower = filterString.toLowerCase(Locale.ENGLISH);
+		final String lower = filterString.toLowerCase(Locale.ENGLISH);
 
 		//break up the filter into each word
-		StringTokenizer tokenizer = new StringTokenizer(lower);
+		final StringTokenizer tokenizer = new StringTokenizer(lower);
 
 		//create and populate the list of criteria strings
 		criteria = new ArrayList<String>(tokenizer.countTokens());
@@ -55,14 +55,14 @@ public final class SimpleStringTextFilter implements TextFilter {
 	 * @param toTest the string you want to see if the criteria is contained within
 	 * @return <code>true</code> if toTest contains the criteria else <code>false</code>
 	 */
-	public boolean matches(String toTest) {
+	public boolean matches(final String toTest) {
 
 		//we want to ignore case so make lower case
-		String lower = toTest.toLowerCase(Locale.ENGLISH);
+		final String lower = toTest.toLowerCase(Locale.ENGLISH);
 
 		//go through and count the number of matches
 		int matchCount = 0;
-		for (String s : criteria) {
+		for (final String s : criteria) {
 			if (lower.contains(s)) {
 				matchCount++;
 			}
@@ -87,7 +87,7 @@ public final class SimpleStringTextFilter implements TextFilter {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setMatchMode(MatchMode mode) {
+	public void setMatchMode(final MatchMode mode) {
 		this.mode = mode;
 	}
 

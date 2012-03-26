@@ -22,7 +22,7 @@ public final class ModificationsLabelRunClick implements ClickListener {
 	 */
 	private boolean updateSelectedOnEditor;
 
-	public ModificationsLabelRunClick(ModificationsLabel proxy) {
+	public ModificationsLabelRunClick(final ModificationsLabel proxy) {
 		this.editor = proxy.getEditor();
 		this.param = proxy.getParam();
 		this.type = proxy.getType();
@@ -34,12 +34,12 @@ public final class ModificationsLabelRunClick implements ClickListener {
 	 *
 	 * @param updateSelections - indicates if should progagate the selections
 	 */
-	protected void setUpdateSelectedOnEditor(boolean updateSelections) {
+	protected void setUpdateSelectedOnEditor(final boolean updateSelections) {
 		this.updateSelectedOnEditor = updateSelections;
 	}
 
-	public void onClick(Widget sender) {
-		ModificationDialog p = new ModificationDialog(editor);
+	public void onClick(final Widget sender) {
+		final ModificationDialog p = new ModificationDialog(editor);
 
 		editor.setAllowedValues(proxy.getAllowedValues());
 		if (this.updateSelectedOnEditor) {
@@ -48,7 +48,7 @@ public final class ModificationsLabelRunClick implements ClickListener {
 		}
 		p.setParam(param);
 		p.setType(type);
-		OkClickListener listener = new OkClickListener(editor, proxy);
+		final OkClickListener listener = new OkClickListener(editor, proxy);
 		p.setOkListener(listener);
 
 		p.center();
@@ -62,7 +62,7 @@ public final class ModificationsLabelRunClick implements ClickListener {
 		private ModificationSelectionEditor editor;
 		private ModificationsLabel proxy;
 
-		public OkClickListener(ModificationSelectionEditor editor, ModificationsLabel proxy) {
+		public OkClickListener(final ModificationSelectionEditor editor, final ModificationsLabel proxy) {
 			this.editor = editor;
 			this.proxy = proxy;
 		}
@@ -72,7 +72,7 @@ public final class ModificationsLabelRunClick implements ClickListener {
 		 *
 		 * @param sender - the Ok button
 		 */
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 			proxy.setValue(editor.getClientValue());
 		}
 	}

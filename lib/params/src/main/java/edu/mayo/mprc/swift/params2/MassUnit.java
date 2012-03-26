@@ -15,7 +15,7 @@ public enum MassUnit {
 	private final List<String> alternativeNames;
 	private final String description;
 
-	MassUnit(String code, List<String> alternativeNames, String description) {
+	MassUnit(final String code, final List<String> alternativeNames, final String description) {
 		this.code = code;
 		this.alternativeNames = alternativeNames;
 		this.description = description;
@@ -37,13 +37,13 @@ public enum MassUnit {
 	/**
 	 * Get unit for given name.
 	 */
-	public static MassUnit getUnitForName(String name) {
-		String trimmedName = name.trim();
-		for (MassUnit unit : MassUnit.values()) {
+	public static MassUnit getUnitForName(final String name) {
+		final String trimmedName = name.trim();
+		for (final MassUnit unit : MassUnit.values()) {
 			if (unit.getCode().equalsIgnoreCase(trimmedName)) {
 				return unit;
 			}
-			for (String alternative : unit.alternativeNames) {
+			for (final String alternative : unit.alternativeNames) {
 				if (alternative.equalsIgnoreCase(trimmedName)) {
 					return unit;
 				}
@@ -56,10 +56,10 @@ public enum MassUnit {
 	 * @return A list of options the user can choose from, e.g. "Da, ppm".
 	 */
 	public static String getOptions() {
-		StringBuilder units = new StringBuilder();
-		for (MassUnit unit : MassUnit.values()) {
+		final StringBuilder units = new StringBuilder();
+		for (final MassUnit unit : MassUnit.values()) {
 			units.append(", ").append(unit);
-			for (String additional : unit.alternativeNames) {
+			for (final String additional : unit.alternativeNames) {
 				units.append(", ").append(additional);
 			}
 		}

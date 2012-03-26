@@ -37,7 +37,7 @@ public final class GridEngineJobManager {
 	public synchronized void initialize() {
 		if (gridEngineSession == null) {
 			try {
-				SessionFactory factory = SessionFactory.getFactory();
+				final SessionFactory factory = SessionFactory.getFactory();
 				gridEngineSession = factory.getSession();
 				gridEngineSession.init(null);
 				initializeListenerThread();
@@ -73,13 +73,13 @@ public final class GridEngineJobManager {
 	}
 
 	private void initializeListenerThread() {
-		Runner monitoringThreadRunner = new Runner();
-		Thread pThread = new Thread(monitoringThreadRunner, "Grid Engine Monitor");
+		final Runner monitoringThreadRunner = new Runner();
+		final Thread pThread = new Thread(monitoringThreadRunner, "Grid Engine Monitor");
 		pThread.start();
 	}
 
-	private void storeJobSuccessfulStatus(String jobid, JobInfo pInfo) {
-		GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
+	private void storeJobSuccessfulStatus(final String jobid, final JobInfo pInfo) {
+		final GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
 		if (pPacket != null) {
 			pPacket.jobUpdateSucceeded();
 			jobIdToWorkPacket.put(jobid, pPacket);
@@ -91,8 +91,8 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private void storeJobFailedStatus(String jobid, JobInfo pInfo, String message) {
-		GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
+	private void storeJobFailedStatus(final String jobid, final JobInfo pInfo, final String message) {
+		final GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
 		if (pPacket != null) {
 			pPacket.jobUpdateFailed(message);
 			jobIdToWorkPacket.put(jobid, pPacket);
@@ -104,8 +104,8 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private void setJobInfo(String jobid, JobInfo pInfo) {
-		GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
+	private void setJobInfo(final String jobid, final JobInfo pInfo) {
+		final GridEngineWorkPacket pPacket = jobIdToWorkPacket.get(jobid);
 		if (pPacket != null) {
 			pPacket.setJobInfo(pInfo);
 		} else {
@@ -113,9 +113,9 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private String getApplicationCallParameters(GridEngineWorkPacket pPacket) {
-		StringBuilder parmessage = new StringBuilder();
-		for (String s : pPacket.getParameters()) {
+	private String getApplicationCallParameters(final GridEngineWorkPacket pPacket) {
+		final StringBuilder parmessage = new StringBuilder();
+		for (final String s : pPacket.getParameters()) {
 			parmessage.append(s).append(" ");
 		}
 		return parmessage.toString();
@@ -127,17 +127,17 @@ public final class GridEngineJobManager {
 	 * @param pgridPacket - the information about the job
 	 * @return id of SGE assigned job id.
 	 */
-	public String passToGridEngine(GridWorkPacket pgridPacket) {
+	public String passToGridEngine(final GridWorkPacket pgridPacket) {
 		initialize();
 
-		GridEngineWorkPacket pPacket = new GridEngineWorkPacket(pgridPacket);
+		final GridEngineWorkPacket pPacket = new GridEngineWorkPacket(pgridPacket);
 
-		String taskString = pPacket.getApplicationName() + " " + getApplicationCallParameters(pPacket);
+		final String taskString = pPacket.getApplicationName() + " " + getApplicationCallParameters(pPacket);
 
 		try {
 			LOGGER.debug("Runing grid engine job: " + taskString);
 
-			String jobid = runJob(pPacket);
+			final String jobid = runJob(pPacket);
 			LOGGER.info("Your job has been submitted with id " + jobid);
 
 			// For debugging purposes only - display the immediate job status
@@ -149,7 +149,7 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private String runJob(GridEngineWorkPacket pPacket) throws DrmaaException {
+	private String runJob(final GridEngineWorkPacket pPacket) throws DrmaaException {
 		String jobid = null;
 		JobTemplate jt = null;
 
@@ -170,7 +170,7 @@ public final class GridEngineJobManager {
 		return jobid;
 	}
 
-	private void setupJobTemplate(JobTemplate jt, GridEngineWorkPacket pPacket) throws DrmaaException {
+	private void setupJobTemplate(final JobTemplate jt, final GridEngineWorkPacket pPacket) throws DrmaaException {
 		// for now are assuming will not force a queue and memory
 		// may need to consider making these options pass through
 		if (pPacket.hasWorkingFolder()) {
@@ -213,10 +213,10 @@ public final class GridEngineJobManager {
 		jt.setArgs(pPacket.getParameters());
 	}
 
-	private void logCurrentJobStatus(String jobid) {
+	private void logCurrentJobStatus(final String jobid) {
 		try {
-			int status = getGridEngineSession().getJobProgramStatus(jobid);
-			String statusString = jobStatusToString(status);
+			final int status = getGridEngineSession().getJobProgramStatus(jobid);
+			final String statusString = jobStatusToString(status);
 			LOGGER.debug("Drmaa status report for " + jobid + ": " + statusString);
 		} catch (Exception e) {
 			// SWALLOWED: purely informative
@@ -224,7 +224,7 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private static String jobStatusToString(int status) {
+	private static String jobStatusToString(final int status) {
 		String statusString = "";
 		switch (status) {
 			case Session.UNDETERMINED:
@@ -313,7 +313,7 @@ public final class GridEngineJobManager {
 		}
 	}
 
-	private void setFailure(String errormessage, JobInfo info) {
+	private void setFailure(final String errormessage, final JobInfo info) {
 		LOGGER.error(errormessage);
 		if (info != null) {
 			try {

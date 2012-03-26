@@ -29,7 +29,7 @@ public final class JmsBrokerThread {
 	 * @param brokerName Unique name of the broker for JMX. If null or zero length, JMX is not enabled.
 	 * @throws edu.mayo.mprc.MprcException Broker could not start.
 	 */
-	public JmsBrokerThread(URI uri, String brokerName) {
+	public JmsBrokerThread(final URI uri, final String brokerName) {
 		try {
 			this.uri = uri;
 			this.broker = new BrokerService();
@@ -77,7 +77,7 @@ public final class JmsBrokerThread {
 		}
 	}
 
-	public static URI getUriForPort(int port) {
+	public static URI getUriForPort(final int port) {
 		try {
 			return new URI("tcp", null, InetAddress.getLocalHost().getHostName(), port, null, null, null);
 		} catch (Exception t) {

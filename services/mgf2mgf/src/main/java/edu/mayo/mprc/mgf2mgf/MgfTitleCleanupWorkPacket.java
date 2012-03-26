@@ -10,7 +10,7 @@ public final class MgfTitleCleanupWorkPacket extends WorkPacketBase {
 	private File mgfToCleanup;
 	private File cleanedMgf;
 
-	public MgfTitleCleanupWorkPacket(File mgfToCleanup, File cleanedMgf, String taskId, boolean fromScratch) {
+	public MgfTitleCleanupWorkPacket(final File mgfToCleanup, final File cleanedMgf, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 		this.mgfToCleanup = mgfToCleanup;
 		this.cleanedMgf = cleanedMgf;

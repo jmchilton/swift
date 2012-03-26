@@ -19,7 +19,7 @@ public final class Scaffold {
 	public Scaffold() {
 	}
 
-	public Scaffold(String version, List<Experiment> experiments) {
+	public Scaffold(final String version, final List<Experiment> experiments) {
 		this.version = version;
 		this.experiments = experiments;
 	}
@@ -28,7 +28,7 @@ public final class Scaffold {
 		return version;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 
@@ -36,7 +36,7 @@ public final class Scaffold {
 		return experiments;
 	}
 
-	public void setExperiments(List<Experiment> experiments) {
+	public void setExperiments(final List<Experiment> experiments) {
 		this.experiments = experiments;
 	}
 }

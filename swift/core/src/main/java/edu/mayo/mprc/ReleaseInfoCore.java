@@ -11,12 +11,12 @@ public final class ReleaseInfoCore implements Serializable {
 	private static final long serialVersionUID = 20080128;
 
 	public static String infoString() {
-		ResourceBundle bundle = ResourceBundle.getBundle( "build" );
-		String buildNumber = bundle.getString( "build.number" );
+		final ResourceBundle bundle = ResourceBundle.getBundle("build");
+		final String buildNumber = bundle.getString("build.number");
 		return buildNumber;
 	}
 
-	public static void main(String[] args){
+	public static void main(final String[] args) {
 		System.out.println(ReleaseInfoCore.infoString());
 	}
 

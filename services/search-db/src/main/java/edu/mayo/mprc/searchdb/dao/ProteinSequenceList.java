@@ -11,14 +11,14 @@ import java.util.Collection;
  * @author Roman Zenka
  */
 public final class ProteinSequenceList extends PersistableListBase<ProteinSequence> {
-    public ProteinSequenceList() {
-    }
+	public ProteinSequenceList() {
+	}
 
-    public ProteinSequenceList(int initialCapacity) {
-        super(initialCapacity);
-    }
+	public ProteinSequenceList(final int initialCapacity) {
+		super(initialCapacity);
+	}
 
-    public ProteinSequenceList(Collection<ProteinSequence> items) {
-        super(items);
-    }
+	public ProteinSequenceList(final Collection<ProteinSequence> items) {
+		super(items);
+	}
 }

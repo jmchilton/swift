@@ -57,7 +57,7 @@ public final class PeaksAdmin {
 	private URI addUpdateDatabaseURI;
 	private HttpClient httpClient;
 
-	protected PeaksAdmin(URI adminURI, URI addUpdateDatabaseURI, HttpClient httpClient) {
+	protected PeaksAdmin(final URI adminURI, final URI addUpdateDatabaseURI, final HttpClient httpClient) {
 		this.adminURI = adminURI;
 		this.addUpdateDatabaseURI = addUpdateDatabaseURI;
 		this.httpClient = httpClient;
@@ -72,19 +72,19 @@ public final class PeaksAdmin {
 	 * @param estDatabase
 	 * @return
 	 */
-	public boolean addDatabase(String databaseName, String databaseFilePath, String databaseFormat, boolean estDatabase) throws IOException {
+	public boolean addDatabase(final String databaseName, final String databaseFilePath, final String databaseFormat, final boolean estDatabase) throws IOException {
 		return addUpdateDatabase(null, databaseName, databaseFilePath, databaseFormat, estDatabase);
 	}
 
-	public boolean addDatabase(PeaksDatabase peaksOnlineDatabase) throws IOException {
+	public boolean addDatabase(final PeaksDatabase peaksOnlineDatabase) throws IOException {
 		return addUpdateDatabase(peaksOnlineDatabase.getDatabaseId(), peaksOnlineDatabase.getDatabaseName(), peaksOnlineDatabase.getDatabaseFilePath(), peaksOnlineDatabase.getDatabaseFormat(), peaksOnlineDatabase.isEstDatabase());
 	}
 
-	public boolean removeDatabase(PeaksDatabase peaksOnlineDatabase) throws IOException {
+	public boolean removeDatabase(final PeaksDatabase peaksOnlineDatabase) throws IOException {
 		return removeDatabaseLocal(peaksOnlineDatabase.getDatabaseId());
 	}
 
-	public boolean removeDatabase(String databaseId) throws IOException {
+	public boolean removeDatabase(final String databaseId) throws IOException {
 		return removeDatabaseLocal(databaseId);
 	}
 
@@ -93,8 +93,8 @@ public final class PeaksAdmin {
 		GetMethod method = null;
 		String string = null;
 		String[] parsedString = null;
-		LinkedList<String> databaseIds = new LinkedList();
-		LinkedList<PeaksDatabase> databases = new LinkedList();
+		final LinkedList<String> databaseIds = new LinkedList();
+		final LinkedList<PeaksDatabase> databases = new LinkedList();
 
 		try {
 			method = new GetMethod(adminURI.toString());
@@ -116,14 +116,14 @@ public final class PeaksAdmin {
 			method.releaseConnection();
 		}
 
-		for (String databaseId : databaseIds) {
+		for (final String databaseId : databaseIds) {
 			databases.add(getDatabase(databaseId));
 		}
 
 		return databases;
 	}
 
-	public PeaksDatabase getDatabase(String databaseId) throws IOException {
+	public PeaksDatabase getDatabase(final String databaseId) throws IOException {
 
 		GetMethod method = null;
 		String string = null;
@@ -175,7 +175,7 @@ public final class PeaksAdmin {
 		GetMethod method = null;
 		String responseBody = null;
 		String[] parsedString = null;
-		LinkedList<PeaksEnzyme> enzymes = new LinkedList();
+		final LinkedList<PeaksEnzyme> enzymes = new LinkedList();
 
 		try {
 			method = new GetMethod(adminURI.toString());
@@ -210,7 +210,7 @@ public final class PeaksAdmin {
 		return enzymes;
 	}
 
-	private boolean removeDatabaseLocal(String databaseId) throws IOException {
+	private boolean removeDatabaseLocal(final String databaseId) throws IOException {
 
 		PostMethod method = null;
 
@@ -228,7 +228,7 @@ public final class PeaksAdmin {
 		}
 	}
 
-	private boolean addUpdateDatabase(String databaseId, String databaseName, String databaseFilePath, String databaseFormat, boolean estDatabase) throws IOException {
+	private boolean addUpdateDatabase(final String databaseId, final String databaseName, final String databaseFilePath, final String databaseFormat, final boolean estDatabase) throws IOException {
 
 		PostMethod method = null;
 
@@ -257,7 +257,7 @@ public final class PeaksAdmin {
 		}
 	}
 
-	private boolean wasMethodExecutedSuccessfully(HttpMethod method) {
+	private boolean wasMethodExecutedSuccessfully(final HttpMethod method) {
 		//Verify success of action by checking redirect URI.
 		for (int i = 0; i < method.getResponseHeaders().length; i++) {
 			if (method.getResponseHeaders()[i].getName().equals(SUCCESSFUL_ACTION_REDIRECT_HEADER_NAME) && method.getResponseHeaders()[i].getValue().indexOf(SUCCESSFUL_ACTION_REDIRECT_HEADER_VALUE) != -1) {

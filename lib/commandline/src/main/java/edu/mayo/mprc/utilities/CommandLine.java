@@ -26,8 +26,8 @@ public final class CommandLine {
 	 * @param props           Properties to be filled with the contents of the file. If null, the properties are not loaded.
 	 * @return The location of the property file.
 	 */
-	public static File findPropertyFile(OptionSet options, String paramName, String fileDescription, String defaultValue, Properties props) {
-		File file = findFile(options, paramName, fileDescription, defaultValue);
+	public static File findPropertyFile(final OptionSet options, final String paramName, final String fileDescription, final String defaultValue, final Properties props) {
+		final File file = findFile(options, paramName, fileDescription, defaultValue);
 		FileReader reader = null;
 		try {
 			if (props != null) {
@@ -51,7 +51,7 @@ public final class CommandLine {
 	 * @param defaultValue    Default name of the file in case it is not specified.
 	 * @return The location of the file.
 	 */
-	public static File findFile(OptionSet options, String paramName, String fileDescription, String defaultValue) {
+	public static File findFile(final OptionSet options, final String paramName, final String fileDescription, final String defaultValue) {
 		File file = null;
 		if (options.has(paramName)) {
 			file = (File) options.valueOf(paramName);

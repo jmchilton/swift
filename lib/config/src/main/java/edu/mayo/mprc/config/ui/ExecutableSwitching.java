@@ -14,7 +14,7 @@ public final class ExecutableSwitching implements PropertyChangeListener {
 	private final String windowsExecutable;
 	private final String linuxExecutable;
 
-	public ExecutableSwitching(ResourceConfig moduleConfig, String executablePropertyName, String windowsExecutable, String linuxExecutable) {
+	public ExecutableSwitching(final ResourceConfig moduleConfig, final String executablePropertyName, final String windowsExecutable, final String linuxExecutable) {
 		this.moduleConfig = moduleConfig;
 		this.executablePropertyName = executablePropertyName;
 		this.windowsExecutable = windowsExecutable;
@@ -22,10 +22,10 @@ public final class ExecutableSwitching implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+	public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 		if (config instanceof DaemonConfig) {
 			final DaemonConfig daemon = (DaemonConfig) config;
-			String executable;
+			final String executable;
 			if (daemon.isWindows()) {
 				executable = windowsExecutable;
 			} else if (daemon.isLinux()) {
@@ -40,7 +40,7 @@ public final class ExecutableSwitching implements PropertyChangeListener {
 	}
 
 	@Override
-	public void fixError(ResourceConfig config, String propertyName, String action) {
+	public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 		// We never need to fix anything as we do not report errors
 	}
 }

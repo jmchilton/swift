@@ -36,20 +36,20 @@ public final class WorkCachePerformanceTest {
 
 	@Test
 	public void shouldAccelerateWithCache() throws URISyntaxException, InterruptedException {
-		File logFolder = FileUtilities.createTempFolder();
-		File cacheFolder = FileUtilities.createTempFolder();
-		File cacheLogFolder = new File(cacheFolder, "cache_log");
+		final File logFolder = FileUtilities.createTempFolder();
+		final File cacheFolder = FileUtilities.createTempFolder();
+		final File cacheLogFolder = new File(cacheFolder, "cache_log");
 		FileUtilities.ensureFolderExists(cacheLogFolder);
 
-		DaemonConfigInfo daemonConfigInfo = new DaemonConfigInfo("test", FileUtilities.getDefaultTempDirectory().getAbsolutePath());
-		FileTokenFactory fileTokenFactory = new FileTokenFactory(daemonConfigInfo);
+		final DaemonConfigInfo daemonConfigInfo = new DaemonConfigInfo("test", FileUtilities.getDefaultTempDirectory().getAbsolutePath());
+		final FileTokenFactory fileTokenFactory = new FileTokenFactory(daemonConfigInfo);
 
 		final TestWorker worker = new TestWorker();
 
-		SimpleRunner runner = wrapWithRunner(worker, "simpleTestQueue", logFolder, fileTokenFactory);
+		final SimpleRunner runner = wrapWithRunner(worker, "simpleTestQueue", logFolder, fileTokenFactory);
 		runner.start();
 
-		TestWorkCache cache = new TestWorkCache();
+		final TestWorkCache cache = new TestWorkCache();
 		cache.setCacheFolder(cacheFolder);
 
 		cache.setDaemon(runner.getDaemonConnection());
@@ -57,7 +57,7 @@ public final class WorkCachePerformanceTest {
 		final SimpleRunner cacheRunner = wrapWithRunner(cache, "simpleTestCache", cacheLogFolder, fileTokenFactory);
 		cacheRunner.start();
 
-		DaemonConnection connection = cacheRunner.getDaemonConnection();
+		final DaemonConnection connection = cacheRunner.getDaemonConnection();
 
 		final MyProgressListener listener = new MyProgressListener();
 
@@ -67,9 +67,9 @@ public final class WorkCachePerformanceTest {
 			connection.sendWork(workPacket, listener);
 		}
 
-		long currentTime = System.currentTimeMillis();
+		final long currentTime = System.currentTimeMillis();
 		while (true) {
-			long time = System.currentTimeMillis();
+			final long time = System.currentTimeMillis();
 			synchronized (workSuccess) {
 				if (workSuccessCount == TOTAL_MESSAGES || time > currentTime + RUN_TIME) {
 					break;
@@ -79,7 +79,7 @@ public final class WorkCachePerformanceTest {
 			}
 		}
 
-		long timeElapsed = System.currentTimeMillis() - currentTime;
+		final long timeElapsed = System.currentTimeMillis() - currentTime;
 		runner.stop();
 		cacheRunner.stop();
 		synchronized (workSuccess) {
@@ -94,10 +94,10 @@ public final class WorkCachePerformanceTest {
 		Assert.assertTrue(timeElapsed < 3 * TASK_RUNTIME, "The total running time is expected to be " + TASK_RUNTIME + "ms but was " + timeElapsed + "ms");
 	}
 
-	private SimpleRunner wrapWithRunner(Worker worker, String queueName, File logFolder, FileTokenFactory fileTokenFactory) throws URISyntaxException {
-		Service service = ServiceFactory.createJmsQueue(new URI("jms.vm://test?broker.useJmx=false&broker.persistent=false&simplequeue=" + queueName));
-		DirectDaemonConnection directConnection = new DirectDaemonConnection(service, fileTokenFactory);
-		SimpleRunner runner = new SimpleRunner();
+	private SimpleRunner wrapWithRunner(final Worker worker, final String queueName, final File logFolder, final FileTokenFactory fileTokenFactory) throws URISyntaxException {
+		final Service service = ServiceFactory.createJmsQueue(new URI("jms.vm://test?broker.useJmx=false&broker.persistent=false&simplequeue=" + queueName));
+		final DirectDaemonConnection directConnection = new DirectDaemonConnection(service, fileTokenFactory);
+		final SimpleRunner runner = new SimpleRunner();
 		runner.setLogOutputFolder(logFolder);
 		runner.setWorker(worker);
 		runner.setDaemonConnection(directConnection);
@@ -109,12 +109,12 @@ public final class WorkCachePerformanceTest {
 
 	private class TestWorker implements Worker {
 		@Override
-		public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+		public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 			progressReporter.reportStart();
 			try {
 				Thread.sleep(TASK_RUNTIME);
 				LOGGER.debug("Request completed");
-				SimpleTestWorkPacket testWorkPacket = (SimpleTestWorkPacket) workPacket;
+				final SimpleTestWorkPacket testWorkPacket = (SimpleTestWorkPacket) workPacket;
 				FileUtilities.ensureFileExists(testWorkPacket.getResultFile());
 			} catch (InterruptedException e) {
 				throw new MprcException(e);
@@ -127,7 +127,7 @@ public final class WorkCachePerformanceTest {
 		private List<ProgressInfo> progressInfos = new ArrayList<ProgressInfo>();
 
 		@Override
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 		}
 
 		@Override
@@ -146,12 +146,12 @@ public final class WorkCachePerformanceTest {
 		}
 
 		@Override
-		public void requestTerminated(Exception e) {
+		public void requestTerminated(final Exception e) {
 			Assert.fail("Unexpected exception", e);
 		}
 
 		@Override
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			progressInfos.add(progressInfo);
 		}
 

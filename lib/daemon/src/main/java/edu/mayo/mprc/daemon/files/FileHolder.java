@@ -48,9 +48,9 @@ public class FileHolder implements FileTokenHolder {
 	}
 
 	@Override
-	public void translateOnSender(SenderTokenTranslator translator) {
+	public void translateOnSender(final SenderTokenTranslator translator) {
 		tokenMap = new HashMap<FieldIndex, FileToken>();
-		for (Field field : getFields()) {
+		for (final Field field : getFields()) {
 			field.setAccessible(true);
 			if (serializableFileField(field)) {
 				addFileToken(translator, field);
@@ -65,11 +65,11 @@ public class FileHolder implements FileTokenHolder {
 	}
 
 	@Override
-	public void translateOnReceiver(ReceiverTokenTranslator translator, FileTokenSynchronizer synchronizer) {
+	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer) {
 		this.translator = translator;
 		this.synchronizer = synchronizer;
 		// Set all directly accessible fields
-		for (Map.Entry<FieldIndex, FileToken> entry : tokenMap.entrySet()) {
+		for (final Map.Entry<FieldIndex, FileToken> entry : tokenMap.entrySet()) {
 			final File file = translator.getFile(entry.getValue());
 			if (entry.getKey().getIndex() == null) {
 				setFileField(entry.getKey().getField(), file);
@@ -78,9 +78,9 @@ public class FileHolder implements FileTokenHolder {
 			}
 		}
 		// Set all the file token holder fields
-		for (Field field : getFields()) {
+		for (final Field field : getFields()) {
 			if (serializableFileTokenField(field)) {
-				FileTokenHolder fileTokenHolder = getFileTokenHolder(field);
+				final FileTokenHolder fileTokenHolder = getFileTokenHolder(field);
 				if (fileTokenHolder != null) {
 					fileTokenHolder.translateOnReceiver(translator, synchronizer);
 				}
@@ -92,14 +92,14 @@ public class FileHolder implements FileTokenHolder {
 	 * @return A list of all fields to be considered. They are all set as accessible.
 	 */
 	private List<Field> getFields() {
-		List<Field> fields = new ArrayList<Field>();
+		final List<Field> fields = new ArrayList<Field>();
 		addFields(this.getClass(), fields);
 		return fields;
 	}
 
-	private void addFields(Class<?> clazz, List<Field> fields) {
+	private void addFields(final Class<?> clazz, final List<Field> fields) {
 		final Field[] declaredFields = clazz.getDeclaredFields();
-		for (Field field : declaredFields) {
+		for (final Field field : declaredFields) {
 			field.setAccessible(true);
 			fields.add(field);
 		}
@@ -118,20 +118,20 @@ public class FileHolder implements FileTokenHolder {
 	 *
 	 * @param fieldName Name of the field to upload.
 	 */
-	public void uploadAndWait(String fieldName) {
+	public void uploadAndWait(final String fieldName) {
 		final FileToken fileToken = tokenMap.get(new FieldIndex(fieldName, null));
 		synchronizer.uploadAndWait(fileToken);
 	}
 
-	private boolean isSerializableField(Field field) {
+	private boolean isSerializableField(final Field field) {
 		return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers());
 	}
 
-	private boolean serializableFileTokenField(Field field) {
+	private boolean serializableFileTokenField(final Field field) {
 		return FileTokenHolder.class.isAssignableFrom(field.getType()) && isSerializableField(field);
 	}
 
-	private boolean serializableFileField(Field field) {
+	private boolean serializableFileField(final Field field) {
 		return File.class.isAssignableFrom(field.getType()) && isSerializableField(field);
 	}
 
@@ -139,11 +139,11 @@ public class FileHolder implements FileTokenHolder {
 	 * @param field Object field.
 	 * @return True if the field corresponds to a list of objects, at least one of which is a file.
 	 */
-	private boolean serializableFileListField(Field field) {
+	private boolean serializableFileListField(final Field field) {
 		if (List.class.isAssignableFrom(field.getType()) && isSerializableField(field)) {
-			List list = getFieldList(field);
+			final List list = getFieldList(field);
 			if (list != null) {
-				for (Object o : list) {
+				for (final Object o : list) {
 					if (o instanceof File) {
 						return true;
 					}
@@ -157,13 +157,13 @@ public class FileHolder implements FileTokenHolder {
 	 * @param field Object field.
 	 * @return True if the field corresponds to a map from a Serializable(not File) to File. These are the only maps we support right now.
 	 */
-	private boolean serializableFileMapField(Field field) {
+	private boolean serializableFileMapField(final Field field) {
 		if (Map.class.isAssignableFrom(field.getType()) && isSerializableField(field)) {
-			Map map = getFieldMap(field);
+			final Map map = getFieldMap(field);
 			if (map != null) {
-				for (Object o : map.entrySet()) {
+				for (final Object o : map.entrySet()) {
 					if (o instanceof Map.Entry) {
-						Map.Entry entry = (Map.Entry) o;
+						final Map.Entry entry = (Map.Entry) o;
 						final Object key = entry.getKey();
 						final Object value = entry.getValue();
 						if (key instanceof Serializable && !(key instanceof File) && value instanceof File) {
@@ -179,7 +179,7 @@ public class FileHolder implements FileTokenHolder {
 		return false;
 	}
 
-	private List getFieldList(Field field) {
+	private List getFieldList(final Field field) {
 		List list = null;
 		try {
 			list = (List) field.get(this);
@@ -189,7 +189,7 @@ public class FileHolder implements FileTokenHolder {
 		return list;
 	}
 
-	private Map getFieldMap(Field field) {
+	private Map getFieldMap(final Field field) {
 		Map map = null;
 		try {
 			map = (Map) field.get(this);
@@ -199,8 +199,8 @@ public class FileHolder implements FileTokenHolder {
 		return map;
 	}
 
-	private void setFileField(String fieldName, File file) {
-		Field field = getFieldForName(this.getClass(), fieldName);
+	private void setFileField(final String fieldName, final File file) {
+		final Field field = getFieldForName(this.getClass(), fieldName);
 		try {
 			field.set(this, file);
 		} catch (IllegalAccessException e) {
@@ -208,7 +208,7 @@ public class FileHolder implements FileTokenHolder {
 		}
 	}
 
-	private void setFileIndexedField(FieldIndex fieldIndex, File file) {
+	private void setFileIndexedField(final FieldIndex fieldIndex, final File file) {
 		final Field field = getFieldForName(this.getClass(), fieldIndex.getField());
 		if (List.class.isAssignableFrom(field.getType())) {
 			final Serializable index = fieldIndex.getIndex();
@@ -223,7 +223,7 @@ public class FileHolder implements FileTokenHolder {
 		}
 	}
 
-	private Field getFieldForName(Class<?> clazz, String fieldName) {
+	private Field getFieldForName(final Class<?> clazz, final String fieldName) {
 		if (clazz == null) {
 			return null;
 		}
@@ -241,7 +241,7 @@ public class FileHolder implements FileTokenHolder {
 		return field;
 	}
 
-	private void addFileToken(SenderTokenTranslator translator, Field field) {
+	private void addFileToken(final SenderTokenTranslator translator, final Field field) {
 		File file = null;
 		try {
 			file = (File) field.get(this);
@@ -251,43 +251,43 @@ public class FileHolder implements FileTokenHolder {
 		tokenMap.put(new FieldIndex(field.getName(), null), token(translator, file));
 	}
 
-	private void addFileTokenList(SenderTokenTranslator translator, Field field) {
+	private void addFileTokenList(final SenderTokenTranslator translator, final Field field) {
 		int index = 0;
-		for (Object o : getFieldList(field)) {
+		for (final Object o : getFieldList(field)) {
 			if (o instanceof File) {
-				File file = (File) o;
-				FileToken value = token(translator, file);
+				final File file = (File) o;
+				final FileToken value = token(translator, file);
 				tokenMap.put(new FieldIndex(field.getName(), index), value);
 			}
 			index++;
 		}
 	}
 
-	private void addFileTokenMap(SenderTokenTranslator translator, Field field) {
-		for (Object o : getFieldMap(field).entrySet()) {
+	private void addFileTokenMap(final SenderTokenTranslator translator, final Field field) {
+		for (final Object o : getFieldMap(field).entrySet()) {
 			if (o instanceof Map.Entry) {
-				Map.Entry entry = (Map.Entry) o;
+				final Map.Entry entry = (Map.Entry) o;
 				if (entry.getKey() instanceof Serializable && entry.getValue() instanceof File) {
-					File file = (File) entry.getValue();
-					FileToken value = token(translator, file);
+					final File file = (File) entry.getValue();
+					final FileToken value = token(translator, file);
 					tokenMap.put(new FieldIndex(field.getName(), (Serializable) entry.getKey()), value);
 				}
 			}
 		}
 	}
 
-	private FileToken token(SenderTokenTranslator translator, File file) {
+	private FileToken token(final SenderTokenTranslator translator, final File file) {
 		return translator.translateBeforeTransfer(FileTokenFactory.createAnonymousFileToken(file));
 	}
 
-	private void callTranslateOnSender(SenderTokenTranslator translator, Field field) {
-		FileTokenHolder fileTokenHolder = getFileTokenHolder(field);
+	private void callTranslateOnSender(final SenderTokenTranslator translator, final Field field) {
+		final FileTokenHolder fileTokenHolder = getFileTokenHolder(field);
 		if (fileTokenHolder != null) {
 			fileTokenHolder.translateOnSender(translator);
 		}
 	}
 
-	private FileTokenHolder getFileTokenHolder(Field field) {
+	private FileTokenHolder getFileTokenHolder(final Field field) {
 		FileTokenHolder fileTokenHolder = null;
 		try {
 			fileTokenHolder = (FileTokenHolder) field.get(this);
@@ -297,7 +297,7 @@ public class FileHolder implements FileTokenHolder {
 		return fileTokenHolder;
 	}
 
-	private void throwFieldAccess(Field field, IllegalAccessException e) {
+	private void throwFieldAccess(final Field field, final IllegalAccessException e) {
 		throw new MprcException("Could not serialize field " + field.getName() + " of " + this.getClass().getCanonicalName(), e);
 	}
 }

@@ -15,13 +15,13 @@ public final class FileEntry extends Entry {
 	public FileEntry() {
 	}
 
-	public FileEntry(String name) {
+	public FileEntry(final String name) {
 		super(name);
 	}
 
 	public TreeItem createTreeItem() {
-		TreeCheckBox checkBox = new TreeCheckBox(getName(), false);
-		TreeItem newItem = new TreeItem(checkBox);
+		final TreeCheckBox checkBox = new TreeCheckBox(getName(), false);
+		final TreeItem newItem = new TreeItem(checkBox);
 		checkBox.setTreeItem(newItem);
 		if (StringUtilities.toUpperCase(getName()).endsWith(".RAW")) {
 			newItem.addStyleName("file-raw");

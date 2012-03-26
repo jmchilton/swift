@@ -35,7 +35,7 @@ public final class XTandemWorker implements Worker {
 
 	public static final String TANDEM_EXECUTABLE = "tandemExecutable";
 
-	public XTandemWorker(File tandemExecutable) {
+	public XTandemWorker(final File tandemExecutable) {
 		this.tandemExecutable = tandemExecutable;
 	}
 
@@ -43,18 +43,18 @@ public final class XTandemWorker implements Worker {
 		return tandemExecutable;
 	}
 
-	public void setTandemExecutable(File tandemExecutable) {
+	public void setTandemExecutable(final File tandemExecutable) {
 		this.tandemExecutable = tandemExecutable;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		progressReporter.reportStart();
 
 		if (!(workPacket instanceof XTandemWorkPacket)) {
 			throw new DaemonException("Unexpected packet type " + workPacket.getClass().getName() + ", expected " + XTandemWorkPacket.class.getName());
 		}
 
-		XTandemWorkPacket packet = (XTandemWorkPacket) workPacket;
+		final XTandemWorkPacket packet = (XTandemWorkPacket) workPacket;
 
 		try {
 			checkPacketCorrectness(packet);
@@ -62,7 +62,7 @@ public final class XTandemWorker implements Worker {
 
 			FileUtilities.ensureFolderExists(packet.getWorkFolder());
 
-			File taxonomyXmlFile = createTaxonomyXmlFile(packet);
+			final File taxonomyXmlFile = createTaxonomyXmlFile(packet);
 
 			createDefaultInputXml(packet);
 
@@ -88,17 +88,17 @@ public final class XTandemWorker implements Worker {
 		}
 	}
 
-	private ProcessCaller runTandemSearch(XTandemWorkPacket packet, File taxonomyXmlFile, int threads) {
-		File fastaFile = packet.getDatabaseFile();
-		File inputFile = packet.getInputFile();
-		File paramsFile = packet.getSearchParamsFile();
+	private ProcessCaller runTandemSearch(final XTandemWorkPacket packet, final File taxonomyXmlFile, final int threads) {
+		final File fastaFile = packet.getDatabaseFile();
+		final File inputFile = packet.getInputFile();
+		final File paramsFile = packet.getSearchParamsFile();
 
 		LOGGER.info("Running tandem search using " + threads + " threads: " + packet.toString());
 		LOGGER.info("\tFasta file " + fastaFile.getAbsolutePath() + " does" + (fastaFile.exists() && fastaFile.length() > 0 ? " " : " not ") + "exist.");
 		LOGGER.info("\tInput file " + inputFile.getAbsolutePath() + " does" + (inputFile.exists() && inputFile.length() > 0 ? " " : " not ") + "exist.");
 		LOGGER.info("\tParameter file " + paramsFile.getAbsolutePath() + " does" + (paramsFile.exists() && paramsFile.length() > 0 ? " " : " not ") + "exist.");
 
-		File paramFile = createTransformedTemplate(
+		final File paramFile = createTransformedTemplate(
 				paramsFile,
 				packet.getWorkFolder(),
 				packet.getOutputFile(),
@@ -108,25 +108,25 @@ public final class XTandemWorker implements Worker {
 				threads
 		);
 
-		List<String> parameters = new LinkedList<String>();
+		final List<String> parameters = new LinkedList<String>();
 		parameters.add(tandemExecutable.getPath());
 		parameters.add(paramFile.getAbsolutePath());
 
-		ProcessBuilder processBuilder = new ProcessBuilder(parameters);
+		final ProcessBuilder processBuilder = new ProcessBuilder(parameters);
 		processBuilder.directory(packet.getWorkFolder());
 
-		ProcessCaller processCaller = new ProcessCaller(processBuilder);
+		final ProcessCaller processCaller = new ProcessCaller(processBuilder);
 
 		processCaller.run();
 		return processCaller;
 	}
 
-	private File createTaxonomyXmlFile(XTandemWorkPacket packet) {
+	private File createTaxonomyXmlFile(final XTandemWorkPacket packet) {
 		final File fastaFile = packet.getDatabaseFile();
 		final String resultFileName = packet.getOutputFile().getName();
 		final String resultFileNameWithoutExtension = resultFileName.substring(0, resultFileName.length() - ".xml".length());
-		File taxonomyXmlFile = new File(packet.getOutputFile().getParentFile(), resultFileNameWithoutExtension + ".taxonomy.xml");
-		String taxonomyContents = "<?xml version=\"1.0\"?>\n" +
+		final File taxonomyXmlFile = new File(packet.getOutputFile().getParentFile(), resultFileNameWithoutExtension + ".taxonomy.xml");
+		final String taxonomyContents = "<?xml version=\"1.0\"?>\n" +
 				"<bioml label=\"x! taxon-to-file matching list\">\n" +
 				"\t<taxon label=\"" + XTandemMappings.DATABASE_TAXON + "\">\n" +
 				"\t\t<file format=\"peptide\" URL=\"" + fastaFile.getAbsolutePath() + "\" />\n" +
@@ -140,14 +140,14 @@ public final class XTandemWorker implements Worker {
 	/**
 	 * Create default_input.xml required for new version of XTandem.
 	 */
-	private void createDefaultInputXml(XTandemWorkPacket packet) {
-		String defaultInputContent = "<?xml version=\"1.0\"?>\n" +
+	private void createDefaultInputXml(final XTandemWorkPacket packet) {
+		final String defaultInputContent = "<?xml version=\"1.0\"?>\n" +
 				"<?xml-stylesheet type=\"text/xsl\" href=\"tandem-input-style.xsl\"?>\n" +
 				"<bioml></bioml>";
 		FileUtilities.writeStringToFile(new File(packet.getOutputFile().getParentFile(), "default_input.xml"), defaultInputContent, true);
 	}
 
-	private void checkPacketCorrectness(XTandemWorkPacket packet) {
+	private void checkPacketCorrectness(final XTandemWorkPacket packet) {
 		if (packet.getSearchParamsFile() == null) {
 			throw new MprcException("Params file must not be null");
 		}
@@ -162,13 +162,13 @@ public final class XTandemWorker implements Worker {
 		}
 	}
 
-	private File createTransformedTemplate(File templateFile, File outFolder, File resultFile, File inputFile, File taxonXmlFilePath, String databaseName, int threads) {
+	private File createTransformedTemplate(final File templateFile, final File outFolder, final File resultFile, final File inputFile, final File taxonXmlFilePath, final String databaseName, final int threads) {
 		// The XTandem templates retardedly append .xml to the resulting file name
 		// We have to chop it off.
 
 		assert (databaseName != null);
 
-		String resultFileName = resultFile.getAbsolutePath();
+		final String resultFileName = resultFile.getAbsolutePath();
 		String truncatedResultFileName = resultFileName;
 		if (resultFileName.endsWith(XML_EXTENSION)) {
 			truncatedResultFileName = resultFileName.substring(0, resultFileName.length() - XML_EXTENSION.length());
@@ -178,7 +178,7 @@ public final class XTandemWorker implements Worker {
 			throw new MprcException("Could not find the taxonomy.xml file that was specified: " + taxonXmlFilePath);
 		}
 
-		Map<Pattern, String> replacements = new ImmutableMap.Builder<Pattern, String>()
+		final Map<Pattern, String> replacements = new ImmutableMap.Builder<Pattern, String>()
 				.put(Pattern.compile("__OUTPATH__"), Matcher.quoteReplacement(truncatedResultFileName))
 				.put(Pattern.compile("__PATH__"), Matcher.quoteReplacement(inputFile.getAbsolutePath()))
 				.put(Pattern.compile("\\$\\{OUTPATH\\}"), Matcher.quoteReplacement(resultFile.getAbsolutePath()))
@@ -193,7 +193,7 @@ public final class XTandemWorker implements Worker {
 		try {
 			matcher = new StreamRegExMatcher(templateFile);
 			matcher.replaceAll(replacements);
-			File outFile = new File(outFolder, templateFile.getName() + '.' + System.currentTimeMillis());
+			final File outFile = new File(outFolder, templateFile.getName() + '.' + System.currentTimeMillis());
 			matcher.writeContentsToFile(outFile);
 			return outFile;
 		} catch (IOException e) {
@@ -205,9 +205,9 @@ public final class XTandemWorker implements Worker {
 		}
 	}
 
-	private void cleanUp(WorkPacket workPacket) {
-		XTandemWorkPacket packet = (XTandemWorkPacket) workPacket;
-		File outputFolder = packet.getWorkFolder();
+	private void cleanUp(final WorkPacket workPacket) {
+		final XTandemWorkPacket packet = (XTandemWorkPacket) workPacket;
+		final File outputFolder = packet.getWorkFolder();
 		FileUtilities.restoreUmaskRights(outputFolder, true);
 	}
 
@@ -225,7 +225,7 @@ public final class XTandemWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			XTandemWorker worker = null;
 			try {
 				worker = new XTandemWorker(FileUtilities.getAbsoluteFileForExecutables(new File(config.getTandemExecutable())));
@@ -245,7 +245,7 @@ public final class XTandemWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String tandemExecutable) {
+		public Config(final String tandemExecutable) {
 			this.tandemExecutable = tandemExecutable;
 		}
 
@@ -253,17 +253,17 @@ public final class XTandemWorker implements Worker {
 			return tandemExecutable;
 		}
 
-		public void setTandemExecutable(String tandemExecutable) {
+		public void setTandemExecutable(final String tandemExecutable) {
 			this.tandemExecutable = tandemExecutable;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(TANDEM_EXECUTABLE, tandemExecutable);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			tandemExecutable = values.get(TANDEM_EXECUTABLE);
 		}
 
@@ -280,7 +280,7 @@ public final class XTandemWorker implements Worker {
 		private static final String LINUX_64 = "bin/tandem/ubuntu_64bit_tandem/tandem.exe";
 		private static final String MAC_OSX = "bin/tandem/osx_intel_tandem/tandem.exe";
 
-		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(TANDEM_EXECUTABLE, "Executable Path", "Tandem executable path. Tandem executables can be " +
 					"<br/>found at <a href=\"ftp://ftp.thegpm.org/projects/tandem/binaries/\"/>ftp://ftp.thegpm.org/projects/tandem/binaries</a>"
 					+ "<p>Swift install contains following executables for your convenience:</p>"
@@ -303,23 +303,23 @@ public final class XTandemWorker implements Worker {
 			private final ResourceConfig resource;
 			private final DaemonConfig daemon;
 
-			public ExecutableChanger(ResourceConfig resource, DaemonConfig daemon) {
+			public ExecutableChanger(final ResourceConfig resource, final DaemonConfig daemon) {
 				this.resource = resource;
 				this.daemon = daemon;
 			}
 
 			@Override
-			public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+			public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 				response.setProperty(resource, TANDEM_EXECUTABLE, getDefaultExecutable(daemon));
 			}
 
 			@Override
-			public void fixError(ResourceConfig config, String propertyName, String action) {
+			public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 				// We never report an error, nothing to fix.
 			}
 		}
 
-		private static String getDefaultExecutable(DaemonConfig daemon) {
+		private static String getDefaultExecutable(final DaemonConfig daemon) {
 			final String osArch = daemon.getOsArch() == null ? "" : daemon.getOsArch().toLowerCase(Locale.ENGLISH);
 			if (daemon.isWindows()) {
 				if (osArch.contains("64")) {

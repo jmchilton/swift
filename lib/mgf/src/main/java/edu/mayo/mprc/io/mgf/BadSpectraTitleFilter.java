@@ -10,11 +10,11 @@ import java.util.Collection;
 class BadSpectraTitleFilter implements MgfPeakListFilter {
 	private Collection<String> badSpectraMGFTitles;
 
-	public BadSpectraTitleFilter(Collection<String> badSpectraMGFTitles) {
+	public BadSpectraTitleFilter(final Collection<String> badSpectraMGFTitles) {
 		this.badSpectraMGFTitles = badSpectraMGFTitles;
 	}
 
-	public boolean peakListAccepted(MascotGenericFormatPeakList peakList) {
+	public boolean peakListAccepted(final MascotGenericFormatPeakList peakList) {
 		// The peak list is accepted if it cannot be removed from the collection of bad spectra titles
 		return !badSpectraMGFTitles.remove(peakList.getTitle());
 	}

@@ -22,7 +22,7 @@ public enum ParamName {
 	private final String name;
 	private final String desc;
 
-	ParamName(String id, String name, String desc) {
+	ParamName(final String id, final String name, final String desc) {
 		this.id = id;
 		this.name = name;
 		this.desc = desc;
@@ -47,7 +47,7 @@ public enum ParamName {
 	 * @return Value of the parameter. Use one of the getters whenever you can, such as {@link edu.mayo.mprc.swift.params2.SearchEngineParameters#getProtease}. This method
 	 *         is meant to be used mainly in loops which go over all parameters.
 	 */
-	public Object getParamValue(SearchEngineParameters params) {
+	public Object getParamValue(final SearchEngineParameters params) {
 		switch (this) {
 			case Database:
 				return params.getDatabase();
@@ -74,8 +74,8 @@ public enum ParamName {
 		}
 	}
 
-	public static ParamName getById(String id) {
-		for (ParamName param : ParamName.values()) {
+	public static ParamName getById(final String id) {
+		for (final ParamName param : ParamName.values()) {
 			if (param.getId().equals(id)) {
 				return param;
 			}

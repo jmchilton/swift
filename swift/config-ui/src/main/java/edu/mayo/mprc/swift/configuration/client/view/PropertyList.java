@@ -12,20 +12,20 @@ import java.util.Map;
 public final class PropertyList extends FlexTable implements ModuleView {
 	private Map<String, PropertyDefinition> properties = new HashMap<String, PropertyDefinition>();
 
-	public void loadUI(Map<String, String> values) {
+	public void loadUI(final Map<String, String> values) {
 		if (values == null) {
 			return;
 		}
-		for (PropertyDefinition prop : properties.values()) {
-			String value = values.get(prop.name);
+		for (final PropertyDefinition prop : properties.values()) {
+			final String value = values.get(prop.name);
 			if (value != null) {
 				setEditorValue(prop.editor, value);
 			}
 		}
 	}
 
-	public static String getEditorValue(Widget editor) {
-		String value;
+	public static String getEditorValue(final Widget editor) {
+		final String value;
 		if (editor instanceof TextBox) {
 			value = ((TextBox) editor).getText().trim();
 		} else if (editor instanceof CheckBox) {
@@ -38,7 +38,7 @@ public final class PropertyList extends FlexTable implements ModuleView {
 		return value;
 	}
 
-	public static void setEditorValue(Widget editor, String value) {
+	public static void setEditorValue(final Widget editor, final String value) {
 		if (editor instanceof TextBox) {
 			((TextBox) editor).setText(value);
 		} else if (editor instanceof CheckBox) {
@@ -51,15 +51,15 @@ public final class PropertyList extends FlexTable implements ModuleView {
 	}
 
 	public HashMap<String, String> saveUI() {
-		HashMap<String, String> map = new HashMap<String, String>();
-		for (PropertyDefinition prop : properties.values()) {
-			String value = getEditorValue(prop.editor);
+		final HashMap<String, String> map = new HashMap<String, String>();
+		for (final PropertyDefinition prop : properties.values()) {
+			final String value = getEditorValue(prop.editor);
 			map.put(prop.name, value);
 		}
 		return map;
 	}
 
-	public void registerProperty(String name, Widget editor, Validator validator) {
+	public void registerProperty(final String name, final Widget editor, final Validator validator) {
 		properties.put(name, new PropertyDefinition(name, editor, validator));
 	}
 
@@ -67,23 +67,23 @@ public final class PropertyList extends FlexTable implements ModuleView {
 	 * @param name Name of property.
 	 * @return The editor for this property.
 	 */
-	public Widget getWidgetForName(String name) {
+	public Widget getWidgetForName(final String name) {
 		final PropertyDefinition propertyDefinition = properties.get(name);
 		return propertyDefinition != null ? propertyDefinition.editor : null;
 	}
 
 	public void fireValidations() {
-		for (PropertyDefinition definition : properties.values()) {
+		for (final PropertyDefinition definition : properties.values()) {
 			definition.validator.validate(getPropertyValue(definition.name));
 		}
 	}
 
-	public void setPropertyValue(String propertyName, String value) {
+	public void setPropertyValue(final String propertyName, final String value) {
 		final Widget editor = getWidgetForName(propertyName);
 		setEditorValue(editor, value);
 	}
 
-	public String getPropertyValue(String propertyName) {
+	public String getPropertyValue(final String propertyName) {
 		final Widget editor = getWidgetForName(propertyName);
 		return getEditorValue(editor);
 	}
@@ -93,7 +93,7 @@ public final class PropertyList extends FlexTable implements ModuleView {
 	}
 
 	private static final class PropertyDefinition {
-		private PropertyDefinition(String name, Widget editor, Validator validator) {
+		private PropertyDefinition(final String name, final Widget editor, final Validator validator) {
 			this.name = name;
 			this.editor = editor;
 			this.validator = validator;

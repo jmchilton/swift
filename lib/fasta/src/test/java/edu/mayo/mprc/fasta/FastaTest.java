@@ -34,13 +34,13 @@ public final class FastaTest {
 
 	@Test
 	public void testInputAndOutput() throws IOException {
-		File inFile = new File(fastaFileFolder, "test_in.fasta");
-		File outFile = File.createTempFile("test_out", ".fasta");
+		final File inFile = new File(fastaFileFolder, "test_in.fasta");
+		final File outFile = File.createTempFile("test_out", ".fasta");
 
 		Assert.assertTrue(FASTAInputStream.isFASTAFileValid(inFile));
 
-		DBInputStream in = new FASTAInputStream(inFile);
-		DBOutputStream out = new FASTAOutputStream(outFile);
+		final DBInputStream in = new FASTAInputStream(inFile);
+		final DBOutputStream out = new FASTAOutputStream(outFile);
 
 		in.beforeFirst();
 
@@ -67,14 +67,14 @@ public final class FastaTest {
 
 	@Test
 	public void testInputAndOutputZipped() throws IOException {
-		File inFile = new File(fastaFileFolder, "test_in.fasta.gz");
+		final File inFile = new File(fastaFileFolder, "test_in.fasta.gz");
 		assertTrue(FASTAInputStream.isFASTAFileValid(inFile));
 		assertTrue(inFile.exists());
 
-		File outFile = File.createTempFile("test_out", ".fasta");
+		final File outFile = File.createTempFile("test_out", ".fasta");
 
-		DBInputStream in = new FASTAInputStream(inFile);
-		DBOutputStream out = new FASTAOutputStream(outFile);
+		final DBInputStream in = new FASTAInputStream(inFile);
+		final DBOutputStream out = new FASTAOutputStream(outFile);
 
 		in.beforeFirst();
 		out.appendRemaining(in);

@@ -34,7 +34,7 @@ public final class NNLS {
 	public NNLS() {
 	}
 
-	public NNLS(DoubleMatrix2D x, int allowedToBeNegative, int debug) {
+	public NNLS(final DoubleMatrix2D x, final int allowedToBeNegative, final int debug) {
 		this.x = x;
 		n = this.x.columns();
 		m = this.x.rows();
@@ -61,7 +61,7 @@ public final class NNLS {
 			coefs = FACTORY_1D.make(0);
 		}
 
-		public Fit(int n) {
+		public Fit(final int n) {
 			coefs = FACTORY_1D.make(n);
 			rss = -1.;
 		}
@@ -75,7 +75,7 @@ public final class NNLS {
 	 * To store the cached hat and solve matrices
 	 */
 	private static final class HatSolve {
-		private HatSolve(DoubleMatrix2D hat, DoubleMatrix2D solve) {
+		private HatSolve(final DoubleMatrix2D hat, final DoubleMatrix2D solve) {
 			this.hat = hat;
 			this.solve = solve;
 		}
@@ -84,7 +84,7 @@ public final class NNLS {
 		public DoubleMatrix2D solve;
 	}
 
-	public void fit(DoubleMatrix1D y, Fit f) {
+	public void fit(final DoubleMatrix1D y, final Fit f) {
 		doNNLSRec(y, (1 << n) - 1, required, nn, 0, f);
 		if (debug >= 3 && negfit.size() > 0 && f.rss != -1) {
 			LOGGER.debug("Initial coefficents " + negfit.toString() + "\n");
@@ -94,8 +94,8 @@ public final class NNLS {
 		}
 	}
 
-	public String toFullString(DoubleMatrix1D coefs, int allowed, int bracket) {
-		StringBuilder s = new StringBuilder();
+	public String toFullString(final DoubleMatrix1D coefs, final int allowed, final int bracket) {
+		final StringBuilder s = new StringBuilder();
 		for (int j = 0, jj = 0; j < n; ++j) {
 			if (0 != (allowed & (1 << j))) {
 				if (bracket == j) {
@@ -115,7 +115,7 @@ public final class NNLS {
 		return s.toString();
 	}
 
-	private HatSolve getHatSolve(int allowed) {
+	private HatSolve getHatSolve(final int allowed) {
 		HatSolve it = hatSolve.get(allowed);
 		if (it == null) {
 
@@ -126,7 +126,7 @@ public final class NNLS {
 				}
 			}
 
-			DoubleMatrix2D XX = FACTORY_2D.make(m, curnn);
+			final DoubleMatrix2D XX = FACTORY_2D.make(m, curnn);
 			int ii = 0;
 			for (int i = 0; i < n; ++i) {
 				if (0 != (allowed & (1 << i))) {
@@ -137,8 +137,8 @@ public final class NNLS {
 				}
 			}
 			// possibly not very efficient. I think this is doing LU decomp.  Should I be doing QR instead?
-			DoubleMatrix2D solve = ALGEBRA.mult(ALGEBRA.inverse(ALGEBRA.mult(ALGEBRA.transpose(XX), XX)), ALGEBRA.transpose(XX));
-			DoubleMatrix2D hat = ALGEBRA.mult(XX, solve);
+			final DoubleMatrix2D solve = ALGEBRA.mult(ALGEBRA.inverse(ALGEBRA.mult(ALGEBRA.transpose(XX), XX)), ALGEBRA.transpose(XX));
+			final DoubleMatrix2D hat = ALGEBRA.mult(XX, solve);
 
 			it = new HatSolve(hat, solve);
 			hatSolve.put(allowed, it);
@@ -153,22 +153,22 @@ public final class NNLS {
 	 * @param required  Bitmask of coeficients that are never restricted to zero.
 	 * @param dropcount total number of zeroed coefficients
 	 */
-	private void doNNLSRec(DoubleMatrix1D y, int allowed, int required, int nn, int dropcount, Fit fit) {
+	private void doNNLSRec(final DoubleMatrix1D y, int allowed, int required, final int nn, final int dropcount, final Fit fit) {
 		if (dropcount > nn) {
 			return;
 			//throw RuntimeError("Dropped all coefficients.");
 		}
 
 
-		HatSolve pa = getHatSolve(allowed);
-		DoubleMatrix2D hat = pa.hat;
-		DoubleMatrix2D solve = pa.solve;
+		final HatSolve pa = getHatSolve(allowed);
+		final DoubleMatrix2D hat = pa.hat;
+		final DoubleMatrix2D solve = pa.solve;
 
-		DoubleMatrix1D coefs = ALGEBRA.mult(solve, y);
-		DoubleMatrix1D yhat = ALGEBRA.mult(hat, y); // FIXME: this sucks: memory allocation at each recursive call, plus gets kept on stack unncessarily.
+		final DoubleMatrix1D coefs = ALGEBRA.mult(solve, y);
+		final DoubleMatrix1D yhat = ALGEBRA.mult(hat, y); // FIXME: this sucks: memory allocation at each recursive call, plus gets kept on stack unncessarily.
 
 		// Sum of (y-yhat) squares
-		double rss = y.aggregate(yhat, Functions.plus, SUM_SQUARE_DELTAS);
+		final double rss = y.aggregate(yhat, Functions.plus, SUM_SQUARE_DELTAS);
 
 		int negcount = 0;
 		for (int i = 0, ii = 0; i < n; ++i) {
@@ -206,8 +206,8 @@ public final class NNLS {
 		}
 
 		for (int i = 0, ii = 0; i < n; ++i) {
-			int iibit = 1 << i;
-			boolean a = (allowed & iibit) != 0;
+			final int iibit = 1 << i;
+			final boolean a = (allowed & iibit) != 0;
 			if (a && (coefs.get(ii) < 0.) && (0 == (required & iibit))) {
 				if (debug >= 1) {
 					LOGGER.debug(MessageFormat.format("{0}Dropping {1}\n",
@@ -228,7 +228,7 @@ public final class NNLS {
 		}
 	}
 
-	DoubleMatrix1D setSize(DoubleMatrix1D matrix, int n) {
+	DoubleMatrix1D setSize(final DoubleMatrix1D matrix, final int n) {
 		if (matrix.size() < n) {
 			return DoubleFactory1D.dense.append(
 					matrix,

@@ -19,7 +19,7 @@ public final class CurationWebContext {
 	private CurationWebContext() {
 	}
 
-	public static void initialize(CurationDao curationDao, File fastaFolder, File fastaUploadFolder, File fastaArchiveFolder, File localTempFolder) {
+	public static void initialize(final CurationDao curationDao, final File fastaFolder, final File fastaUploadFolder, final File fastaArchiveFolder, final File localTempFolder) {
 		CurationWebContext.curationDao = curationDao;
 		CurationWebContext.fastaFolder = fastaFolder;
 		CurationWebContext.fastaUploadFolder = fastaUploadFolder;

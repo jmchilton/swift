@@ -33,9 +33,9 @@ public final class ResourceUtilities {
 	 * @param cl ClassLoader to fetch from.
 	 * @return an InputStream to that resource.
 	 */
-	public static InputStream getStream(URI u, ClassLoader cl) {
+	public static InputStream getStream(final URI u, final ClassLoader cl) {
 		if (u.getScheme().equals("classpath")) {
-			InputStream stream = cl.getResourceAsStream(u.getSchemeSpecificPart());
+			final InputStream stream = cl.getResourceAsStream(u.getSchemeSpecificPart());
 			if (stream == null) {
 				throw new MprcException("Can't find " + u.getSchemeSpecificPart()
 						+ " in classpath: " + getClassPathString(cl));
@@ -43,8 +43,8 @@ public final class ResourceUtilities {
 			return stream;
 		} else {
 			try {
-				URL uu = u.toURL();
-				URLConnection c = uu.openConnection();
+				final URL uu = u.toURL();
+				final URLConnection c = uu.openConnection();
 				c.connect();
 				return c.getInputStream();
 			} catch (IOException e) {
@@ -57,13 +57,13 @@ public final class ResourceUtilities {
 	 * @param cl ClassLoader to use for determining the path.
 	 * @return Class path string, separate
 	 */
-	public static String getClassPathString(ClassLoader cl) {
-		StringBuilder cp = new StringBuilder();
+	public static String getClassPathString(final ClassLoader cl) {
+		final StringBuilder cp = new StringBuilder();
 		try {
 			if (cl instanceof URLClassLoader) {
-				URLClassLoader ucl = (URLClassLoader) cl;
+				final URLClassLoader ucl = (URLClassLoader) cl;
 				Joiner.on(" ").join(ucl.getURLs());
-				for (URL url : ucl.getURLs()) {
+				for (final URL url : ucl.getURLs()) {
 					cp.append(url);
 				}
 			}
@@ -73,8 +73,8 @@ public final class ResourceUtilities {
 		return cp.toString();
 	}
 
-	public static Date getLastModified(URI u, ClassLoader cl) {
-		URL url;
+	public static Date getLastModified(final URI u, final ClassLoader cl) {
+		final URL url;
 		if (u.getScheme().equals("classpath")) {
 			url = cl.getResource(u.getSchemeSpecificPart());
 		} else {
@@ -86,7 +86,7 @@ public final class ResourceUtilities {
 		}
 
 		try {
-			URLConnection c = url.openConnection();
+			final URLConnection c = url.openConnection();
 			return new Date(c.getLastModified());
 		} catch (IOException e) {
 			throw new MprcException("Can't open connection to " + url.toString(), e);
@@ -100,14 +100,14 @@ public final class ResourceUtilities {
 	 * @param outputFile
 	 * @throws IOException
 	 */
-	public static void downloadFile(URL fileURL, File outputFile) throws IOException {
+	public static void downloadFile(final URL fileURL, final File outputFile) throws IOException {
 
 		URLConnection urlConnection = null;
 		InputStream is = null;
 		OutputStream os = null;
 
 		try {
-			byte[] bytes = new byte[256];
+			final byte[] bytes = new byte[256];
 			int numberOfReadBytes = 0;
 
 			urlConnection = fileURL.openConnection();
@@ -125,45 +125,45 @@ public final class ResourceUtilities {
 		}
 	}
 
-	public static InputStream getStream(URI u, Class c) {
+	public static InputStream getStream(final URI u, final Class c) {
 		return getStream(u, c.getClassLoader());
 	}
 
-	public static Reader getReader(URI u, Object o) {
+	public static Reader getReader(final URI u, final Object o) {
 		return getReader(u, o.getClass());
 	}
 
-	public static Reader getReader(URI u, Class c) {
+	public static Reader getReader(final URI u, final Class c) {
 		return getReader(u, c.getClassLoader());
 	}
 
-	public static Reader getReader(URI u, ClassLoader cl) {
+	public static Reader getReader(final URI u, final ClassLoader cl) {
 		return new InputStreamReader(getStream(u, cl));
 	}
 
-	public static InputStream getStream(String u, Class c) {
+	public static InputStream getStream(final String u, final Class c) {
 		return getStream(toURI(u), c.getClassLoader());
 	}
 
-	public static InputStream getStream(String u, Object o) {
+	public static InputStream getStream(final String u, final Object o) {
 		return getStream(toURI(u), o.getClass());
 	}
 
-	public static Reader getReader(String u, Object o) {
+	public static Reader getReader(final String u, final Object o) {
 		return getReader(toURI(u), o.getClass());
 	}
 
-	public static Reader getReader(String u, Class c) {
+	public static Reader getReader(final String u, final Class c) {
 		return getReader(toURI(u), c.getClassLoader());
 	}
 
-	public static Reader getReader(String u, ClassLoader cl) {
+	public static Reader getReader(final String u, final ClassLoader cl) {
 		return new InputStreamReader(getStream(toURI(u), cl));
 	}
 
-	public static URI toURI(String s) {
+	public static URI toURI(final String s) {
 		try {
-			String trimmed = s.trim();
+			final String trimmed = s.trim();
 			// Make sure we do not misinterpret windows C:\paths as URIs.
 			if (trimmed.contains(":") && trimmed.indexOf(':') != 1) {
 				return new URI(s);
@@ -175,7 +175,7 @@ public final class ResourceUtilities {
 		}
 	}
 
-	public static URI append(URI to, String pathPart) {
+	public static URI append(final URI to, final String pathPart) {
 		// it really seems like URI.resolve() should do this but it just doesn't.
 		String path = to.getPath();
 		try {

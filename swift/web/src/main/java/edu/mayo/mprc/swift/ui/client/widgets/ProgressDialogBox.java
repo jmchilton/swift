@@ -20,19 +20,19 @@ public final class ProgressDialogBox extends DialogBox {
 		super(false, true);
 	}
 
-	public void setProgressMessage(String text) {
+	public void setProgressMessage(final String text) {
 		this.addStyleName(PROGRESS_STYLE);
 		this.setText(text);
-		Button cancel = new Button("Cancel");
+		final Button cancel = new Button("Cancel");
 		cancel.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				hide();
 			}
 		});
 		setWidget(cancel);
 	}
 
-	public void setRelativeSize(double widthFraction, double heightFraction) {
+	public void setRelativeSize(final double widthFraction, final double heightFraction) {
 		assert widthFraction >= MIN_FRACTION && widthFraction <= MAX_FRACTION : "The width fraction must be in [" + MIN_FRACTION + ", " + MAX_FRACTION + "] range";
 		assert heightFraction >= MIN_FRACTION && heightFraction <= MAX_FRACTION : "The height fraction must be in [" + MIN_FRACTION + ", " + MAX_FRACTION + "] range";
 
@@ -40,7 +40,7 @@ public final class ProgressDialogBox extends DialogBox {
 		this.heightFraction = heightFraction;
 	}
 
-	public void setMinimumSize(int minWidth, int minHeight) {
+	public void setMinimumSize(final int minWidth, final int minHeight) {
 		this.minWidth = minWidth;
 		this.minHeight = minHeight;
 	}
@@ -56,12 +56,12 @@ public final class ProgressDialogBox extends DialogBox {
 	}
 
 	private void positionDialog() {
-		int clientWidth = Window.getClientWidth();
-		int clientHeight = Window.getClientHeight();
-		int popupWidth = (int) Math.max(clientWidth * widthFraction, minWidth);
-		int popupHeight = (int) Math.max(clientHeight * heightFraction, minHeight);
-		int posX = (clientWidth - popupWidth) / 2;
-		int posY = (clientHeight - popupHeight) / 2;
+		final int clientWidth = Window.getClientWidth();
+		final int clientHeight = Window.getClientHeight();
+		final int popupWidth = (int) Math.max(clientWidth * widthFraction, minWidth);
+		final int popupHeight = (int) Math.max(clientHeight * heightFraction, minHeight);
+		final int posX = (clientWidth - popupWidth) / 2;
+		final int posY = (clientHeight - popupHeight) / 2;
 		this.setSize(String.valueOf(popupWidth) + "px", String.valueOf(popupHeight) + "px");
 		this.setPopupPosition(posX, posY);
 	}

@@ -13,7 +13,7 @@ public class ParamValidationsMappingContext implements MappingContext {
 	private ParamName currentParam;
 	private boolean noErrors = false;
 
-	public ParamValidationsMappingContext(ParamsValidations validations, ParamsInfo paramsInfo) {
+	public ParamValidationsMappingContext(final ParamsValidations validations, final ParamsInfo paramsInfo) {
 		this.validations = validations;
 		this.paramsInfo = paramsInfo;
 		if (paramsInfo == null) {
@@ -25,19 +25,19 @@ public class ParamValidationsMappingContext implements MappingContext {
 		return paramsInfo;
 	}
 
-	public void reportError(String message, Throwable t) {
-		Validation v = new Validation(message, ValidationSeverity.ERROR, currentParam, null, t);
+	public void reportError(final String message, final Throwable t) {
+		final Validation v = new Validation(message, ValidationSeverity.ERROR, currentParam, null, t);
 		validations.addValidation(currentParam, v);
 		noErrors = false;
 	}
 
-	public void reportWarning(String message) {
-		Validation v = new Validation(message, ValidationSeverity.WARNING, currentParam, null, null);
+	public void reportWarning(final String message) {
+		final Validation v = new Validation(message, ValidationSeverity.WARNING, currentParam, null, null);
 		validations.addValidation(currentParam, v);
 	}
 
-	public void reportInfo(String message) {
-		Validation v = new Validation(message, ValidationSeverity.INFO, currentParam, null, null);
+	public void reportInfo(final String message) {
+		final Validation v = new Validation(message, ValidationSeverity.INFO, currentParam, null, null);
 		validations.addValidation(currentParam, v);
 	}
 
@@ -49,11 +49,11 @@ public class ParamValidationsMappingContext implements MappingContext {
 		return noErrors;
 	}
 
-	public Curation addLegacyCuration(String legacyName) {
+	public Curation addLegacyCuration(final String legacyName) {
 		return null;
 	}
 
-	public void startMapping(ParamName paramName) {
+	public void startMapping(final ParamName paramName) {
 		currentParam = paramName;
 		noErrors = true;
 	}

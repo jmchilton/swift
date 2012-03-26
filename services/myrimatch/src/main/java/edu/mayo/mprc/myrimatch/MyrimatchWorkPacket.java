@@ -14,7 +14,7 @@ public final class MyrimatchWorkPacket extends EngineWorkPacket {
 	private long numForwardEntries;
 	private String decoySequencePrefix;
 
-	public MyrimatchWorkPacket(String taskId, boolean fromScratch) {
+	public MyrimatchWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
@@ -23,8 +23,8 @@ public final class MyrimatchWorkPacket extends EngineWorkPacket {
 	 *
 	 * @param workFolder Myrmimatch work folder (the param file will be generated in there).
 	 */
-	public MyrimatchWorkPacket(File inputFile, File searchParamsFile, File outputFile, File workFolder, File databaseFile,
-	                           long numForwardEntries, String decoySequencePrefix, boolean publishSearchFiles, String taskId, boolean fromScratch) {
+	public MyrimatchWorkPacket(final File inputFile, final File searchParamsFile, final File outputFile, final File workFolder, final File databaseFile,
+	                           final long numForwardEntries, final String decoySequencePrefix, final boolean publishSearchFiles, final String taskId, final boolean fromScratch) {
 		super(inputFile, outputFile, searchParamsFile, databaseFile, publishSearchFiles, taskId, fromScratch);
 
 		if (inputFile == null) {
@@ -61,7 +61,7 @@ public final class MyrimatchWorkPacket extends EngineWorkPacket {
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new MyrimatchWorkPacket(
 				getInputFile(),
 				getSearchParamsFile(),

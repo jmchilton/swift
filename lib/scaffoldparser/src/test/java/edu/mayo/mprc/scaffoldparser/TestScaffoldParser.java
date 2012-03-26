@@ -40,14 +40,14 @@ public final class TestScaffoldParser {
 	@Test
 	public void testRoundtrip() throws IOException, SAXException {
 		final Scaffold scaffold = ScaffoldParser.loadScaffoldXml(ResourceUtilities.getStream("classpath:test.xml", TestScaffoldParser.class));
-		File expected = TestingUtilities.getTempFileFromResource("/test.xml", false, null);
+		final File expected = TestingUtilities.getTempFileFromResource("/test.xml", false, null);
 
 		final File output = TestingUtilities.getUniqueTempFile(true, null, ".xml");
 		try {
 			final FileOutputStream outputStream = FileUtilities.getOutputStream(output);
 			ScaffoldParser.saveScaffoldXml(scaffold, outputStream);
 			outputStream.close();
-			ScaffoldXmlDiff diff = new ScaffoldXmlDiff();
+			final ScaffoldXmlDiff diff = new ScaffoldXmlDiff();
 			final boolean similar = diff.areSimilarScaffoldXMLFiles(output, expected);
 			if (!similar) {
 				LOGGER.error("Scaffold files different: " + diff.getDifferenceString());
@@ -66,7 +66,7 @@ public final class TestScaffoldParser {
 
 	@Test
 	public void testScaffoldParserDrivers() throws IOException {
-		File tempFolder = FileUtilities.createTempFolder();
+		final File tempFolder = FileUtilities.createTempFolder();
 
 		try {
 //			File scaffoldXmlFile = TestingUtilities.getTempFileFromResource(scaffoldXmlResource, false, tempFolder);

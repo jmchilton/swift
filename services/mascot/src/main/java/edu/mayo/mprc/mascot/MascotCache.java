@@ -18,10 +18,10 @@ public final class MascotCache extends WorkCache<MascotWorkPacket> {
 
 
 	@Override
-	public void userProgressInformation(File wipFolder, ProgressInfo progressInfo) {
+	public void userProgressInformation(final File wipFolder, final ProgressInfo progressInfo) {
 		// We store the extra Mascot URL as a special file so we can report it to the user later
 		if (progressInfo instanceof MascotResultUrl) {
-			MascotResultUrl mascotResultUrl = (MascotResultUrl) progressInfo;
+			final MascotResultUrl mascotResultUrl = (MascotResultUrl) progressInfo;
 			FileUtilities.writeStringToFile(new File(wipFolder, MascotWorkPacket.MASCOT_URL_FILENAME), mascotResultUrl.getMascotUrl(), true);
 		}
 	}
@@ -40,7 +40,7 @@ public final class MascotCache extends WorkCache<MascotWorkPacket> {
 		}
 
 		@Override
-		public WorkCache createCache(Config config, DependencyResolver dependencies) {
+		public WorkCache createCache(final Config config, final DependencyResolver dependencies) {
 			cache = new MascotCache();
 			return cache;
 		}
@@ -49,7 +49,7 @@ public final class MascotCache extends WorkCache<MascotWorkPacket> {
 	public static final class Ui implements ServiceUiFactory {
 		private static final String DEFAULT_CACHE = "var/cache/mascot";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(CacheConfig.CACHE_FOLDER, "Mascot cache folder", "When a file gets searched by Mascot, the result is stored in this folder. Subsequent searches of the same file with same parameters use the cached value."
 					+ "<p>Ideally, this folder would be on a fast, potentially less reliable storage.</p>")
 					.required()

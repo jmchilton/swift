@@ -39,7 +39,7 @@ public class BiologicalSample extends PersistableBase {
 	public BiologicalSample() {
 	}
 
-	public BiologicalSample(String sampleName, String category, SearchResultList searchResults) {
+	public BiologicalSample(final String sampleName, final String category, final SearchResultList searchResults) {
 		this.sampleName = sampleName;
 		this.category = category;
 		this.searchResults = searchResults;
@@ -49,7 +49,7 @@ public class BiologicalSample extends PersistableBase {
 		return sampleName;
 	}
 
-	public void setSampleName(String sampleName) {
+	public void setSampleName(final String sampleName) {
 		this.sampleName = sampleName;
 	}
 
@@ -57,7 +57,7 @@ public class BiologicalSample extends PersistableBase {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(final String category) {
 		this.category = category;
 	}
 
@@ -65,12 +65,12 @@ public class BiologicalSample extends PersistableBase {
 		return searchResults;
 	}
 
-	public void setSearchResults(SearchResultList searchResults) {
+	public void setSearchResults(final SearchResultList searchResults) {
 		this.searchResults = searchResults;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -78,7 +78,7 @@ public class BiologicalSample extends PersistableBase {
 			return false;
 		}
 
-		BiologicalSample that = (BiologicalSample) o;
+		final BiologicalSample that = (BiologicalSample) o;
 
 		if (!keyEquals(that)) {
 			return false;
@@ -97,7 +97,7 @@ public class BiologicalSample extends PersistableBase {
 		return result;
 	}
 
-	public boolean keyEquals(BiologicalSample that) {
+	public boolean keyEquals(final BiologicalSample that) {
 		if (getCategory() != null ? !getCategory().equals(that.getCategory()) : that.getCategory() != null) {
 			return false;
 		}

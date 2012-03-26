@@ -8,7 +8,7 @@ public final class MascotMappingFactory implements MappingFactory {
 	private static final long serialVersionUID = 20121221L;
 	public static final String MASCOT = "MASCOT";
 
-	public MascotMappingFactory(ParamsInfo abstractParamsInfo) {
+	public MascotMappingFactory(final ParamsInfo abstractParamsInfo) {
 		this.abstractParamsInfo = abstractParamsInfo;
 	}
 

@@ -30,7 +30,7 @@ public class FileHolderTest {
 			return string;
 		}
 
-		public void setString(String string) {
+		public void setString(final String string) {
 			this.string = string;
 		}
 
@@ -38,7 +38,7 @@ public class FileHolderTest {
 			return file;
 		}
 
-		public void setFile(File file) {
+		public void setFile(final File file) {
 			this.file = file;
 		}
 
@@ -46,7 +46,7 @@ public class FileHolderTest {
 			return files;
 		}
 
-		public void addFile(File f) {
+		public void addFile(final File f) {
 			files.add(f);
 		}
 
@@ -54,7 +54,7 @@ public class FileHolderTest {
 			return child;
 		}
 
-		public void setChild(TestClass child) {
+		public void setChild(final TestClass child) {
 			this.child = child;
 		}
 
@@ -62,7 +62,7 @@ public class FileHolderTest {
 			return notSerializable;
 		}
 
-		public void setNotSerializable(File notSerializable) {
+		public void setNotSerializable(final File notSerializable) {
 			this.notSerializable = notSerializable;
 		}
 
@@ -70,7 +70,7 @@ public class FileHolderTest {
 			return notSerializable2;
 		}
 
-		public static void setNotSerializable2(File notSerializable2) {
+		public static void setNotSerializable2(final File notSerializable2) {
 			TestClass.notSerializable2 = notSerializable2;
 		}
 	}
@@ -84,11 +84,11 @@ public class FileHolderTest {
 			return file2;
 		}
 
-		public void setFile2(File file2) {
+		public void setFile2(final File file2) {
 			this.file2 = file2;
 		}
 
-		public void addFileToMap(String key, File value) {
+		public void addFileToMap(final String key, final File value) {
 			fileMap.put(key, value);
 		}
 
@@ -102,8 +102,8 @@ public class FileHolderTest {
 
 	@Test
 	public void testSerialization() {
-		TestClass test = new TestClass();
-		File temp = FileUtilities.createTempFolder();
+		final TestClass test = new TestClass();
+		final File temp = FileUtilities.createTempFolder();
 		Assert.assertFalse(temp.getAbsolutePath().contains("src"), "The temp folder cannot contain 'src': " + temp.getAbsolutePath());
 
 		test.setFile(new File(temp, "src/test.txt"));
@@ -113,7 +113,7 @@ public class FileHolderTest {
 		TestClass.setNotSerializable2(new File(temp, "src/ns2.txt"));
 		test.setString("hello");
 
-		TestClass2 test2 = new TestClass2();
+		final TestClass2 test2 = new TestClass2();
 		test2.setFile(new File(temp, "src/hello.txt"));
 		test2.setFile2(new File(temp, "src/world.txt"));
 		test2.setString("world");
@@ -125,7 +125,7 @@ public class FileHolderTest {
 		test.translateOnSender(new SenderTokenTranslator() {
 			// We change all "src" to "dest" to simulate translation
 			@Override
-			public FileToken translateBeforeTransfer(FileToken fileToken) {
+			public FileToken translateBeforeTransfer(final FileToken fileToken) {
 				LOGGER.debug(fileToken.getTokenPath());
 				translatedTokens++;
 				String tokenPath = getFilePathFromToken(fileToken);
@@ -137,7 +137,7 @@ public class FileHolderTest {
 		final MyFileTokenSynchronizer synchronizer = new MyFileTokenSynchronizer();
 		test.translateOnReceiver(new ReceiverTokenTranslator() {
 			@Override
-			public File getFile(FileToken fileToken) {
+			public File getFile(final FileToken fileToken) {
 				return new File(getFilePathFromToken(fileToken));
 			}
 		}, synchronizer);
@@ -158,11 +158,11 @@ public class FileHolderTest {
 		Assert.assertNotNull(synchronizer.getUploadedToken());
 	}
 
-	private void assertFilesTranslated(File file, String expected, File temp) {
+	private void assertFilesTranslated(final File file, final String expected, final File temp) {
 		Assert.assertEquals(file.getAbsolutePath(), new File(temp, expected).getAbsolutePath());
 	}
 
-	private String getFilePathFromToken(FileToken fileToken) {
+	private String getFilePathFromToken(final FileToken fileToken) {
 		return fileToken.getTokenPath().substring("file:".length());
 	}
 
@@ -174,11 +174,11 @@ public class FileHolderTest {
 		}
 
 		@Override
-		public void upload(FileToken myToken) {
+		public void upload(final FileToken myToken) {
 		}
 
 		@Override
-		public void uploadAndWait(FileToken myToken) {
+		public void uploadAndWait(final FileToken myToken) {
 			if (uploadedToken == null) {
 				uploadedToken = myToken;
 			} else {
@@ -187,11 +187,11 @@ public class FileHolderTest {
 		}
 
 		@Override
-		public void download(FileToken theirToken) {
+		public void download(final FileToken theirToken) {
 		}
 
 		@Override
-		public void downloadAndWait(FileToken theirToken) {
+		public void downloadAndWait(final FileToken theirToken) {
 		}
 	}
 }

@@ -32,7 +32,7 @@ public final class UnimodDaoTest extends DaoTest {
 	@Test
 	public void shouldDoInitialInstall() {
 		// Get fresh unimod
-		Unimod unimod = new Unimod();
+		final Unimod unimod = new Unimod();
 		unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod.xml", UnimodDaoTest.class));
 
 		// Save it to database
@@ -52,7 +52,7 @@ public final class UnimodDaoTest extends DaoTest {
 		// Check that we get the same data
 		final Unimod currentUnimod = dao.load();
 		Assert.assertEquals(currentUnimod.size(), unimod.size(), "Saved unimod has to be same size as previous one");
-		for (Mod mod : currentUnimod.asSet()) {
+		for (final Mod mod : currentUnimod.asSet()) {
 			Assert.assertEquals(mod.getCreation(), change, "The creation field has to be set on all items");
 		}
 
@@ -76,7 +76,7 @@ public final class UnimodDaoTest extends DaoTest {
 	@Test
 	public void shouldStoreUpdates() {
 		// Get fresh unimod
-		Unimod unimod = new Unimod();
+		final Unimod unimod = new Unimod();
 		unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod.xml", UnimodDaoTest.class));
 
 		// Save it to database
@@ -92,7 +92,7 @@ public final class UnimodDaoTest extends DaoTest {
 		nextTransaction();
 
 		// Get modified unimod
-		Unimod unimod2 = new Unimod();
+		final Unimod unimod2 = new Unimod();
 		unimod2.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod_modified.xml", UnimodDaoTest.class));
 
 		// Save it to database
@@ -107,7 +107,7 @@ public final class UnimodDaoTest extends DaoTest {
 
 		nextTransaction();
 
-		Unimod result = dao.load();
+		final Unimod result = dao.load();
 		final Mod carbamyl = result.getByTitle("Carbamyl");
 		Assert.assertEquals(carbamyl.getCreation(), change2, "This mod has been changed");
 

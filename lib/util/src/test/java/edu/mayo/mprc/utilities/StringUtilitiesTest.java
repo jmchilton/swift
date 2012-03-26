@@ -67,7 +67,7 @@ public class StringUtilitiesTest {
 
 	@Test
 	public void shouldEscapeUnicode() {
-		String test = "_&a \u1234 b \u4321 c \ubbaa \u0040 \u007f \u0080 \u001f \n";
+		final String test = "_&a \u1234 b \u4321 c \ubbaa \u0040 \u007f \u0080 \u001f \n";
 		final String result = StringUtilities.toUnicodeEscapeString(test);
 		Assert.assertEquals(result, "_&a \\u1234 b \\u4321 c \\ubbaa @ \u007f \\u0080 \\u001f \\u000a");
 	}
@@ -85,21 +85,21 @@ public class StringUtilitiesTest {
 
 	@Test
 	public void shouldSplitTypical() {
-		ArrayList<String> list = new ArrayList<String>(10);
+		final ArrayList<String> list = new ArrayList<String>(10);
 		StringUtilities.split("a\tb\t\tc\tdef\t", '\t', list);
 		Assert.assertEquals(list.toArray(), new String[]{"a", "b", "", "c", "def", ""});
 	}
 
 	@Test
 	public void shouldSplitEmpty() {
-		ArrayList<String> list = new ArrayList<String>(10);
+		final ArrayList<String> list = new ArrayList<String>(10);
 		StringUtilities.split("", '\t', list);
 		Assert.assertEquals(list.toArray(), new String[]{""});
 	}
 
 	@Test
 	public void shouldSplitOnlyDelim() {
-		ArrayList<String> list = new ArrayList<String>(10);
+		final ArrayList<String> list = new ArrayList<String>(10);
 		StringUtilities.split("\t\t\t", '\t', list);
 		Assert.assertEquals(list.toArray(), new String[]{"", "", "", ""});
 	}
@@ -110,8 +110,8 @@ public class StringUtilitiesTest {
 		Assert.assertEquals(StringUtilities.toHex(-1), 'f');
 		Assert.assertEquals(StringUtilities.toHex(0xcafebabe), 'e');
 
-		Assert.assertEquals(StringUtilities.toHex(new byte[]{(byte)0x01, (byte)0xca, (byte)0x02, (byte)0xba, (byte)0x34}, ""), "01ca02ba34");
-		Assert.assertEquals(StringUtilities.toHex(new byte[]{(byte)0x01, (byte)0xca, (byte)0x02, (byte)0xba, (byte)0x34}, "-"), "01-ca-02-ba-34");
+		Assert.assertEquals(StringUtilities.toHex(new byte[]{(byte) 0x01, (byte) 0xca, (byte) 0x02, (byte) 0xba, (byte) 0x34}, ""), "01ca02ba34");
+		Assert.assertEquals(StringUtilities.toHex(new byte[]{(byte) 0x01, (byte) 0xca, (byte) 0x02, (byte) 0xba, (byte) 0x34}, "-"), "01-ca-02-ba-34");
 		Assert.assertEquals(StringUtilities.toHex(new byte[]{}, ":"), "");
 	}
 }

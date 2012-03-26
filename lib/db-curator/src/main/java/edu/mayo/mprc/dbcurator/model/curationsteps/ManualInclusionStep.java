@@ -57,7 +57,7 @@ public class ManualInclusionStep implements CurationStep {
 	 * @param exe the executor we are performing the step for
 	 * @return the post validation.  This is the same object that will be returned by a call to postValidate()
 	 */
-	public StepValidation performStep(CurationExecutor exe) {
+	public StepValidation performStep(final CurationExecutor exe) {
 		this.runValidation = this.preValidate(exe.getCurationDao());
 
 		//run a prevalidation before continuing.  If prevalidation fails return that StepValidation else create a new one
@@ -68,8 +68,8 @@ public class ManualInclusionStep implements CurationStep {
 
 		this.runValidation = new StepValidation();
 
-		DBInputStream in = exe.getCurrentInStream();
-		DBOutputStream out = exe.getCurrentOutStream();
+		final DBInputStream in = exe.getCurrentInStream();
+		final DBOutputStream out = exe.getCurrentOutStream();
 
 		try {
 			if (in != null) {
@@ -95,8 +95,8 @@ public class ManualInclusionStep implements CurationStep {
 	 * @param curationDao
 	 * @return the @see StepValidation to interrogate for issues
 	 */
-	public StepValidation preValidate(CurationDao curationDao) {
-		StepValidation preValidation = new StepValidation();
+	public StepValidation preValidate(final CurationDao curationDao) {
+		final StepValidation preValidation = new StepValidation();
 
 		if (this.sequence == null) {
 			preValidation.setMessage("No sequence has been entered.");
@@ -138,7 +138,7 @@ public class ManualInclusionStep implements CurationStep {
 	 * @return a cropy of this step
 	 */
 	public CurationStep createCopy() {
-		ManualInclusionStep copy = new ManualInclusionStep();
+		final ManualInclusionStep copy = new ManualInclusionStep();
 		copy.setHeader(this.header);
 		copy.setSequence(this.sequence);
 		return copy;
@@ -151,7 +151,7 @@ public class ManualInclusionStep implements CurationStep {
 		return header;
 	}
 
-	public void setHeader(String header) {
+	public void setHeader(final String header) {
 		this.header = header;
 	}
 
@@ -162,7 +162,7 @@ public class ManualInclusionStep implements CurationStep {
 		return sequence;
 	}
 
-	public void setSequence(String sequence) {
+	public void setSequence(final String sequence) {
 		this.sequence = sequence;
 	}
 
@@ -173,7 +173,7 @@ public class ManualInclusionStep implements CurationStep {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -187,7 +187,7 @@ public class ManualInclusionStep implements CurationStep {
 		return this.lastRunCompletionCount;
 	}
 
-	public void setLastRunCompletionCount(Integer count) {
+	public void setLastRunCompletionCount(final Integer count) {
 		this.lastRunCompletionCount = count;
 	}
 

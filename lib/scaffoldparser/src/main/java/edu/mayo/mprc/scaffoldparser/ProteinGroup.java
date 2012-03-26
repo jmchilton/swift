@@ -26,7 +26,7 @@ public final class ProteinGroup {
 		return matchProbability;
 	}
 
-	public void setMatchProbability(double matchProbability) {
+	public void setMatchProbability(final double matchProbability) {
 		this.matchProbability = matchProbability;
 	}
 
@@ -34,7 +34,7 @@ public final class ProteinGroup {
 		return numberUniqueSpectrumMatches;
 	}
 
-	public void setNumberUniqueSpectrumMatches(int numberUniqueSpectrumMatches) {
+	public void setNumberUniqueSpectrumMatches(final int numberUniqueSpectrumMatches) {
 		this.numberUniqueSpectrumMatches = numberUniqueSpectrumMatches;
 	}
 
@@ -42,7 +42,7 @@ public final class ProteinGroup {
 		return preferredProteinAnnotation;
 	}
 
-	public void setPreferredProteinAnnotation(PreferredProteinAnnotation preferredProteinAnnotation) {
+	public void setPreferredProteinAnnotation(final PreferredProteinAnnotation preferredProteinAnnotation) {
 		this.preferredProteinAnnotation = preferredProteinAnnotation;
 	}
 
@@ -50,7 +50,7 @@ public final class ProteinGroup {
 		return proteinAnalysisIdentifications;
 	}
 
-	public void setProteinAnalysisIdentifications(List<ProteinAnalysisIdentification> proteinAnalysisIdentifications) {
+	public void setProteinAnalysisIdentifications(final List<ProteinAnalysisIdentification> proteinAnalysisIdentifications) {
 		this.proteinAnalysisIdentifications = proteinAnalysisIdentifications;
 	}
 }

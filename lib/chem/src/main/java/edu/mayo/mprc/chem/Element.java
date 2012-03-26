@@ -8,7 +8,7 @@ import java.util.List;
  * Contains a list of isotopes that can be used for calculating average mass of the element.
  */
 public final class Element {
-	public Element(String name, String symbol) {
+	public Element(final String name, final String symbol) {
 		this.name = name;
 		this.symbol = symbol;
 		init();
@@ -31,7 +31,7 @@ public final class Element {
 	/**
 	 * Adds an Isotope to this Element.
 	 */
-	public void addIsotope(Isotope isotope) {
+	public void addIsotope(final Isotope isotope) {
 		invalidateMasses();
 		isotopes.add(isotope);
 	}
@@ -40,13 +40,13 @@ public final class Element {
 		return isotopes.size();
 	}
 
-	public Isotope getIsotope(int num) {
+	public Isotope getIsotope(final int num) {
 		return isotopes.get(num);
 	}
 
-	public Isotope getIsotopeByAtomicWeight(int atomicNumber) {
-		for (Isotope isotope : isotopes) {
-			int n = isotope.getIntMass();
+	public Isotope getIsotopeByAtomicWeight(final int atomicNumber) {
+		for (final Isotope isotope : isotopes) {
+			final int n = isotope.getIntMass();
 			if (atomicNumber == n) {
 				return isotope;
 			}
@@ -80,7 +80,7 @@ public final class Element {
 	}
 
 	public String toString() {
-		StringBuilder ret = new StringBuilder(symbol);
+		final StringBuilder ret = new StringBuilder(symbol);
 		for (int i = 0; i < isotopes.size(); ++i) {
 			ret
 					.append(i == 0 ? " " : ", ")
@@ -91,7 +91,7 @@ public final class Element {
 		return ret.toString();
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -99,7 +99,7 @@ public final class Element {
 			return false;
 		}
 
-		Element element = (Element) obj;
+		final Element element = (Element) obj;
 
 		if (name != null ? !name.equals(element.name) : element.name != null) {
 			return false;
@@ -133,7 +133,7 @@ public final class Element {
 		mostAbundantMass = 0.;
 		monoisotopicMass = isotopes.get(0).getMass();
 		double abun = 0.;
-		for (Isotope i : isotopes) {
+		for (final Isotope i : isotopes) {
 			averageMass += i.getMass() * i.getAbundance();
 			if (i.getAbundance() > abun) {
 				mostAbundantMass = i.getMass();

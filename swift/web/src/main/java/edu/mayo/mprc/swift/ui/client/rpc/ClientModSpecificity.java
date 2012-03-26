@@ -29,7 +29,7 @@ public final class ClientModSpecificity implements ClientValue {
 	public ClientModSpecificity() {
 	}
 
-	public ClientModSpecificity(String name, String term, Character site, Boolean proteinOnly, String classification, double monoisotopic, List<String> altNames, String composition, String comments, Integer recordID, boolean hidden) {
+	public ClientModSpecificity(final String name, final String term, final Character site, final Boolean proteinOnly, final String classification, final double monoisotopic, final List<String> altNames, final String composition, final String comments, final Integer recordID, final boolean hidden) {
 		this.name = name;
 		this.term = term;
 		this.site = site;
@@ -43,7 +43,7 @@ public final class ClientModSpecificity implements ClientValue {
 		this.hidden = hidden;
 	}
 
-	public ClientModSpecificity(String name) {
+	public ClientModSpecificity(final String name) {
 		this.name = name;
 	}
 
@@ -51,7 +51,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -59,7 +59,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return term;
 	}
 
-	public void setTerm(String term) {
+	public void setTerm(final String term) {
 		this.term = term;
 	}
 
@@ -67,7 +67,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return site;
 	}
 
-	public void setSite(Character site) {
+	public void setSite(final Character site) {
 		this.site = site;
 	}
 
@@ -75,15 +75,15 @@ public final class ClientModSpecificity implements ClientValue {
 		return proteinOnly;
 	}
 
-	public void setProteinOnly(Boolean proteinOnly) {
+	public void setProteinOnly(final Boolean proteinOnly) {
 		this.proteinOnly = proteinOnly;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof ClientModSpecificity)) {
 			return false;
 		}
-		ClientModSpecificity oo = (ClientModSpecificity) o;
+		final ClientModSpecificity oo = (ClientModSpecificity) o;
 		return getName().equals(oo.getName())
 				&& getSite().equals(oo.getSite())
 				&& getTerm().equals(oo.getTerm())
@@ -99,7 +99,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return classification;
 	}
 
-	public void setClassification(String classification) {
+	public void setClassification(final String classification) {
 		this.classification = classification;
 	}
 
@@ -107,7 +107,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return monoisotopic;
 	}
 
-	public void setMonoisotopic(double monoisotopic) {
+	public void setMonoisotopic(final double monoisotopic) {
 		this.monoisotopic = monoisotopic;
 	}
 
@@ -115,7 +115,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return altNames;
 	}
 
-	public void setAltNames(List<String> altNames) {
+	public void setAltNames(final List<String> altNames) {
 		this.altNames = altNames;
 	}
 
@@ -123,7 +123,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return composition;
 	}
 
-	public void setComposition(String composition) {
+	public void setComposition(final String composition) {
 		this.composition = composition;
 	}
 
@@ -131,7 +131,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return comments;
 	}
 
-	public void setComments(String comments) {
+	public void setComments(final String comments) {
 		this.comments = comments;
 	}
 
@@ -139,7 +139,7 @@ public final class ClientModSpecificity implements ClientValue {
 		return recordID;
 	}
 
-	public void setRecordID(Integer recordID) {
+	public void setRecordID(final Integer recordID) {
 		this.recordID = recordID;
 	}
 
@@ -151,11 +151,11 @@ public final class ClientModSpecificity implements ClientValue {
 		return hidden;
 	}
 
-	public void setHidden(boolean hidden) {
+	public void setHidden(final boolean hidden) {
 		this.hidden = hidden;
 	}
 
-	public static ClientModSpecificity cast(ClientValue value) {
+	public static ClientModSpecificity cast(final ClientValue value) {
 		if (!(value instanceof ClientModSpecificity)) {
 			ExceptionUtilities.throwCastException(value, ClientModSpecificity.class);
 			return null;

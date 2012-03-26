@@ -11,7 +11,7 @@ public final class FileInfo implements Serializable {
 
 	}
 
-	public FileInfo(String relativePath, long size) {
+	public FileInfo(final String relativePath, final long size) {
 		this.relativePath = relativePath;
 		this.size = size;
 	}
@@ -20,7 +20,7 @@ public final class FileInfo implements Serializable {
 		return relativePath;
 	}
 
-	public FileInfo setRelativePath(String relativePath) {
+	public FileInfo setRelativePath(final String relativePath) {
 		this.relativePath = relativePath;
 		return this;
 	}
@@ -29,7 +29,7 @@ public final class FileInfo implements Serializable {
 		return size;
 	}
 
-	public FileInfo setSize(long size) {
+	public FileInfo setSize(final long size) {
 		this.size = size;
 		return this;
 	}

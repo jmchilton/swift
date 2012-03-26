@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 public final class DeleteButton extends PushButton {
 	private String deleteMessage;
 
-	public DeleteButton(String deleteMessage) {
+	public DeleteButton(final String deleteMessage) {
 		super();
 		this.addStyleName("delete-button");
 		this.deleteMessage = deleteMessage;
@@ -21,22 +21,22 @@ public final class DeleteButton extends PushButton {
 		return deleteMessage;
 	}
 
-	public void setDeleteMessage(String deleteMessage) {
+	public void setDeleteMessage(final String deleteMessage) {
 		this.deleteMessage = deleteMessage;
 	}
 
-	public void addClickListener(ClickListener listener) {
+	public void addClickListener(final ClickListener listener) {
 		super.addClickListener(new ConfirmationClickListener(listener));
 	}
 
 	private class ConfirmationClickListener implements ClickListener {
 		private ClickListener wrappedClickListener;
 
-		private ConfirmationClickListener(ClickListener wrappedClickListener) {
+		private ConfirmationClickListener(final ClickListener wrappedClickListener) {
 			this.wrappedClickListener = wrappedClickListener;
 		}
 
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 			if (Window.confirm(deleteMessage)) {
 				wrappedClickListener.onClick(sender);
 			}

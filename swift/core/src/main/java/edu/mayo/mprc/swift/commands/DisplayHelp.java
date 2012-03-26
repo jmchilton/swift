@@ -23,7 +23,7 @@ public class DisplayHelp implements SwiftCommand {
 	}
 
 	@Override
-	public void run(SwiftEnvironment environment) {
+	public void run(final SwiftEnvironment environment) {
 		try {
 			FileUtilities.out(ReleaseInfoCore.infoString());
 			FileUtilities.out("");

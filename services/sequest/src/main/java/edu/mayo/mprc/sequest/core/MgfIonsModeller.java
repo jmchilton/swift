@@ -111,7 +111,7 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	private Map<String, String> dtaHistory;
 
 
-	public void setMgfFileName(String mgfFileName) {
+	public void setMgfFileName(final String mgfFileName) {
 		this.mgfFileName = mgfFileName;
 	}
 
@@ -132,16 +132,16 @@ final class MgfIonsModeller implements IonsModellerInterface {
 
 	public static final Pattern KEY_PATTERN = Pattern.compile("^([^=]+)=");
 
-	public static String matchPattern(Pattern p, String seq) {
-		Matcher k = p.matcher(seq);
+	public static String matchPattern(final Pattern p, final String seq) {
+		final Matcher k = p.matcher(seq);
 		if (k.matches()) {
 			return k.group(1);
 		}
 		return null;
 	}
 
-	public static String findPattern(Pattern p, String seq) {
-		Matcher k = p.matcher(seq);
+	public static String findPattern(final Pattern p, final String seq) {
+		final Matcher k = p.matcher(seq);
 		if (k.find()) {
 			return k.group(1);
 		}
@@ -154,21 +154,21 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	 * @param title The TITLE= line from the .mgf file.
 	 * @return Cycle number if one is present, -1 otherwise.
 	 */
-	public static int getCycleFromTitle(String title) {
-		String cycleString = findPattern(CYCLE_PATTERN, title);
+	public static int getCycleFromTitle(final String title) {
+		final String cycleString = findPattern(CYCLE_PATTERN, title);
 		if (cycleString != null) {
 			return Integer.parseInt(cycleString);
 		}
 		return -1;
 	}
 
-	public static boolean matches(Pattern p, String seq) {
-		Matcher k = p.matcher(seq);
+	public static boolean matches(final Pattern p, final String seq) {
+		final Matcher k = p.matcher(seq);
 		return k.matches();
 	}
 
-	public static boolean find(Pattern p, String seq) {
-		Matcher k = p.matcher(seq);
+	public static boolean find(final Pattern p, final String seq) {
+		final Matcher k = p.matcher(seq);
 		return k.find();
 	}
 
@@ -176,8 +176,8 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	 * process a single line from the mgf file
 	 * This is a slow version of {@link #processLine(char[], int, int)} provided for convenience only.
 	 */
-	public void processLine(String line) {
-		char[] chars = line.trim().toCharArray();
+	public void processLine(final String line) {
+		final char[] chars = line.trim().toCharArray();
 		processLine(chars, 0, chars.length);
 	}
 
@@ -197,34 +197,34 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	private static final String BEGIN_IONS = "BEGIN IONS";
 	private static final String END_IONS = "END IONS";
 
-	public static int findPepMass(char[] buffer, int top) {
+	public static int findPepMass(final char[] buffer, final int top) {
 		return findMatch(PEPMASS, buffer, top);
 	}
 
-	public static int findCharge(char[] buffer, int top) {
+	public static int findCharge(final char[] buffer, final int top) {
 		return findMatch(CHARGE, buffer, top);
 	}
 
-	public static int findTitle(char[] buffer, int top) {
+	public static int findTitle(final char[] buffer, final int top) {
 		return findMatch(TITLE, buffer, top);
 	}
 
-	static int findBeginIons(char[] buffer, int top) {
+	static int findBeginIons(final char[] buffer, final int top) {
 		return findMatch(BEGIN_IONS, buffer, top);
 	}
 
-	static int findEndIons(char[] buffer, int top) {
+	static int findEndIons(final char[] buffer, final int top) {
 		return findMatch(END_IONS, buffer, top);
 	}
 
 
-	static boolean isIonsLine(char[] buffer, int top) {
+	static boolean isIonsLine(final char[] buffer, final int top) {
 		return (top > 0 && (buffer[0] >= '0' && buffer[0] <= '9'));
 
 	}
 
-	public static int findMatch(final String what, char[] buffer, int top) {
-		int len = what.length();
+	public static int findMatch(final String what, final char[] buffer, final int top) {
+		final int len = what.length();
 		int match = -1;
 		for (int i = 0; i < top - len + 1; i++) {
 			match = i;
@@ -246,7 +246,7 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	// modify to
 	// return number chars put in to
 
-	static int put(char[] to, char[] from, int pos, int len) {
+	static int put(final char[] to, final char[] from, final int pos, final int len) {
 		int j = 0;
 		int start = pos;
 		// skip initial blanks
@@ -274,18 +274,18 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	 * @linelen length of the line not including new line terminator
 	 */
 
-	public void processLine(char[] buffer, int pos, int lineLen) {
+	public void processLine(final char[] buffer, final int pos, final int lineLen) {
 		lineNumber++;
 
 		// rem is size of remaining buffer
-		int rem = put(left, buffer, pos, lineLen);
+		final int rem = put(left, buffer, pos, lineLen);
 
 
 		int loc = findPepMass(left, rem);
 
 		if (loc != -1) {
 			mz = new String(left, loc + PEPMASS.length(), rem - loc - PEPMASS.length()).trim();
-			int firstSpace = mz.indexOf(' ');
+			final int firstSpace = mz.indexOf(' ');
 			if (firstSpace > 0) {
 				mz = mz.substring(0, firstSpace);
 			}
@@ -329,7 +329,7 @@ final class MgfIonsModeller implements IonsModellerInterface {
 					return;
 				}
 				// unrecognized key
-				String item = matchPattern(KEY_PATTERN, new String(left));
+				final String item = matchPattern(KEY_PATTERN, new String(left));
 
 				if (item != null) {
 					this.parseunknownkey(item);
@@ -356,7 +356,7 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	 * check if key is in the ignore list, if so ignore it otherwise
 	 * log a warning
 	 */
-	private void parseunknownkey(String key) {
+	private void parseunknownkey(final String key) {
 
 	}
 
@@ -368,11 +368,11 @@ final class MgfIonsModeller implements IonsModellerInterface {
 	 * If the dta filename is in the title then use its bottommost folder + name
 	 * and append this to the temporary working directory
 	 */
-	public void parsetitle(String titleright) {
+	public void parsetitle(final String titleright) {
 		String item = matchPattern(DTA_PATTERN, titleright);
 		if (item != null) {
 			// found a dta filename
-			File dta = new File(item);
+			final File dta = new File(item);
 			item = dta.getName();
 			this.dtaFileName = this.workingDir + File.separator + item;
 		} else {
@@ -394,10 +394,10 @@ final class MgfIonsModeller implements IonsModellerInterface {
 
 
 	private void createDtaFilePrototype() {
-		String scan = (((this.cycle < 0 ? "_" + ionsSection : "" + this.cycle)));
+		final String scan = (((this.cycle < 0 ? "_" + ionsSection : "" + this.cycle)));
 		this.scans.put(scan, this.ionsSection);
 		if (this.dtaFileName == null) {
-			String shortname = outFilePrefix + "." + scan + "." + scan + "." + charge + ".dta";
+			final String shortname = outFilePrefix + "." + scan + "." + scan + "." + charge + ".dta";
 			this.dtaFileName = this.workingDir + File.separator + shortname;
 		}
 		if (dtaHistory.get(this.dtaFileName) != null) {
@@ -417,10 +417,10 @@ final class MgfIonsModeller implements IonsModellerInterface {
 
 			charge = charge.replace("+", "");
 			charge = charge.replace("-", "");
-			double mh = (new Double(mz) * new Double(charge) - ((new Double(charge)) - 1.0) * PROTON_MASS);
+			final double mh = (new Double(mz) * new Double(charge) - ((new Double(charge)) - 1.0) * PROTON_MASS);
 
 			this.dtaHistory.put(this.dtaFileName, "" + mgfFileName + ":" + lineNumber);
-			File dta = new File(this.dtaFileName);
+			final File dta = new File(this.dtaFileName);
 			FileUtilities.ensureFileExists(dta);
 
 			FileWriter w = null;
@@ -444,16 +444,16 @@ final class MgfIonsModeller implements IonsModellerInterface {
 		}
 	}
 
-	public void setSequestSubmitter(SequestSubmitterInterface submitter) {
+	public void setSequestSubmitter(final SequestSubmitterInterface submitter) {
 		this.sequestSubmitter = submitter;
 	}
 
 
-	public void setWorkingDir(String name) {
+	public void setWorkingDir(final String name) {
 		this.workingDir = name;
 	}
 
-	public void setOutFilePrefix(String name) {
+	public void setOutFilePrefix(final String name) {
 		this.outFilePrefix = name;
 	}
 }

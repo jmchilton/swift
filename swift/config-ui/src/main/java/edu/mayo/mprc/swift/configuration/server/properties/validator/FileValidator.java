@@ -19,17 +19,17 @@ public final class FileValidator implements PropertyChangeListener {
 	private boolean mustBeDirectory;
 	private boolean mustBeWritable;
 
-	public FileValidator(DependencyResolver resolver, boolean mustExist, boolean mustBeDirectory, boolean mustBeWritable) {
+	public FileValidator(final DependencyResolver resolver, final boolean mustExist, final boolean mustBeDirectory, final boolean mustBeWritable) {
 		this.resolver = resolver;
 		this.mustExist = mustExist;
 		this.mustBeDirectory = mustBeDirectory;
 		this.mustBeWritable = mustBeWritable;
 	}
 
-	protected String validate(String filePath) {
+	protected String validate(final String filePath) {
 		final SecurityManager securityManager = System.getSecurityManager();
 
-		File file = new File(filePath).getAbsoluteFile();
+		final File file = new File(filePath).getAbsoluteFile();
 
 		if (mustExist && !file.exists()) {
 			if (mustBeDirectory) {
@@ -56,8 +56,8 @@ public final class FileValidator implements PropertyChangeListener {
 		return null;
 	}
 
-	protected void fix(String filePath) {
-		File file = new File(filePath).getAbsoluteFile();
+	protected void fix(final String filePath) {
+		final File file = new File(filePath).getAbsoluteFile();
 
 		if (mustExist && !file.exists()) {
 			if (mustBeDirectory) {
@@ -75,7 +75,7 @@ public final class FileValidator implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+	public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 		if (validationRequested) {
 			final String error = validate(newValue);
 			if (error != null) {
@@ -85,7 +85,7 @@ public final class FileValidator implements PropertyChangeListener {
 	}
 
 	@Override
-	public void fixError(ResourceConfig config, String propertyName, String action) {
+	public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 		final Map<String, String> map = config.save(resolver);
 		fix(map.get(propertyName));
 	}

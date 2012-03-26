@@ -22,7 +22,7 @@ public abstract class WorkerFactoryBase<C extends ResourceConfig> extends Factor
 		return create(config, dependencies);
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -35,7 +35,7 @@ public abstract class WorkerFactoryBase<C extends ResourceConfig> extends Factor
 		return config;
 	}
 
-	public void setConfig(C config) {
+	public void setConfig(final C config) {
 		this.config = config;
 	}
 
@@ -43,7 +43,7 @@ public abstract class WorkerFactoryBase<C extends ResourceConfig> extends Factor
 		return dependencies;
 	}
 
-	public void setDependencies(DependencyResolver dependencies) {
+	public void setDependencies(final DependencyResolver dependencies) {
 		this.dependencies = dependencies;
 	}
 }

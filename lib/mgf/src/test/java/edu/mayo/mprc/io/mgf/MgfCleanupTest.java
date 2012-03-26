@@ -91,7 +91,7 @@ public final class MgfCleanupTest {
 
 	}
 
-	private void testCleanupNeeded(String mgf, boolean needed, String why) throws IOException {
+	private void testCleanupNeeded(final String mgf, final boolean needed, final String why) throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new StringReader(mgf));
@@ -223,13 +223,13 @@ public final class MgfCleanupTest {
 		);
 	}
 
-	private static void testCorrectCleanup(String mgfIn, String mgfOut) throws IOException {
+	private static void testCorrectCleanup(final String mgfIn, final String mgfOut) throws IOException {
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 
 		try {
 			reader = new BufferedReader(new StringReader(mgfIn));
-			StringWriter stringWriter = new StringWriter(mgfIn.length());
+			final StringWriter stringWriter = new StringWriter(mgfIn.length());
 			writer = new BufferedWriter(stringWriter);
 			MgfCleanup.performCleanup(reader, writer, "filenameprefix");
 			Assert.assertEquals(stringWriter.toString(), mgfOut, "Cleanup of the mgf file produced unexpected result");

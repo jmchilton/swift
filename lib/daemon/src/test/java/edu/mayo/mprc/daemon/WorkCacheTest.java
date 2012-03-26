@@ -24,12 +24,12 @@ public final class WorkCacheTest {
 
 	@Test
 	public void shouldCacheWork() {
-		TestConnection connection = new TestConnection();
+		final TestConnection connection = new TestConnection();
 
-		ProgressReporter reporter = mock(ProgressReporter.class);
+		final ProgressReporter reporter = mock(ProgressReporter.class);
 		cacheFolder = FileUtilities.createTempFolder();
 
-		TestWorkCache workCache = new TestWorkCache();
+		final TestWorkCache workCache = new TestWorkCache();
 		workCache.setCacheFolder(cacheFolder);
 		workCache.setDaemon(connection);
 
@@ -63,7 +63,7 @@ public final class WorkCacheTest {
 		connection.progress(3);
 		connection.success(3);
 
-		ArgumentCaptor<TestProgressInfo> argument = ArgumentCaptor.forClass(TestProgressInfo.class);
+		final ArgumentCaptor<TestProgressInfo> argument = ArgumentCaptor.forClass(TestProgressInfo.class);
 
 		verify(reporter, times(6)).reportStart();
 		verify(reporter, times(10)).reportProgress(argument.capture());
@@ -94,7 +94,7 @@ public final class WorkCacheTest {
 
 		private String request;
 
-		public TestProgressInfo(String request) {
+		public TestProgressInfo(final String request) {
 			this.request = request;
 		}
 
@@ -118,42 +118,42 @@ public final class WorkCacheTest {
 		}
 
 		@Override
-		public void sendWork(WorkPacket workPacket, ProgressListener listener) {
+		public void sendWork(final WorkPacket workPacket, final ProgressListener listener) {
 			sendWork(workPacket, 5, listener);
 		}
 
 		@Override
-		public void sendWork(WorkPacket workPacket, int priority, ProgressListener listener) {
+		public void sendWork(final WorkPacket workPacket, final int priority, final ProgressListener listener) {
 			final TestWorkPacket testPacket = (TestWorkPacket) workPacket;
 			listeners.add(listener);
 			workPackets.add(testPacket);
 		}
 
-		public void enqueue(int index) {
+		public void enqueue(final int index) {
 			listeners.get(index).requestEnqueued("localhost");
 		}
 
-		public void start(int index) {
+		public void start(final int index) {
 			listeners.get(index).requestProcessingStarted();
 		}
 
-		public void progress(int index) {
+		public void progress(final int index) {
 			listeners.get(index).userProgressInformation(new TestProgressInfo(workPackets.get(index).getRequest()));
 		}
 
-		public void success(int index) {
-			TestWorkPacket packet = workPackets.get(index);
+		public void success(final int index) {
+			final TestWorkPacket packet = workPackets.get(index);
 			FileUtilities.ensureFileExists(new File(packet.getFolder(), "file1.txt"));
 			FileUtilities.ensureFileExists(new File(packet.getFolder(), "file2.txt"));
 			listeners.get(index).requestProcessingFinished();
 		}
 
-		public void failure(int index) {
+		public void failure(final int index) {
 			listeners.get(index).requestTerminated(new DaemonException("Task failed"));
 		}
 
 		@Override
-		public DaemonRequest receiveDaemonRequest(long timeout) {
+		public DaemonRequest receiveDaemonRequest(final long timeout) {
 			return null;
 		}
 
@@ -171,7 +171,7 @@ public final class WorkCacheTest {
 		private String request;
 		private File folder;
 
-		private TestWorkPacket(String taskId, String request, File folder) {
+		private TestWorkPacket(final String taskId, final String request, final File folder) {
 			super(taskId, false);
 			this.request = request;
 			this.folder = folder;
@@ -201,7 +201,7 @@ public final class WorkCacheTest {
 		}
 
 		@Override
-		public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+		public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 			return new TestWorkPacket(getTaskId(), getRequest(), wipFolder);
 		}
 
@@ -211,12 +211,12 @@ public final class WorkCacheTest {
 		}
 
 		@Override
-		public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+		public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 			return cacheIsStale;
 		}
 
 		@Override
-		public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+		public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 			reporter.reportProgress(new TestProgressInfo("cache:" + getRequest()));
 		}
 

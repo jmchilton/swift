@@ -22,7 +22,7 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 	private final Context errorDisplay;
 	private DelegatingChangeListenerCollection changeListeners;
 
-	public ReferenceListBox(List<String> types, ApplicationModel model, Context errorDisplay) {
+	public ReferenceListBox(final List<String> types, final ApplicationModel model, final Context errorDisplay) {
 		this.errorDisplay = errorDisplay;
 		this.types = types;
 		this.model = model;
@@ -36,10 +36,10 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 	private void addCreateNewButton() {
 		this.createNew = new Button("Add new...");
 		this.createNew.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				// User wants a new item of this type
-				AddNewModuleDialog dialog = new AddNewModuleDialog(model, types, new NewModuleCreatedCallback() {
-					public void newModuleCreated(ResourceModel model) {
+				final AddNewModuleDialog dialog = new AddNewModuleDialog(model, types, new NewModuleCreatedCallback() {
+					public void newModuleCreated(final ResourceModel model) {
 						setValue(model);
 						fireChange();
 					}
@@ -60,11 +60,11 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		}
 	}
 
-	private void addListBox(List<String> types) {
+	private void addListBox(final List<String> types) {
 		this.listBox = new ListBox();
 		panel.add(listBox);
 
-		for (String type : types) {
+		for (final String type : types) {
 			if (type.equals(UiBuilderClient.NONE_TYPE)) {
 				listBox.addItem(UiBuilderClient.NONE_TYPE, UiBuilderClient.NONE_TYPE);
 				break;
@@ -82,7 +82,7 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		return listBox.getValue(listBox.getSelectedIndex());
 	}
 
-	public void setValue(ResourceModel model) {
+	public void setValue(final ResourceModel model) {
 		if (model instanceof ModuleModel) {
 			final ModuleModel moduleModel = (ModuleModel) model;
 			setValue(moduleModel.getService().getId());
@@ -91,7 +91,7 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		}
 	}
 
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		for (int i = 0; i < listBox.getItemCount(); i++) {
 			final String myValue = listBox.getValue(i);
 			if (myValue.equals(value) || (value == null && UiBuilderClient.NONE_TYPE.equals(myValue))) {
@@ -101,19 +101,19 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		}
 	}
 
-	public void attachToModel(ApplicationModel model) {
+	public void attachToModel(final ApplicationModel model) {
 		this.model = model;
 		model.addListener(new MyApplicationModelListener());
-		for (DaemonModel daemonModel : model.getDaemons()) {
+		for (final DaemonModel daemonModel : model.getDaemons()) {
 			daemonModel.addListener(daemonModelListener);
-			for (ResourceModel module : daemonModel.getChildren()) {
+			for (final ResourceModel module : daemonModel.getChildren()) {
 				addResourceModel(module);
 			}
 		}
 	}
 
-	private static boolean hasType(String type, List<String> types) {
-		for (String ty : types) {
+	private static boolean hasType(final String type, final List<String> types) {
+		for (final String ty : types) {
 			if (ty.equals(type)) {
 				return true;
 			}
@@ -121,11 +121,11 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		return false;
 	}
 
-	private void addResourceModel(ResourceModel resource) {
+	private void addResourceModel(final ResourceModel resource) {
 		if (hasType(resource.getType(), types)) {
 			if (resource instanceof ModuleModel) {
 				final ModuleModel moduleModel = (ModuleModel) resource;
-				String name = getModuleName(moduleModel);
+				final String name = getModuleName(moduleModel);
 				listBox.addItem(name, moduleModel.getService().getId());
 			} else {
 				listBox.addItem(resource.getName(), resource.getId());
@@ -133,11 +133,11 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		}
 	}
 
-	public static String getModuleName(ModuleModel moduleModel) {
+	public static String getModuleName(final ModuleModel moduleModel) {
 		return moduleModel.getName();
 	}
 
-	private String getResourceId(ResourceModel resource) {
+	private String getResourceId(final ResourceModel resource) {
 		if (resource instanceof ModuleModel) {
 			final ModuleModel moduleModel = (ModuleModel) resource;
 			return moduleModel.getService().getId();
@@ -147,9 +147,9 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 
 	private MyDaemonModelListener daemonModelListener = new MyDaemonModelListener();
 
-	public void removeModule(ResourceModel child) {
+	public void removeModule(final ResourceModel child) {
 		if (hasType(child.getType(), types)) {
-			String resourceId = getResourceId(child);
+			final String resourceId = getResourceId(child);
 			for (int i = 0; i < listBox.getItemCount(); i++) {
 				if (listBox.getValue(i).equals(resourceId)) {
 					listBox.removeItem(i);
@@ -160,7 +160,7 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 	}
 
 	// Delegate the change listener to the embedded listbox
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		if (changeListeners == null) {
 			changeListeners = new DelegatingChangeListenerCollection(this, listBox);
 		}
@@ -168,51 +168,51 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 	}
 
 	// Delegate the change listener to the embedded listbox
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		if (changeListeners != null) {
 			changeListeners.remove(changeListener);
 		}
 	}
 
 	private class MyApplicationModelListener implements ResourceModelListener {
-		public void initialized(ResourceModel model) {
+		public void initialized(final ResourceModel model) {
 		}
 
-		public void nameChanged(ResourceModel model) {
+		public void nameChanged(final ResourceModel model) {
 		}
 
-		public void childAdded(ResourceModel child, ResourceModel addedTo) {
+		public void childAdded(final ResourceModel child, final ResourceModel addedTo) {
 			addedTo.addListener(daemonModelListener);
 		}
 
-		public void childRemoved(ResourceModel child, ResourceModel removedFrom) {
+		public void childRemoved(final ResourceModel child, final ResourceModel removedFrom) {
 			// Remove all children
-			for (ResourceModel model : child.getChildren()) {
+			for (final ResourceModel model : child.getChildren()) {
 				removeModule(model);
 			}
 			removedFrom.removeListener(daemonModelListener);
 		}
 
-		public void propertyChanged(ResourceModel model, String propertyName, String newValue) {
+		public void propertyChanged(final ResourceModel model, final String propertyName, final String newValue) {
 		}
 	}
 
 	private class MyDaemonModelListener implements ResourceModelListener {
-		public void initialized(ResourceModel model) {
+		public void initialized(final ResourceModel model) {
 		}
 
-		public void nameChanged(ResourceModel model) {
+		public void nameChanged(final ResourceModel model) {
 		}
 
-		public void childAdded(ResourceModel child, ResourceModel addedTo) {
+		public void childAdded(final ResourceModel child, final ResourceModel addedTo) {
 			addResourceModel(child);
 		}
 
-		public void childRemoved(ResourceModel child, ResourceModel removedFrom) {
+		public void childRemoved(final ResourceModel child, final ResourceModel removedFrom) {
 			removeModule(child);
 		}
 
-		public void propertyChanged(ResourceModel model, String propertyName, String newValue) {
+		public void propertyChanged(final ResourceModel model, final String propertyName, final String newValue) {
 
 		}
 

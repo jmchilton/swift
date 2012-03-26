@@ -24,7 +24,7 @@ public final class RawToMgfWorkPacket extends WorkPacketBase implements Cachable
 	private File inputFile;
 	private boolean publicAccess;
 
-	public RawToMgfWorkPacket(String taskId, boolean fromScratch) {
+	public RawToMgfWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
@@ -37,13 +37,13 @@ public final class RawToMgfWorkPacket extends WorkPacketBase implements Cachable
 	 * @param publicAccess If the .mgf caching is enabled, the files will never be visible to the end user.
 	 *                     This parameter ensures the file will be provided.
 	 */
-	public RawToMgfWorkPacket(String params,
-	                          File outputFile,
-	                          boolean bSkipIfExists,
-	                          File inputFile,
-	                          String taskId,
-	                          boolean fromScratch,
-	                          boolean publicAccess) {
+	public RawToMgfWorkPacket(final String params,
+	                          final File outputFile,
+	                          final boolean bSkipIfExists,
+	                          final File inputFile,
+	                          final String taskId,
+	                          final boolean fromScratch,
+	                          final boolean publicAccess) {
 		super(taskId, fromScratch);
 
 		assert params != null : "Raw2MGF request cannot be created: parameters are null";
@@ -89,14 +89,14 @@ public final class RawToMgfWorkPacket extends WorkPacketBase implements Cachable
 
 	@Override
 	public String getStringDescriptionOfTask() {
-		File sourceFile = getInputFile();
-		String params = getParams();
+		final File sourceFile = getInputFile();
+		final String params = getParams();
 		return "Input:" + sourceFile.getAbsolutePath() + "\nParams:" + params;
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
-		WorkPacket modifiedWorkPacket;
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
+		final WorkPacket modifiedWorkPacket;
 		modifiedWorkPacket = new RawToMgfWorkPacket(
 				getParams(),
 				new File(wipFolder, getOutputFile().getName()),
@@ -114,12 +114,12 @@ public final class RawToMgfWorkPacket extends WorkPacketBase implements Cachable
 	}
 
 	@Override
-	public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+	public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 		return getInputFile().lastModified() > new File(subFolder, outputFiles.get(0)).lastModified();
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 		final File cachedMgf = new File(targetFolder, outputFiles.get(0));
 		reporter.reportProgress(new RawToMgfResult(cachedMgf));
 	}

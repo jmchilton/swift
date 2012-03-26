@@ -16,16 +16,16 @@ public final class GoodSpectraNumbersFilter implements MgfPeakListFilter {
 	private Collection<Integer> allowedSpectra;
 	private SpectrumNumberExtractor spectrumNumberExtractor;
 
-	public GoodSpectraNumbersFilter(Collection<Integer> allowedSpectra, SpectrumNumberExtractor extractor) {
+	public GoodSpectraNumbersFilter(final Collection<Integer> allowedSpectra, final SpectrumNumberExtractor extractor) {
 		this.allowedSpectra = allowedSpectra;
 		this.spectrumNumberExtractor = extractor;
 	}
 
-	public boolean peakListAccepted(MascotGenericFormatPeakList peakList) {
+	public boolean peakListAccepted(final MascotGenericFormatPeakList peakList) {
 		if (peakList == null || peakList.getTitle() == null) {
 			return false;
 		}
-		int number = spectrumNumberExtractor.extractSpectrumNumber(peakList);
+		final int number = spectrumNumberExtractor.extractSpectrumNumber(peakList);
 		return allowedSpectra.contains(number);
 	}
 }

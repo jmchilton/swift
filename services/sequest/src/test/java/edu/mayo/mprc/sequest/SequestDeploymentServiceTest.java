@@ -47,15 +47,15 @@ public final class SequestDeploymentServiceTest {
 		private static final String sequestparams = "/edu/mayo/mprc/swift/params/Orbitrap_Sprot_Latest_CarbC_OxM/sequest.params";
 		private static final String makedbparams = "/edu/mayo/mprc/swift/params/Orbitrap_Sprot_Latest_CarbC_OxM/makedb.params";
 
-		private void init(String resourcePath) {
+		private void init(final String resourcePath) {
 			try {
 				sharedTestFolder = null;//TestApplicationContext.getSharedTestFolder();
 				fakeFASTAFileToDeploy = TestingUtilities.getTempFileFromResource(this.getClass(), resourcePath, sharedTestFolder);
-				File fakeParamsFile = writeToFile(sequestparams, sharedTestFolder, "tmp_sequest.params");
+				final File fakeParamsFile = writeToFile(sequestparams, sharedTestFolder, "tmp_sequest.params");
 
-				String shortName = FileUtilities.stripExtension(fakeFASTAFileToDeploy.getName());
+				final String shortName = FileUtilities.stripExtension(fakeFASTAFileToDeploy.getName());
 
-				Curation toDeploy = new Curation();
+				final Curation toDeploy = new Curation();
 				toDeploy.setShortName(shortName);
 				toDeploy.setCurationFile(fakeFASTAFileToDeploy);
 
@@ -66,9 +66,9 @@ public final class SequestDeploymentServiceTest {
 			}
 		}
 
-		public File writeToFile(String resourceOnClasspath, File directoryToWriteTo, String name) {
-			InputStream is = this.getClass().getResourceAsStream(resourceOnClasspath);
-			File file = new File(directoryToWriteTo, name);
+		public File writeToFile(final String resourceOnClasspath, final File directoryToWriteTo, final String name) {
+			final InputStream is = this.getClass().getResourceAsStream(resourceOnClasspath);
+			final File file = new File(directoryToWriteTo, name);
 			try {
 				FileUtilities.writeStreamToFile(is, file);
 				file.deleteOnExit();
@@ -86,34 +86,34 @@ public final class SequestDeploymentServiceTest {
 			return file;
 		}
 
-		public void writeMakedbParams(String testName) {
+		public void writeMakedbParams(final String testName) {
 			writeToFile(makedbparams, fakeFASTAFileToDeploy.getParentFile(), FileUtilities.stripExtension(testName) + ".makedb.params");
 		}
 
-		public FakeDeploymentTest(String resourcePath) {
+		public FakeDeploymentTest(final String resourcePath) {
 			init(resourcePath);
 		}
 	}
 
 	@Test(enabled = false, groups = {"linux"}, dataProvider = "fastaResources")
-	public void performDeployment_Test(String testName, String resourcePath) throws IOException {
+	public void performDeployment_Test(final String testName, final String resourcePath) throws IOException {
 
 		LOGGER.info("Running SequesetDST for " + testName + "file.");
 
-		SequestDeploymentService service = null; //getConfiguredSequestDeploymentService();
+		final SequestDeploymentService service = null; //getConfiguredSequestDeploymentService();
 
-		FakeDeploymentTest fdt = new FakeDeploymentTest(resourcePath);
+		final FakeDeploymentTest fdt = new FakeDeploymentTest(resourcePath);
 
-		File fakeFASTAFileToDeploy = fdt.fakeFASTAFileToDeploy;
+		final File fakeFASTAFileToDeploy = fdt.fakeFASTAFileToDeploy;
 
-		DeploymentRequest request = fdt.request;
+		final DeploymentRequest request = fdt.request;
 
 		final SequestDeploymentResult[] results = new SequestDeploymentResult[1];
 
-		DaemonWorkerTester tester = new DaemonWorkerTester(service);
-		Object workToken = tester.sendWork(request, new ProgressListener() {
+		final DaemonWorkerTester tester = new DaemonWorkerTester(service);
+		final Object workToken = tester.sendWork(request, new ProgressListener() {
 
-			public void requestEnqueued(String hostString) {
+			public void requestEnqueued(final String hostString) {
 				LOGGER.debug("SequestDS request enqueued at " + hostString);
 			}
 
@@ -125,11 +125,11 @@ public final class SequestDeploymentServiceTest {
 				LOGGER.debug("SequestDS processing finished");
 			}
 
-			public void requestTerminated(Exception e) {
+			public void requestTerminated(final Exception e) {
 				fail("Request terminated", e);
 			}
 
-			public void userProgressInformation(ProgressInfo progressInfo) {
+			public void userProgressInformation(final ProgressInfo progressInfo) {
 				if (progressInfo instanceof SequestDeploymentResult) {
 					results[0] = (SequestDeploymentResult) progressInfo;
 				} else {
@@ -146,11 +146,11 @@ public final class SequestDeploymentServiceTest {
 			}
 		}
 
-		SequestDeploymentResult result = results[0];
+		final SequestDeploymentResult result = results[0];
 
 		assertNotNull(result, "No result was returned to the deployment failed.");
 
-		for (String message : result.getMessages()) {
+		for (final String message : result.getMessages()) {
 			LOGGER.info(message);
 		}
 
@@ -159,7 +159,7 @@ public final class SequestDeploymentServiceTest {
 		}
 
 		File dgtFile = null;
-		for (File sharedFile : result.getGeneratedFiles()) {
+		for (final File sharedFile : result.getGeneratedFiles()) {
 			if (sharedFile.getName().contains(".dgt")) {
 				dgtFile = sharedFile;
 			}
@@ -167,7 +167,7 @@ public final class SequestDeploymentServiceTest {
 
 		//perform assertions but we need to make sure that generated files are deleted.
 		try {
-			File hdrFile = result.getFileToSearchAgainst();
+			final File hdrFile = result.getFileToSearchAgainst();
 			assertNull(result.getCompositeException(), "There was at least one exception in performing sequest deployment");
 			assertNotNull(result.getDeployedFile(), "No deployed file was returned.");
 			assertNotNull(hdrFile);
@@ -175,16 +175,16 @@ public final class SequestDeploymentServiceTest {
 			assertNotNull(dgtFile);
 			assertTrue(dgtFile.length() > fakeFASTAFileToDeploy.length());
 		} finally {
-			for (File sharedFile : result.getGeneratedFiles()) {
+			for (final File sharedFile : result.getGeneratedFiles()) {
 				LOGGER.debug("deleting: " + sharedFile.getAbsolutePath());
 				FileUtilities.cleanupTempFile(sharedFile);
 			}
 		}
 	}
 
-	private DeploymentRequest getFakeDeploymentRequest(File sharedTestFolder, File fakeFASTAFileToDeploy) throws IOException {
-		InputStream is = this.getClass().getResourceAsStream("/edu/mayo/mprc/swift/params/Orbitrap_Sprot_Latest_CarbC_OxM/sequest.params");
-		File fakeParamsFile = new File(sharedTestFolder, "tmp_sequest.params");
+	private DeploymentRequest getFakeDeploymentRequest(final File sharedTestFolder, final File fakeFASTAFileToDeploy) throws IOException {
+		final InputStream is = this.getClass().getResourceAsStream("/edu/mayo/mprc/swift/params/Orbitrap_Sprot_Latest_CarbC_OxM/sequest.params");
+		final File fakeParamsFile = new File(sharedTestFolder, "tmp_sequest.params");
 		try {
 			FileUtilities.writeStreamToFile(is, fakeParamsFile);
 			fakeParamsFile.deleteOnExit();
@@ -194,13 +194,13 @@ public final class SequestDeploymentServiceTest {
 			}
 		}
 
-		String shortName = FileUtilities.stripExtension(fakeFASTAFileToDeploy.getName());
+		final String shortName = FileUtilities.stripExtension(fakeFASTAFileToDeploy.getName());
 
-		Curation toDeploy = new Curation();
+		final Curation toDeploy = new Curation();
 		toDeploy.setShortName(shortName);
 		toDeploy.setCurationFile(fakeFASTAFileToDeploy);
 
-		DeploymentRequest request = new DeploymentRequest(this.getClass().getSimpleName(), toDeploy.getFastaFile());
+		final DeploymentRequest request = new DeploymentRequest(this.getClass().getSimpleName(), toDeploy.getFastaFile());
 
 		request.addProperty(SequestDeploymentService.SEQUEST_PARAMS_FILE, fakeParamsFile);
 		return request;
@@ -214,24 +214,24 @@ public final class SequestDeploymentServiceTest {
 
 	@Test(enabled = true)
 	public void testConvertSequestToMakedb() throws Throwable {
-		SequestMappings pic = new SequestMappings();
+		final SequestMappings pic = new SequestMappings();
 		pic.read(ResourceUtilities.getReader(INPUT_SEQUEST_PARAMS, this.getClass()));
-		SequestToMakeDBConverter converter = new SequestToMakeDBConverter();
-		StringBuilder outpic = converter.convertSequestToMakeDB(pic, new File(FASTA_NAME));
+		final SequestToMakeDBConverter converter = new SequestToMakeDBConverter();
+		final StringBuilder outpic = converter.convertSequestToMakeDB(pic, new File(FASTA_NAME));
 		String expected = FileUtilities.readIntoString(ResourceUtilities.getReader(EXPECTED_MAKEDB_PARAMS, pic), 1024 * 1024);
 		expected = expected.replaceAll("database_name = /Users/cmason/mprc/maven/core/foo.fasta", Matcher.quoteReplacement("database_name = " + new File("foo.fasta").getAbsolutePath()));
-		String obtained = outpic.toString();
+		final String obtained = outpic.toString();
 		Assert.assertEquals(obtained, expected, "Generated makedb parameters do not match the expected ones");
 	}
 
 	@Test
 	public void testSpecifiesNoEnzyme() throws IOException {
-		File nsParamsFile = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/sequest/nonspecific_sequest.params", true, null);
+		final File nsParamsFile = TestingUtilities.getTempFileFromResource(this.getClass(), "/edu/mayo/mprc/sequest/nonspecific_sequest.params", true, null);
 
-		SequestDeploymentService service = new SequestDeploymentService();
+		final SequestDeploymentService service = new SequestDeploymentService();
 		service.setConverter(new SequestToMakeDBConverter());
 
-		boolean result = service.specifiesNoEnzyme(nsParamsFile);
+		final boolean result = service.specifiesNoEnzyme(nsParamsFile);
 
 		Assert.assertTrue(result, "Did not properly detect that a params file was non-specific enzyme.");
 

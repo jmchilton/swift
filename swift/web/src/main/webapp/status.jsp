@@ -60,9 +60,9 @@
     <meta http-equiv="refresh" content="20">
 <body>
 <div class="user-info"><%
-    Cookie[] cookies = request.getCookies();
+    final Cookie[] cookies = request.getCookies();
     String user = null;
-    for (Cookie cookie : cookies) {
+    for (final Cookie cookie : cookies) {
         if ("email".equals(cookie.getName())) {
             user = cookie.getValue();
         }

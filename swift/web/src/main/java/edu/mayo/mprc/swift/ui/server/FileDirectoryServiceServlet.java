@@ -22,7 +22,7 @@ public final class FileDirectoryServiceServlet extends HttpServlet {
 	public static final String EXPANDED_PATHS_ATTRIBUTE_NAME = "e";
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(final ServletConfig config) throws ServletException {
 		super.init();
 		try {
 			basePath = SwiftWebContext.getServletConfig().getBrowseRoot();
@@ -35,12 +35,12 @@ public final class FileDirectoryServiceServlet extends HttpServlet {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws
 			ServletException, IOException {
 
 		resp.setContentType("text/xml");
 		resp.setHeader("Cache-Control", "no-cache");
-		PrintWriter out = resp.getWriter();
+		final PrintWriter out = resp.getWriter();
 		String directory_path;
 		String expanded_paths;
 		try {
@@ -55,7 +55,7 @@ public final class FileDirectoryServiceServlet extends HttpServlet {
 				expanded_paths = "";
 			}
 
-			FileSearchBean fileBean = new FileSearchBean(basePath.getAbsolutePath());
+			final FileSearchBean fileBean = new FileSearchBean(basePath.getAbsolutePath());
 			fileBean.setPath(fixFileSeparators(directory_path));
 			fileBean.setExpandedPaths(expanded_paths);
 			fileBean.writeFolderContent(out);
@@ -70,7 +70,7 @@ public final class FileDirectoryServiceServlet extends HttpServlet {
 
 
 	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws
+	public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws
 			ServletException, IOException {
 		doGet(req, resp);
 	}
@@ -98,7 +98,7 @@ public final class FileDirectoryServiceServlet extends HttpServlet {
 		}
 	}
 
-	public static String removePathParentUsage(String path) {
+	public static String removePathParentUsage(final String path) {
 		return path != null ? path.replace("\\.\\.", "") : null;
 	}
 }

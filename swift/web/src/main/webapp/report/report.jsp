@@ -39,8 +39,7 @@
 
 <script type="text/javascript">
     function getQueryString() {
-        var result = {}, queryString = location.search.substring(1),
-                re = /([^&=]+)=([^&]*)/g, m;
+        var result = {}, queryString = location.search.substring(1), re = /([^&=]+)=([^&]*)/g, m;
 
         while (m = re.exec(queryString)) {
             result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
@@ -102,12 +101,12 @@
 
     <%
     SwiftWebContext.getServletConfig().getSwiftDao().begin();
-    StringBuilder userList=new StringBuilder();
-    StringBuilder idList = new StringBuilder();
+    final StringBuilder userList=new StringBuilder();
+    final StringBuilder idList = new StringBuilder();
     try {
-       List<User> userInfos = SwiftWebContext.getServletConfig().getWorkspaceDao().getUsers();
+       final List<User> userInfos = SwiftWebContext.getServletConfig().getWorkspaceDao().getUsers();
        if (userInfos != null) {
-           for (User userInfo : userInfos) {
+           for (final User userInfo : userInfos) {
                if(userList.length()>0) {
                    userList.append(",");
                    idList.append(",");

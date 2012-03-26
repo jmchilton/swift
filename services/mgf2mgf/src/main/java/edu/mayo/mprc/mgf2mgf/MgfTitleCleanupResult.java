@@ -9,7 +9,7 @@ public final class MgfTitleCleanupResult implements ProgressInfo {
 	private static final long serialVersionUID = 20090324L;
 	private boolean cleanupPerformed;
 
-	public MgfTitleCleanupResult(boolean cleanupPerformed) {
+	public MgfTitleCleanupResult(final boolean cleanupPerformed) {
 		this.cleanupPerformed = cleanupPerformed;
 	}
 

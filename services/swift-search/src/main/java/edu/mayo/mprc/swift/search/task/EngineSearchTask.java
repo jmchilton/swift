@@ -35,14 +35,14 @@ final class EngineSearchTask extends AsyncTaskBase {
 	private boolean publicSearchFiles;
 
 	public EngineSearchTask(
-			SearchEngine engine,
-			String searchId,
-			MgfOutput mgfOutput,
-			DatabaseDeploymentResult deploymentResult,
-			File outputFile,
-			File paramsFile,
-			boolean publicSearchFiles,
-			DaemonConnection searchEngineDaemon, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+			final SearchEngine engine,
+			final String searchId,
+			final MgfOutput mgfOutput,
+			final DatabaseDeploymentResult deploymentResult,
+			final File outputFile,
+			final File paramsFile,
+			final boolean publicSearchFiles,
+			final DaemonConnection searchEngineDaemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(searchEngineDaemon, fileTokenFactory, fromScratch);
 		this.engine = engine;
 		this.outputFile = outputFile;
@@ -136,7 +136,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 		return deploymentResult.getSequestHdrFile() == null ? deploymentResult.getFastaFile() : deploymentResult.getSequestHdrFile();
 	}
 
-	private void updateDescription(String mascotResultLink) {
+	private void updateDescription(final String mascotResultLink) {
 		setDescription(engine.getFriendlyName() + " search: "
 				+ fileTokenFactory.fileToTaggedDatabaseToken(mgfOutput.getFilteredMgfFile())
 				+ " params: " + fileTokenFactory.fileToTaggedDatabaseToken(paramsFile)
@@ -144,7 +144,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 				+ (mascotResultLink != null ? " <a href=\"" + mascotResultLink + "\">Open in Mascot</a>" : ""));
 	}
 
-	private String getDeployedDatabaseFile(SearchEngine engine, DatabaseDeploymentResult deploymentResult) {
+	private String getDeployedDatabaseFile(final SearchEngine engine, final DatabaseDeploymentResult deploymentResult) {
 		if ("MASCOT".equalsIgnoreCase(engine.getCode())) {
 			return deploymentResult.getShortDbName();
 		} else if ("SEQUEST".equalsIgnoreCase(engine.getCode())) {
@@ -165,7 +165,7 @@ final class EngineSearchTask extends AsyncTaskBase {
 		completeWhenFilesAppear(outputFile);
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		// The search engine produced the output file at a different location than where we asked it to
 		if (progressInfo instanceof SearchEngineResult) {
 			final SearchEngineResult searchEngineResult = (SearchEngineResult) progressInfo;

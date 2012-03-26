@@ -29,7 +29,7 @@ public final class CustomDisclosureEvent extends EventObject {
 	 * @param sender the panel from which the event is originating.
 	 * @see com.google.gwt.user.client.ui.DisclosureHandler
 	 */
-	public CustomDisclosureEvent(CustomDisclosurePanel sender) {
+	public CustomDisclosureEvent(final CustomDisclosurePanel sender) {
 		super(sender);
 	}
 }

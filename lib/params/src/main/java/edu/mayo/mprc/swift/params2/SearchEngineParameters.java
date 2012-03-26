@@ -69,7 +69,7 @@ public class SearchEngineParameters extends PersistableBase {
 	public SearchEngineParameters() {
 	}
 
-	public SearchEngineParameters(Curation database, Protease protease, int missedCleavages, ModSet fixed, ModSet variable, Tolerance peptideTolerance, Tolerance fragmentTolerance, Instrument instrument, ExtractMsnSettings extractMsnSettings, ScaffoldSettings scaffoldSettings) {
+	public SearchEngineParameters(final Curation database, final Protease protease, final int missedCleavages, final ModSet fixed, final ModSet variable, final Tolerance peptideTolerance, final Tolerance fragmentTolerance, final Instrument instrument, final ExtractMsnSettings extractMsnSettings, final ScaffoldSettings scaffoldSettings) {
 		this.database = database;
 		this.protease = protease;
 		this.missedCleavages = missedCleavages;
@@ -86,14 +86,14 @@ public class SearchEngineParameters extends PersistableBase {
 		return database;
 	}
 
-	public void setDatabase(Curation database) {
+	public void setDatabase(final Curation database) {
 		if (checkImmutability(getDatabase(), database)) {
 			return;
 		}
 		this.database = database;
 	}
 
-	private boolean checkImmutability(Object oldValue, Object newValue) {
+	private boolean checkImmutability(final Object oldValue, final Object newValue) {
 		if (getId() != null) {
 			if (oldValue == null && newValue == null || (oldValue != null && oldValue.equals(newValue))) {
 				return true;
@@ -108,7 +108,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return protease;
 	}
 
-	public void setProtease(Protease protease) {
+	public void setProtease(final Protease protease) {
 		if (checkImmutability(getProtease(), protease)) {
 			return;
 		}
@@ -120,7 +120,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return missedCleavages;
 	}
 
-	public void setMissedCleavages(int missedCleavages) {
+	public void setMissedCleavages(final int missedCleavages) {
 		if (checkImmutability(getMissedCleavages(), missedCleavages)) {
 			return;
 		}
@@ -131,7 +131,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return fixedModifications;
 	}
 
-	public void setFixedModifications(ModSet fixedModifications) {
+	public void setFixedModifications(final ModSet fixedModifications) {
 		if (checkImmutability(getFixedModifications(), fixedModifications)) {
 			return;
 		}
@@ -142,7 +142,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return variableModifications;
 	}
 
-	public void setVariableModifications(ModSet variableModifications) {
+	public void setVariableModifications(final ModSet variableModifications) {
 		if (checkImmutability(getVariableModifications(), variableModifications)) {
 			return;
 		}
@@ -153,7 +153,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return peptideTolerance;
 	}
 
-	public void setPeptideTolerance(Tolerance peptideTolerance) {
+	public void setPeptideTolerance(final Tolerance peptideTolerance) {
 		if (checkImmutability(getPeptideTolerance(), peptideTolerance)) {
 			return;
 		}
@@ -164,7 +164,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return fragmentTolerance;
 	}
 
-	public void setFragmentTolerance(Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final Tolerance fragmentTolerance) {
 		if (checkImmutability(getFragmentTolerance(), fragmentTolerance)) {
 			return;
 		}
@@ -175,7 +175,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return instrument;
 	}
 
-	public void setInstrument(Instrument instrument) {
+	public void setInstrument(final Instrument instrument) {
 		if (checkImmutability(getInstrument(), instrument)) {
 			return;
 		}
@@ -186,7 +186,7 @@ public class SearchEngineParameters extends PersistableBase {
 		return extractMsnSettings;
 	}
 
-	public void setExtractMsnSettings(ExtractMsnSettings extractMsnSettings) {
+	public void setExtractMsnSettings(final ExtractMsnSettings extractMsnSettings) {
 		this.extractMsnSettings = extractMsnSettings;
 	}
 
@@ -194,12 +194,12 @@ public class SearchEngineParameters extends PersistableBase {
 		return scaffoldSettings;
 	}
 
-	public void setScaffoldSettings(ScaffoldSettings scaffoldSettings) {
+	public void setScaffoldSettings(final ScaffoldSettings scaffoldSettings) {
 		this.scaffoldSettings = scaffoldSettings;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -207,7 +207,7 @@ public class SearchEngineParameters extends PersistableBase {
 			return false;
 		}
 
-		SearchEngineParameters other = (SearchEngineParameters) obj;
+		final SearchEngineParameters other = (SearchEngineParameters) obj;
 
 		if (!Objects.equal(getMissedCleavages(), other.getMissedCleavages())) {
 			return false;
@@ -278,7 +278,7 @@ public class SearchEngineParameters extends PersistableBase {
 				this.getScaffoldSettings().copy());
 	}
 
-	public void setValue(ParamName name, Object o) {
+	public void setValue(final ParamName name, final Object o) {
 		switch (name) {
 			case PeptideTolerance:
 				setPeptideTolerance((Tolerance) o);
@@ -315,7 +315,7 @@ public class SearchEngineParameters extends PersistableBase {
 		}
 	}
 
-	public Object getValue(ParamName paramName) {
+	public Object getValue(final ParamName paramName) {
 		switch (paramName) {
 			case PeptideTolerance:
 				return getPeptideTolerance();

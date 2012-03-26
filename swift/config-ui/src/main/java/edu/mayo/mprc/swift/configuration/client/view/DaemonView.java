@@ -18,10 +18,10 @@ public final class DaemonView extends SimplePanel implements ModuleView {
 	public DaemonView() {
 	}
 
-	public void initializeUi(DaemonModel daemonModel, Context context) {
+	public void initializeUi(final DaemonModel daemonModel, final Context context) {
 		this.daemonModel = daemonModel;
 
-		GwtUiBuilder builder = new GwtUiBuilder(context, daemonModel);
+		final GwtUiBuilder builder = new GwtUiBuilder(context, daemonModel);
 		builder.start();
 
 		final PropertyChangeListener listener = new PropertyChangeListener();
@@ -55,31 +55,31 @@ public final class DaemonView extends SimplePanel implements ModuleView {
 	 *
 	 * @param daemonModel
 	 */
-	public void loadUI(DaemonModel daemonModel) {
+	public void loadUI(final DaemonModel daemonModel) {
 		this.daemonModel = daemonModel;
 
-		HashMap<String, String> values = new HashMap(daemonModel.getProperties());
+		final HashMap<String, String> values = new HashMap(daemonModel.getProperties());
 		values.put(DAEMON_NAME, daemonModel.getName());
 		propertyList.loadUI(values);
 	}
 
-	public void loadUI(Map<String, String> values) {
+	public void loadUI(final Map<String, String> values) {
 		propertyList.loadUI(values);
 	}
 
 	public HashMap<String, String> saveUI() {
-		HashMap<String, String> values = propertyList.saveUI();
+		final HashMap<String, String> values = propertyList.saveUI();
 		setDaemonModelProperties(values);
 		return values;
 	}
 
-	private void setDaemonModelProperties(HashMap<String, String> values) {
+	private void setDaemonModelProperties(final HashMap<String, String> values) {
 		daemonModel.setName(values.get(DAEMON_NAME));
 		daemonModel.setProperties(values);
 	}
 
 	private class PropertyChangeListener implements ChangeListener {
-		public void onChange(Widget widget) {
+		public void onChange(final Widget widget) {
 			saveUI();
 		}
 	}

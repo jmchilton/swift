@@ -37,7 +37,7 @@ public final class BiologicalSample {
 		return sampleName;
 	}
 
-	public void setSampleName(String sampleName) {
+	public void setSampleName(final String sampleName) {
 		this.sampleName = sampleName;
 	}
 
@@ -45,7 +45,7 @@ public final class BiologicalSample {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(final String category) {
 		this.category = category;
 	}
 
@@ -53,7 +53,7 @@ public final class BiologicalSample {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -61,7 +61,7 @@ public final class BiologicalSample {
 		return analyzeAsMudPit;
 	}
 
-	public void setAnalyzeAsMudPit(boolean analyzeAsMudPit) {
+	public void setAnalyzeAsMudPit(final boolean analyzeAsMudPit) {
 		this.analyzeAsMudPit = analyzeAsMudPit;
 	}
 
@@ -69,7 +69,7 @@ public final class BiologicalSample {
 		return note;
 	}
 
-	public void setNote(String note) {
+	public void setNote(final String note) {
 		this.note = note;
 	}
 
@@ -77,7 +77,7 @@ public final class BiologicalSample {
 		return tandemMassSpectrometrySamples;
 	}
 
-	public void setTandemMassSpectrometrySamples(List<TandemMassSpectrometrySample> tandemMassSpectrometrySamples) {
+	public void setTandemMassSpectrometrySamples(final List<TandemMassSpectrometrySample> tandemMassSpectrometrySamples) {
 		this.tandemMassSpectrometrySamples = tandemMassSpectrometrySamples;
 	}
 }

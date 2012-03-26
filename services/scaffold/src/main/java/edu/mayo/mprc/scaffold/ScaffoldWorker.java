@@ -35,9 +35,9 @@ public final class ScaffoldWorker implements Worker {
 	private String memoryLimit = "256M";
 
 	public String toString() {
-		StringBuilder arguments = new StringBuilder();
+		final StringBuilder arguments = new StringBuilder();
 		if (args != null) {
-			for (String arg : args) {
+			for (final String arg : args) {
 				arguments.append(arg);
 				arguments.append(" ");
 			}
@@ -50,7 +50,7 @@ public final class ScaffoldWorker implements Worker {
 		return scaffoldDir;
 	}
 
-	public void setScaffoldDir(File scaffoldDir) {
+	public void setScaffoldDir(final File scaffoldDir) {
 		this.scaffoldDir = scaffoldDir;
 	}
 
@@ -58,7 +58,7 @@ public final class ScaffoldWorker implements Worker {
 		return scaffoldJavaVmPath;
 	}
 
-	public void setScaffoldJavaVmPath(String scaffoldJavaVmPath) {
+	public void setScaffoldJavaVmPath(final String scaffoldJavaVmPath) {
 		this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 	}
 
@@ -66,11 +66,11 @@ public final class ScaffoldWorker implements Worker {
 		return memoryLimit;
 	}
 
-	public void setMemoryLimit(String memoryLimit) {
+	public void setMemoryLimit(final String memoryLimit) {
 		this.memoryLimit = memoryLimit;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -89,36 +89,36 @@ public final class ScaffoldWorker implements Worker {
 			throw new DaemonException("Unexpected packet type " + workPacket.getClass().getName() + ", expected " + ScaffoldWorkPacket.class.getName());
 		}
 
-		ScaffoldWorkPacket scaffoldWorkPacket = (ScaffoldWorkPacket) workPacket;
+		final ScaffoldWorkPacket scaffoldWorkPacket = (ScaffoldWorkPacket) workPacket;
 		LOGGER.debug("Scaffold search processing request");
 
-		File outputFolder = scaffoldWorkPacket.getOutputFolder();
+		final File outputFolder = scaffoldWorkPacket.getOutputFolder();
 		// Make sure the output folder is there
 		FileUtilities.ensureFolderExists(outputFolder);
 
-		ScaffoldArgsBuilder scaffoldArgsBuilder = new ScaffoldArgsBuilder(scaffoldDir);
+		final ScaffoldArgsBuilder scaffoldArgsBuilder = new ScaffoldArgsBuilder(scaffoldDir);
 		// Returns work folder for scaffold. Depending on the version, it is either the folder where the output is produced,
 		// or the Scaffold install folder itself.
-		File scaffoldWorkFolder = scaffoldArgsBuilder.getWorkFolder(outputFolder);
+		final File scaffoldWorkFolder = scaffoldArgsBuilder.getWorkFolder(outputFolder);
 		// Make sure the work folder is there.
 		FileUtilities.ensureFolderExists(scaffoldWorkFolder);
-		File scafmlFile = createScafmlFile(scaffoldWorkPacket, outputFolder);
+		final File scafmlFile = createScafmlFile(scaffoldWorkPacket, outputFolder);
 
-		List<String> thisargs = new ArrayList<String>(args.size() + 2);
+		final List<String> thisargs = new ArrayList<String>(args.size() + 2);
 		thisargs.add(scaffoldJavaVmPath);
-		for (String arg : args) {
+		for (final String arg : args) {
 			thisargs.add(arg);
 		}
 		thisargs.add(scafmlFile.getAbsolutePath());
 
-		ProcessBuilder processBuilder = new ProcessBuilder(thisargs)
+		final ProcessBuilder processBuilder = new ProcessBuilder(thisargs)
 				.directory(scaffoldWorkFolder);
 
-		ProcessCaller caller = new ProcessCaller(processBuilder);
+		final ProcessCaller caller = new ProcessCaller(processBuilder);
 		caller.setOutputMonitor(new ScaffoldLogMonitor(progressReporter));
 
 		caller.run();
-		int exitValue = caller.getExitValue();
+		final int exitValue = caller.getExitValue();
 
 		FileUtilities.restoreUmaskRights(outputFolder, true);
 
@@ -130,16 +130,16 @@ public final class ScaffoldWorker implements Worker {
 		}
 	}
 
-	public static File createScafmlFile(ScaffoldWorkPacket workPacket, File outputFolder) {
+	public static File createScafmlFile(final ScaffoldWorkPacket workPacket, final File outputFolder) {
 		// Create the .scafml file
-		String scafmlDocument = workPacket.getScafmlFile().getDocument();
-		File scafmlFile = new File(outputFolder, workPacket.getExperimentName() + ".scafml");
+		final String scafmlDocument = workPacket.getScafmlFile().getDocument();
+		final File scafmlFile = new File(outputFolder, workPacket.getExperimentName() + ".scafml");
 		FileUtilities.writeStringToFile(scafmlFile, scafmlDocument, true);
 		return scafmlFile;
 	}
 
 	public void initialize() {
-		ScaffoldArgsBuilder execution = new ScaffoldArgsBuilder(scaffoldDir);
+		final ScaffoldArgsBuilder execution = new ScaffoldArgsBuilder(scaffoldDir);
 		args = execution.buildScaffoldArgs(memoryLimit, execution.getScaffoldBatchClassName());
 	}
 
@@ -149,8 +149,8 @@ public final class ScaffoldWorker implements Worker {
 	public static final class Factory extends WorkerFactoryBase<Config> {
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			ScaffoldWorker worker = new ScaffoldWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final ScaffoldWorker worker = new ScaffoldWorker();
 			worker.setScaffoldDir(new File(config.getScaffoldDir()).getAbsoluteFile());
 			worker.setScaffoldJavaVmPath(config.getScaffoldJavaVmPath());
 			worker.setMemoryLimit(config.getMemoryLimit());
@@ -171,7 +171,7 @@ public final class ScaffoldWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String scaffoldDir, String scaffoldJavaVmPath, String memoryLimit) {
+		public Config(final String scaffoldDir, final String scaffoldJavaVmPath, final String memoryLimit) {
 			this.scaffoldDir = scaffoldDir;
 			this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 			this.memoryLimit = memoryLimit;
@@ -181,7 +181,7 @@ public final class ScaffoldWorker implements Worker {
 			return memoryLimit;
 		}
 
-		public void setMemoryLimit(String memoryLimit) {
+		public void setMemoryLimit(final String memoryLimit) {
 			this.memoryLimit = memoryLimit;
 		}
 
@@ -189,7 +189,7 @@ public final class ScaffoldWorker implements Worker {
 			return scaffoldDir;
 		}
 
-		public void setScaffoldDir(String scaffoldDir) {
+		public void setScaffoldDir(final String scaffoldDir) {
 			this.scaffoldDir = scaffoldDir;
 		}
 
@@ -197,19 +197,19 @@ public final class ScaffoldWorker implements Worker {
 			return scaffoldJavaVmPath;
 		}
 
-		public void setScaffoldJavaVmPath(String scaffoldJavaVmPath) {
+		public void setScaffoldJavaVmPath(final String scaffoldJavaVmPath) {
 			this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(SCAFFOLD_DIR, scaffoldDir);
 			map.put(SCAFFOLD_JAVA_VM_PATH, scaffoldJavaVmPath);
 			map.put(MEMORY_LIMIT, memoryLimit);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			scaffoldDir = values.get(SCAFFOLD_DIR);
 			scaffoldJavaVmPath = values.get(SCAFFOLD_JAVA_VM_PATH);
 			memoryLimit = values.get(MEMORY_LIMIT);
@@ -222,7 +222,7 @@ public final class ScaffoldWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(SCAFFOLD_DIR, "Installation Folder", "Scaffold installation folder")
 					.required()

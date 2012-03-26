@@ -68,14 +68,14 @@ public final class TestMascotDaemonWorker {
 	public void runMascotWorker() throws IOException {
 		final File mascotOut = new File(mascotTemp, "mascot.dat");
 
-		File mascotParamFile = createMascotParamFile();
+		final File mascotParamFile = createMascotParamFile();
 
-		MascotWorker.Config config = new MascotWorker.Config(MASCOT_URL);
-		MascotWorker.Factory factory = new MascotWorker.Factory();
+		final MascotWorker.Config config = new MascotWorker.Config(MASCOT_URL);
+		final MascotWorker.Factory factory = new MascotWorker.Factory();
 
-		Worker worker = factory.create(config, null);
+		final Worker worker = factory.create(config, null);
 
-		MascotWorkPacket workPacket = new MascotWorkPacket(mascotOut, mascotParamFile, inputMgfFile, TEST_MASCOT_DB, "0", false, false);
+		final MascotWorkPacket workPacket = new MascotWorkPacket(mascotOut, mascotParamFile, inputMgfFile, TEST_MASCOT_DB, "0", false, false);
 		WorkPacketBase.simulateTransfer(workPacket);
 
 		worker.processRequest(workPacket, new ProgressReporter() {
@@ -83,7 +83,7 @@ public final class TestMascotDaemonWorker {
 				LOGGER.info("Started processing");
 			}
 
-			public void reportProgress(ProgressInfo progressInfo) {
+			public void reportProgress(final ProgressInfo progressInfo) {
 				LOGGER.info(progressInfo);
 			}
 
@@ -91,7 +91,7 @@ public final class TestMascotDaemonWorker {
 				Assert.assertTrue(mascotOut.length() > 0, "Mascot result file is empty.");
 			}
 
-			public void reportFailure(Throwable t) {
+			public void reportFailure(final Throwable t) {
 				throw new MprcException("Mascot worker failed to process work packet.", t);
 			}
 		});
@@ -99,14 +99,14 @@ public final class TestMascotDaemonWorker {
 
 	private File createMascotParamFile() throws IOException {
 		final ParamsInfo paramsInfo = TestMascotMappings.getAbstractParamsInfo();
-		MascotMappingFactory factory = new MascotMappingFactory(paramsInfo);
+		final MascotMappingFactory factory = new MascotMappingFactory(paramsInfo);
 		final Mappings mapping = factory.createMapping();
-		MappingContext context = new TestMappingContextBase(paramsInfo);
+		final MappingContext context = new TestMappingContextBase(paramsInfo);
 
 		mapping.read(mapping.baseSettings());
 		mapping.setSequenceDatabase(context, TEST_MASCOT_DB);
 
-		File result = new File(mascotTemp, factory.getCanonicalParamFileName());
+		final File result = new File(mascotTemp, factory.getCanonicalParamFileName());
 		mapping.write(mapping.baseSettings(), Files.newWriter(result, Charsets.UTF_8));
 
 		return result;

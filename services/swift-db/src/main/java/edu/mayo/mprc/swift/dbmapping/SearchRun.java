@@ -34,9 +34,9 @@ public class SearchRun extends PersistableBase implements Serializable {
 	public SearchRun() {
 	}
 
-	public SearchRun(String title, User submittingUser, SwiftSearchDefinition swiftSearch, Date startTimestamp, Date endTimestamp,
-	                 int errorCode, String errorMessage,
-	                 int numTasks, int tasksWithWarning, int taskFailed, int tasksCompleted, boolean hidden) {
+	public SearchRun(final String title, final User submittingUser, final SwiftSearchDefinition swiftSearch, final Date startTimestamp, final Date endTimestamp,
+	                 final int errorCode, final String errorMessage,
+	                 final int numTasks, final int tasksWithWarning, final int taskFailed, final int tasksCompleted, final boolean hidden) {
 		this.title = title;
 		this.submittingUser = submittingUser;
 		this.swiftSearch = swiftSearch == null ? 0 : swiftSearch.getId();
@@ -51,7 +51,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		this.hidden = hidden ? 1 : 0;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -59,7 +59,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return title;
 	}
 
-	public void setSubmittingUser(User submittingUser) {
+	public void setSubmittingUser(final User submittingUser) {
 		this.submittingUser = submittingUser;
 	}
 
@@ -77,11 +77,11 @@ public class SearchRun extends PersistableBase implements Serializable {
 	/**
 	 * @param swiftSearch ID of related {@link SwiftSearchDefinition}.
 	 */
-	public void setSwiftSearch(Integer swiftSearch) {
+	public void setSwiftSearch(final Integer swiftSearch) {
 		this.swiftSearch = swiftSearch;
 	}
 
-	public void setStartTimestamp(Date startTimestamp) {
+	public void setStartTimestamp(final Date startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
 
@@ -89,7 +89,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return startTimestamp;
 	}
 
-	public void setEndTimestamp(Date endTimestamp) {
+	public void setEndTimestamp(final Date endTimestamp) {
 		this.endTimestamp = endTimestamp;
 	}
 
@@ -97,7 +97,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return endTimestamp;
 	}
 
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(final int errorCode) {
 		this.errorCode = errorCode;
 	}
 
@@ -105,7 +105,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return errorCode;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
@@ -113,7 +113,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return errorMessage;
 	}
 
-	public void setNumTasks(int numTasks) {
+	public void setNumTasks(final int numTasks) {
 		this.numTasks = numTasks;
 	}
 
@@ -121,7 +121,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return numTasks;
 	}
 
-	public void setTasksFailed(int tasksFailed) {
+	public void setTasksFailed(final int tasksFailed) {
 		this.tasksFailed = tasksFailed;
 	}
 
@@ -129,7 +129,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return tasksFailed;
 	}
 
-	public void setTasksCompleted(int tasksCompleted) {
+	public void setTasksCompleted(final int tasksCompleted) {
 		this.tasksCompleted = tasksCompleted;
 	}
 
@@ -137,7 +137,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return tasksCompleted;
 	}
 
-	public void setTasksWithWarning(int tasksWithWarning) {
+	public void setTasksWithWarning(final int tasksWithWarning) {
 		this.tasksWithWarning = tasksWithWarning;
 	}
 
@@ -149,7 +149,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return reports;
 	}
 
-	public void setReports(Set<ReportData> reports) {
+	public void setReports(final Set<ReportData> reports) {
 		this.reports = reports;
 	}
 
@@ -157,7 +157,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return hidden;
 	}
 
-	public void setHidden(int hidden) {
+	public void setHidden(final int hidden) {
 		this.hidden = hidden;
 	}
 
@@ -173,7 +173,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 		return (getTasksCompleted() + getTasksWithWarning() + getTasksFailed()) >= getNumTasks();
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -181,7 +181,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 			return false;
 		}
 
-		SearchRun that = (SearchRun) o;
+		final SearchRun that = (SearchRun) o;
 
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
 			return false;
@@ -191,7 +191,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 	}
 
 	public int hashCode() {
-		int result;
+		final int result;
 		result = (getId() != null ? getId().hashCode() : 0);
 		return result;
 	}

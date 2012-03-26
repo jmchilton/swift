@@ -57,14 +57,14 @@ public final class AminoAcidSet {
 
 		monoisotopicMassByCode = new double[26];
 		Arrays.fill(monoisotopicMassByCode, 0.0);
-		for (AminoAcid acid : data.values()) {
-			int index = codeToIndex(acid.getCode());
+		for (final AminoAcid acid : data.values()) {
+			final int index = codeToIndex(acid.getCode());
 			monoisotopicMassByCode[index] = acid.getMonoisotopicMass();
 		}
 	}
 
-	private int codeToIndex(char code) {
-		int index = (int) code - (int) 'A';
+	private int codeToIndex(final char code) {
+		final int index = (int) code - (int) 'A';
 		if (index < 0 || index >= 26) {
 			throw new MprcException("Unsupported amino acid code " + code);
 		}
@@ -77,21 +77,21 @@ public final class AminoAcidSet {
 	 * @param code One letter code to look up.
 	 * @return Null if such amino acid does not exist.
 	 */
-	public AminoAcid getForSingleLetterCode(CharSequence code) {
+	public AminoAcid getForSingleLetterCode(final CharSequence code) {
 		if (code == null || code.length() != 1) {
 			return null;
 		}
-		char oneLetterCode = code.charAt(0);
+		final char oneLetterCode = code.charAt(0);
 		return data.get(oneLetterCode);
 	}
 
 	/**
 	 * Returns monoisotopic mass of given peptide. The mass includes the extra H and OH at the terminals.
 	 */
-	public double getMonoisotopicMass(CharSequence peptideSequence) {
+	public double getMonoisotopicMass(final CharSequence peptideSequence) {
 		double totalMass = MONOISOTOPIC_WATER_MASS;
 		for (int i = 0; i < peptideSequence.length(); i++) {
-			int index = codeToIndex(peptideSequence.charAt(i));
+			final int index = codeToIndex(peptideSequence.charAt(i));
 			totalMass += monoisotopicMassByCode[index];
 		}
 		return totalMass;
@@ -101,9 +101,9 @@ public final class AminoAcidSet {
 	 * @return Set of all amino acid codes.
 	 */
 	public Set<String> getCodes() {
-		TreeSet<String> names = new TreeSet<String>();
+		final TreeSet<String> names = new TreeSet<String>();
 
-		for (AminoAcid aminoAcid : data.values()) {
+		for (final AminoAcid aminoAcid : data.values()) {
 			names.add(String.valueOf(aminoAcid.getCode()));
 		}
 
@@ -114,9 +114,9 @@ public final class AminoAcidSet {
 	 * @return An HTML table listing the amino acids.
 	 */
 	public String report() {
-		StringBuilder result = new StringBuilder(AA_REPORT_SIZE);
+		final StringBuilder result = new StringBuilder(AA_REPORT_SIZE);
 		result.append("<table>\n<tr><th>Code</th><th>Three letter code</th><th>Monoisotopic mass</th><th>Average mass</th><th>Formula</th></tr>\n");
-		for (AminoAcid acid : data.values()) {
+		for (final AminoAcid acid : data.values()) {
 			result
 					.append("<tr><td>")
 					.append(acid.getCode()).append("</td><td>")

@@ -86,9 +86,9 @@ public final class CurationEditor extends Composite {
 	 * @param curationToDisplay the id of the curation you wanted loaded
 	 * @param closeCallback     a method we will call when the user clicks close.  As part of the callback will be the id of the currently open curation.
 	 */
-	public CurationEditor(Integer curationToDisplay, String currentUserEmail, Map<String, String> userEmailInitialPairs, EditorCloseCallback closeCallback) {
+	public CurationEditor(final Integer curationToDisplay, final String currentUserEmail, final Map<String, String> userEmailInitialPairs, final EditorCloseCallback closeCallback) {
 		this.commonDataRequester = (CommonDataRequesterAsync) GWT.create(CommonDataRequester.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) commonDataRequester;
+		final ServiceDefTarget endpoint = (ServiceDefTarget) commonDataRequester;
 		endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "CommonDataRequester");
 
 		this.closeCallback = closeCallback;
@@ -104,7 +104,7 @@ public final class CurationEditor extends Composite {
 	/**
 	 * retrieves which curation should be displayed from the server.
 	 */
-	private void retreiveCuration(Integer requestedCurationID) {
+	private void retreiveCuration(final Integer requestedCurationID) {
 		messageManager.clearMessages();
 
 		if (requestedCurationID == null) {
@@ -115,7 +115,7 @@ public final class CurationEditor extends Composite {
 
 	}
 
-	private void init(boolean standalone) {
+	private void init(final boolean standalone) {
 		initWidget(appPanel);
 		loadPanel();
 		Window.enableScrolling(!standalone);
@@ -150,7 +150,7 @@ public final class CurationEditor extends Composite {
 		commonDataRequester.copyCurationStub(curation, new RetreivalCallback(true));
 	}
 
-	private void showPopupMessage(String message) {
+	private void showPopupMessage(final String message) {
 		new MessagePopup(message, this.getAbsoluteLeft() + 100, this.getAbsoluteTop() + 100);
 	}
 
@@ -159,7 +159,7 @@ public final class CurationEditor extends Composite {
 	 *
 	 * @param curation the curation we want to work with
 	 */
-	public void setCuration(CurationStub curation, boolean isCopy) {
+	public void setCuration(final CurationStub curation, final boolean isCopy) {
 		if (curation == null) {
 			showPopupMessage("No curation found, please try again");
 			return;
@@ -229,11 +229,11 @@ public final class CurationEditor extends Composite {
 	 * @param width
 	 * @param height
 	 */
-	public void setPixelSize(int width, int height) {
+	public void setPixelSize(final int width, final int height) {
 		super.setPixelSize(width, height);
 
-		int stepContainerHeight = height - CurationEditor.WINDOW_MARGIN;
-		int stepContainerWidth = width - CurationEditor.WINDOW_MARGIN - this.controlPanel.getOffsetWidth();
+		final int stepContainerHeight = height - CurationEditor.WINDOW_MARGIN;
+		final int stepContainerWidth = width - CurationEditor.WINDOW_MARGIN - this.controlPanel.getOffsetWidth();
 
 		if (stepContainer != null) {
 			stepContainer.setPixelSize(stepContainerHeight, stepContainerWidth);
@@ -246,7 +246,7 @@ public final class CurationEditor extends Composite {
 	private Panel getStepSelectionPanel() {
 		controlPanel = new VerticalPanel();
 
-		HTML title = new HTML("<h1 id=\"appTitle\">FASTA Database Curation Tool</h1>");
+		final HTML title = new HTML("<h1 id=\"appTitle\">FASTA Database Curation Tool</h1>");
 		controlPanel.add(title);
 
 		lblShortNameError.setText("Short name ok");
@@ -258,20 +258,20 @@ public final class CurationEditor extends Composite {
 		propGrid.setStyleName("db-curator-properties");
 		controlPanel.add(propGrid);
 
-		HTML shortName = new HTML("Short name<sup><font color=\"red\">*</font></sup>:");
+		final HTML shortName = new HTML("Short name<sup><font color=\"red\">*</font></sup>:");
 
 		shortName.setTitle("A name for submitting to search engines");
 
 		txtShortName.setMaxLength(CurationValidation.SHORTNAME_MAX_LENGTH);
 		txtShortName.addKeyboardListener(new KeyboardListener() {
-			public void onKeyUp(Widget widget, char c, int i) {
+			public void onKeyUp(final Widget widget, final char c, final int i) {
 				validateShortName(txtShortName.getText());
 			}
 
-			public void onKeyDown(Widget widget, char c, int i) {
+			public void onKeyDown(final Widget widget, final char c, final int i) {
 			}
 
-			public void onKeyPress(Widget widget, char c, int i) {
+			public void onKeyPress(final Widget widget, final char c, final int i) {
 			}
 		});
 		propGrid.setWidget(0, 0, shortName);
@@ -313,28 +313,28 @@ public final class CurationEditor extends Composite {
 		lblResultFilePath.setStyleName("resultfilepath");
 		lblResultFilePath.addMouseListener(new MouseListener() {
 
-			public void onMouseDown(Widget widget, int i, int i1) {
-				PopupPanel pop = new PopupPanel(/*autoHide*/true);
+			public void onMouseDown(final Widget widget, final int i, final int i1) {
+				final PopupPanel pop = new PopupPanel(/*autoHide*/true);
 				pop.setPopupPosition(lblResultFilePath.getAbsoluteLeft(), lblResultFilePath.getAbsoluteTop());
-				TextBox txtPath = new TextBox();
+				final TextBox txtPath = new TextBox();
 				txtPath.setText(lblResultFilePath.getTitle());
 				pop.add(txtPath);
 				pop.show();
 			}
 
-			public void onMouseEnter(Widget widget) {
+			public void onMouseEnter(final Widget widget) {
 				//ignore
 			}
 
-			public void onMouseLeave(Widget widget) {
+			public void onMouseLeave(final Widget widget) {
 				//ignore
 			}
 
-			public void onMouseMove(Widget widget, int i, int i1) {
+			public void onMouseMove(final Widget widget, final int i, final int i1) {
 				//ignore
 			}
 
-			public void onMouseUp(Widget widget, int i, int i1) {
+			public void onMouseUp(final Widget widget, final int i, final int i1) {
 				//ignore
 			}
 		});
@@ -343,7 +343,7 @@ public final class CurationEditor extends Composite {
 
 		controlPanel.add(htmlStepSelectionTitle);
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Drag the tops of steps to rearrange.<br>");
 		sb.append("Click 'New' to create a new Curation.<br>");
 		sb.append("Click 'Copy' to copy current Curation.<br>");
@@ -360,7 +360,7 @@ public final class CurationEditor extends Composite {
 
 		chkShowLog.setText("Show Log:");
 		chkShowLog.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				textareaLog.setVisible(((CheckBox) widget).isChecked());
 			}
 		});
@@ -376,12 +376,12 @@ public final class CurationEditor extends Composite {
 		return controlPanel;
 	}
 
-	private boolean validateShortName(String toValidate) {
+	private boolean validateShortName(final String toValidate) {
 
 		final String spacesMessage = "Must not contain anything but a-z A-Z 0-9 : _ . - ( ) (no spaces)";
 		final String lengthMessage = "Must be between " + CurationValidation.SHORTNAME_MIN_LENGTH + " and " + CurationValidation.SHORTNAME_MAX_LENGTH + " characters";
 
-		String errorMessage = CurationValidation.validateShortNameLegalCharacters(toValidate);
+		final String errorMessage = CurationValidation.validateShortNameLegalCharacters(toValidate);
 		if (errorMessage != null) {
 			lblShortNameError.setText(errorMessage);
 			lblShortNameError.removeStyleName("warning-label-ok");
@@ -389,11 +389,11 @@ public final class CurationEditor extends Composite {
 		} else {
 			lblShortNameError.addStyleName("warning-label-ok");
 			commonDataRequester.isShortnameUnique(txtShortName.getText(), new AsyncCallback<Boolean>() {
-				public void onFailure(Throwable throwable) {
+				public void onFailure(final Throwable throwable) {
 					Window.alert("We could not determine that uniquness of the entered shortname:\n" + throwable.getMessage());
 				}
 
-				public void onSuccess(Boolean isUnique) {
+				public void onSuccess(final Boolean isUnique) {
 					if (!isUnique) {
 						lblShortNameError.setText("Non-unique shortname");
 						lblShortNameError.removeStyleName("warning-label-ok");
@@ -429,8 +429,8 @@ public final class CurationEditor extends Composite {
 		lstStepChoice.addItem(HeaderTransformPanel.TITLE);
 
 		lstStepChoice.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
-				int selectedIndex = ((ListBox) widget).getSelectedIndex();
+			public void onChange(final Widget widget) {
+				final int selectedIndex = ((ListBox) widget).getSelectedIndex();
 
 				switch (selectedIndex) {
 					case (0):
@@ -471,7 +471,7 @@ public final class CurationEditor extends Composite {
 	 * @return the panel that should be used as a right panel
 	 */
 	private VerticalPanel getRightPanel() {
-		VerticalPanel toLoad = new VerticalPanel();
+		final VerticalPanel toLoad = new VerticalPanel();
 
 		//add the step container created with the steps that it should contain
 		stepContainer = new StepPanelContainer(curation.getSteps());
@@ -499,25 +499,25 @@ public final class CurationEditor extends Composite {
 	 * creates all of the command buttons for dealing with a curation that will appear at the bottom of the screen
 	 */
 	private Panel createCommandPanel() {
-		HorizontalPanel commandPanel = new HorizontalPanel();
+		final HorizontalPanel commandPanel = new HorizontalPanel();
 
-		Panel newPanel = new VerticalPanel();
+		final Panel newPanel = new VerticalPanel();
 
-		Hyperlink cmdCreateNew = new Hyperlink("New", "New");
+		final Hyperlink cmdCreateNew = new Hyperlink("New", "New");
 		cmdCreateNew.setTitle("To create a new empty curation for you editing.");
 		cmdCreateNew.setStyleName("command-link");
 		cmdCreateNew.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				CurationEditor.this.startNewCuration();
 			}
 		});
 		newPanel.add(cmdCreateNew);
 
-		Hyperlink cmdCopyCurrent = new Hyperlink("Copy", "Copy");
+		final Hyperlink cmdCopyCurrent = new Hyperlink("Copy", "Copy");
 		cmdCopyCurrent.setTitle("To make a copy of the currently displayed curation for you own editing.");
 		cmdCopyCurrent.setStyleName("command-link");
 		cmdCopyCurrent.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				CurationEditor.this.copyCuration();
 			}
 		});
@@ -528,7 +528,7 @@ public final class CurationEditor extends Composite {
 		cmdRun.setStyleName("command-link");
 		cmdRun.setTitle("To run the Curation and generate a FASTA file.");
 		cmdRun.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				//call the server and perform a validation of the curation.  When the validation is complete then this CurationEditor
 				//will be notified and it will need to tell the StepPanelContainer and it will forward the message to the steps that they
 				//should check for any error messages.
@@ -536,25 +536,25 @@ public final class CurationEditor extends Composite {
 			}
 		});
 
-		Panel runPanel = new VerticalPanel();
+		final Panel runPanel = new VerticalPanel();
 
 		runPanel.add(cmdRun);
 
 		commandPanel.add(runPanel);
 
-		Panel closePanel = new VerticalPanel();
+		final Panel closePanel = new VerticalPanel();
 
 		cmdView = new Hyperlink("View", "View");
 		cmdView.setTitle("To view the contents of the resulting file.  If not yet run then this option will not function.");
 		cmdView.setStyleName("command-link");
 		cmdView.addClickListener(new ClickListener() {
 
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				if (curation.getPathToResult() == null || curation.getPathToResult().length() == 0) {
 					showPopupMessage("There is not file associated with the curation please run the curation first.");
 					return;
 				}
-				ServerFileReader reader = new ServerFileReader();
+				final ServerFileReader reader = new ServerFileReader();
 				reader.setPopupPosition(getAbsoluteLeft() + 10, getAbsoluteTop() + 10);
 				reader.setPixelSize(CurationEditor.this.getWidget().getOffsetWidth() - 20, CurationEditor.this.getWidget().getOffsetHeight() - 20);
 				reader.setFileToDisplay(curation.getPathToResult());
@@ -565,12 +565,12 @@ public final class CurationEditor extends Composite {
 		});
 		closePanel.add(cmdView);
 
-		Hyperlink cmdClose = new Hyperlink("Close", "Close");
+		final Hyperlink cmdClose = new Hyperlink("Close", "Close");
 		cmdClose.setTitle("Leave the Curation Editor and return the the main page selecting the current curation.");
 		cmdClose.setStyleName("command-link");
 		cmdClose.addClickListener(new ClickListener() {
 
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				if (closeCallback != null && (curation.hasBeenRun() || Window.confirm("In order to use a database a curation must be run.\nClick 'OK' to close anyway."))) {
 					Window.removeWindowCloseListener(closeHandler);
 					closeCallback.editorClosed((curation.hasBeenRun() ? curation.getId() : initialCurationID));
@@ -581,8 +581,8 @@ public final class CurationEditor extends Composite {
 
 		commandPanel.add(closePanel);
 
-		DockPanel commandContainer = new DockPanel();
-		Panel spacer = new AbsolutePanel();
+		final DockPanel commandContainer = new DockPanel();
+		final Panel spacer = new AbsolutePanel();
 		commandContainer.add(spacer, DockPanel.WEST);
 		commandContainer.add(commandPanel, DockPanel.EAST);
 
@@ -621,12 +621,12 @@ public final class CurationEditor extends Composite {
 
 			commonDataRequester.runCuration(curation, new AsyncCallback<CurationStub>() {
 
-				public void onFailure(Throwable throwable) {
+				public void onFailure(final Throwable throwable) {
 					curationIsRunning = false;
 					showPopupMessage(throwable.getMessage());
 				}
 
-				public void onSuccess(CurationStub o) {
+				public void onSuccess(final CurationStub o) {
 					curationIsRunning = false;
 					setCuration(o, false);
 					CurationEditor.this.retreiveCuration(curation.getId());
@@ -689,15 +689,15 @@ public final class CurationEditor extends Composite {
 		updateCurationFromForm();
 		this.commandPanel.setVisible(false);
 		commonDataRequester.performUpdate(curation, new AsyncCallback<CurationStub>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				showPopupMessage("Failed to sync with the server");
 				commandPanel.setVisible(true);
 			}
 
-			public void onSuccess(CurationStub result) {
+			public void onSuccess(final CurationStub result) {
 				curation = result;
 
-				for (String errorMessage : curation.getErrorMessages()) {
+				for (final String errorMessage : curation.getErrorMessages()) {
 					messageManager.addMessage(errorMessage);
 					//stop performing updates if there was an error
 					//_updateTimer.cancel();
@@ -726,7 +726,7 @@ public final class CurationEditor extends Composite {
 		private RetreivalCallback() {
 		}
 
-		private RetreivalCallback(boolean isCopy) {
+		private RetreivalCallback(final boolean isCopy) {
 			this.isCopy = isCopy;
 		}
 
@@ -736,9 +736,9 @@ public final class CurationEditor extends Composite {
 		 * <p/>
 		 * {@inheritDoc}
 		 */
-		public void onFailure(Throwable throwable) {
+		public void onFailure(final Throwable throwable) {
 			showPopupMessage("Error retreiving curation from server: " + throwable.getMessage());
-			String msg = throwable.getMessage();
+			final String msg = throwable.getMessage();
 			if (msg.indexOf("shortname") != -1) {
 				lblShortNameError.setText(msg);
 				lblShortNameError.removeStyleName("warning-label-ok");
@@ -751,7 +751,7 @@ public final class CurationEditor extends Composite {
 		 * <p/>
 		 * {@inheritDoc}
 		 */
-		public void onSuccess(CurationStub result) {
+		public void onSuccess(final CurationStub result) {
 			setCuration(result, isCopy);
 		}
 	}
@@ -776,7 +776,7 @@ public final class CurationEditor extends Composite {
 		 *
 		 * @param message the message you want to add to this manager
 		 */
-		public void addMessage(String message) {
+		public void addMessage(final String message) {
 			if (this.messages.contains(message)) {
 				return;
 			}
@@ -795,7 +795,7 @@ public final class CurationEditor extends Composite {
 		 *
 		 * @param message
 		 */
-		public void removeError(String message) {
+		public void removeError(final String message) {
 			this.messages.remove(message);
 
 			if (messages.size() == 0) {
@@ -810,7 +810,7 @@ public final class CurationEditor extends Composite {
 		 *
 		 * @param toLogTo the TextArea we want to write the messages out to
 		 */
-		public void setTextArea(TextArea toLogTo) {
+		public void setTextArea(final TextArea toLogTo) {
 			this.toLogTo = toLogTo;
 			if (this.messages.size() > 0) {
 				toLogTo.addStyleName("textboxes-error");
@@ -822,8 +822,8 @@ public final class CurationEditor extends Composite {
 		 * write the messages to the text box after clearing it first
 		 */
 		private void writeMessages() {
-			StringBuilder builder = new StringBuilder();
-			for (String message : messages) {
+			final StringBuilder builder = new StringBuilder();
+			for (final String message : messages) {
 				builder.append(message);
 				builder.append("\n");
 				if (message.indexOf("shortname") != -1) {

@@ -13,7 +13,7 @@ public class Change {
 	public Change() {
 	}
 
-	public Change(String reason, DateTime date) {
+	public Change(final String reason, final DateTime date) {
 		this.reason = reason;
 		this.date = date;
 	}
@@ -22,7 +22,7 @@ public class Change {
 		return id;
 	}
 
-	void setId(Integer id) {
+	void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -30,7 +30,7 @@ public class Change {
 		return reason;
 	}
 
-	void setReason(String reason) {
+	void setReason(final String reason) {
 		this.reason = reason;
 	}
 
@@ -38,7 +38,7 @@ public class Change {
 		return date;
 	}
 
-	void setDate(DateTime date) {
+	void setDate(final DateTime date) {
 		this.date = date;
 	}
 
@@ -51,7 +51,7 @@ public class Change {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -59,7 +59,7 @@ public class Change {
 			return false;
 		}
 
-		Change change = (Change) obj;
+		final Change change = (Change) obj;
 
 		if (getDate() != null ? !getDate().equals(change.getDate()) : change.getDate() != null) {
 			return false;

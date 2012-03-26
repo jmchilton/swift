@@ -51,9 +51,9 @@ public final class PeaksMappingsTest {
 		context = new TestMappingContext();
 	}
 
-	public static void addMod(ModSet set, double massMono, String site, String position) {
+	public static void addMod(final ModSet set, final double massMono, final String site, final String position) {
 		String siteChar;
-		Terminus terminus;
+		final Terminus terminus;
 		siteChar = String.valueOf(site.charAt(0));
 		if (position.endsWith("N-term")) {
 			if (site.contains("term")) {
@@ -69,7 +69,7 @@ public final class PeaksMappingsTest {
 			terminus = Terminus.Anywhere;
 		}
 		final boolean proteinOnly = ModSpecificity.POSITION_PROTEIN_C_TERM.equals(position) || ModSpecificity.POSITION_PROTEIN_N_TERM.equals(position);
-		Mod modification = new Mod("Test mod " + massMono, "Test mod full name", 1, massMono, massMono, "C2H3O4", new HashSet<String>(),
+		final Mod modification = new Mod("Test mod " + massMono, "Test mod full name", 1, massMono, massMono, "C2H3O4", new HashSet<String>(),
 				new SpecificityBuilder("*".equals(siteChar) ? null : AminoAcidSet.DEFAULT.getForSingleLetterCode(siteChar), terminus,
 						proteinOnly,
 						false, "classification", 1));
@@ -78,7 +78,7 @@ public final class PeaksMappingsTest {
 
 	@Test
 	public void mapVariableModsToNativeTest() {
-		ModSet variableMods = new ModSet();
+		final ModSet variableMods = new ModSet();
 
 		addMod(variableMods, 123.5, "A", ModSpecificity.POSITION_ANY_N_TERM);
 		addMod(variableMods, 123.5, "G", ModSpecificity.POSITION_ANY_N_TERM);
@@ -95,14 +95,14 @@ public final class PeaksMappingsTest {
 
 		peaksMappings.setVariableMods(context, variableMods);
 
-		String peaksParameterValue = "123.5@DL:A,123.5@NY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@G:C";
+		final String peaksParameterValue = "123.5@DL:A,123.5@NY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@G:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES), peaksParameterValue, "Varaible modifications did not match.");
 	}
 
 	@Test(dependsOnMethods = {"mapVariableModsToNativeTest"})
 	public void mapFixedModsToNativeTest() {
-		ModSet fixedMods = new ModSet();
+		final ModSet fixedMods = new ModSet();
 
 		addMod(fixedMods, 123.5, "A", ModSpecificity.POSITION_ANY_N_TERM);
 		addMod(fixedMods, 123.5, "G", ModSpecificity.POSITION_ANY_N_TERM);
@@ -118,11 +118,11 @@ public final class PeaksMappingsTest {
 
 		peaksMappings.setFixedMods(context, fixedMods);
 
-		String fixed = "123.5@Y:C,123.5@AGW:N,200.5@ACDEFGHIKLMNPQRSTVWY:C,200.5@A:N,400.0@G:C";
+		final String fixed = "123.5@Y:C,123.5@AGW:N,200.5@ACDEFGHIKLMNPQRSTVWY:C,200.5@A:N,400.0@G:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTFIXEDMODIES), fixed, "Fixed modifications did not match.");
 
-		String variable = "123.5@DL:A,123.5@NQY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@EGQ:C";
+		final String variable = "123.5@DL:A,123.5@NQY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@EGQ:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES), variable, "Variable modifications did not match.");
 	}
@@ -133,19 +133,19 @@ public final class PeaksMappingsTest {
 			return null;
 		}
 
-		public void startMapping(ParamName paramName) {
+		public void startMapping(final ParamName paramName) {
 			// Do nothing
 		}
 
-		public void reportError(String message, Throwable t) {
+		public void reportError(final String message, final Throwable t) {
 			LOGGER.log(Level.ERROR, message, t);
 		}
 
-		public void reportWarning(String message) {
+		public void reportWarning(final String message) {
 			LOGGER.info(message);
 		}
 
-		public void reportInfo(String message) {
+		public void reportInfo(final String message) {
 			LOGGER.info(message);
 		}
 
@@ -153,7 +153,7 @@ public final class PeaksMappingsTest {
 			return false;
 		}
 
-		public Curation addLegacyCuration(String legacyName) {
+		public Curation addLegacyCuration(final String legacyName) {
 			return null;
 		}
 	}

@@ -20,7 +20,7 @@ public final class AminoAcidReport extends HttpServlet {
 	private static final long serialVersionUID = 6164359787369648483L;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
 		OutputStreamWriter writer = null;
 		try {

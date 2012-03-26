@@ -24,7 +24,7 @@ final class MSMSEvalOutputFileFormatter {
 	 *         of .csv.
 	 * @throws IOException
 	 */
-	public static File replaceMzXMLScanIdsWithMgfNumbers(File msmsEvalOutputFile, File formattedOutputFile, Map<Integer, String> mzXMLScanToMGFTitle) throws IOException {
+	public static File replaceMzXMLScanIdsWithMgfNumbers(final File msmsEvalOutputFile, final File formattedOutputFile, final Map<Integer, String> mzXMLScanToMGFTitle) throws IOException {
 		ValueSeparatedFileReader valueSeparatedFileReader = null;
 		BufferedWriter bufferedWriter = null;
 
@@ -32,7 +32,7 @@ final class MSMSEvalOutputFileFormatter {
 			valueSeparatedFileReader = new ValueSeparatedFileReader(msmsEvalOutputFile, ",");
 			bufferedWriter = new BufferedWriter(new FileWriter(formattedOutputFile));
 
-			SpectrumNumberExtractor spectrumNumberExtractor = new SpectrumNumberExtractor();
+			final SpectrumNumberExtractor spectrumNumberExtractor = new SpectrumNumberExtractor();
 
 			List<String> row = null;
 

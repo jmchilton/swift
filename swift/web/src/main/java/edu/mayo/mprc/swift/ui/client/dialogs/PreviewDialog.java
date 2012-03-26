@@ -16,31 +16,31 @@ import edu.mayo.mprc.swift.ui.client.rpc.ClientParamSet;
  */
 public final class PreviewDialog extends FrameDialog {
 
-	public PreviewDialog(ClientParamSet paramSet, ServiceAsync service) {
+	public PreviewDialog(final ClientParamSet paramSet, final ServiceAsync service) {
 		super("Parameter file preview", /*ok button*/true, /*cancel button*/false, /*closed by clicking outside*/true, false);
 
-		Label label = new Label("Please wait..."); // TODO replace with Roman's indeterminate progress bar?
+		final Label label = new Label("Please wait..."); // TODO replace with Roman's indeterminate progress bar?
 
 		setContent(label);
 
 		service.getFiles(new Service.Token(true), paramSet, new AsyncCallback<ClientParamFile[]>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				hide();
 				SimpleParamsEditorPanel.handleGlobalError(throwable);
 			}
 
-			public void onSuccess(ClientParamFile[] files) {
+			public void onSuccess(final ClientParamFile[] files) {
 
-				TabPanel panel = new TabPanel();
+				final TabPanel panel = new TabPanel();
 				panel.setWidth((int) (Window.getClientWidth() * 0.8) + "px");
 				panel.setHeight((int) (Window.getClientHeight() * 0.8) + "px");
-				for (ClientParamFile file : files) {
+				for (final ClientParamFile file : files) {
 					String text = file.getText();
 					if (text == null) {
 						text = "(null)";
 					}
 					text = text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-					HTML html = new HTML("<div class=\"param-preview\" style=\"width: " + Window.getClientWidth() * 0.8 + "px; height: " + Window.getClientHeight() * 0.8 + "px\"><pre>" + text + "</pre></div>");
+					final HTML html = new HTML("<div class=\"param-preview\" style=\"width: " + Window.getClientWidth() * 0.8 + "px; height: " + Window.getClientHeight() * 0.8 + "px\"><pre>" + text + "</pre></div>");
 					//ScrollPanel spanel = new ScrollPanel(html);
 					panel.add(html, file.getName());
 				}

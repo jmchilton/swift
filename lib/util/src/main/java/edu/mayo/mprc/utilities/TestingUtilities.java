@@ -29,8 +29,8 @@ public final class TestingUtilities {
 	 * @return the temporary file
 	 * @throws IOException if there was a problem using the stream or writing the file.
 	 */
-	public static File getTempFileFromInputStream(InputStream instream, final boolean autoDelete, final File parentFolder, String suffix) throws IOException {
-		File tmpFile = getUniqueTempFile(autoDelete, parentFolder, suffix);
+	public static File getTempFileFromInputStream(final InputStream instream, final boolean autoDelete, final File parentFolder, final String suffix) throws IOException {
+		final File tmpFile = getUniqueTempFile(autoDelete, parentFolder, suffix);
 		FileUtilities.writeStreamToFile(instream, tmpFile);
 		if (autoDelete) {
 			tmpFile.deleteOnExit();
@@ -45,8 +45,8 @@ public final class TestingUtilities {
 	 * @return A temporary file.
 	 * @throws IOException The file could not be created.
 	 */
-	public static File getUniqueTempFile(final boolean autoDelete, File parentFolder, String suffix) throws IOException {
-		File tmpFile = File.createTempFile(
+	public static File getUniqueTempFile(final boolean autoDelete, final File parentFolder, final String suffix) throws IOException {
+		final File tmpFile = File.createTempFile(
 				"test_" + new SimpleDateFormat("ddMMMyyyy-HHmmss").format(new Date()),
 				suffix,
 				parentFolder);
@@ -62,8 +62,8 @@ public final class TestingUtilities {
 	 * @return a system temporary File with no actual file in that location
 	 * @throws IOException if the file could not be used
 	 */
-	public static File getTempFileMarker(File parentFolder) throws IOException {
-		File file = getUniqueTempFile(false, parentFolder, TEMP_EXTENSION);
+	public static File getTempFileMarker(final File parentFolder) throws IOException {
+		final File file = getUniqueTempFile(false, parentFolder, TEMP_EXTENSION);
 		FileUtilities.quietDelete(file);
 		return file;
 	}
@@ -78,7 +78,7 @@ public final class TestingUtilities {
 	 * @throws IOException there were any io related issues.
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static File getTempFileFromResource(Class<?> clazz, String resource, final boolean autoDelete, final File parentFolder) throws IOException {
+	public static File getTempFileFromResource(final Class<?> clazz, final String resource, final boolean autoDelete, final File parentFolder) throws IOException {
 		return getTempFileFromResource(clazz, resource, autoDelete, parentFolder, TEMP_EXTENSION);
 	}
 
@@ -93,8 +93,8 @@ public final class TestingUtilities {
 	 * @throws IOException there were any io related issues.
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static File getTempFileFromResource(Class<?> clazz, String resource, final boolean autoDelete, final File parentFolder, String suffix) throws IOException {
-		InputStream is = clazz.getResourceAsStream(resource);
+	public static File getTempFileFromResource(final Class<?> clazz, final String resource, final boolean autoDelete, final File parentFolder, final String suffix) throws IOException {
+		final InputStream is = clazz.getResourceAsStream(resource);
 		if (is == null) {
 			throw new IOException("Resource not found: " + resource);
 		}
@@ -110,7 +110,7 @@ public final class TestingUtilities {
 	 * @return the File in the given directory
 	 * @throws IOException if we couldn't write a file to the given directory.
 	 */
-	public static File getTempFileFromResource(Class<?> clazz, String resource, File inDirectory) throws IOException {
+	public static File getTempFileFromResource(final Class<?> clazz, final String resource, final File inDirectory) throws IOException {
 		InputStream is = null;
 		try {
 			is = clazz.getResourceAsStream(resource);
@@ -131,7 +131,7 @@ public final class TestingUtilities {
 	 * @throws IOException there were any io related issues.
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static File getTempFileFromResource(String resource, final boolean autoDelete, final File parentFolder) throws IOException {
+	public static File getTempFileFromResource(final String resource, final boolean autoDelete, final File parentFolder) throws IOException {
 		return getTempFileFromResource(resource, autoDelete, parentFolder, TEMP_EXTENSION);
 	}
 
@@ -147,8 +147,8 @@ public final class TestingUtilities {
 	 * @throws IOException there were any io related issues.
 	 * @see ClassLoader#getResourceAsStream(String)
 	 */
-	public static File getTempFileFromResource(String resource, final boolean autoDelete, final File parentFolder, String suffix) throws IOException {
-		InputStream is = TestingUtilities.class.getResourceAsStream(resource);
+	public static File getTempFileFromResource(final String resource, final boolean autoDelete, final File parentFolder, final String suffix) throws IOException {
+		final InputStream is = TestingUtilities.class.getResourceAsStream(resource);
 		try {
 			if (is == null) {
 				throw new IOException("Resource not found: " + resource);
@@ -162,10 +162,10 @@ public final class TestingUtilities {
 	/**
 	 * Creates a file from given resource that has the same file name and is located in specified parent folder.
 	 */
-	public static File getNamedFileFromResource(String resource, final File parentFolder) throws IOException {
-		InputStream is = TestingUtilities.class.getResourceAsStream(resource);
+	public static File getNamedFileFromResource(final String resource, final File parentFolder) throws IOException {
+		final InputStream is = TestingUtilities.class.getResourceAsStream(resource);
 		try {
-			String name = new File(resource).getName();
+			final String name = new File(resource).getName();
 			if (is == null) {
 				throw new IOException("Resource not found: " + resource);
 			}
@@ -183,7 +183,7 @@ public final class TestingUtilities {
 	 * @param trim       If true lines are trimmed before being compared.
 	 * @return returns null if files are equal; otherwise, returns first different lines found.
 	 */
-	public static String compareFilesByLine(File firstFile, File secondFile, boolean trim) {
+	public static String compareFilesByLine(final File firstFile, final File secondFile, final boolean trim) {
 
 		Preconditions.checkNotNull(firstFile, "Cannot compare a null file");
 		Preconditions.checkNotNull(secondFile, "Cannot compare a null file");
@@ -213,7 +213,7 @@ public final class TestingUtilities {
 	 * @return null if files are equal; otherwise, returns first different lines found.
 	 * @throws IOException
 	 */
-	public static String compareStringsByLine(String s1, String s2, boolean trim) {
+	public static String compareStringsByLine(final String s1, final String s2, final boolean trim) {
 		BufferedReader br1 = null;
 		BufferedReader br2 = null;
 		try {
@@ -237,7 +237,7 @@ public final class TestingUtilities {
 	 * @param br2  Second reader.
 	 * @return First line that differs or null if files are the same.
 	 */
-	private static String compareByLine(boolean trim, BufferedReader br1, BufferedReader br2) {
+	private static String compareByLine(final boolean trim, final BufferedReader br1, final BufferedReader br2) {
 		String line1 = null;
 		String line2 = null;
 		boolean different = false;
@@ -279,13 +279,13 @@ public final class TestingUtilities {
 	 * @return null if files are equal.
 	 * @throws IOException
 	 */
-	public static String compareFilesByLine(File firstFile, File secondFile) throws IOException {
+	public static String compareFilesByLine(final File firstFile, final File secondFile) throws IOException {
 		return compareFilesByLine(firstFile, secondFile, false);
 	}
 
-	public static void quietDelete(String name) {
+	public static void quietDelete(final String name) {
 		if (name != null) {
-			File file = new File(name);
+			final File file = new File(name);
 			if (file.exists() && !file.delete()) {
 				LOGGER.debug("Failed to delete file " + name);
 			}
@@ -301,7 +301,7 @@ public final class TestingUtilities {
 	 * @param expectedResource Name of the resource containing what we expect to see.
 	 * @return String describing the first difference, or null if identical. See {@link #compareStringsByLine}
 	 */
-	public static String compareStringToResourceByLine(String actual, String expectedResource) {
+	public static String compareStringToResourceByLine(final String actual, final String expectedResource) {
 		final String expected;
 		try {
 			expected = Resources.toString(Resources.getResource(expectedResource), Charsets.UTF_8);

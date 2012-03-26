@@ -20,10 +20,10 @@ public final class HttpClientUtility {
 
 	}
 
-	public static void executeMethod(HttpClient httpClient, HttpMethodBase method) throws IOException {
+	public static void executeMethod(final HttpClient httpClient, final HttpMethodBase method) throws IOException {
 		LOGGER.debug("Executing " + method.getName() + " method at " + method.getURI().toString());
 
-		int statusCode = httpClient.executeMethod(method);
+		final int statusCode = httpClient.executeMethod(method);
 
 		LOGGER.debug("Http Headers:");
 
@@ -44,16 +44,16 @@ public final class HttpClientUtility {
 	 * @param url         URL to download from.
 	 * @param destination Where to download the data to.
 	 */
-	public static void downloadUrlHttps(String url, File destination) {
-		HttpClient client = new HttpClient();
+	public static void downloadUrlHttps(final String url, final File destination) {
+		final HttpClient client = new HttpClient();
 
-		GetMethod get = new GetMethod(url);
+		final GetMethod get = new GetMethod(url);
 
 		get.setDoAuthentication(false);
 
 		InputStream responseBodyAsStream = null;
 		try {
-			int status = client.executeMethod(get);
+			final int status = client.executeMethod(get);
 			if (status != 200) {
 				throw new MprcException(MessageFormat.format("Cannot download url [{0}] to file [{1}] - error {2}", url, destination.getAbsolutePath(), status));
 			}

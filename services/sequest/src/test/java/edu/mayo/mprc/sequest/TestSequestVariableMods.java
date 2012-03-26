@@ -25,7 +25,7 @@ public final class TestSequestVariableMods {
 	 */
 	@BeforeClass
 	public void setup() {
-		SequestMappingFactory mappingFactory = new SequestMappingFactory();
+		final SequestMappingFactory mappingFactory = new SequestMappingFactory();
 		sequestMappings = (SequestMappings) mappingFactory.createMapping();
 		context = new SequestContext();
 	}
@@ -115,8 +115,8 @@ public final class TestSequestVariableMods {
 	 * @param modSet List of mods to add modifications to.
 	 * @param mods   Mascot names of mods to add in "mod_name(residue)" format.
 	 */
-	public void addMods(ModSet modSet, String... mods) {
-		for (String mod : mods) {
+	public void addMods(final ModSet modSet, final String... mods) {
+		for (final String mod : mods) {
 			modSet.addAll(context.getAbstractParamsInfo().getUnimod().getSpecificitiesByMascotName(mod));
 		}
 	}
@@ -134,7 +134,7 @@ public final class TestSequestVariableMods {
 		private String[] expectedWarnings;
 		int index;
 
-		public void setExpectedWarnings(String... expectedWarnings) {
+		public void setExpectedWarnings(final String... expectedWarnings) {
 			this.expectedWarnings = expectedWarnings;
 			index = 0;
 		}
@@ -147,7 +147,7 @@ public final class TestSequestVariableMods {
 		}
 
 		@Override
-		public void reportWarning(String message) {
+		public void reportWarning(final String message) {
 			Assert.assertEquals(message, expectedWarnings[index], "Got unexpected warning");
 			index++;
 		}

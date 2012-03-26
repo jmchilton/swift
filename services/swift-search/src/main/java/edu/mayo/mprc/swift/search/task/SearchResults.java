@@ -19,7 +19,7 @@ final class SearchResults implements Serializable {
 	public SearchResults() {
 	}
 
-	public SearchResults addResult(FileSearchResult result) {
+	public SearchResults addResult(final FileSearchResult result) {
 		this.results.add(result);
 		return this;
 	}
@@ -31,9 +31,9 @@ final class SearchResults implements Serializable {
 	/**
 	 * For given input file, find all search results that match it and return them.
 	 */
-	public Map<String/*Search engine code*/, File> getAllResults(File inputFile) {
-		Map<String/*Search engine code*/, File> result = new HashMap<String, File>();
-		for (FileSearchResult r : results) {
+	public Map<String/*Search engine code*/, File> getAllResults(final File inputFile) {
+		final Map<String/*Search engine code*/, File> result = new HashMap<String, File>();
+		for (final FileSearchResult r : results) {
 			if (r.getInputFile().equals(inputFile)) {
 				result.putAll(r.getResults());
 			}

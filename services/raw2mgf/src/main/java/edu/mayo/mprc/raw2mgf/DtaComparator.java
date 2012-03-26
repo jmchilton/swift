@@ -12,9 +12,9 @@ import java.util.Comparator;
 public class DtaComparator implements Comparator<File>, Serializable {
 	private static final long serialVersionUID = -2011114L;
 
-	public int compare(File o1, File o2) {
-		DtaName name1 = new DtaName(o1);
-		DtaName name2 = new DtaName(o2);
+	public int compare(final File o1, final File o2) {
+		final DtaName name1 = new DtaName(o1);
+		final DtaName name2 = new DtaName(o2);
 
 		if (name1.matches() && name2.matches()) {
 			return ComparisonChain.start()

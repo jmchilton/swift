@@ -23,13 +23,13 @@ public abstract class Entry implements Serializable {
 		this(null);
 	}
 
-	protected Entry(String name) {
+	protected Entry(final String name) {
 		parent = null;
 		this.name = name;
 		children = new ArrayList<Entry>(5);
 	}
 
-	public void addChild(Entry entry) {
+	public void addChild(final Entry entry) {
 		children.add(entry);
 		entry.setParent(this);
 	}
@@ -42,7 +42,7 @@ public abstract class Entry implements Serializable {
 		return parent;
 	}
 
-	public void setParent(Entry parent) {
+	public void setParent(final Entry parent) {
 		this.parent = parent;
 	}
 
@@ -50,7 +50,7 @@ public abstract class Entry implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

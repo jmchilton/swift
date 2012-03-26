@@ -21,7 +21,7 @@ public final class DatabaseUndeployerResult implements ProgressInfo {
 		return undeploymentTaskResults;
 	}
 
-	public void addUndeploymentTaskResult(String connectionName, UndeploymentTaskResult taskResult) {
+	public void addUndeploymentTaskResult(final String connectionName, final UndeploymentTaskResult taskResult) {
 		undeploymentTaskResults.put(connectionName, taskResult);
 	}
 }

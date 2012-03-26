@@ -48,8 +48,8 @@ public class GridWorkPacket {
 	}
 
 	public GridWorkPacket(
-			String applicationName,
-			List<String> parameters) {
+			final String applicationName,
+			final List<String> parameters) {
 		if (applicationName == null) {
 			throw new MprcException("The application name for grid work packet was null");
 		}
@@ -65,7 +65,7 @@ public class GridWorkPacket {
 		workPacketUniqueId = workPacketUniqueIdBase.getAndIncrement();
 	}
 
-	public GridWorkPacket(GridWorkPacket packet) {
+	public GridWorkPacket(final GridWorkPacket packet) {
 		this.parameters = packet.parameters;
 		this.applicationName = packet.applicationName;
 		this.forceQueue = packet.forceQueue;
@@ -87,11 +87,11 @@ public class GridWorkPacket {
 		return workPacketUniqueId;
 	}
 
-	public void setParameters(List<String> parameters) {
+	public void setParameters(final List<String> parameters) {
 		this.parameters = parameters;
 	}
 
-	public void setListener(GridWorkPacketStateListener listener) {
+	public void setListener(final GridWorkPacketStateListener listener) {
 		this.listener = listener;
 	}
 
@@ -103,12 +103,12 @@ public class GridWorkPacket {
 		return jobQueueName;
 	}
 
-	public void setJobQueue(String queueName) {
+	public void setJobQueue(final String queueName) {
 		forceQueue = true;
 		jobQueueName = queueName;
 	}
 
-	public void setWorkingFolder(String workingFolder) {
+	public void setWorkingFolder(final String workingFolder) {
 		this.workingFolder = workingFolder;
 		this.hasWorkingFolder = true;
 	}
@@ -121,7 +121,7 @@ public class GridWorkPacket {
 		return logFolder;
 	}
 
-	public void setLogFolder(String logFolder) {
+	public void setLogFolder(final String logFolder) {
 		this.logFolder = logFolder;
 	}
 
@@ -145,7 +145,7 @@ public class GridWorkPacket {
 		return nativeSpecification;
 	}
 
-	public void setNativeSpecification(String nativespecification) {
+	public void setNativeSpecification(final String nativespecification) {
 		hasNativeSpecification = true;
 		nativeSpecification = nativespecification;
 	}
@@ -159,7 +159,7 @@ public class GridWorkPacket {
 		return this.minMemoryRequirement;
 	}
 
-	public void setForcedMemoryRequirement(String memoryrequirement) {
+	public void setForcedMemoryRequirement(final String memoryrequirement) {
 		this.hasMemoryRequirement = true;
 		minMemoryRequirement = memoryrequirement;
 	}
@@ -183,7 +183,7 @@ public class GridWorkPacket {
 		return persistentRequestId;
 	}
 
-	public void setPersistentRequestId(Long persistentRequestId) {
+	public void setPersistentRequestId(final Long persistentRequestId) {
 		this.persistentRequestId = persistentRequestId;
 	}
 
@@ -208,7 +208,7 @@ public class GridWorkPacket {
 		fireStateChanged();
 	}
 
-	public void jobUpdateFailed(String message) {
+	public void jobUpdateFailed(final String message) {
 		failure = true;
 		errorMessage = message;
 		fireStateChanged();
@@ -224,7 +224,7 @@ public class GridWorkPacket {
 	 * @param isError If true, file name is error log. Otherwise, file name is standard log.
 	 * @return
 	 */
-	private String getOutputFileName(boolean isError) {
+	private String getOutputFileName(final boolean isError) {
 		String fileName = null;
 
 		if (isError) {

@@ -18,7 +18,7 @@ public class FastaDbTask extends AsyncTaskBase {
 	/**
 	 * See {@link AsyncTaskBase#AsyncTaskBase(edu.mayo.mprc.daemon.DaemonConnection, edu.mayo.mprc.daemon.files.FileTokenFactory, boolean)}
 	 */
-	public FastaDbTask(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch, Curation curationToLoad) {
+	public FastaDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Curation curationToLoad) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.curationIdToLoad = curationToLoad.getId();
 		setName("Fasta DB load");
@@ -29,7 +29,7 @@ public class FastaDbTask extends AsyncTaskBase {
 		return curationIdToLoad;
 	}
 
-	public void setCurationIdToLoad(int curationIdToLoad) {
+	public void setCurationIdToLoad(final int curationIdToLoad) {
 		this.curationIdToLoad = curationIdToLoad;
 	}
 
@@ -43,6 +43,6 @@ public class FastaDbTask extends AsyncTaskBase {
 	}
 
 	@Override
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 	}
 }

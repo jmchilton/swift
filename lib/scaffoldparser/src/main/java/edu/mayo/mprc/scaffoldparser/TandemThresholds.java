@@ -20,7 +20,7 @@ public final class TandemThresholds implements AbstractProgramSpecificThreshold 
 	public TandemThresholds() {
 	}
 
-	public TandemThresholds(double peptideProbability, String logExpectScores) {
+	public TandemThresholds(final double peptideProbability, final String logExpectScores) {
 		this.peptideProbability = peptideProbability;
 		this.logExpectScores = logExpectScores;
 	}
@@ -29,7 +29,7 @@ public final class TandemThresholds implements AbstractProgramSpecificThreshold 
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -37,7 +37,7 @@ public final class TandemThresholds implements AbstractProgramSpecificThreshold 
 		return logExpectScores;
 	}
 
-	public void setLogExpectScores(String logExpectScores) {
+	public void setLogExpectScores(final String logExpectScores) {
 		this.logExpectScores = logExpectScores;
 	}
 }

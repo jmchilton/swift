@@ -32,15 +32,15 @@ public final class ActiveMQConnectionPool {
 	 * @param password Broker password
 	 * @return
 	 */
-	public static Connection getConnectionToBroker(URI broker, String userName, String password) {
+	public static Connection getConnectionToBroker(final URI broker, final String userName, final String password) {
 		final ConnectionInfo info = new ConnectionInfo(broker, userName, password);
 		synchronized (CONNECTIONS) {
 			Connection connection = CONNECTIONS.get(info);
 			if (connection == null) {
 				LOGGER.info("Connecting to broker: " + broker + (userName != null ? (" as user " + userName) : ""));
-				QueueConnectionFactory connectionFactory = new ActiveMQConnectionFactory(broker);
+				final QueueConnectionFactory connectionFactory = new ActiveMQConnectionFactory(broker);
 
-				int connectionTrialDelay = getConnectionTrialDelay();
+				final int connectionTrialDelay = getConnectionTrialDelay();
 
 				boolean run = true;
 				while (run) {
@@ -87,7 +87,7 @@ public final class ActiveMQConnectionPool {
 		private final String userName;
 		private final String password;
 
-		private ConnectionInfo(URI broker, String userName, String password) {
+		private ConnectionInfo(final URI broker, final String userName, final String password) {
 			this.broker = broker;
 			this.userName = userName;
 			this.password = password;
@@ -106,7 +106,7 @@ public final class ActiveMQConnectionPool {
 		}
 
 		@Override
-		public boolean equals(Object o) {
+		public boolean equals(final Object o) {
 			if (this == o) {
 				return true;
 			}
@@ -114,7 +114,7 @@ public final class ActiveMQConnectionPool {
 				return false;
 			}
 
-			ConnectionInfo that = (ConnectionInfo) o;
+			final ConnectionInfo that = (ConnectionInfo) o;
 
 			if (broker != null ? !broker.equals(that.broker) : that.broker != null) {
 				return false;

@@ -27,7 +27,7 @@ public final class Experiment {
 		return experimentName;
 	}
 
-	public void setExperimentName(String experimentName) {
+	public void setExperimentName(final String experimentName) {
 		this.experimentName = experimentName;
 	}
 
@@ -35,7 +35,7 @@ public final class Experiment {
 		return analysisDate;
 	}
 
-	public void setAnalysisDate(String analysisDate) {
+	public void setAnalysisDate(final String analysisDate) {
 		this.analysisDate = analysisDate;
 	}
 
@@ -43,7 +43,7 @@ public final class Experiment {
 		return displayThresholds;
 	}
 
-	public void setDisplayThresholds(List<DisplayThresholds> displayThresholds) {
+	public void setDisplayThresholds(final List<DisplayThresholds> displayThresholds) {
 		this.displayThresholds = displayThresholds;
 	}
 
@@ -51,7 +51,7 @@ public final class Experiment {
 		return biologicalSamples;
 	}
 
-	public void setBiologicalSamples(List<BiologicalSample> biologicalSamples) {
+	public void setBiologicalSamples(final List<BiologicalSample> biologicalSamples) {
 		this.biologicalSamples = biologicalSamples;
 	}
 }

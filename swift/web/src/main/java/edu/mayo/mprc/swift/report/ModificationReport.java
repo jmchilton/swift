@@ -33,7 +33,7 @@ public final class ModificationReport extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
 		OutputStreamWriter writer = null;
 		try {

@@ -24,24 +24,24 @@ public final class ConfigWrapper extends SimplePanel {
 
 	public ConfigWrapper(final Context context) {
 		this.context = context;
-		FlowPanel mainPanel = new FlowPanel();
+		final FlowPanel mainPanel = new FlowPanel();
 		configTree = new Tree();
 		configTree.setStyleName("config-tree");
 
-		HorizontalPanel daemonsPanel = new HorizontalPanel();
+		final HorizontalPanel daemonsPanel = new HorizontalPanel();
 		daemonsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		daemonsPanel.add(new Label("Daemons"));
 
 		this.newDaemonButton = new PushButton("Add new");
 		this.newDaemonButton.addStyleName("tree-item-pusbutton");
 		this.newDaemonButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				ConfigurationService.App.getInstance().createChild(model.getId(), "daemon", new AsyncCallback<ResourceModel>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						context.displayErrorMessage("Cannot create new daemon", throwable);
 					}
 
-					public void onSuccess(ResourceModel model) {
+					public void onSuccess(final ResourceModel model) {
 						if (model instanceof DaemonModel) {
 							ConfigWrapper.this.context.getApplicationModel().addDaemon((DaemonModel) model);
 						} else {
@@ -55,13 +55,13 @@ public final class ConfigWrapper extends SimplePanel {
 
 		daemonsItem = configTree.addItem(daemonsPanel);
 
-		HorizontalPanel treeAndItems = new HorizontalPanel();
+		final HorizontalPanel treeAndItems = new HorizontalPanel();
 		this.model = context.getApplicationModel();
 		this.model.addListener(new MyApplicationModelListener());
 		initFromData();
 
 		configTree.addTreeListener(new TreeListener() {
-			public void onTreeItemSelected(TreeItem item) {
+			public void onTreeItemSelected(final TreeItem item) {
 				if (item != null) {
 					if (isDaemonItem(item)) {
 						uiPanel.setWidget((DaemonWrapper) item.getUserObject());
@@ -84,7 +84,7 @@ public final class ConfigWrapper extends SimplePanel {
 				}
 			}
 
-			public void onTreeItemStateChanged(TreeItem item) {
+			public void onTreeItemStateChanged(final TreeItem item) {
 			}
 		});
 
@@ -101,11 +101,11 @@ public final class ConfigWrapper extends SimplePanel {
 		daemonsItem.setState(true);
 	}
 
-	private boolean isDaemonResource(TreeItem item) {
+	private boolean isDaemonResource(final TreeItem item) {
 		return item.getUserObject() instanceof ResourceModel;
 	}
 
-	private boolean isDaemonItem(TreeItem item) {
+	private boolean isDaemonItem(final TreeItem item) {
 		if (item.getParentItem() == null) {
 			return false;
 		}
@@ -113,13 +113,13 @@ public final class ConfigWrapper extends SimplePanel {
 	}
 
 	private void initFromData() {
-		for (DaemonModel daemon : model.getDaemons()) {
+		for (final DaemonModel daemon : model.getDaemons()) {
 			addDaemonUi(daemon);
 		}
 	}
 
 	private static final class DaemonUi {
-		public DaemonUi(DaemonModel model, TreeItem treeItem, DaemonWrapper wrapper) {
+		public DaemonUi(final DaemonModel model, final TreeItem treeItem, final DaemonWrapper wrapper) {
 			this.model = model;
 			this.treeItem = treeItem;
 			this.wrapper = wrapper;
@@ -132,17 +132,17 @@ public final class ConfigWrapper extends SimplePanel {
 
 	private class MyApplicationModelListener implements ResourceModelListener {
 
-		public void initialized(ResourceModel model) {
+		public void initialized(final ResourceModel model) {
 		}
 
-		public void nameChanged(ResourceModel model) {
+		public void nameChanged(final ResourceModel model) {
 		}
 
-		public void childAdded(ResourceModel child, ResourceModel addedTo) {
+		public void childAdded(final ResourceModel child, final ResourceModel addedTo) {
 			addDaemonUi((DaemonModel) child);
 		}
 
-		public void childRemoved(ResourceModel child, ResourceModel removedFrom) {
+		public void childRemoved(final ResourceModel child, final ResourceModel removedFrom) {
 			final DaemonModel daemon = (DaemonModel) child;
 			final DaemonUi ui = daemonMap.get(daemon);
 			if (ui.treeItem.isSelected()) {
@@ -152,7 +152,7 @@ public final class ConfigWrapper extends SimplePanel {
 
 			ui.treeItem.remove();
 
-			for (ResourceModel module : daemon.getChildren()) {
+			for (final ResourceModel module : daemon.getChildren()) {
 				final ModuleWrapper forModule = ui.wrapper.getUiForResource(module);
 				if (forModule.equals(uiPanel.getWidget())) {
 					uiPanel.clear();
@@ -162,22 +162,22 @@ public final class ConfigWrapper extends SimplePanel {
 			}
 		}
 
-		public void propertyChanged(ResourceModel model, String propertyName, String newValue) {
+		public void propertyChanged(final ResourceModel model, final String propertyName, final String newValue) {
 		}
 	}
 
 	private void addDaemonUi(final DaemonModel daemon) {
-		HorizontalPanel daemonItem = new HorizontalPanel();
+		final HorizontalPanel daemonItem = new HorizontalPanel();
 		daemonItem.add(new Label(daemon.getName()));
 		final DeleteButton removeDaemonButton = new DeleteButton("Do you really want to remove this daemon?");
 		removeDaemonButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				ConfigurationService.App.getInstance().removeChild(daemon.getId(), new AsyncCallback<Void>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						context.displayErrorMessage("Could not remove daemon " + daemon.getName(), throwable);
 					}
 
-					public void onSuccess(Void aVoid) {
+					public void onSuccess(final Void aVoid) {
 						model.removeDaemon(daemon);
 					}
 				});
@@ -186,7 +186,7 @@ public final class ConfigWrapper extends SimplePanel {
 		daemonItem.add(removeDaemonButton);
 
 		final TreeItem treeItem = new TreeItem(daemonItem);
-		DaemonWrapper wrapper = new DaemonWrapper(daemon, context);
+		final DaemonWrapper wrapper = new DaemonWrapper(daemon, context);
 
 		treeItem.setUserObject(wrapper);
 		daemonsItem.addItem(treeItem);
@@ -194,7 +194,7 @@ public final class ConfigWrapper extends SimplePanel {
 
 		daemon.addListener(new MyDaemonModelListener(treeItem));
 
-		for (ResourceModel resource : daemon.getChildren()) {
+		for (final ResourceModel resource : daemon.getChildren()) {
 			addTreeItemForResource(daemon, resource, treeItem);
 		}
 
@@ -205,22 +205,22 @@ public final class ConfigWrapper extends SimplePanel {
 
 		private final TreeItem daemonTreeItem;
 
-		MyDaemonModelListener(TreeItem daemonTreeItem) {
+		MyDaemonModelListener(final TreeItem daemonTreeItem) {
 			this.daemonTreeItem = daemonTreeItem;
 		}
 
-		public void initialized(ResourceModel model) {
+		public void initialized(final ResourceModel model) {
 		}
 
-		public void nameChanged(ResourceModel model) {
+		public void nameChanged(final ResourceModel model) {
 			changeTreeItemLabel(daemonTreeItem, model.getName());
 		}
 
-		public void childAdded(ResourceModel child, ResourceModel addedTo) {
+		public void childAdded(final ResourceModel child, final ResourceModel addedTo) {
 			addTreeItemForResource((DaemonModel) addedTo, child, daemonTreeItem);
 		}
 
-		public void childRemoved(ResourceModel child, ResourceModel removedFrom) {
+		public void childRemoved(final ResourceModel child, final ResourceModel removedFrom) {
 			removeTreeItemForResource(child, daemonTreeItem);
 			final ModuleWrapper removedModuleWrapper = daemonMap.get((DaemonModel) removedFrom).wrapper.getUiForResource(child);
 			if (uiPanel.getWidget().equals(removedModuleWrapper)) {
@@ -230,40 +230,40 @@ public final class ConfigWrapper extends SimplePanel {
 			daemonsItem.getTree().setSelectedItem(daemonsItem);
 		}
 
-		public void propertyChanged(ResourceModel model, String propertyName, String newValue) {
+		public void propertyChanged(final ResourceModel model, final String propertyName, final String newValue) {
 		}
 	}
 
 	private void addTreeItemForResource(final DaemonModel daemon, final ResourceModel resource, final TreeItem daemonTreeItem) {
-		HorizontalPanel panel = new HorizontalPanel();
+		final HorizontalPanel panel = new HorizontalPanel();
 		panel.add(new Label(resource.getName()));
 		final DeleteButton deleteButton = new DeleteButton("Do you really want to remove this module?");
 		deleteButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				ConfigurationService.App.getInstance().removeChild(resource.getId(), new AsyncCallback<Void>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						context.displayErrorMessage("Could not remove module " + resource.getName(), throwable);
 					}
 
-					public void onSuccess(Void aVoid) {
+					public void onSuccess(final Void aVoid) {
 						daemon.removeChild(resource);
 					}
 				});
 			}
 		});
 		panel.add(deleteButton);
-		TreeItem item = new TreeItem(panel);
+		final TreeItem item = new TreeItem(panel);
 		item.setState(true);
 		item.setUserObject(resource);
 		daemonTreeItem.addItem(item);
 	}
 
-	private void changeTreeItemLabel(final TreeItem treeItem, String newLabel) {
+	private void changeTreeItemLabel(final TreeItem treeItem, final String newLabel) {
 		final HorizontalPanel itemPanel = (HorizontalPanel) treeItem.getWidget();
 		((Label) itemPanel.getWidget(0)).setText(newLabel);
 	}
 
-	private void removeTreeItemForResource(ResourceModel resource, TreeItem daemonTreeItem) {
+	private void removeTreeItemForResource(final ResourceModel resource, final TreeItem daemonTreeItem) {
 		for (int row = 0; row < daemonTreeItem.getChildCount(); row++) {
 			final TreeItem child = daemonTreeItem.getChild(row);
 			if (child.getUserObject().equals(resource)) {

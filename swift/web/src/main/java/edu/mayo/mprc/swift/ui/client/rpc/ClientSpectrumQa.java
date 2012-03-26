@@ -18,7 +18,7 @@ public final class ClientSpectrumQa implements Serializable {
 		paramFilePath = null;
 	}
 
-	public ClientSpectrumQa(String paramFilePath) {
+	public ClientSpectrumQa(final String paramFilePath) {
 		this.enabled = paramFilePath != null;
 		this.paramFilePath = paramFilePath;
 	}

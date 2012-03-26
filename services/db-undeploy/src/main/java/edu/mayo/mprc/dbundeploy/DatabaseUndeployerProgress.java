@@ -14,7 +14,7 @@ public final class DatabaseUndeployerProgress implements Serializable {
 	private String progressMessage;
 	private boolean isLast;
 
-	public DatabaseUndeployerProgress(long databaseUndeployerTaskId, String progressMessage, boolean last) {
+	public DatabaseUndeployerProgress(final long databaseUndeployerTaskId, final String progressMessage, final boolean last) {
 		this.databaseUndeployerTaskId = databaseUndeployerTaskId;
 		this.progressMessage = progressMessage;
 		isLast = last;

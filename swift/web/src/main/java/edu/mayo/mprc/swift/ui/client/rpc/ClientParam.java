@@ -12,9 +12,9 @@ public final class ClientParam implements ClientValue {
 	public ClientParam() {
 	}
 
-	public ClientParam(String paramId,
-	                   ClientValue value,
-	                   ClientValidationList validationList) {
+	public ClientParam(final String paramId,
+	                   final ClientValue value,
+	                   final ClientValidationList validationList) {
 		this.paramId = paramId;
 		this.value = value;
 		this.validationList = validationList;
@@ -24,7 +24,7 @@ public final class ClientParam implements ClientValue {
 		return paramId;
 	}
 
-	public void setParamId(String paramId) {
+	public void setParamId(final String paramId) {
 		this.paramId = paramId;
 	}
 
@@ -32,7 +32,7 @@ public final class ClientParam implements ClientValue {
 		return validationList;
 	}
 
-	public void setValidationList(ClientValidationList validationList) {
+	public void setValidationList(final ClientValidationList validationList) {
 		this.validationList = validationList;
 	}
 
@@ -40,7 +40,7 @@ public final class ClientParam implements ClientValue {
 		return value;
 	}
 
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		this.value = value;
 	}
 

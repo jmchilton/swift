@@ -68,16 +68,16 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(final ServletConfig config) throws ServletException {
 		super.init(config);
 		ServletIntialization.initServletConfiguration(config);
 	}
 
 
-	public Entry listFiles(String relativePath, String[] expandedPaths) throws GWTServiceException {
+	public Entry listFiles(final String relativePath, final String[] expandedPaths) throws GWTServiceException {
 		try {
-			Entry rootEntry = new DirectoryEntry("(root)");
-			File[] expandedFiles;
+			final Entry rootEntry = new DirectoryEntry("(root)");
+			final File[] expandedFiles;
 			if (expandedPaths == null) {
 				expandedFiles = EMPTY_EXPANDED_FILES;
 			} else {
@@ -97,13 +97,13 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	public ClientUser[] listUsers() throws GWTServiceException {
 		try {
 			getWorkspaceDao().begin();
-			List<User> users = getWorkspaceDao().getUsers();
+			final List<User> users = getWorkspaceDao().getUsers();
 
-			ClientUser[] result;
+			final ClientUser[] result;
 			if (users != null) {
 				result = new ClientUser[users.size()];
 				for (int i = 0; i < users.size(); i++) {
-					User user = users.get(i);
+					final User user = users.get(i);
 					result[i] = getClientProxyGenerator().convertTo(user);
 				}
 			} else {
@@ -118,11 +118,11 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public void startSearch(Service.Token t, ClientSwiftSearchDefinition def) throws GWTServiceException {
+	public void startSearch(final Service.Token t, final ClientSwiftSearchDefinition def) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getSwiftDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 
 			SearchEngineParameters parameters = cache.getFromCacheHibernate(def.getParamSet());
 			if (parameters.getId() == null) {
@@ -162,11 +162,11 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 				throw new MprcException("There is already a search titled " + swiftSearch.getTitle() + ".");
 			}
 			swiftSearch = getSwiftDao().addSwiftSearchDefinition(swiftSearch);
-			int searchId = swiftSearch.getId();
-			String batchName = swiftSearch.getTitle();
+			final int searchId = swiftSearch.getId();
+			final String batchName = swiftSearch.getTitle();
 			final int previousSearchRunId = previousSearchRun == null ? 0 : previousSearchRun.getId();
 			getSwiftDao().commit(); // We must commit here before we send the search over (it is loaded from the database)
-			SwiftSearcherCaller.SearchProgressListener listener = SwiftSearcherCaller.startSearch(searchId, batchName, def.isFromScratch(), previousSearchRunId, getSwiftSearcherDaemonConnection());
+			final SwiftSearcherCaller.SearchProgressListener listener = SwiftSearcherCaller.startSearch(searchId, batchName, def.isFromScratch(), previousSearchRunId, getSwiftSearcherDaemonConnection());
 			listener.waitForSearchReady(SEARCH_TIMEOUT);
 			if (listener.getException() != null) {
 				throw listener.getException();
@@ -182,15 +182,15 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public ClientLoadedSearch loadSearch(Service.Token t, int searchRunId) throws GWTServiceException {
+	public ClientLoadedSearch loadSearch(final Service.Token t, final int searchRunId) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getSwiftDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 			final SearchRun searchRun = getSwiftDao().getSearchRunForId(searchRunId);
 			final SwiftSearchDefinition original = getSwiftDao().getSwiftSearchDefinition(searchRun.getSwiftSearch());
 			final Resolver resolver = new Resolver(cache);
-			ClientSwiftSearchDefinition proxy = getClientProxyGenerator().convertTo(original, resolver);
+			final ClientSwiftSearchDefinition proxy = getClientProxyGenerator().convertTo(original, resolver);
 			final ClientLoadedSearch result = new ClientLoadedSearch(proxy, resolver.isClientParamSetListChanged() ? makeParamSetList(cache) : null);
 			getSwiftDao().commit();
 			return result;
@@ -202,8 +202,8 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 	public List<ClientSearchEngine> listSearchEngines() throws GWTServiceException {
-		List<ClientSearchEngine> infos = new ArrayList<ClientSearchEngine>();
-		for (SearchEngine engine : getSearchEngines()) {
+		final List<ClientSearchEngine> infos = new ArrayList<ClientSearchEngine>();
+		for (final SearchEngine engine : getSearchEngines()) {
 			if (engine.isEnabled()) {
 				infos.add(new ClientSearchEngine(engine.getCode(), engine.getFriendlyName(), engine.isOnByDefault()));
 			}
@@ -213,9 +213,9 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 
 	public List<SpectrumQaParamFileInfo> listSpectrumQaParamFiles() throws GWTServiceException {
 
-		List<SpectrumQaParamFileInfo> paramFiles = new ArrayList<SpectrumQaParamFileInfo>();
+		final List<SpectrumQaParamFileInfo> paramFiles = new ArrayList<SpectrumQaParamFileInfo>();
 		if (SwiftWebContext.getServletConfig().isMsmsEval()) {
-			for (MSMSEvalParamFile paramFile : SwiftWebContext.getServletConfig().getSpectrumQaParamFiles()) {
+			for (final MSMSEvalParamFile paramFile : SwiftWebContext.getServletConfig().getSpectrumQaParamFiles()) {
 				paramFiles.add(new SpectrumQaParamFileInfo(paramFile.getPath(), paramFile.getDescription()));
 			}
 		}
@@ -235,10 +235,10 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		return null;
 	}
 
-	public FileInfo[] findFiles(String[] relativePaths) throws GWTServiceException {
+	public FileInfo[] findFiles(final String[] relativePaths) throws GWTServiceException {
 		try {
 			// Filter paths so we never have both parent and a child in the list.
-			List<String> filteredPaths = new ArrayList<String>();
+			final List<String> filteredPaths = new ArrayList<String>();
 			for (int i = 0; i < relativePaths.length; i++) {
 				int j;
 				for (j = 0; j < relativePaths.length; j++) {
@@ -253,13 +253,13 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 				}
 			}
 
-			List<FileInfo> list = new ArrayList<FileInfo>();
+			final List<FileInfo> list = new ArrayList<FileInfo>();
 
-			for (String path : filteredPaths) {
+			for (final String path : filteredPaths) {
 				addPathToList(new File(getBrowseRoot(), path), list);
 			}
 
-			FileInfo[] results = new FileInfo[list.size()];
+			final FileInfo[] results = new FileInfo[list.size()];
 			return list.toArray(results);
 		} catch (Exception t) {
 			LOGGER.error("Could not find files", t);
@@ -267,16 +267,16 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	private void addPathToList(File file, List<FileInfo> list) {
+	private void addPathToList(final File file, final List<FileInfo> list) {
 		if (!file.exists() || file.isHidden()) {
 			return;
 		}
 		if (file.isDirectory()) {
 			// Recursively add the contents
 			// TODO: Limit the running time
-			File[] files = file.listFiles(FILTER_DIRS);
+			final File[] files = file.listFiles(FILTER_DIRS);
 			Arrays.sort(files);
-			for (File path : files) {
+			for (final File path : files) {
 				addPathToList(path, list);
 			}
 		} else {
@@ -299,14 +299,14 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	 * @param subs Array of subfolder paths.
 	 * @return True when at least one of the subs is inside dir (directly or not).
 	 */
-	private boolean isSubfolder(File dir, File[] subs) {
+	private boolean isSubfolder(final File dir, final File[] subs) {
 		if (subs == null) {
 			return false;
 		}
 		if (dir == null) {
 			return true;
 		}
-		for (File sub : subs) {
+		for (final File sub : subs) {
 			if (sub.getPath().startsWith(dir.getPath())) {
 				return true;
 			}
@@ -322,7 +322,7 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	 * @param root          Root directory.
 	 * @param expandedPaths List of paths that have to be expanded in the listing.
 	 */
-	private void listDirectoryContents(Entry rootEntry, File root, File[] expandedPaths) {
+	private void listDirectoryContents(final Entry rootEntry, final File root, final File[] expandedPaths) {
 		// find all directories
 		File dirs[] = null;
 		try {
@@ -335,9 +335,9 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 
 		if (dirs != null) {
 			Arrays.sort(dirs, new FilenameComparator());
-			for (File dir : dirs) {
+			for (final File dir : dirs) {
 				if (dir.isDirectory()) {
-					DirectoryEntry directory = new DirectoryEntry(dir.getName());
+					final DirectoryEntry directory = new DirectoryEntry(dir.getName());
 					rootEntry.addChild(directory);
 					// If this directory should be expanded
 					if (isSubfolder(dir, expandedPaths)) {
@@ -358,7 +358,7 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 		if (files != null) {
 			Arrays.sort(files, new FilenameComparator());
-			for (File file : files) {
+			for (final File file : files) {
 				if (!file.isDirectory()) {
 					rootEntry.addChild(new FileEntry(file.getName()));
 				}
@@ -368,32 +368,32 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 
 	private static final File[] EMPTY_EXPANDED_FILES = new File[0];
 
-	public Boolean login(String userName, String password) throws GWTServiceException {
+	public Boolean login(final String userName, final String password) throws GWTServiceException {
 		return true;
 	}
 
-	public synchronized ClientParamSet save(Service.Token t, ClientParamSet toCopy, String newName, String ownerEmail,
-	                                        String ownerInitials,
-	                                        boolean permanent) throws GWTServiceException {
+	public synchronized ClientParamSet save(final Service.Token t, final ClientParamSet toCopy, final String newName, final String ownerEmail,
+	                                        final String ownerInitials,
+	                                        final boolean permanent) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 			SearchEngineParameters ps = cache.getFromCacheHibernate(toCopy);
-			ClientParamSet ret;
+			final ClientParamSet ret;
 			if (!permanent) {
 				ret = cache.installTemporary(toCopy);
 			} else {
 				final Change change = new Change("Saving parameter set " + newName, new DateTime());
 
 				// Delete if already exists
-				SavedSearchEngineParameters params = getParamsDao().findSavedSearchEngineParameters(newName);
+				final SavedSearchEngineParameters params = getParamsDao().findSavedSearchEngineParameters(newName);
 				if (params != null) {
 					getParamsDao().deleteSavedSearchEngineParameters(params, change);
 				}
 
 				ps = getParamsDao().addSearchEngineParameters(ps);
-				User user = getWorkspaceDao().getUserByEmail(ownerEmail);
+				final User user = getWorkspaceDao().getUserByEmail(ownerEmail);
 
 				SavedSearchEngineParameters newParams = new SavedSearchEngineParameters(
 						newName, user, ps);
@@ -415,16 +415,16 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 
-	public ClientParamFile[] getFiles(Service.Token t, ClientParamSet paramSet) throws GWTServiceException {
+	public ClientParamFile[] getFiles(final Service.Token t, final ClientParamSet paramSet) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
-			SearchEngineParameters ps = cache.getFromCache(paramSet);
-			ClientParamFile[] files = new ClientParamFile[getSearchEngines().size()];
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final SearchEngineParameters ps = cache.getFromCache(paramSet);
+			final ClientParamFile[] files = new ClientParamFile[getSearchEngines().size()];
 
 			int i = 0;
-			for (SearchEngine engine : getSearchEngines()) {
+			for (final SearchEngine engine : getSearchEngines()) {
 				final String parameters = engine.writeSearchEngineParameterString(ps, null);
 				files[i++] = new ClientParamFile(engine.getFriendlyName(), parameters);
 			}
@@ -437,12 +437,12 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public ClientParamSetValues getParamSetValues(Service.Token t, ClientParamSet paramSet) throws GWTServiceException {
+	public ClientParamSetValues getParamSetValues(final Service.Token t, final ClientParamSet paramSet) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
-			SearchEngineParameters ps = cache.getFromCache(paramSet);
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final SearchEngineParameters ps = cache.getFromCache(paramSet);
 			final ParamsValidations paramsValidations = SearchEngine.validate(ps, getSearchEngines());
 			final ClientParamSetValues clientParamSetValues = getClientProxyGenerator().convertValues(ps, paramsValidations);
 			getParamsDao().commit();
@@ -454,11 +454,11 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public synchronized ClientParamSetList getParamSetList(Service.Token t) throws GWTServiceException {
+	public synchronized ClientParamSetList getParamSetList(final Service.Token t) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 			final ClientParamSetList paramSetList = makeParamSetList(cache);
 			getParamsDao().commit();
 			return paramSetList;
@@ -469,12 +469,12 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	private ClientParamSetList makeParamSetList(ParameterSetCache cache) {
+	private ClientParamSetList makeParamSetList(final ParameterSetCache cache) {
 		final List<SavedSearchEngineParameters> engineParametersList = getParamsDao().savedSearchEngineParameters();
 		return ClientProxyGenerator.getClientParamSetList(engineParametersList, cache.getTemporaryClientParamList());
 	}
 
-	public List<List<ClientValue>> getAllowedValues(Service.Token t, ClientParamSet paramSet, String[] params, String[] mappingDatas) throws GWTServiceException {
+	public List<List<ClientValue>> getAllowedValues(final Service.Token t, final ClientParamSet paramSet, final String[] params, final String[] mappingDatas) throws GWTServiceException {
 		try {
 			getParamsDao().begin();
 
@@ -482,9 +482,9 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 				throw new MprcException("params must match mappingDatas");
 			}
 
-			List<List<ClientValue>> values = new ArrayList<List<ClientValue>>();
-			for (String param : params) {
-				ParamName name = ParamName.getById(param);
+			final List<List<ClientValue>> values = new ArrayList<List<ClientValue>>();
+			for (final String param : params) {
+				final ParamName name = ParamName.getById(param);
 				values.add(getClientProxyGenerator().getAllowedValues(name, getParamsInfo()));
 			}
 			getParamsDao().commit();
@@ -496,17 +496,17 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public ClientParamsValidations update(Service.Token t, ClientParamSet paramSet, String param, ClientValue value) throws GWTServiceException {
+	public ClientParamsValidations update(final Service.Token t, final ClientParamSet paramSet, final String param, final ClientValue value) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
-			ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+			final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 
-			SearchEngineParameters ps = cache.getFromCache(paramSet);
+			final SearchEngineParameters ps = cache.getFromCache(paramSet);
 			try {
-				ParamName name = ParamName.getById(param);
+				final ParamName name = ParamName.getById(param);
 				ps.setValue(name, getClientProxyGenerator().convert(value, getParamsInfo().getAllowedValues(name)));
-				ParamsValidations validations = SearchEngine.validate(ps, getSearchEngines());
+				final ParamsValidations validations = SearchEngine.validate(ps, getSearchEngines());
 				final ClientParamsValidations validationList = getClientProxyGenerator().convertTo(validations);
 				getParamsDao().commit();
 				return validationList;
@@ -522,40 +522,40 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		}
 	}
 
-	public void delete(Service.Token t, ClientParamSet paramSet) throws GWTServiceException {
+	public void delete(final Service.Token t, final ClientParamSet paramSet) throws GWTServiceException {
 		try {
-			HttpSession session = compareToken(t);
+			final HttpSession session = compareToken(t);
 			getParamsDao().begin();
 			final SavedSearchEngineParameters savedSearchEngineParameters = getParamsDao().findSavedSearchEngineParameters(paramSet.getName());
 			if (savedSearchEngineParameters != null) {
 				getParamsDao().deleteSavedSearchEngineParameters(savedSearchEngineParameters, new Change("Deleting saved search engine parameters [" + savedSearchEngineParameters.getName() + "] with id " + savedSearchEngineParameters.getId(), new DateTime()));
-				ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
+				final ParameterSetCache cache = new ParameterSetCache(session, getParamsDao());
 				cache.removeFromCache(paramSet);
 			}
 			getParamsDao().commit();
 		} catch (Exception e) {
 			getParamsDao().rollback();
-			String errMsg = "Could not delete parameter set " + (paramSet != null ? paramSet.getName() : "");
+			final String errMsg = "Could not delete parameter set " + (paramSet != null ? paramSet.getName() : "");
 			LOGGER.error(errMsg, e);
 			throw GWTServiceExceptionFactory.createException(errMsg, e);
 		}
 	}
 
-	private ClientParamsValidations getValidationForException(String param, Throwable e) {
-		ClientValidationList list = new ClientValidationList();
-		ClientValidation cv = new ClientValidation(e.getMessage());
+	private ClientParamsValidations getValidationForException(final String param, final Throwable e) {
+		final ClientValidationList list = new ClientValidationList();
+		final ClientValidation cv = new ClientValidation(e.getMessage());
 		cv.setThrowableStackTrace(ExceptionUtilities.stringifyStackTrace(e));
 		cv.setParamId(param);
 		cv.setSeverity(ClientValidation.SEVERITY_ERROR);
 		cv.setThrowableMessage(MprcException.getDetailedMessage(e));
 		list.add(cv);
-		Map<String, ClientValidationList> map = new HashMap<String, ClientValidationList>();
+		final Map<String, ClientValidationList> map = new HashMap<String, ClientValidationList>();
 		map.put(param, list);
 		return new ClientParamsValidations(map);
 	}
 
 	@Override
-	public ClientDatabaseUndeployerProgress undeployDatabase(String dbToUndeploy) throws GWTServiceException {
+	public ClientDatabaseUndeployerProgress undeployDatabase(final String dbToUndeploy) throws GWTServiceException {
 		try {
 			getCurationDao().begin();
 			final Curation curation = getCurationDao().findCuration(dbToUndeploy);
@@ -565,14 +565,14 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 			return getDbUndeployerProgressMessageProxy(progressMessage);
 		} catch (Exception e) {
 			getCurationDao().rollback();
-			String errMsg = "Could not undeploy database " + dbToUndeploy;
+			final String errMsg = "Could not undeploy database " + dbToUndeploy;
 			LOGGER.error(errMsg, e);
 			throw GWTServiceExceptionFactory.createException(errMsg, e);
 		}
 	}
 
 	@Override
-	public ClientDatabaseUndeployerProgress getProgressMessageForDatabaseUndeployment(Long taskId) throws GWTServiceException {
+	public ClientDatabaseUndeployerProgress getProgressMessageForDatabaseUndeployment(final Long taskId) throws GWTServiceException {
 		return getDbUndeployerProgressMessageProxy(DatabaseUndeployerCaller.getMessageFromQueue(taskId));
 	}
 
@@ -587,13 +587,13 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 	 * @see <a href="http://groups.google.com/group/Google-Web-Toolkit/web/security-for-gwt-applications">Security for GWT applications</a>
 	 * @see <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">Cross-site request forgery</a>
 	 */
-	protected synchronized HttpSession compareToken(Service.Token t) {
+	protected synchronized HttpSession compareToken(final Service.Token t) {
 		return getThreadLocalRequest().getSession();
 		//String sessionId = session.getId();
 		//assert(t.getToken().equals(sessionId);
 	}
 
-	private ClientDatabaseUndeployerProgress getDbUndeployerProgressMessageProxy(DatabaseUndeployerProgress progressMessage) {
+	private ClientDatabaseUndeployerProgress getDbUndeployerProgressMessageProxy(final DatabaseUndeployerProgress progressMessage) {
 		return new ClientDatabaseUndeployerProgress(progressMessage.getDatabaseUndeployerTaskId(), progressMessage.getProgressMessage(), progressMessage.isLast());
 	}
 
@@ -642,13 +642,13 @@ public final class ServiceImpl extends RemoteServiceServlet implements Service {
 		private ParameterSetCache cache;
 		private boolean clientParamSetListChanged;
 
-		public Resolver(ParameterSetCache cache) {
+		public Resolver(final ParameterSetCache cache) {
 			this.cache = cache;
 			clientParamSetListChanged = false;
 		}
 
 		@Override
-		public ClientParamSet resolve(SearchEngineParameters parameters, User user) {
+		public ClientParamSet resolve(final SearchEngineParameters parameters, final User user) {
 			// Find all saved parameter sets that match these parameters
 			final SavedSearchEngineParameters bestSavedSearchEngineParameters = getParamsDao().findBestSavedSearchEngineParameters(parameters, user);
 			if (bestSavedSearchEngineParameters != null) {

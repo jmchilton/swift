@@ -17,15 +17,15 @@ public final class DaemonException extends MprcException {
 		host = MonitorUtilities.getHostInformation();
 	}
 
-	public DaemonException(String message) {
+	public DaemonException(final String message) {
 		super(message);
 	}
 
-	public DaemonException(String message, Throwable cause) {
+	public DaemonException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
-	public DaemonException(Throwable cause) {
+	public DaemonException(final Throwable cause) {
 		super(cause);
 	}
 

@@ -24,7 +24,7 @@ public final class QstatDaemonWorker implements Worker {
 	public static final String NAME = "qstat";
 	public static final String DESC = "A trivial daemon running <tt>qstat</tt> command to retrieve status of a job running in Sun Grid Engine. This is used only in the web interface and is provided for convenience only. The module has to be enabled on a computer that is Sun Grid Engine submit host.";
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -35,15 +35,15 @@ public final class QstatDaemonWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket, ProgressReporter reporter) {
+	private void process(final WorkPacket workPacket, final ProgressReporter reporter) {
 		if (!(workPacket instanceof QstatWorkPacket)) {
 			throw new DaemonException("Unknown input format: " + workPacket.getClass().getName() + " expected string");
 		}
-		QstatWorkPacket qstatWorkPacket = (QstatWorkPacket) workPacket;
+		final QstatWorkPacket qstatWorkPacket = (QstatWorkPacket) workPacket;
 
-		int jobId = qstatWorkPacket.getJobId();
-		ProcessBuilder builder = new ProcessBuilder("qstat", "-j", String.valueOf(jobId));
-		ProcessCaller caller = new ProcessCaller(builder);
+		final int jobId = qstatWorkPacket.getJobId();
+		final ProcessBuilder builder = new ProcessBuilder("qstat", "-j", String.valueOf(jobId));
+		final ProcessCaller caller = new ProcessCaller(builder);
 		try {
 			caller.run();
 		} catch (Exception t) {
@@ -65,7 +65,7 @@ public final class QstatDaemonWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			return new QstatDaemonWorker();
 		}
 	}
@@ -78,12 +78,12 @@ public final class QstatDaemonWorker implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			return new HashMap<String, String>(1);
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 		}
 
 		@Override
@@ -93,7 +93,7 @@ public final class QstatDaemonWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			// No UI needed
 		}
 	}

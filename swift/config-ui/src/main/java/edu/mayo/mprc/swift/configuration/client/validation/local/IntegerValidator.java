@@ -7,14 +7,14 @@ public final class IntegerValidator implements Validator {
 	public IntegerValidator() {
 	}
 
-	public IntegerValidator(Integer minimumValue, Integer maximumValue) {
+	public IntegerValidator(final Integer minimumValue, final Integer maximumValue) {
 		this.maximumValue = maximumValue;
 		this.minimumValue = minimumValue;
 	}
 
-	public String validate(String value) {
+	public String validate(final String value) {
 		try {
-			Integer integer = Integer.valueOf(value);
+			final Integer integer = Integer.valueOf(value);
 
 			if (minimumValue != null && integer.compareTo(minimumValue) < 0) {
 				return "Value must be greater than or equal to " + minimumValue;

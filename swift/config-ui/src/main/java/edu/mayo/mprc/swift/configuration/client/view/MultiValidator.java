@@ -24,12 +24,12 @@ class MultiValidator implements Validator {
 	private boolean onDemand;
 	private ValidationPanel validationPanel;
 
-	MultiValidator(ResourceModel model, String propertyName) {
+	MultiValidator(final ResourceModel model, final String propertyName) {
 		this.model = model;
 		this.propertyName = propertyName;
 	}
 
-	public void addValidator(Validator v) {
+	public void addValidator(final Validator v) {
 		validators.add(v);
 	}
 
@@ -37,7 +37,7 @@ class MultiValidator implements Validator {
 		onDemand = true;
 	}
 
-	public String validate(String value) {
+	public String validate(final String value) {
 		// The first synchronous validator to fail stops further validations
 		// - it is already broken, why bother doing expensive validation?
 		if (runLocalValidation(value, validationPanel)) {
@@ -48,13 +48,13 @@ class MultiValidator implements Validator {
 		return "";
 	}
 
-	private void sendPropertyChange(final String value, boolean onDemand) {
+	private void sendPropertyChange(final String value, final boolean onDemand) {
 		ConfigurationService.App.getInstance().propertyChanged(model.getId(), propertyName, value, onDemand, new AsyncCallback<UiChangesReplayer>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				validationPanel.addMessage(throwable.getMessage());
 			}
 
-			public void onSuccess(UiChangesReplayer uiChangesReplayer) {
+			public void onSuccess(final UiChangesReplayer uiChangesReplayer) {
 				validationPanel.empty();
 				final MyUiChanges uiChanges = new MyUiChanges(value);
 				uiChangesReplayer.replay(uiChanges);
@@ -73,11 +73,11 @@ class MultiValidator implements Validator {
 	 * @param validationPanel Panel to display the result of validation in.
 	 * @return True if error. (action is needed). False - all ok.
 	 */
-	private boolean runLocalValidation(String value, ValidationPanel validationPanel) {
+	private boolean runLocalValidation(final String value, final ValidationPanel validationPanel) {
 		validationPanel.clear();
 		validationPanel.setVisible(false);
-		for (Validator v : validators) {
-			String result = v.validate(value);
+		for (final Validator v : validators) {
+			final String result = v.validate(value);
 			if (result != null) {
 				validationPanel.addMessage(result, null);
 				return true;
@@ -90,7 +90,7 @@ class MultiValidator implements Validator {
 		return onDemand;
 	}
 
-	public void runOnDemandValidation(String value, ValidationPanel validationPanel) {
+	public void runOnDemandValidation(final String value, final ValidationPanel validationPanel) {
 		validationPanel.empty();
 		validationPanel.validationStarted();
 		if (runLocalValidation(value, validationPanel)) {
@@ -100,7 +100,7 @@ class MultiValidator implements Validator {
 	}
 
 	public boolean isRequiredField() {
-		for (Validator v : validators) {
+		for (final Validator v : validators) {
 			if (v instanceof RequiredFieldValidator) {
 				return true;
 			}
@@ -108,7 +108,7 @@ class MultiValidator implements Validator {
 		return false;
 	}
 
-	public void setValidationPanel(ValidationPanel validationPanel) {
+	public void setValidationPanel(final ValidationPanel validationPanel) {
 		this.validationPanel = validationPanel;
 	}
 
@@ -121,33 +121,33 @@ class MultiValidator implements Validator {
 		private boolean error;
 		private final String value;
 
-		public MyUiChanges(String value) {
+		public MyUiChanges(final String value) {
 			this.value = value;
 			error = false;
 		}
 
-		public void setProperty(String resourceId, String propertyName, String newValue) {
+		public void setProperty(final String resourceId, final String propertyName, final String newValue) {
 			//TODO: implement me
 		}
 
-		public void setPropertyDescription(String resourceId, String propertyName, String description) {
+		public void setPropertyDescription(final String resourceId, final String propertyName, final String description) {
 			//TODO: implement me
 		}
 
-		public void displayPropertyError(final String resourceId, final String propertyName, String error) {
+		public void displayPropertyError(final String resourceId, final String propertyName, final String error) {
 			//TODO: Implement properly (allow user to display error on a different property than the validated one)
 			if (error == null) {
 				validationPanel.clear();
 			} else {
 				this.error = true;
 				validationPanel.addMessage(error, new FixTagActionListener() {
-					public void onFix(String action, final ValidationPanel validationPanel) {
+					public void onFix(final String action, final ValidationPanel validationPanel) {
 						ConfigurationService.App.getInstance().fix(resourceId, propertyName, action, new AsyncCallback<Void>() {
-							public void onFailure(Throwable throwable) {
+							public void onFailure(final Throwable throwable) {
 								validationPanel.addMessage(throwable.getMessage());
 							}
 
-							public void onSuccess(Void aVoid) {
+							public void onSuccess(final Void aVoid) {
 								validationPanel.clear();
 								sendPropertyChange(value, false);
 							}

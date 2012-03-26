@@ -12,7 +12,7 @@ public final class TestTandemWorkPacket {
 
 	@Test
 	public static void shouldXStreamSerialize() throws IOException {
-		XTandemWorkPacket packet = new XTandemWorkPacket(
+		final XTandemWorkPacket packet = new XTandemWorkPacket(
 				new File("input"),
 				new File("output"),
 				new File("search"),
@@ -22,8 +22,8 @@ public final class TestTandemWorkPacket {
 				"task",
 				false);
 
-		XStream xStream = new XStream(new DomDriver());
-		String xml = xStream.toXML(packet);
+		final XStream xStream = new XStream(new DomDriver());
+		final String xml = xStream.toXML(packet);
 
 		final Object result = xStream.fromXML(xml);
 		Assert.assertTrue(packet.equals(result), "Deserialized object must be identical");

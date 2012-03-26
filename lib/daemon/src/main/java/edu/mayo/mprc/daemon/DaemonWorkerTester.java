@@ -29,9 +29,9 @@ public final class DaemonWorkerTester {
 	 *
 	 * @param worker Worker to run
 	 */
-	public DaemonWorkerTester(Worker worker) {
+	public DaemonWorkerTester(final Worker worker) {
 		try {
-			URI uri = new URI("jms.vm://broker1?simplequeue=test_" + String.valueOf(testId.incrementAndGet()));
+			final URI uri = new URI("jms.vm://broker1?simplequeue=test_" + String.valueOf(testId.incrementAndGet()));
 			initializeFromUri(uri);
 			this.runner = new SimpleRunner();
 			this.runner.setWorker(worker);
@@ -45,9 +45,9 @@ public final class DaemonWorkerTester {
 		waitUntilReady(this.runner);
 	}
 
-	private void initializeFromUri(URI uri) {
+	private void initializeFromUri(final URI uri) {
 		this.service = new ServiceFactory().createService(uri);
-		FileTokenFactory fileTokenFactory = new FileTokenFactory();
+		final FileTokenFactory fileTokenFactory = new FileTokenFactory();
 		fileTokenFactory.setDaemonConfigInfo(new DaemonConfigInfo("daemon1", "shared"));
 		this.daemonConnection = new DirectDaemonConnection(service, fileTokenFactory);
 	}
@@ -59,9 +59,9 @@ public final class DaemonWorkerTester {
 	 * @param workerFactory    Creates workers to run
 	 * @param numWorkerThreads How many threads does the worker run in
 	 */
-	public DaemonWorkerTester(WorkerFactory workerFactory, int numWorkerThreads) {
+	public DaemonWorkerTester(final WorkerFactory workerFactory, final int numWorkerThreads) {
 		try {
-			URI uri = new URI("jms.vm://broker1?simplequeue=test_" + String.valueOf(testId.incrementAndGet()));
+			final URI uri = new URI("jms.vm://broker1?simplequeue=test_" + String.valueOf(testId.incrementAndGet()));
 			initializeFromUri(uri);
 			this.runner = new SimpleRunner();
 			this.runner.setFactory(workerFactory);
@@ -83,8 +83,8 @@ public final class DaemonWorkerTester {
 	 * @return Token for this work packet. The token is an opaque object to be used by {@link #isDone}, {@link #isSuccess} and {@link #getLastError}
 	 *         methods.
 	 */
-	public Object sendWork(WorkPacket workPacket) {
-		TestProgressListener listener = new TestProgressListener();
+	public Object sendWork(final WorkPacket workPacket) {
+		final TestProgressListener listener = new TestProgressListener();
 		daemonConnection.sendWork(workPacket, listener);
 		return listener;
 	}
@@ -97,8 +97,8 @@ public final class DaemonWorkerTester {
 	 * @return Token for this work packet. The token is an opaque object to be used by {@link #isDone}, {@link #isSuccess} and {@link #getLastError}
 	 *         methods.
 	 */
-	public Object sendWork(WorkPacket workPacket, ProgressListener userListener) {
-		TestProgressListener listener = new TestProgressListener(userListener);
+	public Object sendWork(final WorkPacket workPacket, final ProgressListener userListener) {
+		final TestProgressListener listener = new TestProgressListener(userListener);
 		daemonConnection.sendWork(workPacket, listener);
 		return listener;
 	}
@@ -115,8 +115,8 @@ public final class DaemonWorkerTester {
 	 * @param workToken Token for work sent through {@link #sendWork}.
 	 * @return true if there was a search running that is done now.
 	 */
-	public boolean isDone(Object workToken) {
-		TestProgressListener listener = (TestProgressListener) workToken;
+	public boolean isDone(final Object workToken) {
+		final TestProgressListener listener = (TestProgressListener) workToken;
 		return listener != null && listener.isDone();
 	}
 
@@ -124,8 +124,8 @@ public final class DaemonWorkerTester {
 	 * @param workToken Token for work sent through {@link #sendWork}.
 	 * @return true if there was a search running which succeeded
 	 */
-	public boolean isSuccess(Object workToken) {
-		TestProgressListener listener = (TestProgressListener) workToken;
+	public boolean isSuccess(final Object workToken) {
+		final TestProgressListener listener = (TestProgressListener) workToken;
 		return listener != null && listener.isSuccess();
 	}
 
@@ -133,8 +133,8 @@ public final class DaemonWorkerTester {
 	 * @param workToken Token for work sent through {@link #sendWork}.
 	 * @return The last error in case there was any, null otherwise.
 	 */
-	public Throwable getLastError(Object workToken) {
-		TestProgressListener listener = (TestProgressListener) workToken;
+	public Throwable getLastError(final Object workToken) {
+		final TestProgressListener listener = (TestProgressListener) workToken;
 		return listener.getLastError();
 	}
 
@@ -147,7 +147,7 @@ public final class DaemonWorkerTester {
 	 *
 	 * @param runner
 	 */
-	public static void waitUntilReady(AbstractRunner runner) {
+	public static void waitUntilReady(final AbstractRunner runner) {
 		if (!runner.isEnabled()) {
 			return;
 		}
@@ -171,7 +171,7 @@ public final class DaemonWorkerTester {
 		TestProgressListener() {
 		}
 
-		private TestProgressListener(ProgressListener userListener) {
+		private TestProgressListener(final ProgressListener userListener) {
 			this.userListener = userListener;
 		}
 
@@ -187,7 +187,7 @@ public final class DaemonWorkerTester {
 			return lastError;
 		}
 
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 			if (null != userListener) {
 				userListener.requestEnqueued(hostString);
 			}
@@ -209,7 +209,7 @@ public final class DaemonWorkerTester {
 			}
 		}
 
-		public void requestTerminated(Exception e) {
+		public void requestTerminated(final Exception e) {
 			LOGGER.error("Work failed", e);
 			lastError = e;
 			done = true;
@@ -218,7 +218,7 @@ public final class DaemonWorkerTester {
 			}
 		}
 
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			LOGGER.debug("Work progress: " + progressInfo.toString());
 			if (null != userListener) {
 				userListener.userProgressInformation(progressInfo);

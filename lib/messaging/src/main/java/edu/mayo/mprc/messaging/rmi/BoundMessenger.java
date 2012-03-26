@@ -15,7 +15,7 @@ public final class BoundMessenger<T> {
 	private T messenger;
 	private RemoteObjectHandler remoteObjectHandler;
 
-	public BoundMessenger(MessengerInfo messengerInfo, T messenger, RemoteObjectHandler remoteObjectHandler) {
+	public BoundMessenger(final MessengerInfo messengerInfo, final T messenger, final RemoteObjectHandler remoteObjectHandler) {
 		this.messengerInfo = messengerInfo;
 		this.messenger = messenger;
 		this.remoteObjectHandler = remoteObjectHandler;
@@ -25,7 +25,7 @@ public final class BoundMessenger<T> {
 		return messengerInfo;
 	}
 
-	public void setMessengerInfo(MessengerInfo messengerInfo) {
+	public void setMessengerInfo(final MessengerInfo messengerInfo) {
 		this.messengerInfo = messengerInfo;
 	}
 
@@ -33,7 +33,7 @@ public final class BoundMessenger<T> {
 		return messenger;
 	}
 
-	public void setMessenger(T messenger) {
+	public void setMessenger(final T messenger) {
 		this.messenger = messenger;
 	}
 

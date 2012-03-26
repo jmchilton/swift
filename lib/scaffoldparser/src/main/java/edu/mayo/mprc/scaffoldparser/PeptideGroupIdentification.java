@@ -18,7 +18,7 @@ public final class PeptideGroupIdentification {
 		return peptideAnalysisIdentifications;
 	}
 
-	public void setPeptideAnalysisIdentifications(List<PeptideAnalysisIdentification> peptideAnalysisIdentifications) {
+	public void setPeptideAnalysisIdentifications(final List<PeptideAnalysisIdentification> peptideAnalysisIdentifications) {
 		this.peptideAnalysisIdentifications = peptideAnalysisIdentifications;
 	}
 }

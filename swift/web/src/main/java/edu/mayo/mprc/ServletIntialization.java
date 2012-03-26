@@ -26,7 +26,7 @@ public final class ServletIntialization {
 	/**
 	 * @return true if initialization was successful, false if the initialization did not happen due to running in config mode
 	 */
-	public static boolean initServletConfiguration(ServletConfig config) throws ServletException {
+	public static boolean initServletConfiguration(final ServletConfig config) throws ServletException {
 		try {
 			if (wasInitialized) {
 				return true;
@@ -39,13 +39,13 @@ public final class ServletIntialization {
 			// This is useful for testing GWT hosted mode.
 
 
-			String action = getAction(config);
+			final String action = getAction(config);
 			if ("config".equals(action)) {
 				// We are in Swift config mode. Do not do any initialization
 				return false;
 			}
 
-			File confFile = getConfigFile(config);
+			final File confFile = getConfigFile(config);
 
 			// through init parameter.
 			String swiftDaemon = config.getServletContext().getInitParameter("SWIFT_DAEMON");
@@ -70,10 +70,10 @@ public final class ServletIntialization {
 	 * @param config Servlet configuration (can define properties that point to Swift config file).
 	 * @return The Swift config file.
 	 */
-	private static File getConfigFile(ServletConfig config) {
+	private static File getConfigFile(final ServletConfig config) {
 		File confFile = null;
 		if (getSwiftHome(config) == null) {
-			String swiftHome = System.getenv(SWIFT_HOME);
+			final String swiftHome = System.getenv(SWIFT_HOME);
 			if (swiftHome != null) {
 				confFile = new File(swiftHome, SWIFT_CONF_RELATIVE_PATH).getAbsoluteFile();
 			}
@@ -89,7 +89,7 @@ public final class ServletIntialization {
 	/**
 	 * @return Location of Swift home directory as the user specified. If the location was not specified, returns null.
 	 */
-	private static File getSwiftHome(ServletConfig config) {
+	private static File getSwiftHome(final ServletConfig config) {
 		final String swiftInstall = config.getServletContext().getInitParameter(SWIFT_INSTALL);
 		if (swiftInstall == null) {
 			return null;
@@ -114,7 +114,7 @@ public final class ServletIntialization {
 		}
 	}
 
-	private static String getAction(ServletConfig config) {
+	private static String getAction(final ServletConfig config) {
 		String action = config.getServletContext().getInitParameter("SWIFT_ACTION");
 		if (action == null) {
 			action = System.getenv("SWIFT_ACTION");
@@ -125,7 +125,7 @@ public final class ServletIntialization {
 		return action;
 	}
 
-	public static boolean redirectToConfig(ServletConfig config, HttpServletResponse response) throws IOException {
+	public static boolean redirectToConfig(final ServletConfig config, final HttpServletResponse response) throws IOException {
 		if ("config".equals(getAction(config))) {
 			response.sendRedirect("/configuration/index.html");
 			return true;

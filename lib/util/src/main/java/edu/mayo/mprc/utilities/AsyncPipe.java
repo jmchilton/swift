@@ -15,7 +15,7 @@ public final class AsyncPipe implements Runnable {
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
 
-	public AsyncPipe(InputStream inputStream, OutputStream outputStream) {
+	public AsyncPipe(final InputStream inputStream, final OutputStream outputStream) {
 		this.inputStream = inputStream;
 		this.outputStream = outputStream;
 	}
@@ -24,14 +24,13 @@ public final class AsyncPipe implements Runnable {
 		try {
 			final byte[] buffer = new byte[BUFFER_SIZE];
 			while (true) {
-				int length = inputStream.read(buffer);
+				final int length = inputStream.read(buffer);
 				if (length == -1) {
 					break;
 				}
 				outputStream.write(buffer, 0, length);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error("Error reading process output", e);
 		}
 	}

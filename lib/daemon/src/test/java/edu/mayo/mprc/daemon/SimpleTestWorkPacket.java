@@ -15,7 +15,7 @@ public class SimpleTestWorkPacket extends WorkPacketBase implements Serializable
 	 * @param taskId      Task identifier to be used for nested diagnostic context when logging.
 	 * @param fromScratch
 	 */
-	public SimpleTestWorkPacket(String taskId, boolean fromScratch) {
+	public SimpleTestWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
@@ -23,7 +23,7 @@ public class SimpleTestWorkPacket extends WorkPacketBase implements Serializable
 		return resultFile;
 	}
 
-	public void setResultFile(File resultFile) {
+	public void setResultFile(final File resultFile) {
 		this.resultFile = resultFile;
 	}
 
@@ -43,7 +43,7 @@ public class SimpleTestWorkPacket extends WorkPacketBase implements Serializable
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		final SimpleTestWorkPacket translatedPacket = new SimpleTestWorkPacket("WIP:" + getTaskId(), false);
 		translatedPacket.setResultFile(new File(wipFolder, getResultFile().getName()));
 		return translatedPacket;
@@ -55,11 +55,11 @@ public class SimpleTestWorkPacket extends WorkPacketBase implements Serializable
 	}
 
 	@Override
-	public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+	public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 		return false;
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 	}
 }

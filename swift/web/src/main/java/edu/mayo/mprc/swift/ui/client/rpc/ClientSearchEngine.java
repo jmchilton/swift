@@ -19,7 +19,7 @@ public final class ClientSearchEngine implements Serializable {
 	 * @param friendlyName  The name we display for the user.
 	 * @param isOnByDefault If this is true, the search engine's checkboxes will be checked by default.
 	 */
-	public ClientSearchEngine(String code, String friendlyName, boolean isOnByDefault) {
+	public ClientSearchEngine(final String code, final String friendlyName, final boolean isOnByDefault) {
 		this.code = code;
 		this.friendlyName = friendlyName;
 		this.isOnByDefault = isOnByDefault;

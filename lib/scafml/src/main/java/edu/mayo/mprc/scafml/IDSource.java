@@ -6,7 +6,7 @@ package edu.mayo.mprc.scafml;
 public final class IDSource {
 	private int currentId;
 
-	public IDSource(int startId) {
+	public IDSource(final int startId) {
 		currentId = startId;
 	}
 

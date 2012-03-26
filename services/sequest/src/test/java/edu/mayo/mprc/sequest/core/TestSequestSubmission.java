@@ -45,40 +45,40 @@ public final class TestSequestSubmission {
 	@Test(enabled = true, groups = {"linux", "sequest"})
 	public void testSequestSubmitUnder() {
 		LOGGER.debug("in testSequestSubmitUnder");
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 		try {
 
 			LOGGER.debug("in submit under");
-			SequestSubmit s = new SequestSubmit(120, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
+			final SequestSubmit s = new SequestSubmit(120, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 
 
 			LOGGER.debug("maxlinelength=" + s.getMaxLineLength());
 
-			char c = 'a';
-			List<String> dtafilenames = new ArrayList<String>();
+			final char c = 'a';
+			final List<String> dtafilenames = new ArrayList<String>();
 			for (int i = 0; i < 9; i++) {
-				String dtafilename = this.createDtaAndOutFile(folder);
+				final String dtafilename = this.createDtaAndOutFile(folder);
 				LOGGER.debug("dtafilename=" + dtafilename);
 				dtafilenames.add(dtafilename);
 			}
 			// need to find the under cutoff;
 			int totallength = 0;
-			for (String dtafilename : dtafilenames) {
+			for (final String dtafilename : dtafilenames) {
 				totallength += dtafilename.length() + 1;
 			}
 
 			s.setMaxLineLength(totallength + 1);
 			int n = 1;
 			LOGGER.debug("max  line length is {s.getMaxLineLength()}");
-			for (String dtafilename : dtafilenames) {
+			for (final String dtafilename : dtafilenames) {
 				s.addDtaFile(dtafilename, false);
 				LOGGER.debug("wrote " + n + ", accumulatedlength=" + s.getAccumulatedLength());
 				n++;
 			}
 			LOGGER.debug("wrote {n-1}, accumulatedlength=" + s.getAccumulatedLength());
 			// should be 9 of them in there;
-			int n1 = s.getHowManyFiles();
+			final int n1 = s.getHowManyFiles();
 			LOGGER.debug("found " + n1);
 			Assert.assertEquals(n1, 9);
 			LOGGER.debug("testSequestSubmitUnder succeeded");
@@ -89,15 +89,15 @@ public final class TestSequestSubmission {
 		}
 	}
 
-	private String createDtaAndOutFile(File folder) {
+	private String createDtaAndOutFile(final File folder) {
 		char c = 'a';
 		try {
-			String prefix = folder.getAbsolutePath() + File.separator + c++;
-			String dtafilename = prefix + ninechar;
-			File f = new File(dtafilename);
+			final String prefix = folder.getAbsolutePath() + File.separator + c++;
+			final String dtafilename = prefix + ninechar;
+			final File f = new File(dtafilename);
 			f.createNewFile();
-			String outfile = prefix + nineoutfile;
-			File fout = new File(outfile);
+			final String outfile = prefix + nineoutfile;
+			final File fout = new File(outfile);
 			fout.createNewFile();
 			return dtafilename;
 		} catch (Exception t) {
@@ -116,14 +116,14 @@ public final class TestSequestSubmission {
 
 		LOGGER.debug("in testSequestSubmitOver");
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 		try {
 
 
-			SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
+			final SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 
-			SequestRunnerStub scs = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
+			final SequestRunnerStub scs = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
 			scs.setStartTimeOut(10 * 1000);
 			scs.setWatchDogTimeOut(10 * 1000);
 			s.setSequestCaller(scs);
@@ -131,26 +131,26 @@ public final class TestSequestSubmission {
 			s.setMaxLineLength(100);
 
 
-			List<String> dtafilenames = new ArrayList<String>();
+			final List<String> dtafilenames = new ArrayList<String>();
 			for (int i = 0; i < 10; i++) {
-				String dtafilename = this.createDtaAndOutFile(folder);
+				final String dtafilename = this.createDtaAndOutFile(folder);
 				LOGGER.debug("dtafilename=" + dtafilename);
 				dtafilenames.add(dtafilename);
 			}
 			// need to find the under cutoff;
 			int totallength = 0;
-			for (String dtafilename : dtafilenames) {
+			for (final String dtafilename : dtafilenames) {
 				totallength += (new File(dtafilename).getName()).length() + 1;
 			}
 			//totallength += s.getSequestcaller().getCommand().length();
-			long fullLength = totallength - new File((dtafilenames.get(dtafilenames.size() - 1))).length() - 1;
+			final long fullLength = totallength - new File((dtafilenames.get(dtafilenames.size() - 1))).length() - 1;
 			s.setMaxLineLength((int) fullLength);
-			for (String dtafilename : dtafilenames) {
+			for (final String dtafilename : dtafilenames) {
 				s.addDtaFile((String) dtafilename, false);
 			}
 			LOGGER.debug("wrote 10");
 			// should be 1 of them in there;
-			int n = s.getHowManyFiles();
+			final int n = s.getHowManyFiles();
 			Assert.assertEquals(n, 1);
 			LOGGER.debug("testSequestSubmitOver succeeded");
 		} catch (Exception t) {
@@ -168,20 +168,20 @@ public final class TestSequestSubmission {
 	public void testSequestSubmitOverWindows() {
 		LOGGER.debug("in testSequestSubmitOverWindows");
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 		try {
 
-			SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
+			final SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 
-			SequestRunnerStub sc = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
+			final SequestRunnerStub sc = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
 			sc.setWatchDogTimeOut(10 * 1000);
 			sc.setStartTimeOut(10 * 1000);
 
 			//sc.setCall(getWindowsCall());
 			// "cmd /c echo hi"
 			sc.setCommand("cmd");
-			List<String> args = new ArrayList<String>();
+			final List<String> args = new ArrayList<String>();
 			args.add("/c");
 			args.add("echo");
 			args.add("hi");
@@ -190,19 +190,19 @@ public final class TestSequestSubmission {
 			s.setSequestCaller(sc);
 
 
-			char c = 'a';
+			final char c = 'a';
 
 
 			s.setMaxLineLength(100);
 
 			for (int i = 0; i < 10; i++) {
 
-				String dtafilename = this.createDtaAndOutFile(folder);
+				final String dtafilename = this.createDtaAndOutFile(folder);
 				s.addDtaFile(dtafilename, false);
 			}
 			LOGGER.debug("wrote 10");
 			// should be 0 of them in there;
-			int n = s.getHowManyFiles();
+			final int n = s.getHowManyFiles();
 			Assert.assertEquals(n, 1);
 			LOGGER.debug("testSequestSubmitOver succeeded");
 		} catch (Exception t) {
@@ -220,19 +220,19 @@ public final class TestSequestSubmission {
 	public void testSequestSubmitOneForcedWindows() {
 		LOGGER.debug("in testSequestSubmitOneForcedWindows");
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 
 		try {
 
-			SequestSubmit s = getSequestSubmit(folder);
+			final SequestSubmit s = getSequestSubmit(folder);
 			s.setMaxLineLength(100);
-			SequestRunnerStub sc = getSequestRunnerStub(folder);
+			final SequestRunnerStub sc = getSequestRunnerStub(folder);
 			sc.setStartTimeOut(10 * 1000);
 			sc.setWatchDogTimeOut(10 * 1000);
 
 			sc.setCommand("cmd");
-			List<String> args = new ArrayList<String>();
+			final List<String> args = new ArrayList<String>();
 			args.add("/c");
 			args.add("echo");
 			args.add("hi");
@@ -242,16 +242,16 @@ public final class TestSequestSubmission {
 
 			char c = 'a';
 
-			File f = new File(folder.getAbsolutePath() + File.separator + c++ + ninechar);
+			final File f = new File(folder.getAbsolutePath() + File.separator + c++ + ninechar);
 			f.createNewFile();
 
 
-			String dtafilename = this.createDtaAndOutFile(folder);
+			final String dtafilename = this.createDtaAndOutFile(folder);
 			s.addDtaFile(dtafilename, true);
 
 			LOGGER.debug("wrote 1");
 			// should be 0 of them in there;
-			int n = s.getHowManyFiles();
+			final int n = s.getHowManyFiles();
 			Assert.assertEquals(n, 0);
 			LOGGER.debug("testSequestSubmitOneForced succeeded");
 
@@ -263,7 +263,7 @@ public final class TestSequestSubmission {
 
 	}
 
-	private SequestSubmit getSequestSubmit(File folder) {
+	private SequestSubmit getSequestSubmit(final File folder) {
 		return new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 	}
 
@@ -279,13 +279,13 @@ public final class TestSequestSubmission {
 		LOGGER.debug("in testSequestSubmitOneForced");
 
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 		try {
 
-			SequestSubmit s = getSequestSubmit(folder);
+			final SequestSubmit s = getSequestSubmit(folder);
 			s.setMaxLineLength(100);
-			SequestRunnerStub scs = getSequestRunnerStub(folder);
+			final SequestRunnerStub scs = getSequestRunnerStub(folder);
 			scs.setStartTimeOut(10 * 1000);
 			scs.setWatchDogTimeOut(10 * 1000);
 			s.setSequestCaller(scs);
@@ -293,16 +293,16 @@ public final class TestSequestSubmission {
 
 			char c = 'a';
 
-			File f = new File(folder.getAbsolutePath() + File.separator + c++ + ninechar);
+			final File f = new File(folder.getAbsolutePath() + File.separator + c++ + ninechar);
 			f.createNewFile();
 
 
-			String dtafilename = this.createDtaAndOutFile(folder);
+			final String dtafilename = this.createDtaAndOutFile(folder);
 			s.addDtaFile(dtafilename, true);
 
 			LOGGER.debug("wrote 1");
 			// should be 0 of them in there;
-			int n = s.getHowManyFiles();
+			final int n = s.getHowManyFiles();
 			Assert.assertEquals(n, 0);
 			LOGGER.debug("testSequestSubmitOneForced succeeded");
 
@@ -329,8 +329,8 @@ public final class TestSequestSubmission {
 	public void testionsSectionProcessLine() {
 		LOGGER.debug("in testionsSectionProcessLine");
 
-		File folder = FileUtilities.createTempFolder();
-		SequestSubmitterInterface si = new SequestSubmitStub(1, 1, 1, "myparams", folder.getAbsolutePath(), folder.getAbsolutePath() + File.separator + "mytar.tar");
+		final File folder = FileUtilities.createTempFolder();
+		final SequestSubmitterInterface si = new SequestSubmitStub(1, 1, 1, "myparams", folder.getAbsolutePath(), folder.getAbsolutePath() + File.separator + "mytar.tar");
 
 		processLineCode(si, folder);
 
@@ -345,19 +345,19 @@ public final class TestSequestSubmission {
 		LOGGER.debug("in testionsSectionProcessLineWindows");
 
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 
 		try {
-			SequestSubmitStub si = new SequestSubmitStub(1, 1, 1, "myparams", folder.getAbsolutePath(), folder.getAbsolutePath() + File.separator + "mytar.tar");
+			final SequestSubmitStub si = new SequestSubmitStub(1, 1, 1, "myparams", folder.getAbsolutePath(), folder.getAbsolutePath() + File.separator + "mytar.tar");
 
 
-			SequestRunnerStub sc = getSequestRunnerStub(folder);
+			final SequestRunnerStub sc = getSequestRunnerStub(folder);
 			sc.setStartTimeOut(10 * 1000);
 			sc.setWatchDogTimeOut(10 * 1000);
 
 			sc.setCommand("cmd");
-			List<String> args = new ArrayList<String>();
+			final List<String> args = new ArrayList<String>();
 			args.add("/c");
 			args.add("echo");
 			args.add("hi");
@@ -375,12 +375,12 @@ public final class TestSequestSubmission {
 	}
 
 
-	private void processLineCode(SequestSubmitterInterface si, File folder) {
-		MgfIonsModeller i = new MgfIonsModeller();
+	private void processLineCode(final SequestSubmitterInterface si, final File folder) {
+		final MgfIonsModeller i = new MgfIonsModeller();
 
 		i.setSequestSubmitter(si);
 
-		String folderName = folder.getAbsolutePath();
+		final String folderName = folder.getAbsolutePath();
 		i.setWorkingDir(folderName);
 		i.setMgfFileName("mymgf.mgf");
 
@@ -419,10 +419,10 @@ public final class TestSequestSubmission {
 	public void testTitle() {
 		LOGGER.debug("running testTitle");
 
-		MgfIonsModeller i = new MgfIonsModeller();
+		final MgfIonsModeller i = new MgfIonsModeller();
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 
 		i.setWorkingDir(folderName);
 
@@ -441,7 +441,7 @@ public final class TestSequestSubmission {
 		}
 
 		LOGGER.debug("running testMgffileParserOneIonsSection");
-		String[] lines = {
+		final String[] lines = {
 				"BEGIN IONS",
 				"TITLE=test_1199-1302_46GB0402spot46 scan 10 10 (test_1199-1302_46GB0402spot46.10.10.3.dta)",
 				"CHARGE=3+",
@@ -458,36 +458,36 @@ public final class TestSequestSubmission {
 		};
 
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 
 		try {
 
 			// create a .out file with test_1199-1302_46GB0402spot46.10.10.3.out;
-			File fout = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.10.10.3.out");
+			final File fout = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.10.10.3.out");
 			fout.createNewFile();
 
 
-			SequestSubmitterInterface s = getSequestSubmit(folder);
+			final SequestSubmitterInterface s = getSequestSubmit(folder);
 
-			SequestRunnerStub scs = getSequestRunnerStub(folder);
+			final SequestRunnerStub scs = getSequestRunnerStub(folder);
 			scs.setStartTimeOut(10 * 1000);
 			scs.setWatchDogTimeOut(10 * 1000);
 			s.setSequestCaller(scs);
 
-			IonsModellerInterface i = new MgfIonsModeller();
+			final IonsModellerInterface i = new MgfIonsModeller();
 
 
-			MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, folderName);
+			final MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, folderName);
 
 			parser.setMgfFileName("mymgf.mgf");
 
 			String all = "";
-			for (String line : lines) {
+			for (final String line : lines) {
 				all += line + "\n";
 			}
-			StringReader r = new StringReader(all);
-			BufferedReader br = new BufferedReader(r);
+			final StringReader r = new StringReader(all);
+			final BufferedReader br = new BufferedReader(r);
 			try {
 				parser.getDTAsFromFile(br);
 			} catch (Exception t) {
@@ -513,7 +513,7 @@ public final class TestSequestSubmission {
 		}
 
 		LOGGER.debug("running testMgffileParserTwoIonsSections");
-		String[] lines = {
+		final String[] lines = {
 				"BEGIN IONS",
 				"TITLE=test_1199-1302_46GB0402spot46 scan 10 10 (test_1199-1302_46GB0402spot46.10.10.3.dta)",
 				"CHARGE=3+",
@@ -542,40 +542,40 @@ public final class TestSequestSubmission {
 				"END IONS",
 		};
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 		try {
 
 			// create a .out file with test_1199-1302_46GB0402spot46.10.10.3.out;
-			File fout = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.10.10.3.out");
+			final File fout = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.10.10.3.out");
 			fout.createNewFile();
 
 			// create a .out file with test_1199-1302_46GB0402spot46.11.11.3.out;
-			File fout1 = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.11.11.3.out");
+			final File fout1 = new File(folderName + File.separator + "test_1199-1302_46GB0402spot46.11.11.3.out");
 			fout1.createNewFile();
 
 
-			SequestSubmitterInterface s = getSequestSubmit(folder);
+			final SequestSubmitterInterface s = getSequestSubmit(folder);
 
-			SequestRunnerStub scs = getSequestRunnerStub(folder);
+			final SequestRunnerStub scs = getSequestRunnerStub(folder);
 			scs.setStartTimeOut(10 * 1000);
 			scs.setWatchDogTimeOut(10 * 1000);
 			s.setSequestCaller(scs);
 
 
-			IonsModellerInterface i = new MgfIonsModeller();
+			final IonsModellerInterface i = new MgfIonsModeller();
 
 
-			MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, folderName);
+			final MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, folderName);
 
 			parser.setMgfFileName("mymgf.mgf");
 
 			String all = "";
-			for (String line : lines) {
+			for (final String line : lines) {
 				all = all + line + "\n";
 			}
-			StringReader r = new StringReader(all);
-			BufferedReader br = new BufferedReader(r);
+			final StringReader r = new StringReader(all);
+			final BufferedReader br = new BufferedReader(r);
 			try {
 				parser.getDTAsFromFile(br);
 			} catch (Exception t) {
@@ -590,7 +590,7 @@ public final class TestSequestSubmission {
 
 	}
 
-	private SequestRunnerStub getSequestRunnerStub(File folder) {
+	private SequestRunnerStub getSequestRunnerStub(final File folder) {
 		return new SequestRunnerStub(folder, null, new ArrayList<String>(0), getHostsFile());
 	}
 
@@ -601,12 +601,12 @@ public final class TestSequestSubmission {
 	public void testSequestRunnerSetuptwofiles() {
 		LOGGER.debug("running testSequestRunnerSetuptwofiles");
 
-		File folder = FileUtilities.createTempFolder();
-		String folderName = folder.getAbsolutePath();
+		final File folder = FileUtilities.createTempFolder();
+		final String folderName = folder.getAbsolutePath();
 
 		try {
 
-			List<String> dtafiles;
+			final List<String> dtafiles;
 
 			dtafiles = new ArrayList<String>();
 			dtafiles.add("mydta1.dta");
@@ -614,7 +614,7 @@ public final class TestSequestSubmission {
 
 			try {
 
-				SequestRunner c = getSequestRunner(folder, dtafiles);
+				final SequestRunner c = getSequestRunner(folder, dtafiles);
 
 			} catch (MprcException m) {
 				Assert.fail("testSequestRunnerSetuptwofiles failed", m);
@@ -636,23 +636,23 @@ public final class TestSequestSubmission {
 	public void testSequestRunnerSetuponefile() {
 		LOGGER.debug("running testSequestRunnerSetuponefile");
 
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
-		List<String> dtafiles;
+		final List<String> dtafiles;
 
 		dtafiles = new ArrayList<String>();
 		dtafiles.add("mydta1.dta");
 
 		try {
 
-			SequestRunner c = getSequestRunner(folder, dtafiles);
+			final SequestRunner c = getSequestRunner(folder, dtafiles);
 
 		} catch (MprcException m) {
 			Assert.fail("testSequestRunnerSetuponefile failed", m);
 		}
 	}
 
-	private SequestRunner getSequestRunner(File temp, List<String> dtafiles) {
+	private SequestRunner getSequestRunner(final File temp, final List<String> dtafiles) {
 		return new SequestRunner(temp, new File("myparams"), dtafiles, getHostsFile());
 	}
 
@@ -664,13 +664,13 @@ public final class TestSequestSubmission {
 	public void testSequestRunnernofiles() {
 		LOGGER.debug("running testSequestRunnernofiles");
 
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
-		List<String> dtafiles;
+		final List<String> dtafiles;
 
 		dtafiles = new ArrayList<String>();
 
-		SequestRunner c;
+		final SequestRunner c;
 
 
 		try {
@@ -690,14 +690,14 @@ public final class TestSequestSubmission {
 	public void testSequestRunneronedtanoparams() {
 		LOGGER.debug("running testSequestRunneronedtanoparams");
 
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
-		List<String> dtafiles;
+		final List<String> dtafiles;
 
 		dtafiles = new ArrayList<String>();
 		dtafiles.add("mydta.dta");
 
-		SequestRunner c;
+		final SequestRunner c;
 
 
 		try {
@@ -721,9 +721,9 @@ public final class TestSequestSubmission {
 	public void testSequestRunnerWithExistingCall() {
 		LOGGER.debug("running testSequestRunnerWithExistingCall");
 
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
-		List<String> dtafiles;
+		final List<String> dtafiles;
 
 		dtafiles = new ArrayList<String>();
 		dtafiles.add("mydta.dta");
@@ -731,16 +731,16 @@ public final class TestSequestSubmission {
 		File params = null;
 		try {
 			params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
-			SequestRunner sequestRunner = new SequestRunnerStub(folder, params, dtafiles, getHostsFile());
+			final SequestRunner sequestRunner = new SequestRunnerStub(folder, params, dtafiles, getHostsFile());
 
 			sequestRunner.setStartTimeOut(10 * 1000);
 			sequestRunner.setWatchDogTimeOut(10 * 1000);
 			sequestRunner.setCommand("echo");
-			List<String> args = new ArrayList<String>();
+			final List<String> args = new ArrayList<String>();
 			args.add("hi");
-			String call = sequestRunner.getCall();
+			final String call = sequestRunner.getCall();
 			Assert.assertEquals(call.trim(), "echo hi", "getCall not set properly");
-			Thread t = new Thread(sequestRunner);
+			final Thread t = new Thread(sequestRunner);
 			t.setUncaughtExceptionHandler(new ExceptionHandler());
 			t.start();
 			t.join(10000);
@@ -753,7 +753,7 @@ public final class TestSequestSubmission {
 
 	class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-		public void uncaughtException(Thread thread, Throwable throwable) {
+		public void uncaughtException(final Thread thread, final Throwable throwable) {
 			Assert.fail("thread failed", throwable);
 		}
 	}
@@ -765,19 +765,19 @@ public final class TestSequestSubmission {
 		}
 
 		LOGGER.debug("running testMGF2SequestScriptStubbed");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 
 		try {
 			// set up the environment so can grab these;
 			// actually is;
-			File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
+			final Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
 
 			m.setHostsFile(getHostsFile());
 
@@ -795,18 +795,18 @@ public final class TestSequestSubmission {
 	@Test(enabled = false, groups = {"sequest"})
 	public void testMGF2SequestScriptSequest27() {
 		LOGGER.debug("running testMGF2SequestScriptSequest27");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			// set up the environment so can grab these;
 			// actually is;
-			File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setSequestExe("c:sequestsequest27.exe");
 			m.setHostsFile(getHostsFile());
 
@@ -829,18 +829,18 @@ public final class TestSequestSubmission {
 		}
 
 		LOGGER.debug("running testMGF2SequestScriptSequest");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			// set up the environment so can grab these;
 			// actually is;
-			File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setSequestExe(this.getSequestExe());
 			m.setHostsFile(getHostsFile());
 
@@ -863,8 +863,8 @@ public final class TestSequestSubmission {
 
 		LOGGER.debug("running testMGF2SequestScriptSequestLargeMgfFile");
 
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			LOGGER.debug("outputDir=" + outputDir.getAbsolutePath());
 			if (!outputDir.exists()) {
@@ -872,16 +872,16 @@ public final class TestSequestSubmission {
 			}
 
 			// TODO: Generate the file instead of depending on a huge file somewhere on the disk
-			File fmgf = new File("/mnt/raid1/test/ImmunostainsSPA706308.mgf");
+			final File fmgf = new File("/mnt/raid1/test/ImmunostainsSPA706308.mgf");
 			if (!fmgf.exists()) {
 				Assert.fail(fmgf.getAbsolutePath() + " does not exist");
 			}
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File fparams = TestingUtilities.getTempFileFromResource("/sequest_LTQ.params", true, /*useSystemTempFolder*/ null);
+			final File fparams = TestingUtilities.getTempFileFromResource("/sequest_LTQ.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setSequestExe(this.getSequestExe());
 			m.setHostsFile(getHostsFile());
 
@@ -909,18 +909,18 @@ public final class TestSequestSubmission {
 		}
 
 		LOGGER.debug("running testMGF2SequestScriptSequestNoDatabase");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			// set up the environment so can grab these;
 			// actually is;
-			File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File params = TestingUtilities.getTempFileFromResource("/sequestNotExistingDatabase.params", true, /*useSystemTempFolder*/ null);
+			final File params = TestingUtilities.getTempFileFromResource("/sequestNotExistingDatabase.params", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setSequestExe(this.getSequestExe());
 			m.setHostsFile(getHostsFile());
 
@@ -957,23 +957,23 @@ public final class TestSequestSubmission {
 	 */
 	@Test(enabled = true, groups = {"sequest"})
 	public void testMGF2SequestScriptSequestHungCase() throws IOException {
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 
 			// move the hung sequest resource to the temporary folder;
-			File cmd = TestingUtilities.getTempFileFromResource("/" + getSequestHungExecutable(), true, /*useSystemTempFolder*/ null);
+			final File cmd = TestingUtilities.getTempFileFromResource("/" + getSequestHungExecutable(), true, /*useSystemTempFolder*/ null);
 			FileUtilities.copyFile(cmd, new File(outputDir, getSequestHungExecutable()), false);
 
-			File cmdfile = new File(outputDir, getSequestHungExecutable());
+			final File cmdfile = new File(outputDir, getSequestHungExecutable());
 
 			// in the commandfile replace the $PATH
-			List<String> lines = new ArrayList<String>();
+			final List<String> lines = new ArrayList<String>();
 
-			List<String> inputLines = FileUtilities.readLines(cmdfile);
-			String quotedOutputDir = Matcher.quoteReplacement(outputDir.getAbsolutePath());
+			final List<String> inputLines = FileUtilities.readLines(cmdfile);
+			final String quotedOutputDir = Matcher.quoteReplacement(outputDir.getAbsolutePath());
 			for (String line : inputLines) {
-				Matcher k = path_pattern.matcher(line);
+				final Matcher k = path_pattern.matcher(line);
 				line = k.replaceAll(quotedOutputDir);
 				lines.add(line);
 			}
@@ -984,17 +984,17 @@ public final class TestSequestSubmission {
 
 			// set up the environment so can grab these;
 			// actually is;
-			File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setSequestExe(new File(outputDir, getSequestHungExecutable()).getAbsolutePath());
 			m.setHostsFile(getHostsFile());
 
-			long startTime = System.currentTimeMillis();
+			final long startTime = System.currentTimeMillis();
 			try {
 				m.callSequest(new File(outputDir, "mytar.tar"), fparams, fmgf, 2 * 1000, 2 * 1000, hdrFile);
 			} catch (MprcException me) {
@@ -1002,7 +1002,7 @@ public final class TestSequestSubmission {
 				final String message = MprcException.getDetailedMessage(me);
 				Assert.assertTrue(message.contains("hung"), "error should indicate is hung");
 
-				long endTime = System.currentTimeMillis();
+				final long endTime = System.currentTimeMillis();
 				if (endTime - startTime > 10 * 1000) {
 					Assert.fail("The process was hung for too long, expected max 4 seconds, was " + (endTime - startTime) / 1000);
 				}
@@ -1016,13 +1016,13 @@ public final class TestSequestSubmission {
 
 	}
 
-	private static void makeFileExecutable(File f) {
+	private static void makeFileExecutable(final File f) {
 		if (FileUtilities.isWindowsPlatform()) {
 			// On windows there is no chmod
 			return;
 		}
-		ProcessBuilder builder = new ProcessBuilder(Arrays.asList("chmod", "766", f.getAbsolutePath()));
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessBuilder builder = new ProcessBuilder(Arrays.asList("chmod", "766", f.getAbsolutePath()));
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.run();
 	}
 
@@ -1033,21 +1033,21 @@ public final class TestSequestSubmission {
 	@Test(enabled = true, groups = {"sequest"})
 	public void testMGF2SequestScriptSequestNoParams() {
 		LOGGER.debug("running testMGF2SequestScriptSequestNoParams");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 
 			// set up the environment so can grab these;
 			// actually is;
-			File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File mgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
-
-
-			File paramsFile = new File(outputDir, "noparams.params");
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
 
-			Mgf2SequestCaller m = new Mgf2SequestCaller();
+			final File paramsFile = new File(outputDir, "noparams.params");
+
+
+			final Mgf2SequestCaller m = new Mgf2SequestCaller();
 			m.setHostsFile(getHostsFile());
 
 			try {
@@ -1073,28 +1073,28 @@ public final class TestSequestSubmission {
 	public void testLocalBigMgf() {
 		// local mgf file;
 		LOGGER.debug("running testLocalBigMgf");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			LOGGER.debug("tempfolder is at " + outputDir.getAbsolutePath());
 			// set up the environment so can grab these;
 			// actually is;
-			File mgf = TestingUtilities.getTempFileFromResource("/manysections.mgf", true, /*useSystemTempFolder*/ null);
+			final File mgf = TestingUtilities.getTempFileFromResource("/manysections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File params = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
+			final Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
 			m.setHostsFile(getHostsFile());
 
 			m.callSequest(new File(outputDir, "tarfile.tar"), params, mgf, 10 * 1000, 10 * 1000, hdrFile);
 
 			// mgf file has 150 sections so the tar file should also;
 			// tar name is mytar.tar;
-			TarWriter t = new TarWriter(new File(outputDir, "mytar.tar"));
+			final TarWriter t = new TarWriter(new File(outputDir, "mytar.tar"));
 			// now read number of sections;
-			int numheaders = TarReader.readNumberHeaders(t.getTarFile());
+			final int numheaders = TarReader.readNumberHeaders(t.getTarFile());
 			//Assert.assertEquals (300, numheaders, "number of headers not correct");
 		} catch (Exception t) {
 			Assert.fail("exception occurred", t);
@@ -1107,19 +1107,19 @@ public final class TestSequestSubmission {
 	public void testLocalTwoSectionsMgfAllowLongCommandLine() {
 		// local mgf file;
 		LOGGER.debug("running testLocalTwoSectionsMgfAllowLongCommandLine");
-		File outputDir = FileUtilities.createTempFolder();
-		String folderName = outputDir.getAbsolutePath();
+		final File outputDir = FileUtilities.createTempFolder();
+		final String folderName = outputDir.getAbsolutePath();
 		try {
 			LOGGER.debug("tempfolder is at " + outputDir.getAbsolutePath());
 			// set up the environment so can grab these;
 			// actually is;
-			File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
+			final File fmgf = TestingUtilities.getTempFileFromResource("/twosections.mgf", true, /*useSystemTempFolder*/ null);
 
-			File hdrFile = File.createTempFile("hdr", "db", outputDir);
+			final File hdrFile = File.createTempFile("hdr", "db", outputDir);
 
-			File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
+			final File fparams = TestingUtilities.getTempFileFromResource("/mgftosequesttestSequestParams.params", true, /*useSystemTempFolder*/ null);
 
-			Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
+			final Mgf2SequestCallerStubbed m = new Mgf2SequestCallerStubbed();
 			m.setHostsFile(getHostsFile());
 
 			m.setMaxCommandLineLength(10000);
@@ -1128,9 +1128,9 @@ public final class TestSequestSubmission {
 
 			// mgf file has 150 sections so the tar file should also;
 			// tar name is mytar.tar;
-			TarWriter t = new TarWriter(new File(outputDir, "mytar.tar"));
+			final TarWriter t = new TarWriter(new File(outputDir, "mytar.tar"));
 			// now read number of sections;
-			int numheaders = TarReader.readNumberHeaders(t.getTarFile());
+			final int numheaders = TarReader.readNumberHeaders(t.getTarFile());
 			//Assert.assertEquals (300, numheaders, "number of headers not correct");
 		} catch (Exception t) {
 			Assert.fail("exception occurred", t);

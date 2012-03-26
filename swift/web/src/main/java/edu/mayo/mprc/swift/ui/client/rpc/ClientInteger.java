@@ -7,15 +7,15 @@ public final class ClientInteger implements ClientValue {
 	public ClientInteger() {
 	}
 
-	public ClientInteger(Integer value) {
+	public ClientInteger(final Integer value) {
 		this.value = value;
 	}
 
-	public ClientInteger(int value) {
+	public ClientInteger(final int value) {
 		this.value = value;
 	}
 
-	public ClientInteger(String value) {
+	public ClientInteger(final String value) {
 		this(Integer.parseInt(value));
 	}
 
@@ -23,7 +23,7 @@ public final class ClientInteger implements ClientValue {
 		return value;
 	}
 
-	public void setValue(Integer value) {
+	public void setValue(final Integer value) {
 		this.value = value;
 	}
 

@@ -11,7 +11,7 @@ public final class XTandemWorkPacket extends EngineWorkPacket {
 
 	private File workFolder;
 
-	public XTandemWorkPacket(String taskId, boolean fromScratch) {
+	public XTandemWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
@@ -22,7 +22,7 @@ public final class XTandemWorkPacket extends EngineWorkPacket {
 	 * @param outputFile       Where should X!Tandem put the results to.
 	 * @param workFolder       X!Tandem work folder (the param file will be generated in there).
 	 */
-	public XTandemWorkPacket(File inputFile, File searchParamsFile, File outputFile, File workFolder, File databaseFile, boolean publishSearchFiles, String taskId, boolean fromScratch) {
+	public XTandemWorkPacket(final File inputFile, final File searchParamsFile, final File outputFile, final File workFolder, final File databaseFile, final boolean publishSearchFiles, final String taskId, final boolean fromScratch) {
 		super(inputFile, outputFile, searchParamsFile, databaseFile, publishSearchFiles, taskId, fromScratch);
 
 		if (inputFile == null) {
@@ -49,7 +49,7 @@ public final class XTandemWorkPacket extends EngineWorkPacket {
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new XTandemWorkPacket(
 				getInputFile(),
 				getSearchParamsFile(),

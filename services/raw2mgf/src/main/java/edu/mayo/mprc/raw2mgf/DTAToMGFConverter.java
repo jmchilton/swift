@@ -19,7 +19,7 @@ public final class DTAToMGFConverter {
 	// If the dta files were produced by wine, we should remove all the 0 characters from them.
 	private boolean wineCleanup;
 
-	public DTAToMGFConverter(File[] dtaFiles, File outputMgfFile) {
+	public DTAToMGFConverter(final File[] dtaFiles, final File outputMgfFile) {
 		this.dtaFiles = dtaFiles;
 		this.resultFile = outputMgfFile;
 	}
@@ -28,7 +28,7 @@ public final class DTAToMGFConverter {
 		return wineCleanup;
 	}
 
-	public void setWineCleanup(boolean wineCleanup) {
+	public void setWineCleanup(final boolean wineCleanup) {
 		this.wineCleanup = wineCleanup;
 	}
 
@@ -37,9 +37,9 @@ public final class DTAToMGFConverter {
 			convert(resultFile, dtaFiles, this.wineCleanup);
 		} finally {
 			// now remove the dta files as no longer need them
-			for (File file : dtaFiles) {
+			for (final File file : dtaFiles) {
 				if (file != null && file.exists()) {
-					boolean isdeleted = file.delete();
+					final boolean isdeleted = file.delete();
 					if (!isdeleted) {
 						LOGGER.warn("Deletion of dta file failed with name=" + file.getAbsolutePath());
 					}
@@ -56,9 +56,9 @@ public final class DTAToMGFConverter {
 	 * @return Number of dta files combined into the .mgf file
 	 * @throws IOException
 	 */
-	public static long convert(File mgf_file, File[] files, boolean wineCleanup) throws IOException {
+	public static long convert(final File mgf_file, final File[] files, final boolean wineCleanup) throws IOException {
 
-		DecimalFormat df = new DecimalFormat("#.############");
+		final DecimalFormat df = new DecimalFormat("#.############");
 
 		if (files.length == 0) {
 			throw new MprcException("No .dta files found. Either the MS2 spectra are missing completely, or they did not pass minimum quality threshold.");
@@ -72,13 +72,13 @@ public final class DTAToMGFConverter {
 		int numSpectra = 0;
 
 		try {
-			char[] buffer = new char[50 * 1024];
-			for (File file : files) {
-				DtaName match = new DtaName(file);
+			final char[] buffer = new char[50 * 1024];
+			for (final File file : files) {
+				final DtaName match = new DtaName(file);
 				if (file.isHidden() || !match.matches()) {
 					continue;
 				}
-				String thisSearchName = match.getSearchName();
+				final String thisSearchName = match.getSearchName();
 				if (searchName == null) {
 					searchName = thisSearchName;
 				}
@@ -92,9 +92,9 @@ public final class DTAToMGFConverter {
 					}
 				}
 
-				String scan1 = match.getFirstScan();
-				String scan2 = match.getSecondScan();
-				String extra = match.getExtras();
+				final String scan1 = match.getFirstScan();
+				final String scan2 = match.getSecondScan();
+				final String extra = match.getExtras();
 
 				BufferedReader input = null;
 
@@ -112,13 +112,13 @@ public final class DTAToMGFConverter {
 					if (wineCleanup) {
 						line = line.replaceAll("\\x00", "");
 					}
-					StringTokenizer tokenizer = new StringTokenizer(line);
+					final StringTokenizer tokenizer = new StringTokenizer(line);
 					if (tokenizer.countTokens() == 2) {
 						numSpectra++;
 						output.write("BEGIN IONS\n");
-						double MH = new Double(tokenizer.nextToken());
-						int z = Integer.valueOf(tokenizer.nextToken());
-						double mOverZ = (MH + (z - 1) * PROTON_AMU) / z;
+						final double MH = new Double(tokenizer.nextToken());
+						final int z = Integer.valueOf(tokenizer.nextToken());
+						final double mOverZ = (MH + (z - 1) * PROTON_AMU) / z;
 						output.write("TITLE=" + searchName + " scan " + scan1 + " " + scan2);
 						if (extra != null) {
 							output.write(" " + extra);
@@ -130,7 +130,7 @@ public final class DTAToMGFConverter {
 						if (wineCleanup) {
 							// If we ran through wine, we make sure we convert the second line of input (to be safe)
 							// removing nulls.
-							String secondLine = input.readLine();
+							final String secondLine = input.readLine();
 							if (secondLine != null) {
 								output.write(secondLine.replaceAll("\\x00", ""));
 								output.write("\r\n");

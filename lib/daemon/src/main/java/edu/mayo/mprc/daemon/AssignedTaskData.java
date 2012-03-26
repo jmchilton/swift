@@ -16,15 +16,15 @@ public final class AssignedTaskData implements ProgressInfo, FileTokenHolder {
 
 	private transient ReceiverTokenTranslator receiverTokenTranslator;
 
-	public AssignedTaskData(File outputLogFile, File errorLogFile) {
+	public AssignedTaskData(final File outputLogFile, final File errorLogFile) {
 		this(null, outputLogFile, errorLogFile);
 	}
 
-	public AssignedTaskData(String id, String outputLogFilePath, String errorLogFilePath) {
+	public AssignedTaskData(final String id, final String outputLogFilePath, final String errorLogFilePath) {
 		this(id, new File(outputLogFilePath), new File(errorLogFilePath));
 	}
 
-	private AssignedTaskData(String id, File outputLogFile, File errorLogFile) {
+	private AssignedTaskData(final String id, final File outputLogFile, final File errorLogFile) {
 		this.outputLogFile = FileTokenFactory.createAnonymousFileToken(outputLogFile);
 		this.errorLogFile = FileTokenFactory.createAnonymousFileToken(errorLogFile);
 		this.jobId = id;
@@ -54,12 +54,12 @@ public final class AssignedTaskData implements ProgressInfo, FileTokenHolder {
 		return "SGE task id: " + (jobId != null ? jobId : "None") + " | Standard Out: " + outputLogFile.toString() + " | Error Out: " + errorLogFile.toString();
 	}
 
-	public void translateOnSender(SenderTokenTranslator translator) {
+	public void translateOnSender(final SenderTokenTranslator translator) {
 		errorLogFile = translator.translateBeforeTransfer(errorLogFile);
 		outputLogFile = translator.translateBeforeTransfer(outputLogFile);
 	}
 
-	public void translateOnReceiver(ReceiverTokenTranslator translator, FileTokenSynchronizer synchronizer) {
+	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer) {
 		this.receiverTokenTranslator = translator;
 	}
 

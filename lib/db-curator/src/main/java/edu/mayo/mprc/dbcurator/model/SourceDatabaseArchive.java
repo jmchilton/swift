@@ -67,7 +67,7 @@ public class SourceDatabaseArchive implements Serializable {
 		super();
 	}
 
-	protected SourceDatabaseArchive(String url, File file, DateTime serverDate, DateTime downloadDate) {
+	protected SourceDatabaseArchive(final String url, final File file, final DateTime serverDate, final DateTime downloadDate) {
 		super();
 		this.setSourceURL(url);
 		this.setArchive(file);
@@ -89,7 +89,7 @@ public class SourceDatabaseArchive implements Serializable {
 	 * @return the archive representing the newest database file available form that URL
 	 * @throws java.io.IOException if there a problem with the local file such as trying to overwrite
 	 */
-	public SourceDatabaseArchive createArchive(String urlString, final CurationStatus status, File archFolder, CurationDao curationDao) throws IOException {
+	public SourceDatabaseArchive createArchive(String urlString, final CurationStatus status, final File archFolder, final CurationDao curationDao) throws IOException {
 		URL url = null;
 		if (!urlString.startsWith(CLASSPATH_URL_PREFIX)) {
 			// Cleanup the URL to canonical foramt
@@ -107,7 +107,7 @@ public class SourceDatabaseArchive implements Serializable {
 			urlString = commonMatch.getUrl();
 		}
 
-		File dstFile = new File(archFolder, getFileName(urlString));
+		final File dstFile = new File(archFolder, getFileName(urlString));
 		if (dstFile.exists()) {
 			throw new IOException("the database archive file " + dstFile.getAbsolutePath() + " already exists. Please specify a different destination file.");
 		}
@@ -124,7 +124,7 @@ public class SourceDatabaseArchive implements Serializable {
 
 			InputStream istream = null;
 			try {
-				String streamPath = urlString.replace(CLASSPATH_URL_PREFIX, "");
+				final String streamPath = urlString.replace(CLASSPATH_URL_PREFIX, "");
 				istream = SourceDatabaseArchive.class.getResourceAsStream(streamPath);
 				FileUtilities.writeStreamToFile(istream, dstFile);
 
@@ -161,11 +161,11 @@ public class SourceDatabaseArchive implements Serializable {
 					if (url.getUserInfo() == null) {
 						ftp.login("anonymous", "mprc@mayo.edu");
 					} else {
-						String[] credentials = url.getUserInfo().split(":");
+						final String[] credentials = url.getUserInfo().split(":");
 						ftp.login(credentials[0], credentials[1]);
 					}
 
-					String[] path = url.getPath().split("/");
+					final String[] path = url.getPath().split("/");
 					for (int i = 0; i < path.length - 1; i++) {
 						if (path[i].length() > 0) {
 							ftp.chdir(path[i]);
@@ -190,7 +190,7 @@ public class SourceDatabaseArchive implements Serializable {
 			final URLConnection connection = url.openConnection();
 			connection.connect();
 
-			DateTime urlLastMod = (ftpLastModified == null ? new DateTime(connection.getLastModified()) : ftpLastModified);
+			final DateTime urlLastMod = (ftpLastModified == null ? new DateTime(connection.getLastModified()) : ftpLastModified);
 
 			try {
 				retSource = curationDao.findSourceDatabaseInExistence(urlString, urlLastMod);
@@ -260,7 +260,7 @@ public class SourceDatabaseArchive implements Serializable {
 	 * @return Copy of all persistent attributes (except DB id).
 	 */
 	public SourceDatabaseArchive createCopy() {
-		SourceDatabaseArchive copy = new SourceDatabaseArchive();
+		final SourceDatabaseArchive copy = new SourceDatabaseArchive();
 		copy.downloadDate = this.downloadDate;
 		copy.sourceURL = this.sourceURL;
 		copy.serverDate = this.serverDate;
@@ -276,7 +276,7 @@ public class SourceDatabaseArchive implements Serializable {
 	 * @return the timestamped name
 	 */
 	private String getFileName(final String urlString) {
-		StringTokenizer t = new StringTokenizer(urlString, "/");
+		final StringTokenizer t = new StringTokenizer(urlString, "/");
 		String filename = null;
 		while (t.hasMoreTokens()) {
 			filename = t.nextToken();
@@ -284,8 +284,8 @@ public class SourceDatabaseArchive implements Serializable {
 		if (filename == null) {
 			filename = "";
 		}
-		int firstDotIndex = filename.indexOf('.', 0);
-		String name = filename.substring(0, firstDotIndex);
+		final int firstDotIndex = filename.indexOf('.', 0);
+		final String name = filename.substring(0, firstDotIndex);
 		return name + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".fasta.gz";
 	}
 
@@ -293,7 +293,7 @@ public class SourceDatabaseArchive implements Serializable {
 		return this.archive;
 	}
 
-	public void setArchive(File file) {
+	public void setArchive(final File file) {
 		this.archive = file;
 	}
 
@@ -301,7 +301,7 @@ public class SourceDatabaseArchive implements Serializable {
 		return id;
 	}
 
-	protected void setId(Integer id) {
+	protected void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -309,7 +309,7 @@ public class SourceDatabaseArchive implements Serializable {
 		return sourceURL;
 	}
 
-	public void setSourceURL(String sourceURL) {
+	public void setSourceURL(final String sourceURL) {
 		this.sourceURL = sourceURL;
 	}
 
@@ -317,7 +317,7 @@ public class SourceDatabaseArchive implements Serializable {
 		return serverDate;
 	}
 
-	public void setServerDate(DateTime serverDate) {
+	public void setServerDate(final DateTime serverDate) {
 		this.serverDate = serverDate;
 	}
 
@@ -325,12 +325,12 @@ public class SourceDatabaseArchive implements Serializable {
 		return downloadDate;
 	}
 
-	public void setDownloadDate(DateTime downloadDate) {
+	public void setDownloadDate(final DateTime downloadDate) {
 		this.downloadDate = downloadDate;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -338,7 +338,7 @@ public class SourceDatabaseArchive implements Serializable {
 			return false;
 		}
 
-		SourceDatabaseArchive that = (SourceDatabaseArchive) o;
+		final SourceDatabaseArchive that = (SourceDatabaseArchive) o;
 
 		if (getArchive() != null ? !getArchive().equals(that.getArchive()) : that.getArchive() != null) {
 			return false;

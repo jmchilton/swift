@@ -40,7 +40,7 @@ public final class Unimod extends IndexedModSet {
 	 *
 	 * @param xmlStream a stream of xml
 	 */
-	public void parseUnimodXML(InputStream xmlStream) {
+	public void parseUnimodXML(final InputStream xmlStream) {
 
 		XMLReader parser = null;
 		try {
@@ -51,7 +51,7 @@ public final class Unimod extends IndexedModSet {
 
 		try {
 			parser.setContentHandler(new UnimodHandler(this));
-			InputSource source = new InputSource(xmlStream);
+			final InputSource source = new InputSource(xmlStream);
 			parser.parse(source);
 		} catch (IOException e) {
 			throw new MprcException("Could not read unimod.xml stream", e);
@@ -65,7 +65,7 @@ public final class Unimod extends IndexedModSet {
 	 * @param preferedParser the parser you want to find first
 	 * @return a reader hopefully the prefered on
 	 */
-	private static XMLReader getParser(String preferedParser) throws SAXException {
+	private static XMLReader getParser(final String preferedParser) throws SAXException {
 		XMLReader toUse = null;
 		try {
 			toUse = XMLReaderFactory.createXMLReader(preferedParser);
@@ -81,7 +81,7 @@ public final class Unimod extends IndexedModSet {
 	}
 
 
-	public void setMajorVersion(String majorVersion) {
+	public void setMajorVersion(final String majorVersion) {
 		this.majorVersion = majorVersion;
 	}
 
@@ -89,7 +89,7 @@ public final class Unimod extends IndexedModSet {
 		return minorVersion;
 	}
 
-	public void setMinorVersion(String minorVersion) {
+	public void setMinorVersion(final String minorVersion) {
 		this.minorVersion = minorVersion;
 	}
 
@@ -104,7 +104,7 @@ public final class Unimod extends IndexedModSet {
 	 * @return A string containing all information from the unimod set for testing purposes.
 	 */
 	public String debugDump() {
-		StringBuilder builder = new StringBuilder(EXPECTED_BYTES_PER_DUMP_LINE * size());
+		final StringBuilder builder = new StringBuilder(EXPECTED_BYTES_PER_DUMP_LINE * size());
 
 		final Set<ModSpecificity> specificitySet = getAllSpecificities(true);
 		final ModSpecificity[] specificities = specificitySet.toArray(new ModSpecificity[specificitySet.size()]);
@@ -112,7 +112,7 @@ public final class Unimod extends IndexedModSet {
 
 		builder.append("Modification Record ID\tModification Title\tModification Full Name\tModification Mono Mass\tModification Average Mass\tModification Alt Names\t" +
 				"Modification Composition\tSpecificity Site\tSpecificity Terminus\tSpecificity Protein Only\tSpecificity Classification\tSpecificity Hidden\tSpecificity Group\tSpecificity Comments\n");
-		for (ModSpecificity specificity : specificities) {
+		for (final ModSpecificity specificity : specificities) {
 			final Mod mod = specificity.getModification();
 			builder
 					.append(mod.getRecordID())
@@ -151,7 +151,7 @@ public final class Unimod extends IndexedModSet {
 	}
 
 	@Override
-	public boolean equals(Object t) {
+	public boolean equals(final Object t) {
 		if (this == t) {
 			return true;
 		}
@@ -162,7 +162,7 @@ public final class Unimod extends IndexedModSet {
 			return false;
 		}
 
-		Unimod unimod = (Unimod) t;
+		final Unimod unimod = (Unimod) t;
 
 		if (getMajorVersion() != null ? !getMajorVersion().equals(unimod.getMajorVersion()) : unimod.getMajorVersion() != null) {
 			return false;

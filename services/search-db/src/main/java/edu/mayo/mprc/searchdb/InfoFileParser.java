@@ -24,22 +24,22 @@ public class InfoFileParser {
 	 *
 	 * @param infoFile File to parse
 	 */
-	public InfoFileData parse(File infoFile) {
+	public InfoFileData parse(final File infoFile) {
 		return parse(new TsvStreamReader(infoFile));
 	}
 
 	/**
 	 * Parse .RAW.info file data coming from a given reader.
 	 */
-	public InfoFileData parse(Reader reader) {
+	public InfoFileData parse(final Reader reader) {
 		return parse(new TsvStreamReader(reader));
 	}
 
 	private InfoFileData parse(final TsvStreamReader reader) {
-		InfoFileData data = new InfoFileData();
+		final InfoFileData data = new InfoFileData();
 		try {
 			final int[] indices = {0, 1};
-			ArrayList<String> values = new ArrayList<String>(2);
+			final ArrayList<String> values = new ArrayList<String>(2);
 			while (reader.nextValues(indices, values)) {
 				final String key = values.size() > 0 ? values.get(0).trim() : "";
 				final String value = values.size() > 1 ? values.get(1).trim() : "";

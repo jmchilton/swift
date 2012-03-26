@@ -9,7 +9,7 @@ import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySample;
 public class SearchResultBuilder implements Builder<SearchResult> {
 	private TandemMassSpectrometrySample massSpecSample;
 
-	public SearchResultBuilder(BiologicalSampleBuilder biologicalSample) {
+	public SearchResultBuilder(final BiologicalSampleBuilder biologicalSample) {
 		this.biologicalSample = biologicalSample;
 		proteinGroups = new ProteinGroupListBuilder(this);
 	}
@@ -34,7 +34,7 @@ public class SearchResultBuilder implements Builder<SearchResult> {
 		return massSpecSample;
 	}
 
-	public void setMassSpecSample(TandemMassSpectrometrySample massSpecSample) {
+	public void setMassSpecSample(final TandemMassSpectrometrySample massSpecSample) {
 		this.massSpecSample = massSpecSample;
 	}
 
@@ -43,7 +43,7 @@ public class SearchResultBuilder implements Builder<SearchResult> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -51,7 +51,7 @@ public class SearchResultBuilder implements Builder<SearchResult> {
 			return false;
 		}
 
-		SearchResultBuilder that = (SearchResultBuilder) o;
+		final SearchResultBuilder that = (SearchResultBuilder) o;
 
 		if (massSpecSample != null ? !massSpecSample.equals(that.massSpecSample) : that.massSpecSample != null) {
 			return false;

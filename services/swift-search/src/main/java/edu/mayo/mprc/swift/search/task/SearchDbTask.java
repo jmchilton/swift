@@ -23,7 +23,7 @@ public class SearchDbTask extends AsyncTaskBase {
 	private Scaffold3Task scaffold3Task;
 	private Map<String, RAWDumpTask> rawDumpTaskMap = new HashMap<String, RAWDumpTask>(5);
 
-	public SearchDbTask(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch, Scaffold3Task scaffold3Task) {
+	public SearchDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Scaffold3Task scaffold3Task) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.scaffold3Task = scaffold3Task;
 		setName("SearchDb");
@@ -47,7 +47,7 @@ public class SearchDbTask extends AsyncTaskBase {
 
 	@Override
 	public WorkPacket createWorkPacket() {
-		HashMap<String, RawFileMetaData> metaDataMap = new HashMap<String, RawFileMetaData>(rawDumpTaskMap.size());
+		final HashMap<String, RawFileMetaData> metaDataMap = new HashMap<String, RawFileMetaData>(rawDumpTaskMap.size());
 		for (final Map.Entry<String, RAWDumpTask> entry : rawDumpTaskMap.entrySet()) {
 			final RAWDumpTask task = entry.getValue();
 			final RawFileMetaData metaData = new RawFileMetaData(
@@ -68,6 +68,6 @@ public class SearchDbTask extends AsyncTaskBase {
 	}
 
 	@Override
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 	}
 }

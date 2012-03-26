@@ -9,13 +9,13 @@ public final class KeyValueArrays {
 	 * Return the index of the last key-value pair whose key is <= given key.
 	 * Modified java's Array.binarySearch version.
 	 */
-	public static int getIndexForKey(float[] keyValueArray, float key) {
+	public static int getIndexForKey(final float[] keyValueArray, final float key) {
 		int low = 0;
 		int high = keyValueArray.length / 2 - 1;
 
 		while (low <= high) {
-			int mid = (low + high) >>> 1;
-			float midVal = keyValueArray[mid * 2];
+			final int mid = (low + high) >>> 1;
+			final float midVal = keyValueArray[mid * 2];
 			if (midVal <= key) {
 				low = mid + 1;
 			} else {
@@ -47,13 +47,13 @@ public final class KeyValueArrays {
 		}
 	}
 
-	public static double interpolate(double key1, double key2, double key, double value1, double value2) {
-		double t = (key - key1) / (key2 - key1);
+	public static double interpolate(final double key1, final double key2, final double key, final double value1, final double value2) {
+		final double t = (key - key1) / (key2 - key1);
 		return value1 * (1 - t) + value2 * t;
 	}
 
-	public static float interpolate(float key1, float key2, float key, float value1, float value2) {
-		float t = (key - key1) / (key2 - key1);
+	public static float interpolate(final float key1, final float key2, final float key, final float value1, final float value2) {
+		final float t = (key - key1) / (key2 - key1);
 		return value1 * (1 - t) + value2 * t;
 	}
 
@@ -74,7 +74,7 @@ public final class KeyValueArrays {
 		}
 
 		// Fill result array
-		float result[] = new float[count * 2];
+		final float[] result = new float[count * 2];
 		if (count > 0) {
 			int out = 0;
 			for (int i = 0; i < keyValueArray.length; i += 2) {
@@ -99,7 +99,7 @@ public final class KeyValueArrays {
 		for (int i = 0; i < keyValueArray.length; i += 2) {
 			final float key = keyValueArray[i];
 			if (key >= minKey && keyValueArray[i] <= maxKey) {
-				float value = keyValueArray[i + 1];
+				final float value = keyValueArray[i + 1];
 				if (value > maxValue) {
 					maxValue = value;
 				}

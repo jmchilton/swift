@@ -8,7 +8,7 @@ public final class MgfFilterTest {
 	@Test
 	public void testSpectrumTitleExtraction() {
 
-		SpectrumNumberExtractor extractor = new SpectrumNumberExtractor();
+		final SpectrumNumberExtractor extractor = new SpectrumNumberExtractor();
 		Assert.assertEquals(
 				extractor.extractSpectrumNumberFromTitle(" TITLE=test1 scan 10 10 (test1.10.10.3.dta) "),
 				10,

@@ -16,7 +16,7 @@ public final class ModificationDialog extends FrameDialog {
 	private static final String TITLE = "";
 
 
-	public ModificationDialog(ModificationSelectionEditor editor) {
+	public ModificationDialog(final ModificationSelectionEditor editor) {
 		super("", true, true, false, false);
 
 		this.setContent(editor);
@@ -27,7 +27,7 @@ public final class ModificationDialog extends FrameDialog {
 		return editor;
 	}
 
-	public void setEditor(ModificationSelectionEditor editor) {
+	public void setEditor(final ModificationSelectionEditor editor) {
 		this.editor = editor;
 		setWidget(this.editor);
 	}
@@ -36,7 +36,7 @@ public final class ModificationDialog extends FrameDialog {
 		return param;
 	}
 
-	public void setParam(String param) {
+	public void setParam(final String param) {
 		this.param = param;
 	}
 
@@ -44,7 +44,7 @@ public final class ModificationDialog extends FrameDialog {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 

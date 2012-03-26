@@ -14,7 +14,7 @@ public final class MyrimatchDeploymentResult extends DeploymentResult {
 		return numForwardEntries;
 	}
 
-	public void setNumForwardEntries(long numForwardEntries) {
+	public void setNumForwardEntries(final long numForwardEntries) {
 		this.numForwardEntries = numForwardEntries;
 	}
 
@@ -22,7 +22,7 @@ public final class MyrimatchDeploymentResult extends DeploymentResult {
 		return decoySequencePrefix;
 	}
 
-	public void setDecoySequencePrefix(String decoySequencePrefix) {
+	public void setDecoySequencePrefix(final String decoySequencePrefix) {
 		this.decoySequencePrefix = decoySequencePrefix;
 	}
 }

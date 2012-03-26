@@ -16,7 +16,7 @@ public final class ChargeUnit {
 	/**
 	 * Don't use this constructor, use getChargeUnit() or getProtonChargeUnit().
 	 */
-	private ChargeUnit(Element chargeCarrier, PeriodicTable pt) {
+	private ChargeUnit(final Element chargeCarrier, final PeriodicTable pt) {
 		this.chargeCarrier = chargeCarrier;
 		this.pt = pt;
 		this.mass = this.chargeCarrier.getMonoisotopicMass() - this.pt.getElectronMass();
@@ -30,7 +30,7 @@ public final class ChargeUnit {
 	 * @param chargeState How many charges (z)
 	 * @return Neutral mass of the molecule.
 	 */
-	public double chargedToNeutral(double mz, int chargeState) {
+	public double chargedToNeutral(final double mz, final int chargeState) {
 		return mz * Math.abs(chargeState) - (chargeState * mass);
 	}
 
@@ -41,7 +41,7 @@ public final class ChargeUnit {
 	 * @param chargeState How many charges are added.
 	 * @return Final mass of the molecule.
 	 */
-	public double neutralToCharged(double mass, int chargeState) {
+	public double neutralToCharged(final double mass, final int chargeState) {
 		return (mass + (chargeState * this.mass)) / Math.abs(chargeState);
 	}
 
@@ -60,7 +60,7 @@ public final class ChargeUnit {
 	/**
 	 * Returns the "charge state string" like [M+5H+]5+.
 	 */
-	public String toString(int chargeState) {
+	public String toString(final int chargeState) {
 		return "[M" + (chargeState >= 0 ? "+" : "-") + Math.abs(chargeState)
 				+ chargeCarrier.getSymbol() + "+]" + Math.abs(chargeState) + (chargeState >= 0 ? "+" : "-");
 	}
@@ -69,7 +69,7 @@ public final class ChargeUnit {
 	 * This is a non-standard, abbreviated version of the "charge state string".
 	 * You're probably better off using the normal version returned by {@link #toString(int)}.
 	 */
-	public String toShortString(int chargeState) {
+	public String toShortString(final int chargeState) {
 		if ("H".equals(chargeCarrier.getSymbol())) {
 			return "[M " + Math.abs(chargeState)
 					+ (chargeState >= 0 ? "+" : "-") + "]";
@@ -82,14 +82,14 @@ public final class ChargeUnit {
 	/**
 	 * Returns the singleton ChargeUnit for protons.
 	 */
-	public static ChargeUnit getProtonChargeUnit(PeriodicTable pt) {
+	public static ChargeUnit getProtonChargeUnit(final PeriodicTable pt) {
 		return findChargeUnit(pt.getElementBySymbol("H"), pt);
 	}
 
 	/**
 	 * Returns the singleton ChargeUnit for the given element.
 	 */
-	public static ChargeUnit getChargeUnit(Element chargeCarrier, PeriodicTable pt) {
+	public static ChargeUnit getChargeUnit(final Element chargeCarrier, final PeriodicTable pt) {
 		return findChargeUnit(chargeCarrier, pt);
 	}
 
@@ -99,13 +99,13 @@ public final class ChargeUnit {
 
 	private static final List<ChargeUnit> chargeUnits = new ArrayList<ChargeUnit>();
 
-	private static synchronized ChargeUnit findChargeUnit(Element chargeCarrier, PeriodicTable pt) {
-		for (ChargeUnit chargeUnit : chargeUnits) {
+	private static synchronized ChargeUnit findChargeUnit(final Element chargeCarrier, final PeriodicTable pt) {
+		for (final ChargeUnit chargeUnit : chargeUnits) {
 			if (chargeUnit.getChargeCarrier().equals(chargeCarrier) && chargeUnit.getPeriodicTable().equals(pt)) {
 				return chargeUnit;
 			}
 		}
-		ChargeUnit chargeUnit = new ChargeUnit(chargeCarrier, pt);
+		final ChargeUnit chargeUnit = new ChargeUnit(chargeCarrier, pt);
 		chargeUnits.add(chargeUnit);
 		return chargeUnit;
 	}

@@ -18,26 +18,26 @@ public final class DatabaseListBox extends ValidatableListBox {
 	//User map. Used to map e-mail to user id.
 	private Map<String/*email*/, ClientUser> userInfo;
 
-	public DatabaseListBox(String param, Map<String, ClientUser> userInfo) {
+	public DatabaseListBox(final String param, final Map<String, ClientUser> userInfo) {
 		super(param, false);
 
 		this.userInfo = userInfo;
 	}
 
-	public String getStringValue(ClientValue value) {
+	public String getStringValue(final ClientValue value) {
 		if (value == null) {
 			return "";
 		}
 		if (!(value instanceof ClientSequenceDatabase)) {
 			throw new RuntimeException("Expected a ClientSequenceDatabase");
 		}
-		ClientSequenceDatabase csd = (ClientSequenceDatabase) value;
+		final ClientSequenceDatabase csd = (ClientSequenceDatabase) value;
 		return csd.getShortName() + " - " + csd.getDisplayName() + (userInfo != null && csd.getOwnerEmail() != null && csd.getOwnerEmail().length() != 0
 				&& userInfo.get(csd.getOwnerEmail()) != null ? " (" + userInfo.get(csd.getOwnerEmail()).getInitials() + ")" : "");
 	}
 
 	@Override
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		try {
 			super.setValue(value);
 		} catch (Exception ignore) {
@@ -45,9 +45,9 @@ public final class DatabaseListBox extends ValidatableListBox {
 		}
 	}
 
-	public void select(int databaseId, ValidationController validator) {
-		for (ClientValue allowedValue : allowedValues) {
-			ClientSequenceDatabase csd = (ClientSequenceDatabase) allowedValue;
+	public void select(final int databaseId, final ValidationController validator) {
+		for (final ClientValue allowedValue : allowedValues) {
+			final ClientSequenceDatabase csd = (ClientSequenceDatabase) allowedValue;
 			if (csd.getId() == databaseId) {
 				setValue(csd);
 				validator.onChange(this);
@@ -59,11 +59,11 @@ public final class DatabaseListBox extends ValidatableListBox {
 		// throw new RuntimeException("Can't find database with id " + databaseId);
 	}
 
-	public ClientValue bundle(List<? extends ClientValue> selected) {
+	public ClientValue bundle(final List<? extends ClientValue> selected) {
 		return null;//unused
 	}
 
-	public List<? extends ClientValue> unbundle(ClientValue value) {
+	public List<? extends ClientValue> unbundle(final ClientValue value) {
 		return EMPTY_VALUES; // unused
 	}
 

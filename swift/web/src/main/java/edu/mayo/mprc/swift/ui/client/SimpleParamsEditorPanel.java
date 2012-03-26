@@ -53,7 +53,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 	 * Deal with errors not associated with any specific widget.
 	 * TODO Does this really belong here?
 	 */
-	public static void handleGlobalError(Throwable t) {
+	public static void handleGlobalError(final Throwable t) {
 		ErrorDialog.show(t);
 	}
 
@@ -87,7 +87,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 	private DatabaseListBox dlb;
 
 
-	public SimpleParamsEditorPanel(final ServiceAsync serviceAsync, final HidesPageContentsWhileLoading contentsHiding, Map<String, ClientUser> userInfo) {
+	public SimpleParamsEditorPanel(final ServiceAsync serviceAsync, final HidesPageContentsWhileLoading contentsHiding, final Map<String, ClientUser> userInfo) {
 		this.serviceAsync = serviceAsync;
 		this.userInfo = userInfo;
 		selectionController = new ParamSetSelectionController(serviceAsync);
@@ -99,18 +99,18 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		contentsHiding.hidePageContentsWhileLoading();
 		serviceAsync.login("", "", new AsyncCallback<Boolean>() { // TODO: real login
 
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				contentsHiding.showPageContents();
 				handleGlobalError(caught);
 			}
 
-			public void onSuccess(Boolean result) {
+			public void onSuccess(final Boolean result) {
 				contentsHiding.showPageContentsAfterLoad();
 			}
 		});
 
-		HorizontalPanel hp = new HorizontalPanel();
-		RootPanel paramsSelectorPanel = RootPanel.get("paramsSelector");
+		final HorizontalPanel hp = new HorizontalPanel();
+		final RootPanel paramsSelectorPanel = RootPanel.get("paramsSelector");
 		paramsSelectorPanel.add(hp);
 
 		selector = new ParamsSelector();
@@ -119,12 +119,12 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		hp.add(selector);
 
 		// save buttons //////////////////////////////////////////////////////////
-		PushButton button;
+		final PushButton button;
 		hp.add(saveButton = new PushButton("Save..."));
 		saveButton.addStyleName(ACTION_LINK);
 		saveButton.addStyleName(SPACE_AFTER);
 		saveButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				save();
 			}
 		});
@@ -135,7 +135,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		button.addStyleName(ACTION_LINK);
 		button.addStyleName(SPACE_AFTER);
 		button.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				preview();
 			}
 		});
@@ -145,7 +145,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		deleteButton.addStyleName(ACTION_LINK);
 		deleteButton.addStyleName(SPACE_AFTER);
 		deleteButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				delete();
 			}
 		});
@@ -154,7 +154,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		// description, initially hidden /////////////////////////////////////////////
 
 
-		HTMLPanel description;
+		final HTMLPanel description;
 		paramsSelectorPanel.add(description = new HTMLPanel("<I>This is a description of the ParameterSet.</I>"));
 		description.setSize("500px", "50px");
 		description.setStyleName("dottedBorder");
@@ -163,12 +163,12 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		/// Existing DOM //////////////////////////////////////////////////////////////
 		// Grab the existing DOM for the parameter rows.
 
-		ExistingDOMPanel edp = new ExistingDOMPanel("paramRow");
+		final ExistingDOMPanel edp = new ExistingDOMPanel("paramRow");
 
 		/// database ///////////////////////////////////////////
 		{
-			ExistingDOMPanel dbrow = new ExistingDOMPanel("paramDbRow");
-			Label label = new Label("Database:");
+			final ExistingDOMPanel dbrow = new ExistingDOMPanel("paramDbRow");
+			final Label label = new Label("Database:");
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label.setStyleName(PARAMS_LABEL);
 			editorElements.add(dbrow.append("database", "paramDbLabel", label, editorVisible));
@@ -181,11 +181,11 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 			p.add(dlb);
 			//dlb.setStyleName("spaceAfter");
-			PushButton pb = new PushButton("Add or Review Database...");
+			final PushButton pb = new PushButton("Add or Review Database...");
 			pb.addStyleName(ACTION_LINK);
 			pb.setTitle("Click here to review the selected database and potentially modify it for your own needs.");
 			pb.addClickListener(new ClickListener() {
-				public void onClick(Widget widget) {
+				public void onClick(final Widget widget) {
 					popupDbCurator();
 				}
 			});
@@ -195,14 +195,14 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 			//Add undeployer link if enabled.
 			serviceAsync.isDatabaseUndeployerEnabled(new AsyncCallback<Boolean>() {
 
-				public void onFailure(Throwable caught) {
+				public void onFailure(final Throwable caught) {
 					//Do nothing, do not add undeploy link.
 					throw new RuntimeException("Can not determine if database undeployer is enabled", caught);
 				}
 
-				public void onSuccess(Boolean result) {
+				public void onSuccess(final Boolean result) {
 					if (result.booleanValue()) {
-						PushButton du = new PushButton("Undeploy Database");
+						final PushButton du = new PushButton("Undeploy Database");
 						du.addStyleName(ACTION_LINK);
 						du.setTitle("Click here to undeploy database from search engines.");
 						du.addClickListener(new DatabaseUndeploymentAction(serviceAsync, dlb));
@@ -221,30 +221,30 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 		{
 
-			Label label = new Label("Protease:");
+			final Label label = new Label("Protease:");
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label.setStyleName(PARAMS_LABEL);
 			editorElements.add(edp.append("enzyme", LABEL1, label, editorVisible));
 
-			ValidationPanel vp = new ValidationPanel(2);
+			final ValidationPanel vp = new ValidationPanel(2);
 
-			ProteaseListBox tb;
+			final ProteaseListBox tb;
 			validationController.add(tb = new ProteaseListBox("sequence.enzyme"), "sequence.enzyme", vp);
 
 			editorElements.add(edp.append("enzyme", ENTRY1, tb, editorVisible));
 
-			Label label1 = new Label("Missed Cleavages:");
+			final Label label1 = new Label("Missed Cleavages:");
 			label1.setStyleName(PARAMS_LABEL);
 			label1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			ValidatableTextBox tdb = new ValidatableTextBox("sequence.missed_cleavages") {
-				protected ClientValue getValueFromString(String value) {
+			final ValidatableTextBox tdb = new ValidatableTextBox("sequence.missed_cleavages") {
+				protected ClientValue getValueFromString(final String value) {
 					if ((value == null) || (value.length() == 0)) {
 						return null;
 					}
 					try {
 						return new ClientInteger(value);
 					} catch (NumberFormatException ignore) {
-						ClientValidationList list = new ClientValidationList();
+						final ClientValidationList list = new ClientValidationList();
 						final ClientValidation cv = new ClientValidation("Not a number: " + value,
 								"sequence.missed_cleavages", ClientValidation.SEVERITY_ERROR);
 						list.add(cv);
@@ -253,11 +253,11 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 					}
 				}
 
-				protected String setValueAsString(ClientValue object) {
+				protected String setValueAsString(final ClientValue object) {
 					return object.toString();
 				}
 
-				public void setAllowedValues(List<? extends ClientValue> values) {
+				public void setAllowedValues(final List<? extends ClientValue> values) {
 					// unused.
 				}
 
@@ -278,16 +278,16 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 		{
 
-			ValidationPanel vp = new ValidationPanel(2);
+			final ValidationPanel vp = new ValidationPanel(2);
 
-			Label label = new Label("Fixed Modifications:");
+			final Label label = new Label("Fixed Modifications:");
 			label.setStyleName(PARAMS_LABEL);
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			editorElements.add(edp.append(MODIFICATIONS, LABEL1, label, editorVisible));
 
 			// fixed mods label
 			fixedMods = new ModificationsLabel(ModificationSelectionEditor.FIXED_PARAM_NAME, ModificationSelectionEditor.FIXED_PARAM_NAME);
-			ModificationSelectionEditor fixedModsEditor = new ModificationSelectionEditor(ModificationSelectionEditor.FIXED_PARAM_NAME, ModificationSelectionEditor.FIXED_MOD_TYPE);
+			final ModificationSelectionEditor fixedModsEditor = new ModificationSelectionEditor(ModificationSelectionEditor.FIXED_PARAM_NAME, ModificationSelectionEditor.FIXED_MOD_TYPE);
 			fixedMods.setEditor(fixedModsEditor);
 			validationController.add(fixedMods, ModificationSelectionEditor.FIXED_PARAM_NAME, vp);
 
@@ -295,11 +295,11 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 			// variable mods label
 			varMods = new ModificationsLabel(ModificationSelectionEditor.VARIABLE_PARAM_NAME, ModificationSelectionEditor.VARIABLE_PARAM_NAME);
-			ModificationSelectionEditor varModsEditor = new ModificationSelectionEditor(ModificationSelectionEditor.VARIABLE_PARAM_NAME, ModificationSelectionEditor.VARIABLE_MOD_TYPE);
+			final ModificationSelectionEditor varModsEditor = new ModificationSelectionEditor(ModificationSelectionEditor.VARIABLE_PARAM_NAME, ModificationSelectionEditor.VARIABLE_MOD_TYPE);
 			varMods.setEditor(varModsEditor);
 			validationController.add(varMods, ModificationSelectionEditor.VARIABLE_PARAM_NAME, vp);
 
-			Label label1 = new Label("Variable Modifications:");
+			final Label label1 = new Label("Variable Modifications:");
 			label1.setStyleName(PARAMS_LABEL);
 			label1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			editorElements.add(edp.append(MODIFICATIONS, LABEL2, label1, editorVisible));
@@ -315,24 +315,24 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 		{
 
-			Label label = new Label("Peptide Tolerance:");
+			final Label label = new Label("Peptide Tolerance:");
 			label.setStyleName(PARAMS_LABEL);
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			editorElements.add(edp.append(TOLERANCES, LABEL1, label, editorVisible));
 
 
-			ValidationPanel vp = new ValidationPanel(2);
+			final ValidationPanel vp = new ValidationPanel(2);
 
-			ToleranceBox peptideTolerance;
+			final ToleranceBox peptideTolerance;
 			validationController.add(peptideTolerance = new ToleranceBox("tolerance.peptide"), "tolerance.peptide", vp);
 			editorElements.add(edp.append(TOLERANCES, ENTRY1, peptideTolerance, editorVisible));
 
-			Label label1 = new Label("Fragment Tolerance:");
+			final Label label1 = new Label("Fragment Tolerance:");
 			editorElements.add(edp.append(TOLERANCES, LABEL2, label1, editorVisible));
 			label1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label1.setStyleName(PARAMS_LABEL);
 
-			ToleranceBox fragmentTolerance;
+			final ToleranceBox fragmentTolerance;
 			validationController.add(fragmentTolerance = new ToleranceBox("tolerance.fragment"), "tolerance.fragment", vp);
 			editorElements.add(edp.append(TOLERANCES, ENTRY2, fragmentTolerance, editorVisible));
 
@@ -341,14 +341,14 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		}
 
 		/// instrument /////////////////////////////////////////
-		ValidationPanel instrumentVp;
+		final ValidationPanel instrumentVp;
 		{
-			Label label = new Label("Instrument:");
+			final Label label = new Label("Instrument:");
 			editorElements.add(edp.append(INSTRUMENT, LABEL1, label, editorVisible));
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label.setStyleName(PARAMS_LABEL);
 			instrumentVp = new ValidationPanel(2);
-			InstrumentListBox lb;
+			final InstrumentListBox lb;
 			validationController.add(lb = new InstrumentListBox(INSTRUMENT), INSTRUMENT, instrumentVp);
 			editorElements.add(edp.append(INSTRUMENT, ENTRY1, lb, editorVisible));
 			editorElements.add(edp.append(INSTRUMENT, VALIDATION, instrumentVp, editorVisible));
@@ -356,25 +356,25 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 		/// spectrum extraction params /////////////////////////////////////////
 		{
-			Label label = new Label("Spectrum extraction:");
+			final Label label = new Label("Spectrum extraction:");
 			editorElements.add(edp.append(INSTRUMENT, LABEL2, label, editorVisible));
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label.setStyleName(PARAMS_LABEL);
-			SpectrumExtractionEditor ed = new SpectrumExtractionEditor();
+			final SpectrumExtractionEditor ed = new SpectrumExtractionEditor();
 			validationController.add(ed, "extractMsnSettings", instrumentVp);
 			editorElements.add(edp.append(INSTRUMENT, ENTRY2, ed, editorVisible));
 		}
 
 		/// scaffold params /////////////////////////////////////////
 		{
-			ExistingDOMPanel row = new ExistingDOMPanel("scaffoldRow");
+			final ExistingDOMPanel row = new ExistingDOMPanel("scaffoldRow");
 
-			Label label = new Label("Scaffold:");
+			final Label label = new Label("Scaffold:");
 			editorElements.add(row.append(SCAFFOLD_SETTINGS, "scaffoldLabel", label, editorVisible));
 			label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			label.setStyleName(PARAMS_LABEL);
-			ValidationPanel vp = new ValidationPanel(2);
-			ScaffoldSettingsEditor ed = new ScaffoldSettingsEditor();
+			final ValidationPanel vp = new ValidationPanel(2);
+			final ScaffoldSettingsEditor ed = new ScaffoldSettingsEditor();
 			validationController.add(ed, SCAFFOLD_SETTINGS, vp);
 			editorElements.add(row.append(SCAFFOLD_SETTINGS, "scaffoldEntry", ed, editorVisible));
 			editorElements.add(row.append(SCAFFOLD_SETTINGS, "scaffoldValidation", vp, editorVisible));
@@ -384,8 +384,8 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		selectionController.refresh();
 
 		validationController.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
-				for (PushButton button : buttons) {
+			public void onChange(final Widget widget) {
+				for (final PushButton button : buttons) {
 					button.setEnabled(isValid());
 				}
 			}
@@ -396,14 +396,14 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 	 * @param editorEnabled If true, the user can edit the parameters.
 	 * @param user          current user
 	 */
-	public void setEditorEnabled(boolean editorEnabled, ClientUser user) {
+	public void setEditorEnabled(final boolean editorEnabled, final ClientUser user) {
 		this.editorEnabled = editorEnabled;
 		this.user = user;
 		setEditorVisible(this.editorExpanded && this.editorEnabled, !this.editorEnabled && this.editorExpanded);
 		setDeleteVisible(editorEnabled);
 	}
 
-	private void setDeleteVisible(boolean editorEnabled) {
+	private void setDeleteVisible(final boolean editorEnabled) {
 		deleteButton.setVisible(editorEnabled);
 	}
 
@@ -411,14 +411,14 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		return editorEnabled;
 	}
 
-	public void setParamSetList(ClientParamSetList newList) {
+	public void setParamSetList(final ClientParamSetList newList) {
 		selectionController.setParamSetList(newList);
 	}
 
 	/**
 	 * @param editorExpanded When set to true, the parameter editor is displayed
 	 */
-	public void setEditorExpanded(boolean editorExpanded) {
+	public void setEditorExpanded(final boolean editorExpanded) {
 		this.editorExpanded = editorExpanded;
 		setEditorVisible(this.editorExpanded && this.editorEnabled, !this.editorEnabled && this.editorExpanded);
 	}
@@ -435,10 +435,10 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 	 * @param editorVisible       Whether the editor should be made visible.
 	 * @param errorMessageVisible Whether the editor error message should be made visible instead of the editor.
 	 */
-	private void setEditorVisible(boolean editorVisible, boolean errorMessageVisible) {
+	private void setEditorVisible(final boolean editorVisible, final boolean errorMessageVisible) {
 		if (this.editorVisible != editorVisible) {
 			saveButton.setVisible(editorVisible && this.editorEnabled);
-			for (Element e : editorElements) {
+			for (final Element e : editorElements) {
 				DOM.setStyleAttribute(e, "display", editorVisible ? "" : "none");
 			}
 			if (editorVisible) {
@@ -472,7 +472,7 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 		return selectionController.getSelectedParamSet();
 	}
 
-	public void setSelectedParamSet(ClientParamSet paramSet) {
+	public void setSelectedParamSet(final ClientParamSet paramSet) {
 		selectionController.select(paramSet);
 	}
 
@@ -483,11 +483,11 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 	/**
 	 * Fires change events whenever the selected ParamSet changes, or when a change in validation state occurs.
 	 */
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		listeners.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		listeners.remove(changeListener);
 	}
 
@@ -525,11 +525,11 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 			if (Window.confirm("Do you really want to delete parameter set " + setToDelete.getName() + "?")) {
 				serviceAsync.delete(new Service.Token(true),
 						selector.getSelectedParamSet(), new AsyncCallback<Void>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						handleGlobalError(throwable);
 					}
 
-					public void onSuccess(Void aVoid) {
+					public void onSuccess(final Void aVoid) {
 						selectionController.refresh(new ParamSetSelectionController.Callback() {
 							public void refreshed() {
 								final List<ClientParamSet> paramSets = selectionController.getClientParamSets();
@@ -544,17 +544,17 @@ public final class SimpleParamsEditorPanel implements SourcesChangeEvents {
 
 	private void popupDbCurator() {
 
-		ClientSequenceDatabase csd = (ClientSequenceDatabase) dlb.getSelected();
-		Integer selected = csd.getId();
+		final ClientSequenceDatabase csd = (ClientSequenceDatabase) dlb.getSelected();
+		final Integer selected = csd.getId();
 
-		Map<String, String> emailInitialPairs = new TreeMap<String, String>();
+		final Map<String, String> emailInitialPairs = new TreeMap<String, String>();
 
-		for (Map.Entry<String, ClientUser> me : userInfo.entrySet()) {
+		for (final Map.Entry<String, ClientUser> me : userInfo.entrySet()) {
 			emailInitialPairs.put(me.getKey(), me.getValue().getInitials());
 		}
 
 		final DialogBox dialogBox = new DialogBox(false);
-		CurationEditor ce = new CurationEditor(selected, user.getEmail(), emailInitialPairs, new EditorCloseCallback() {
+		final CurationEditor ce = new CurationEditor(selected, user.getEmail(), emailInitialPairs, new EditorCloseCallback() {
 			public void editorClosed(final Integer openCurationID) {
 				validationController.getAllowedValues(dlb, new Callback() {
 					public void done() {

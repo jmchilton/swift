@@ -16,17 +16,17 @@ public final class AvailableModules implements Serializable {
 	public AvailableModules() {
 	}
 
-	public AvailableModules(Collection<Info> infos) {
-		for (Info info : infos) {
+	public AvailableModules(final Collection<Info> infos) {
+		for (final Info info : infos) {
 			this.configUIs.put(info.getType(), info);
 		}
 	}
 
-	public void addInfo(Info info) {
+	public void addInfo(final Info info) {
 		configUIs.put(info.getType(), info);
 	}
 
-	public void add(String name, String type, String description, boolean module) {
+	public void add(final String name, final String type, final String description, final boolean module) {
 		configUIs.put(type, new Info(name, type, description, module));
 	}
 
@@ -38,15 +38,15 @@ public final class AvailableModules implements Serializable {
 		return configUIs.values();
 	}
 
-	public String getModuleNameForType(String type) {
+	public String getModuleNameForType(final String type) {
 		return configUIs.get(type).getName();
 	}
 
-	public String getDescriptionForType(String type) {
+	public String getDescriptionForType(final String type) {
 		return configUIs.get(type).getDescription();
 	}
 
-	public boolean isModuleForType(String type) {
+	public boolean isModuleForType(final String type) {
 		return configUIs.get(type).isModule();
 	}
 
@@ -60,7 +60,7 @@ public final class AvailableModules implements Serializable {
 		public Info() {
 		}
 
-		public Info(String name, String type, String description, boolean module) {
+		public Info(final String name, final String type, final String description, final boolean module) {
 			this.name = name;
 			this.type = type;
 			this.description = description;

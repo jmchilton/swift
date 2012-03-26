@@ -13,17 +13,17 @@ import java.io.File;
 public final class FileTokenFactoryWrapper implements FileTokenToDatabaseTranslator {
 	private FileTokenFactory factory;
 
-	public FileTokenFactoryWrapper(FileTokenFactory factory) {
+	public FileTokenFactoryWrapper(final FileTokenFactory factory) {
 		this.factory = factory;
 	}
 
 	@Override
-	public String fileToDatabaseToken(File file) {
+	public String fileToDatabaseToken(final File file) {
 		return factory.fileToDatabaseToken(file);
 	}
 
 	@Override
-	public File databaseTokenToFile(String tokenPath) {
+	public File databaseTokenToFile(final String tokenPath) {
 		return factory.databaseTokenToFile(tokenPath);
 	}
 }

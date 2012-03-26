@@ -32,32 +32,32 @@ public class JsonStatusFeeder extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		this.doGet(req, resp);
 	}
 
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 
 		PrintWriter out = null;
 		try {
 
 			swiftDao.begin(); // Transaction-per-request
 
-			SearchRunFilter searchRunFilter = new SearchRunFilter();
+			final SearchRunFilter searchRunFilter = new SearchRunFilter();
 			searchRunFilter.setStart("0");
 			searchRunFilter.setCount("50");
 
 			out = resp.getWriter();
 
-			StringBuilder response = new StringBuilder(TYPICAL_RESPONSE_SIZE);
+			final StringBuilder response = new StringBuilder(TYPICAL_RESPONSE_SIZE);
 			response.append("[");
 
 			final List<SearchRun> searchRuns = swiftDao.getSearchRunList(searchRunFilter);
 			for (int i = 0; i < searchRuns.size(); i++) {
-				SearchRun searchRun = searchRuns.get(i);
-				int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
+				final SearchRun searchRun = searchRuns.get(i);
+				final int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
 				JsonWriter.appendSearchRunJson(response, i, searchRun, runningTasks, null, false);
 				if (i + 1 < searchRuns.size()) {
 					response.append(",\n");

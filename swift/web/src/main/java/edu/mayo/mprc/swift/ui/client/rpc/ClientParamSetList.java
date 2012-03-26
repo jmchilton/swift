@@ -12,7 +12,7 @@ public final class ClientParamSetList implements ClientValue {
 	public ClientParamSetList() {
 	}
 
-	public ClientParamSetList(List<ClientParamSet> list) {
+	public ClientParamSetList(final List<ClientParamSet> list) {
 		setList(list);
 	}
 
@@ -20,7 +20,7 @@ public final class ClientParamSetList implements ClientValue {
 		return list;
 	}
 
-	public void setList(List<ClientParamSet> list) {
+	public void setList(final List<ClientParamSet> list) {
 		this.list = list;
 	}
 }

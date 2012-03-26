@@ -45,7 +45,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		return cacheFolder;
 	}
 
-	public final void setCacheFolder(File cacheFolder) {
+	public final void setCacheFolder(final File cacheFolder) {
 		this.cacheFolder = cacheFolder;
 	}
 
@@ -53,16 +53,16 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		return daemon;
 	}
 
-	public final void setDaemon(DaemonConnection daemon) {
+	public final void setDaemon(final DaemonConnection daemon) {
 		this.daemon = daemon;
 	}
 
-	public void userProgressInformation(File wipFolder, ProgressInfo progressInfo) {
+	public void userProgressInformation(final File wipFolder, final ProgressInfo progressInfo) {
 		// Do nothing
 	}
 
 	@Override
-	public final void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public final void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			process(workPacket, progressReporter);
 			workPacket.synchronizeFileTokensOnReceiver();
@@ -79,7 +79,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 	 * @return Relative path to the cache folder to store the task results in.
 	 */
 	protected String getFolderForTaskDescription(final String taskDescription) {
-		int code = taskDescription.hashCode();
+		final int code = taskDescription.hashCode();
 		return "" +
 				StringUtilities.toHex(code >> 28) +
 				StringUtilities.toHex(code >> 24) +
@@ -94,8 +94,8 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 				StringUtilities.toHex(code);
 	}
 
-	private void process(WorkPacket workPacket, ProgressReporter progressReporter) {
-		T typedWorkPacket = (T) workPacket;
+	private void process(final WorkPacket workPacket, final ProgressReporter progressReporter) {
+		final T typedWorkPacket = (T) workPacket;
 		final CachableWorkPacket cachableWorkPacket;
 		if (workPacket instanceof CachableWorkPacket) {
 			cachableWorkPacket = (CachableWorkPacket) workPacket;
@@ -116,7 +116,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 
 		// Request hashcode
 		// Folder is derived from the hash code
-		File targetCacheFolder = new File(cacheFolder, getFolderForTaskDescription(taskDescription));
+		final File targetCacheFolder = new File(cacheFolder, getFolderForTaskDescription(taskDescription));
 		// We make sure the target folder can be created - fail early
 		FileUtilities.ensureFolderExists(targetCacheFolder);
 
@@ -125,7 +125,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		// We pick the one which has a corresponding file that matches our params
 		// We go through all subfolders of the output folder
 		final File[] files = targetCacheFolder.listFiles();
-		for (File subFolder : files) {
+		for (final File subFolder : files) {
 			final File taskDescriptionFile = new File(subFolder, taskDescriptionFileName);
 			if (allFilesExist(subFolder, outputFiles) && taskDescriptionFile.exists()) {
 				// We found an output file with matching file name and a params file!
@@ -176,9 +176,9 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		if (cacheProgressReporter == null) {
 			// Make a work-in-progress folder
 			final File wipBase = new File(cacheFolder, "wip");
-			File wipFolder = FileUtilities.createTempFolder(wipBase, "wip", true);
+			final File wipFolder = FileUtilities.createTempFolder(wipBase, "wip", true);
 
-			WorkPacket modifiedWorkPacket = cachableWorkPacket.translateToWorkInProgressPacket(wipFolder);
+			final WorkPacket modifiedWorkPacket = cachableWorkPacket.translateToWorkInProgressPacket(wipFolder);
 
 			final MyProgressListener listener = new MyProgressListener(cachableWorkPacket, wipFolder, targetCacheFolder, outputFiles, taskDescriptionFileName, taskDescription, newReporter);
 			daemon.sendWork(modifiedWorkPacket, listener);
@@ -189,11 +189,11 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 	 * Checks whether the work packet requested publishing the intermediate files.
 	 * If so, copy the intermediate files to the originally requested target.
 	 */
-	private void publishResultFiles(CachableWorkPacket workPacket, File outputFolder, List<String> outputFiles) {
+	private void publishResultFiles(final CachableWorkPacket workPacket, final File outputFolder, final List<String> outputFiles) {
 		if (workPacket.isPublishResultFiles()) {
 			final File targetFolder = workPacket.getOutputFile().getParentFile();
 			FileUtilities.ensureFolderExists(targetFolder);
-			for (String outputFile : outputFiles) {
+			for (final String outputFile : outputFiles) {
 				FileUtilities.copyFile(new File(outputFolder, outputFile), new File(targetFolder, outputFile), true);
 			}
 		}
@@ -204,8 +204,8 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 	 * @param outputFiles List of file names to check
 	 * @return True if all files exist.
 	 */
-	private boolean allFilesExist(File folder, List<String> outputFiles) {
-		for (String file : outputFiles) {
+	private boolean allFilesExist(final File folder, final List<String> outputFiles) {
+		for (final String file : outputFiles) {
 			if (!new File(folder, file).exists()) {
 				return false;
 			}
@@ -231,7 +231,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		// How long do we wait for a file to appear after the worker claims success (ms)
 		public static final int FILE_WAIT_TIMEOUT = 2 * 60 * 1000;
 
-		private MyProgressListener(CachableWorkPacket workPacket, File wipFolder, File targetCacheFolder, List<String> outputFiles, String taskDescriptionFile, String taskDescription, ProgressReporter reporter) {
+		private MyProgressListener(final CachableWorkPacket workPacket, final File wipFolder, final File targetCacheFolder, final List<String> outputFiles, final String taskDescriptionFile, final String taskDescription, final ProgressReporter reporter) {
 			this.workPacket = workPacket;
 			this.wipFolder = wipFolder;
 			this.targetFolder = targetCacheFolder;
@@ -242,7 +242,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		}
 
 		@Override
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 		}
 
 		@Override
@@ -255,7 +255,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 			try {
 				int i = 1;
 				while (true) {
-					File newFolder = new File(targetFolder, String.valueOf(i));
+					final File newFolder = new File(targetFolder, String.valueOf(i));
 					if (!newFolder.exists()) {
 						FileUtilities.ensureFolderExists(newFolder);
 						break;
@@ -265,8 +265,8 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 						throw new MprcException("Too many cached folders in " + targetFolder.getAbsolutePath() + ": " + i);
 					}
 				}
-				File target = new File(targetFolder, String.valueOf(i));
-				for (String outputFile : outputFiles) {
+				final File target = new File(targetFolder, String.valueOf(i));
+				for (final String outputFile : outputFiles) {
 					// Move the work in progress folder to its final location
 					final File wipFile = new File(wipFolder, outputFile);
 					final File resultingOutputFile = new File(target, outputFile);
@@ -298,7 +298,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		}
 
 		@Override
-		public void requestTerminated(Exception e) {
+		public void requestTerminated(final Exception e) {
 			try {
 				// The work in progress folder can be scratched
 				FileUtilities.deleteNow(wipFolder);
@@ -311,7 +311,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		}
 
 		@Override
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			// Let the cache know what happened
 			WorkCache.this.userProgressInformation(wipFolder, progressInfo);
 			reporter.reportProgress(progressInfo);
@@ -328,7 +328,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		public abstract WorkCache getCache();
 
 		@Override
-		public synchronized Worker create(S config, DependencyResolver dependencies) {
+		public synchronized Worker create(final S config, final DependencyResolver dependencies) {
 			WorkCache cache = getCache();
 			if (cache == null) {
 				cache = createCache(config, dependencies);
@@ -359,15 +359,15 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new HashMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new HashMap<String, String>();
 			map.put("cacheFolder", cacheFolder);
 			map.put("service", resolver.getIdFromConfig(service));
 			return map;
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			cacheFolder = values.get("cacheFolder");
 			service = (ServiceConfig) resolver.getConfigFromId(values.get("service"));
 		}

@@ -13,7 +13,7 @@ public final class DependencyResolver {
 	private final Map<ResourceConfig, IdObjectPair> dependencies = new HashMap<ResourceConfig, IdObjectPair>();
 	private int id = 1;
 
-	public DependencyResolver(ResourceFactory<ResourceConfig, Object> factory) {
+	public DependencyResolver(final ResourceFactory<ResourceConfig, Object> factory) {
 		this.factory = factory;
 	}
 
@@ -21,8 +21,8 @@ public final class DependencyResolver {
 	 * Creates a new object from given config. Keeps track of created objects, so next time
 	 * same config is provided, identical object is returned.
 	 */
-	public Object createSingleton(ResourceConfig config) {
-		Object o = resolveDependencyQuietly(config);
+	public Object createSingleton(final ResourceConfig config) {
+		final Object o = resolveDependencyQuietly(config);
 		if (o != null) {
 			return o;
 		}
@@ -33,7 +33,7 @@ public final class DependencyResolver {
 	 * @param config Dependency configuration.
 	 * @return Null if the dependency does not exist.
 	 */
-	public Object resolveDependencyQuietly(ResourceConfig config) {
+	public Object resolveDependencyQuietly(final ResourceConfig config) {
 		final IdObjectPair objectPair = dependencies.get(config);
 		return objectPair == null ? null : objectPair.getObject();
 	}
@@ -41,24 +41,24 @@ public final class DependencyResolver {
 	/**
 	 * No object, we are just mapping ids to configurations.
 	 */
-	public void addConfig(String id, ResourceConfig config) {
+	public void addConfig(final String id, final ResourceConfig config) {
 		testUniqueness(config);
 		dependencies.put(config, new IdObjectPair(id, null));
 	}
 
-	public void addDependency(ResourceConfig config, Object dependency) {
+	public void addDependency(final ResourceConfig config, final Object dependency) {
 		testUniqueness(config);
 		dependencies.put(config, new IdObjectPair(String.valueOf(id++), dependency));
 	}
 
-	private void testUniqueness(ResourceConfig config) {
+	private void testUniqueness(final ResourceConfig config) {
 		if (dependencies.containsKey(config)) {
 			throw new MprcException("Dependency  for " + config + " already defined.");
 		}
 	}
 
-	public String getIdFromDependency(Object dependency) {
-		for (IdObjectPair idObject : dependencies.values()) {
+	public String getIdFromDependency(final Object dependency) {
+		for (final IdObjectPair idObject : dependencies.values()) {
 			if (idObject.getObject().equals(dependency)) {
 				return idObject.getId();
 			}
@@ -66,8 +66,8 @@ public final class DependencyResolver {
 		return null;
 	}
 
-	public Object getDependencyFromId(String id) {
-		for (IdObjectPair idObject : dependencies.values()) {
+	public Object getDependencyFromId(final String id) {
+		for (final IdObjectPair idObject : dependencies.values()) {
 			if (idObject.getId().equals(id)) {
 				return idObject.getObject();
 			}
@@ -75,13 +75,13 @@ public final class DependencyResolver {
 		return null;
 	}
 
-	public String getIdFromConfig(ResourceConfig config) {
+	public String getIdFromConfig(final ResourceConfig config) {
 		final IdObjectPair objectPair = dependencies.get(config);
 		return objectPair == null ? null : objectPair.getId();
 	}
 
-	public ResourceConfig getConfigFromId(String id) {
-		for (Map.Entry<ResourceConfig, IdObjectPair> entry : dependencies.entrySet()) {
+	public ResourceConfig getConfigFromId(final String id) {
+		for (final Map.Entry<ResourceConfig, IdObjectPair> entry : dependencies.entrySet()) {
 			if (entry.getValue().getId().equals(id)) {
 				return entry.getKey();
 			}
@@ -96,7 +96,7 @@ public final class DependencyResolver {
 	 * @param oldConfig Old resource that used to be mapped.
 	 * @param newConfig New resource to map in its place.
 	 */
-	public void changeConfigType(ResourceConfig oldConfig, ResourceConfig newConfig) {
+	public void changeConfigType(final ResourceConfig oldConfig, final ResourceConfig newConfig) {
 		final IdObjectPair idObjectPair = dependencies.get(oldConfig);
 		dependencies.remove(oldConfig);
 		dependencies.put(newConfig, idObjectPair);
@@ -106,7 +106,7 @@ public final class DependencyResolver {
 		private final String id;
 		private final Object object;
 
-		private IdObjectPair(String id, Object object) {
+		private IdObjectPair(final String id, final Object object) {
 			this.id = id;
 			this.object = object;
 		}

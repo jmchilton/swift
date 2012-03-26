@@ -23,17 +23,17 @@ public class Chemical implements Molecule, Cloneable {
 		this(pt, "");
 	}
 
-	public Chemical(final PeriodicTable pt, String name) {
+	public Chemical(final PeriodicTable pt, final String name) {
 		this.pt = pt;
 		this.name = name;
 		init();
 	}
 
-	public Chemical(String formula, final PeriodicTable pt) {
+	public Chemical(final String formula, final PeriodicTable pt) {
 		this(formula, pt, "");
 	}
 
-	public Chemical(String formula, final PeriodicTable pt, String name) {
+	public Chemical(final String formula, final PeriodicTable pt, final String name) {
 		this(pt, name);
 		setFormula(formula);
 	}
@@ -42,12 +42,12 @@ public class Chemical implements Molecule, Cloneable {
 		set(rhs);
 	}
 
-	private void set(Chemical rhs) {
+	private void set(final Chemical rhs) {
 		this.pt = rhs.pt;
 		this.name = rhs.name;
 		this.sorted = rhs.sorted;
 		this.elements = new ArrayList<ElementCountPair>(rhs.elements.size());
-		for (ElementCountPair e : rhs.elements) {
+		for (final ElementCountPair e : rhs.elements) {
 			this.elements.add(new ElementCountPair(e.getElement(), e.getCount()));
 		}
 		this.massesCalced = rhs.massesCalced;
@@ -57,7 +57,7 @@ public class Chemical implements Molecule, Cloneable {
 	}
 
 	public Chemical clone() throws CloneNotSupportedException {
-		Chemical copy = (Chemical) super.clone();
+		final Chemical copy = (Chemical) super.clone();
 		copy.set(this);
 		return copy;
 	}
@@ -70,15 +70,15 @@ public class Chemical implements Molecule, Cloneable {
 		}
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		this.name = name;
 	}
 
 	/**
 	 * Set the ChemicalFormula of this Chemical to formula.  Any existing elements are cleared.
 	 */
-	void setFormula(String formula) {
-		Chemical c = parse(formula, "", 0);
+	void setFormula(final String formula) {
+		final Chemical c = parse(formula, "", 0);
 		elements = c.elements;
 		resetCached();
 	}
@@ -87,8 +87,8 @@ public class Chemical implements Molecule, Cloneable {
 	 * Adds the given number of atoms of element to this Chemical; if element already
 	 * exists on this element, the number of atoms is incremented by count.
 	 */
-	void addElement(final Element element, double atoms) {
-		ElementCountPair i = find(element);
+	void addElement(final Element element, final double atoms) {
+		final ElementCountPair i = find(element);
 		if (i == null) {
 			//if (atoms < 0) throw InvalidArgumentException(String("Can't remove ") + element.getSymbol() + atoms
 			//	+ " from " + getCanonicalFormula());
@@ -106,7 +106,7 @@ public class Chemical implements Molecule, Cloneable {
 	 * Removes the given number of atoms of element from this Chemical; if the
 	 * Element does not already exist on this Chemical, an exception is thrown.
 	 */
-	void removeElement(final Element element, double atoms) {
+	void removeElement(final Element element, final double atoms) {
 		addElement(element, -atoms);
 		resetCached();
 	}
@@ -121,8 +121,8 @@ public class Chemical implements Molecule, Cloneable {
 			Collections.sort(elements, new ElementLess());
 			sorted = true;
 		}
-		StringBuilder ret = new StringBuilder();
-		for (ElementCountPair pair : elements) {
+		final StringBuilder ret = new StringBuilder();
+		for (final ElementCountPair pair : elements) {
 			if (ret.length() > 0) {
 				ret.append(" ");
 			}
@@ -175,15 +175,15 @@ public class Chemical implements Molecule, Cloneable {
 	 * @param thresh (default -1)
 	 * @param extra  (default 0)
 	 */
-	public IsotopicDistribution getIsotopicDistribution(int chargeState, final ChargeUnit chargeUnit, double thresh, int extra) {
-		int abscharge = Math.abs(chargeState);
-		Chemical chem = new Chemical(this);
+	public IsotopicDistribution getIsotopicDistribution(final int chargeState, final ChargeUnit chargeUnit, final double thresh, final int extra) {
+		final int abscharge = Math.abs(chargeState);
+		final Chemical chem = new Chemical(this);
 		if (chargeState > 0) {
 			chem.addElement(chargeUnit.getChargeCarrier(), abscharge);
 		} else if (chargeState < 0) {
 			chem.removeElement(chargeUnit.getChargeCarrier(), abscharge);  // what about, for example, a Potassiated Protein?
 		}
-		MassIntensityArray a = new MassIntensityArray();
+		final MassIntensityArray a = new MassIntensityArray();
 		Mercury6.mercury6(chem, chargeState, a);
 
 		return new IsotopicDistribution(
@@ -203,11 +203,11 @@ public class Chemical implements Molecule, Cloneable {
 		return elements.size();
 	}
 
-	final Element getElement(int i) {
+	final Element getElement(final int i) {
 		return elements.get(i).getElement();
 	}
 
-	public double getElementCount(int i) {
+	public double getElementCount(final int i) {
 		return elements.get(i).getCount();
 	}
 
@@ -219,7 +219,7 @@ public class Chemical implements Molecule, Cloneable {
 		if (element == null) {
 			throw new MprcException("Null element.");
 		}
-		ElementCountPair i = find(element);
+		final ElementCountPair i = find(element);
 		if (i == null) {
 			return 0;
 		}
@@ -229,7 +229,7 @@ public class Chemical implements Molecule, Cloneable {
 	/**
 	 * Returns the number of atoms of Element i that occur in this Chemical.
 	 */
-	double getAtomCount(int i) {
+	double getAtomCount(final int i) {
 		return elements.get(i).getCount();
 	}
 
@@ -241,10 +241,10 @@ public class Chemical implements Molecule, Cloneable {
 	 * Switch to the given PeriodicTable, which must contain all
 	 * the needed elements. Elements are identified by their symbols.
 	 */
-	void setPeriodicTable(PeriodicTable pt) {
-		for (ElementCountPair i : elements) {
+	void setPeriodicTable(final PeriodicTable pt) {
+		for (final ElementCountPair i : elements) {
 			final Element olde = i.getElement();
-			Element newe = pt.getElementBySymbol(olde.getSymbol());
+			final Element newe = pt.getElementBySymbol(olde.getSymbol());
 			if (newe == null) {
 				throw new MprcException("The given periodic table doesn't have " + olde.getSymbol());
 			}
@@ -254,13 +254,13 @@ public class Chemical implements Molecule, Cloneable {
 		resetCached();
 	}
 
-	public PrintWriter write(PrintWriter out) {
+	public PrintWriter write(final PrintWriter out) {
 		out.println(toString());
 		return out;
 	}
 
 	public String toString() {
-		StringBuilder out = new StringBuilder();
+		final StringBuilder out = new StringBuilder();
 		out.append(getName())
 				.append(" (")
 				.append(getCanonicalFormula())
@@ -281,14 +281,14 @@ public class Chemical implements Molecule, Cloneable {
 		massesCalced = sorted = false;
 	}
 
-	private Chemical parse(String s, String full, int where) {
-		Chemical ret = new Chemical(pt);
+	private Chemical parse(final String s, String full, final int where) {
+		final Chemical ret = new Chemical(pt);
 		if ("".equals(full)) {
 			full = s;
 		}
 
 		Chemical c = null;
-		StringBuilder e = new StringBuilder();
+		final StringBuilder e = new StringBuilder();
 		int n = 0;
 		boolean neg = false;
 		int elementStart = 0;
@@ -305,10 +305,10 @@ public class Chemical implements Molecule, Cloneable {
 					n *= -1;
 				}
 				if (e.length() > 0) {
-					Element ee = pt.getElementBySymbol(e.toString());
+					final Element ee = pt.getElementBySymbol(e.toString());
 					if (ee == null) {
-						int markPosition = where + elementStart;
-						String marked = full.substring(0, markPosition) + ">>>" + full.substring(markPosition);
+						final int markPosition = where + elementStart;
+						final String marked = full.substring(0, markPosition) + ">>>" + full.substring(markPosition);
 						throw new MprcException("Can't find element " + e.toString() + " in chemical formula:\n" + marked);
 					}
 					if (fraction == 0) {
@@ -341,7 +341,7 @@ public class Chemical implements Molecule, Cloneable {
 						parens--;
 					}
 				}
-				String sub = s.substring(i + 1, j - 1);
+				final String sub = s.substring(i + 1, j - 1);
 				c = parse(sub, full, i + 1);
 				i = j - 1;
 			} else if (Character.isUpperCase(s.charAt(i))) {
@@ -360,7 +360,7 @@ public class Chemical implements Molecule, Cloneable {
 			} else if (s.charAt(i) == '.') {
 				fraction = 1;
 			} else {
-				String marked = full.substring(0, where + i) + ">>>" + full.substring(where + i);
+				final String marked = full.substring(0, where + i) + ">>>" + full.substring(where + i);
 				throw new MprcException("Parse error, can't understand '" + s.charAt(i) + "':\n" + marked);
 			}
 		}
@@ -382,7 +382,7 @@ public class Chemical implements Molecule, Cloneable {
 	}
 
 	private ElementCountPair find(final Element element) {
-		for (ElementCountPair i : elements) {
+		for (final ElementCountPair i : elements) {
 			if (i.getElement().equals(element)) {
 				return i;
 			}
@@ -394,9 +394,9 @@ public class Chemical implements Molecule, Cloneable {
 		average = 0.;
 		monoisotopic = 0.;
 		mostAbundant = 0.;
-		for (ElementCountPair i : elements) {
-			Element elem = i.getElement();
-			double count = i.getCount();
+		for (final ElementCountPair i : elements) {
+			final Element elem = i.getElement();
+			final double count = i.getCount();
 			average += elem.getAverageMass() * count;
 			monoisotopic += elem.getMonoisotopicMass() * count;
 			mostAbundant += elem.getMostAbundantMass() * count;
@@ -412,7 +412,7 @@ public class Chemical implements Molecule, Cloneable {
 		if (rhs == this) {
 			multiply(2);
 		} else {
-			for (ElementCountPair pair : rhs.elements) {
+			for (final ElementCountPair pair : rhs.elements) {
 				addElement(pair.getElement(), pair.getCount());
 			}
 		}
@@ -424,7 +424,7 @@ public class Chemical implements Molecule, Cloneable {
 	 * Sums two chemicals
 	 */
 	public static Chemical add(final Chemical a, final Chemical b) {
-		Chemical ret = cloneChemical(a);
+		final Chemical ret = cloneChemical(a);
 		ret.add(b);
 		return ret;
 	}
@@ -433,7 +433,7 @@ public class Chemical implements Molecule, Cloneable {
 		if (rhs == this) {
 			this.clear();
 		} else {
-			for (ElementCountPair i : rhs.elements) {
+			for (final ElementCountPair i : rhs.elements) {
 				removeElement(i.getElement(), i.getCount());
 			}
 		}
@@ -442,7 +442,7 @@ public class Chemical implements Molecule, Cloneable {
 	}
 
 	public static Chemical subtract(final Chemical a, final Chemical b) {
-		Chemical ret = cloneChemical(a);
+		final Chemical ret = cloneChemical(a);
 		ret.subtract(b);
 		return ret;
 	}
@@ -450,8 +450,8 @@ public class Chemical implements Molecule, Cloneable {
 	/**
 	 * Multiplies all the atom counts in given molecule by n.
 	 */
-	static Chemical multiply(Chemical a, final double b) {
-		Chemical ret = cloneChemical(a);
+	static Chemical multiply(final Chemical a, final double b) {
+		final Chemical ret = cloneChemical(a);
 		ret.multiply(b);
 		return ret;
 	}
@@ -459,8 +459,8 @@ public class Chemical implements Molecule, Cloneable {
 	/**
 	 * Clone chemical quietly, wrapping CloneNotSupportedException.
 	 */
-	private static Chemical cloneChemical(Chemical chemical) {
-		Chemical ret;
+	private static Chemical cloneChemical(final Chemical chemical) {
+		final Chemical ret;
 		try {
 			ret = chemical.clone();
 		} catch (CloneNotSupportedException e) {
@@ -476,7 +476,7 @@ public class Chemical implements Molecule, Cloneable {
 		if (b == 0) {
 			this.clear();
 		} else {
-			for (ElementCountPair pair : elements) {
+			for (final ElementCountPair pair : elements) {
 				pair.setCount(pair.getCount() * b);
 			}
 		}
@@ -489,7 +489,7 @@ public class Chemical implements Molecule, Cloneable {
 	 * which cannot take real numbers for atom counts.
 	 */
 	public void roundAtomCounts() {
-		for (ElementCountPair pair : elements) {
+		for (final ElementCountPair pair : elements) {
 			pair.setCount(Math.round(pair.getCount()));
 		}
 	}
@@ -509,7 +509,7 @@ public class Chemical implements Molecule, Cloneable {
 		private static final long serialVersionUID = 20081212L;
 
 		@Override
-		public int compare(ElementCountPair o1, ElementCountPair o2) {
+		public int compare(final ElementCountPair o1, final ElementCountPair o2) {
 			return o1.getElement().getSymbol().compareTo(o2.getElement().getSymbol());
 		}
 	}

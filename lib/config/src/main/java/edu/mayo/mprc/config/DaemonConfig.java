@@ -67,8 +67,8 @@ public final class DaemonConfig implements ResourceConfig {
 	 * @param local If true, the daemon is expected to run on the local computer.
 	 * @return Default daemon setup.
 	 */
-	public static DaemonConfig getDefaultDaemonConfig(String name, boolean local) {
-		DaemonConfig daemon = new DaemonConfig();
+	public static DaemonConfig getDefaultDaemonConfig(final String name, final boolean local) {
+		final DaemonConfig daemon = new DaemonConfig();
 		daemon.setName(name);
 		daemon.setOsName(System.getProperty("os.name"));
 		daemon.setOsArch(System.getProperty("os.arch"));
@@ -94,7 +94,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -102,7 +102,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return hostName;
 	}
 
-	public void setHostName(String hostName) {
+	public void setHostName(final String hostName) {
 		this.hostName = hostName;
 	}
 
@@ -110,7 +110,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return osName;
 	}
 
-	public void setOsName(String osName) {
+	public void setOsName(final String osName) {
 		this.osName = osName;
 	}
 
@@ -118,7 +118,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return osArch;
 	}
 
-	public void setOsArch(String osArch) {
+	public void setOsArch(final String osArch) {
 		this.osArch = osArch;
 	}
 
@@ -126,7 +126,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return sharedFileSpacePath;
 	}
 
-	public void setSharedFileSpacePath(String sharedFileSpacePath) {
+	public void setSharedFileSpacePath(final String sharedFileSpacePath) {
 		this.sharedFileSpacePath = sharedFileSpacePath;
 	}
 
@@ -134,7 +134,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return tempFolderPath;
 	}
 
-	public void setTempFolderPath(String tempFolderPath) {
+	public void setTempFolderPath(final String tempFolderPath) {
 		this.tempFolderPath = tempFolderPath;
 	}
 
@@ -142,12 +142,12 @@ public final class DaemonConfig implements ResourceConfig {
 		return services;
 	}
 
-	public DaemonConfig addService(ServiceConfig service) {
+	public DaemonConfig addService(final ServiceConfig service) {
 		services.add(service);
 		return this;
 	}
 
-	public boolean removeService(ServiceConfig service) {
+	public boolean removeService(final ServiceConfig service) {
 		return services.remove(service);
 	}
 
@@ -155,12 +155,12 @@ public final class DaemonConfig implements ResourceConfig {
 		return resources;
 	}
 
-	public DaemonConfig addResource(ResourceConfig resource) {
+	public DaemonConfig addResource(final ResourceConfig resource) {
 		resources.add(resource);
 		return this;
 	}
 
-	public boolean removeResource(ResourceConfig resource) {
+	public boolean removeResource(final ResourceConfig resource) {
 		return resources.remove(resource);
 	}
 
@@ -168,7 +168,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return applicationConfig;
 	}
 
-	public void setApplicationConfig(ApplicationConfig applicationConfig) {
+	public void setApplicationConfig(final ApplicationConfig applicationConfig) {
 		this.applicationConfig = applicationConfig;
 	}
 
@@ -207,13 +207,13 @@ public final class DaemonConfig implements ResourceConfig {
 		}
 	}
 
-	private boolean isOs(String osString) {
-		String osName = getOsName() == null ? "" : getOsName().toLowerCase(Locale.ENGLISH);
+	private boolean isOs(final String osString) {
+		final String osName = getOsName() == null ? "" : getOsName().toLowerCase(Locale.ENGLISH);
 		return osName.contains(osString);
 	}
 
-	public Map<String, String> save(DependencyResolver resolver) {
-		Map<String, String> map = new HashMap<String, String>();
+	public Map<String, String> save(final DependencyResolver resolver) {
+		final Map<String, String> map = new HashMap<String, String>();
 		map.put(NAME, name);
 		map.put(HOST_NAME, hostName);
 		map.put(OS_NAME, osName);
@@ -223,7 +223,7 @@ public final class DaemonConfig implements ResourceConfig {
 		return map;
 	}
 
-	public void load(Map<String, String> values, DependencyResolver resolver) {
+	public void load(final Map<String, String> values, final DependencyResolver resolver) {
 		name = values.get(NAME);
 		hostName = values.get(HOST_NAME);
 		osName = values.get(OS_NAME);
@@ -241,8 +241,8 @@ public final class DaemonConfig implements ResourceConfig {
 		return 0;
 	}
 
-	public ResourceConfig firstResourceOfType(Class<?> clazz) {
-		for (ResourceConfig resourceConfig : resources) {
+	public ResourceConfig firstResourceOfType(final Class<?> clazz) {
+		for (final ResourceConfig resourceConfig : resources) {
 			if (clazz.isAssignableFrom(resourceConfig.getClass())) {
 				return resourceConfig;
 			}
@@ -250,8 +250,8 @@ public final class DaemonConfig implements ResourceConfig {
 		return null;
 	}
 
-	public ResourceConfig firstServiceOfType(Class<?> clazz) {
-		for (ServiceConfig serviceConfig : services) {
+	public ResourceConfig firstServiceOfType(final Class<?> clazz) {
+		for (final ServiceConfig serviceConfig : services) {
 			if (clazz.isAssignableFrom(serviceConfig.getRunner().getWorkerConfiguration().getClass())) {
 				return serviceConfig;
 			}

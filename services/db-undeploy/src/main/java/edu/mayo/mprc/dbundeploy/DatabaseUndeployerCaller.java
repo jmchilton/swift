@@ -36,7 +36,7 @@ public final class DatabaseUndeployerCaller {
 	 * @param dbToUndeploy
 	 * @return
 	 */
-	public static DatabaseUndeployerProgress callDatabaseUndeployer(DaemonConnection databaseUndeployerConnection, Curation dbToUndeploy) {
+	public static DatabaseUndeployerProgress callDatabaseUndeployer(final DaemonConnection databaseUndeployerConnection, final Curation dbToUndeploy) {
 		final long taskId = taskIdPostFix.incrementAndGet();
 
 		addMessageToQueue(taskId, "Sending database undeployment request for " + dbToUndeploy.getShortName(), false);
@@ -44,7 +44,7 @@ public final class DatabaseUndeployerCaller {
 		databaseUndeployerConnection.sendWork(new DatabaseUndeployerWorkPacket(dbToUndeploy, taskIdPrefix + taskId), new ProgressListener() {
 
 			@Override
-			public void requestEnqueued(String hostString) {
+			public void requestEnqueued(final String hostString) {
 				addMessageToQueue(taskId, "Enqueued at " + hostString, false);
 			}
 
@@ -59,16 +59,16 @@ public final class DatabaseUndeployerCaller {
 			}
 
 			@Override
-			public void requestTerminated(Exception e) {
+			public void requestTerminated(final Exception e) {
 				addMessageToQueue(taskId, "Undeployment request terminated due:\n" + MprcException.getDetailedMessage(e), true);
 			}
 
 			@Override
-			public void userProgressInformation(ProgressInfo progressInfo) {
+			public void userProgressInformation(final ProgressInfo progressInfo) {
 				if (progressInfo instanceof DatabaseUndeployerResult) {
-					StringBuilder builder = new StringBuilder();
+					final StringBuilder builder = new StringBuilder();
 
-					for (Map.Entry<String, UndeploymentTaskResult> me : ((DatabaseUndeployerResult) progressInfo).getDatabaseUndeployerResults().entrySet()) {
+					for (final Map.Entry<String, UndeploymentTaskResult> me : ((DatabaseUndeployerResult) progressInfo).getDatabaseUndeployerResults().entrySet()) {
 						builder.append("-----------------------------------------------------------------------------------------")
 								.append("\n").append("Database undeployment task for ").append(me.getKey())
 								.append("\n").append(me.getValue().wasSuccessful() ? "Completed Successfully" : "Failed");
@@ -91,7 +91,7 @@ public final class DatabaseUndeployerCaller {
 		return getMessageFromQueue(taskId);
 	}
 
-	private static void addMessageToQueue(Long taskId, String message, boolean isLast) {
+	private static void addMessageToQueue(final Long taskId, final String message, final boolean isLast) {
 		LinkedBlockingQueue<DatabaseUndeployerProgress> messageQueue = null;
 
 		if ((messageQueue = taskIdMessagesPair.get(taskId)) == null) {
@@ -111,8 +111,8 @@ public final class DatabaseUndeployerCaller {
 	 * @param taskId
 	 * @return
 	 */
-	public static DatabaseUndeployerProgress getMessageFromQueue(Long taskId) {
-		LinkedBlockingQueue<DatabaseUndeployerProgress> messageQueue = taskIdMessagesPair.get(taskId);
+	public static DatabaseUndeployerProgress getMessageFromQueue(final Long taskId) {
+		final LinkedBlockingQueue<DatabaseUndeployerProgress> messageQueue = taskIdMessagesPair.get(taskId);
 
 		if (messageQueue == null) {
 			return new DatabaseUndeployerProgress(taskId, "Queue message for task id " + taskId + " not found.", true);

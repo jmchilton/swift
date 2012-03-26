@@ -15,13 +15,13 @@ public class SingleDatabaseTranslator implements ProteinSequenceTranslator {
 	private Curation database;
 	private String currentDatabaseSources;
 
-	public SingleDatabaseTranslator(FastaDbDao fastaDbDao, CurationDao curationDao) {
+	public SingleDatabaseTranslator(final FastaDbDao fastaDbDao, final CurationDao curationDao) {
 		this.fastaDbDao = fastaDbDao;
 		this.curationDao = curationDao;
 	}
 
 	@Override
-	public ProteinSequence getProteinSequence(String accessionNumber, String databaseSources) {
+	public ProteinSequence getProteinSequence(final String accessionNumber, final String databaseSources) {
 		if (database == null) {
 			if (databaseSources.contains(",")) {
 				throw new MprcException("Multiple databases per Scaffold file not supported: [" + databaseSources + "]");

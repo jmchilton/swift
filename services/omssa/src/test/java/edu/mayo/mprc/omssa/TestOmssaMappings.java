@@ -26,19 +26,19 @@ public final class TestOmssaMappings {
 
 	@Test
 	public void shouldSupportLargeAmountOfMods() {
-		CurationDao dao = new MockCurationDao();
-		ParamsInfo abstractParamsInfo = new ParamsInfoImpl(dao, new MockUnimodDao(), new MockParamsDao());
-		OmssaMappingFactory mappingFactory = new OmssaMappingFactory();
+		final CurationDao dao = new MockCurationDao();
+		final ParamsInfo abstractParamsInfo = new ParamsInfoImpl(dao, new MockUnimodDao(), new MockParamsDao());
+		final OmssaMappingFactory mappingFactory = new OmssaMappingFactory();
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
 		mapping.read(getOmssaParamStream());
 
-		MappingContext context = new TestMappingContextBase(abstractParamsInfo);
+		final MappingContext context = new TestMappingContextBase(abstractParamsInfo);
 
 		final Set<ModSpecificity> allSpecs = unimod.getAllSpecificities(false);
 		int i = 0;
-		for (ModSpecificity modSpecificity : allSpecs) {
-			ModSet set = new ModSet();
+		for (final ModSpecificity modSpecificity : allSpecs) {
+			final ModSet set = new ModSet();
 			set.add(modSpecificity);
 			mapping.setFixedMods(context, set);
 			i++;
@@ -53,7 +53,7 @@ public final class TestOmssaMappings {
 		Assert.assertTrue(matcher.find(), "The mods do not match");
 	}
 
-	private static String mappingsToString(Mappings mapping) {
+	private static String mappingsToString(final Mappings mapping) {
 		final StringWriter writer = new StringWriter(1000);
 		mapping.write(getOmssaParamStream(), writer);
 		return writer.toString();

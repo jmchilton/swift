@@ -13,11 +13,11 @@ public final class ProteinGroupList extends PersistableListBase<ProteinGroup> {
 	public ProteinGroupList() {
 	}
 
-	public ProteinGroupList(Collection<ProteinGroup> items) {
+	public ProteinGroupList(final Collection<ProteinGroup> items) {
 		super(items);
 	}
 
-	public ProteinGroupList(int initialCapacity) {
+	public ProteinGroupList(final int initialCapacity) {
 		super(initialCapacity);
 	}
 }

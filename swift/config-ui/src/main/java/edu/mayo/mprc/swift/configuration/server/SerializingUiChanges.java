@@ -12,18 +12,18 @@ public class SerializingUiChanges implements UiResponse {
 	private ArrayList<String> commands = new ArrayList<String>(4);
 	private DependencyResolver resolver;
 
-	public SerializingUiChanges(DependencyResolver resolver) {
+	public SerializingUiChanges(final DependencyResolver resolver) {
 		this.resolver = resolver;
 	}
 
-	public void displayPropertyError(ResourceConfig config, String propertyName, String error) {
+	public void displayPropertyError(final ResourceConfig config, final String propertyName, final String error) {
 		commands.add(UiChangesReplayer.DISPLAY_PROPERTY_ERROR);
 		commands.add(resolver.getIdFromConfig(config));
 		commands.add(propertyName);
 		commands.add(error);
 	}
 
-	public void setProperty(ResourceConfig config, String propertyName, String newValue) {
+	public void setProperty(final ResourceConfig config, final String propertyName, final String newValue) {
 		commands.add(UiChangesReplayer.SET_PROPERTY);
 		commands.add(resolver.getIdFromConfig(config));
 		commands.add(propertyName);

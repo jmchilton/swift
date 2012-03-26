@@ -37,7 +37,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		super(null);
 	}
 
-	public SwiftDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+	public SwiftDaoHibernate(final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 	}
 
@@ -59,9 +59,9 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public boolean isExistingTitle(String title, User user) {
+	public boolean isExistingTitle(final String title, final User user) {
 		try {
-			Number qusers = (Number) getSession().createQuery("select count(*) from edu.mayo.mprc.swift.dbmapping.SearchRun t where t.title=:title and t.submittingUser.id=:userId")
+			final Number qusers = (Number) getSession().createQuery("select count(*) from edu.mayo.mprc.swift.dbmapping.SearchRun t where t.title=:title and t.submittingUser.id=:userId")
 					.setString("title", title)
 					.setParameter("userId", user.getId())
 					.uniqueResult();
@@ -94,7 +94,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	@Override
 	public List<SearchRun> getSearchRunList(final SearchRunFilter filter) {
 		try {
-			Criteria criteria = getSession().createCriteria(SearchRun.class);
+			final Criteria criteria = getSession().createCriteria(SearchRun.class);
 			filter.updateCriteria(criteria);
 			criteria.setCacheable(true)
 					.setReadOnly(true);
@@ -112,7 +112,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 			return 0;
 		}
 		try {
-			long howmanyrunning = (Long) getSession().createQuery("select count(t) from TaskData t where t.searchRun=:searchRun and t.taskState.description='" + TaskState.RUNNING.getText() + "'")
+			final long howmanyrunning = (Long) getSession().createQuery("select count(t) from TaskData t where t.searchRun=:searchRun and t.taskState.description='" + TaskState.RUNNING.getText() + "'")
 					.setParameter("searchRun", searchRun)
 					.uniqueResult();
 			return (int) howmanyrunning;
@@ -126,9 +126,9 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 
 		final Set<SearchRun> resultSet = new HashSet<SearchRun>();
 
-		Session session = getSession();
+		final Session session = getSession();
 		try {
-			LogicalExpression timeCriteria;
+			final LogicalExpression timeCriteria;
 			if (updatedSince == null) {
 				timeCriteria = null;
 			} else {
@@ -138,7 +138,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 			}
 
 			if (showSuccess) {
-				Criteria criteriaQuery = session.createCriteria(SearchRun.class);
+				final Criteria criteriaQuery = session.createCriteria(SearchRun.class);
 				if (timeCriteria != null) {
 					criteriaQuery.add(timeCriteria);
 				}
@@ -147,7 +147,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 			}
 
 			if (showFailure) {
-				Criteria criteriaQuery = session.createCriteria(SearchRun.class);
+				final Criteria criteriaQuery = session.createCriteria(SearchRun.class);
 				if (timeCriteria != null) {
 					criteriaQuery.add(timeCriteria);
 				}
@@ -156,7 +156,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 			}
 
 			if (showWarnings) {
-				Criteria criteriaQuery = session.createCriteria(SearchRun.class);
+				final Criteria criteriaQuery = session.createCriteria(SearchRun.class);
 				if (timeCriteria != null) {
 					criteriaQuery.add(timeCriteria);
 				}
@@ -172,9 +172,9 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public SearchRun getSearchRunForId(int searchRunId) {
+	public SearchRun getSearchRunForId(final int searchRunId) {
 		try {
-			SearchRun data = (SearchRun) getSession().get(SearchRun.class, searchRunId);
+			final SearchRun data = (SearchRun) getSession().get(SearchRun.class, searchRunId);
 			if (data == null) {
 				throw new MprcException("getSearchRunForId : search run id=" + searchRunId + " was not found.");
 			}
@@ -189,7 +189,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		if (userName == null) {
 			return "";
 		}
-		Session session = getSession();
+		final Session session = getSession();
 		try {
 			final User user = (User) session.createQuery("from edu.mayo.mprc.workspace.User d where d.userName = :name and d.deletion=null")
 					.setParameter("name", userName)
@@ -221,16 +221,16 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 	}
 
-	private static Criterion getSearchEngineEqualityCriteria(SearchEngineConfig searchEngineConfig) {
+	private static Criterion getSearchEngineEqualityCriteria(final SearchEngineConfig searchEngineConfig) {
 		return DaoBase.nullSafeEq("code", searchEngineConfig.getCode());
 	}
 
-	private static Criterion getSearchEngineEqualityCriteria(String code) {
+	private static Criterion getSearchEngineEqualityCriteria(final String code) {
 		return DaoBase.nullSafeEq("code", code);
 	}
 
 	@Override
-	public void addSearchEngineConfig(SearchEngineConfig config, Change change) {
+	public void addSearchEngineConfig(final SearchEngineConfig config, final Change change) {
 		try {
 			save(config, change, getSearchEngineEqualityCriteria(config), false);
 		} catch (Exception t) {
@@ -239,7 +239,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public SearchEngineConfig getSearchEngineConfig(String code) {
+	public SearchEngineConfig getSearchEngineConfig(final String code) {
 		try {
 			return get(SearchEngineConfig.class, getSearchEngineEqualityCriteria(code));
 		} catch (Exception t) {
@@ -248,10 +248,10 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public EnabledEngines addEnabledEngineSet(Iterable<String> searchEngineCodes) {
+	public EnabledEngines addEnabledEngineSet(final Iterable<String> searchEngineCodes) {
 		try {
-			EnabledEngines engines = new EnabledEngines();
-			for (String engineCode : searchEngineCodes) {
+			final EnabledEngines engines = new EnabledEngines();
+			for (final String engineCode : searchEngineCodes) {
 				final SearchEngineConfig searchEngineConfig = getSearchEngineConfig(engineCode);
 				if (searchEngineConfig == null) {
 					throw new MprcException("Can not find search engine configuration for engine " + engineCode);
@@ -267,7 +267,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public EnabledEngines addEnabledEngines(EnabledEngines engines) {
+	public EnabledEngines addEnabledEngines(final EnabledEngines engines) {
 		if (engines.getId() != null) {
 			return engines;
 		}
@@ -279,14 +279,14 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 	}
 
-	private Criterion getSpectrumQaEqualityCriteria(SpectrumQa spectrumQa) {
+	private Criterion getSpectrumQaEqualityCriteria(final SpectrumQa spectrumQa) {
 		return Restrictions.and(
 				DaoBase.nullSafeEq("engine", spectrumQa.getEngine()),
 				DaoBase.nullSafeEq("paramFilePath", spectrumQa.getParamFilePath()));
 	}
 
 	@Override
-	public SpectrumQa addSpectrumQa(SpectrumQa spectrumQa) {
+	public SpectrumQa addSpectrumQa(final SpectrumQa spectrumQa) {
 		try {
 			return save(spectrumQa, getSpectrumQaEqualityCriteria(spectrumQa), false);
 		} catch (Exception t) {
@@ -294,12 +294,12 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 	}
 
-	private Criterion getPeptideReportEqualityCriteria(PeptideReport peptideReport) {
+	private Criterion getPeptideReportEqualityCriteria(final PeptideReport peptideReport) {
 		return Restrictions.isNotNull("id");
 	}
 
 	@Override
-	public PeptideReport addPeptideReport(PeptideReport peptideReport) {
+	public PeptideReport addPeptideReport(final PeptideReport peptideReport) {
 		try {
 			return save(peptideReport, getPeptideReportEqualityCriteria(peptideReport), false);
 		} catch (Exception t) {
@@ -307,7 +307,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 	}
 
-	private FileSearch addFileSearch(FileSearch fileSearch) {
+	private FileSearch addFileSearch(final FileSearch fileSearch) {
 		try {
 			fileSearch.setEnabledEngines(addEnabledEngines(fileSearch.getEnabledEngines()));
 			return save(fileSearch, getFileSearchEqualityCriteria(fileSearch), false);
@@ -316,7 +316,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 	}
 
-	private Criterion getFileSearchEqualityCriteria(FileSearch fileSearch) {
+	private Criterion getFileSearchEqualityCriteria(final FileSearch fileSearch) {
 		return Restrictions.conjunction()
 				.add(DaoBase.nullSafeEq("inputFile", fileSearch.getInputFile()))
 				.add(DaoBase.nullSafeEq("biologicalSample", fileSearch.getBiologicalSample()))
@@ -326,7 +326,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 				.add(DaoBase.nullSafeEq("swiftSearchDefinitionId", fileSearch.getSwiftSearchDefinitionId()));
 	}
 
-	private Criterion getSwiftSearchDefinitionEqualityCriteria(SwiftSearchDefinition definition) {
+	private Criterion getSwiftSearchDefinitionEqualityCriteria(final SwiftSearchDefinition definition) {
 		return Restrictions.conjunction()
 				.add(DaoBase.nullSafeEq("title", definition.getTitle()))
 				.add(DaoBase.associationEq("user", definition.getUser()))
@@ -350,8 +350,8 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 					definition.setPeptideReport(addPeptideReport(definition.getPeptideReport()));
 				}
 
-				List<FileSearch> inputFiles = new ArrayList<FileSearch>();
-				for (FileSearch fileSearch : definition.getInputFiles()) {
+				final List<FileSearch> inputFiles = new ArrayList<FileSearch>();
+				for (final FileSearch fileSearch : definition.getInputFiles()) {
 					inputFiles.add(addFileSearch(fileSearch));
 				}
 				definition.setInputFiles(inputFiles);
@@ -365,7 +365,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public SwiftSearchDefinition getSwiftSearchDefinition(Integer swiftSearchId) {
+	public SwiftSearchDefinition getSwiftSearchDefinition(final Integer swiftSearchId) {
 		if (swiftSearchId == null || swiftSearchId == 0) {
 			return null;
 		}
@@ -377,7 +377,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public void reportSearchRunProgress(int searchRunId, final ProgressReport progress) {
+	public void reportSearchRunProgress(final int searchRunId, final ProgressReport progress) {
 		try {
 			final SearchRun searchRun = getSearchRunForId(searchRunId);
 			LOGGER.debug("Persisting search run progress " + searchRun.getTitle() + "\n" + progress.toString());
@@ -446,18 +446,18 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		return task;
 	}
 
-	private void listToTaskStateMap(List<?> list) {
+	private void listToTaskStateMap(final List<?> list) {
 		taskStates = new HashMap<TaskState, TaskStateData>(list.size());
-		for (Object o : list) {
+		for (final Object o : list) {
 			if (o instanceof TaskStateData) {
-				TaskStateData stateData = (TaskStateData) o;
+				final TaskStateData stateData = (TaskStateData) o;
 				taskStates.put(TaskState.fromText(stateData.getDescription()), stateData);
 			}
 		}
 	}
 
 	@Override
-	public TaskStateData getTaskState(Session session, TaskState state) {
+	public TaskStateData getTaskState(final Session session, final TaskState state) {
 		synchronized (taskStatesLock) {
 			if (taskStates == null) {
 				listToTaskStateMap(session.createQuery("from TaskStateData").list());
@@ -468,7 +468,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public TaskStateData getTaskState(TaskState state) {
+	public TaskStateData getTaskState(final TaskState state) {
 		synchronized (taskStatesLock) {
 			if (taskStates == null) {
 				List<?> list = null;
@@ -484,12 +484,12 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public TaskData createTask(int searchRunId, final String name, final String descriptionLong, final TaskState taskState) {
+	public TaskData createTask(final int searchRunId, final String name, final String descriptionLong, final TaskState taskState) {
 		LOGGER.debug("Creating new task " + name + " " + descriptionLong + " " + taskState);
 		final Session session = getSession();
 		try {
 			final SearchRun searchRun = getSearchRunForId(searchRunId);
-			TaskData task = new TaskData(
+			final TaskData task = new TaskData(
 					name,
 					/*queueStamp*/ null,
 					/*startStamp*/ null,
@@ -507,10 +507,10 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public ReportData storeReport(int searchRunId, final File resultFile) {
+	public ReportData storeReport(final int searchRunId, final File resultFile) {
 		try {
 			final SearchRun searchRun = getSearchRunForId(searchRunId);
-			ReportData r = new ReportData(resultFile, new DateTime(), searchRun);
+			final ReportData r = new ReportData(resultFile, new DateTime(), searchRun);
 			searchRun.getReports().add(r);
 			getSession().saveOrUpdate(r);
 			return r;
@@ -520,7 +520,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public ReportData getReportForId(long reportDataId) {
+	public ReportData getReportForId(final long reportDataId) {
 		return (ReportData) getSession().load(ReportData.class, reportDataId);
 	}
 
@@ -536,7 +536,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public void searchRunFailed(int searchRunId, String message) {
+	public void searchRunFailed(final int searchRunId, final String message) {
 		final SearchRun searchRun = getSearchRunForId(searchRunId);
 		searchRun.setErrorMessage(message);
 		searchRun.setEndTimestamp(new Date());
@@ -546,14 +546,14 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		return fileTokenFactory;
 	}
 
-	public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 		this.fileTokenFactory = fileTokenFactory;
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		// First, the workspace has to be defined, with a user
-		String workspaceCheck = workspaceDao.check(params);
+		final String workspaceCheck = workspaceDao.check(params);
 		if (workspaceCheck != null) {
 			return workspaceCheck;
 		}
@@ -575,25 +575,25 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 		// Initialize the dependent DAO
 		workspaceDao.initialize(params);
 
 		if (rowCount(TaskStateData.class) == 0) {
 			LOGGER.info("Initializing task state enumeration");
-			for (TaskState state : TaskState.values()) {
+			for (final TaskState state : TaskState.values()) {
 				getSession().saveOrUpdate(new TaskStateData(state.getText()));
 			}
 		}
 
 		final long searchEngineCount = countAll(SearchEngineConfig.class);
 		if (searchEngineCount < searchEngines.size()) {
-			Change change = new Change(
+			final Change change = new Change(
 					searchEngineCount == 0 ?
 							"Installing initial list of search engines" :
 							"Updating list of search engines", new DateTime());
 			LOGGER.info(change.getReason());
-			for (SearchEngine engine : searchEngines) {
+			for (final SearchEngine engine : searchEngines) {
 				final SearchEngineConfig searchEngineConfig = new SearchEngineConfig(engine.getCode());
 				this.addSearchEngineConfig(searchEngineConfig, change);
 			}
@@ -604,7 +604,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		return workspaceDao;
 	}
 
-	public void setWorkspaceDao(WorkspaceDao workspaceDao) {
+	public void setWorkspaceDao(final WorkspaceDao workspaceDao) {
 		this.workspaceDao = workspaceDao;
 	}
 
@@ -612,7 +612,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		return searchEngines;
 	}
 
-	public void setSearchEngines(List<SearchEngine> searchEngines) {
+	public void setSearchEngines(final List<SearchEngine> searchEngines) {
 		this.searchEngines = searchEngines;
 	}
 }

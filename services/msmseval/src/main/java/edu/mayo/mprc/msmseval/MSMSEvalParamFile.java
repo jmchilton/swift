@@ -7,7 +7,7 @@ public final class MSMSEvalParamFile {
 	private String path;
 	private String description;
 
-	public MSMSEvalParamFile(String path, String description) {
+	public MSMSEvalParamFile(final String path, final String description) {
 		this.path = path;
 		this.description = description;
 	}

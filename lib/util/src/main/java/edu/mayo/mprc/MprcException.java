@@ -14,15 +14,15 @@ public class MprcException extends RuntimeException {
 		super("");
 	}
 
-	public MprcException(String message) {
+	public MprcException(final String message) {
 		super(message);
 	}
 
-	public MprcException(String message, Throwable cause) {
+	public MprcException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
-	public MprcException(Throwable cause) {
+	public MprcException(final Throwable cause) {
 		super(cause);
 	}
 
@@ -34,11 +34,11 @@ public class MprcException extends RuntimeException {
 	 * @param t Exception to extract detailed message from.
 	 * @return Concantenated {@link #getMessage()} for this exception and all its causes, starting with this exception.
 	 */
-	public static String getDetailedMessage(Throwable t) {
+	public static String getDetailedMessage(final Throwable t) {
 		Throwable current = t;
 		Throwable previous = null;
-		StringBuilder message = new StringBuilder();
-		List<Throwable> list = new ArrayList<Throwable>();
+		final StringBuilder message = new StringBuilder();
+		final List<Throwable> list = new ArrayList<Throwable>();
 		while (current != null && !current.equals(previous)) {
 			if (exceptionMessageDiffers(current, previous)) {
 				list.add(current);
@@ -50,12 +50,12 @@ public class MprcException extends RuntimeException {
 		// Let's go from the innermost to outermost and skip the trivial messages.
 		// Trivial message happens when you wrap
 		for (int i = 0; i < list.size(); i++) {
-			Throwable curr = list.get(i);
+			final Throwable curr = list.get(i);
 			assert curr != null : "The list must never contain null exception";
 			if (i < list.size() - 1) {
-				Throwable next = list.get(i + 1);
+				final Throwable next = list.get(i + 1);
 				// Compare current to the next throwable. Is the next just wrapping the current, preending the exception class name?
-				String nonInformativeWrap = next.getClass().getName() + ": " + next.getMessage();
+				final String nonInformativeWrap = next.getClass().getName() + ": " + next.getMessage();
 				if (curr.getMessage().equalsIgnoreCase(nonInformativeWrap)) {
 					continue;
 				}
@@ -72,19 +72,19 @@ public class MprcException extends RuntimeException {
 		return message.toString();
 	}
 
-	private static String getThrowableMessage(Throwable throwable) {
+	private static String getThrowableMessage(final Throwable throwable) {
 		if (throwable == null) {
 			return null;
 		}
 		return throwable.getMessage();
 	}
 
-	private static boolean exceptionMessageDiffers(Throwable current, Throwable previous) {
+	private static boolean exceptionMessageDiffers(final Throwable current, final Throwable previous) {
 
 		if (previous == null) {
 			return true; // We always differ from initial null.
 		}
-		String currentMessage = getThrowableMessage(current);
+		final String currentMessage = getThrowableMessage(current);
 
 		// Going to null message always means no difference (just a loss of signal)
 		return currentMessage != null && (!currentMessage.equalsIgnoreCase(getThrowableMessage(previous)));

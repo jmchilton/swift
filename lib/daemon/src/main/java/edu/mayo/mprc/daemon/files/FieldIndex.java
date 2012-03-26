@@ -7,7 +7,7 @@ final class FieldIndex implements Serializable {
 	private final String field;
 	private final Serializable index;
 
-	FieldIndex(String field, Serializable index) {
+	FieldIndex(final String field, final Serializable index) {
 		this.field = field;
 		this.index = index;
 	}
@@ -21,7 +21,7 @@ final class FieldIndex implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -29,7 +29,7 @@ final class FieldIndex implements Serializable {
 			return false;
 		}
 
-		FieldIndex that = (FieldIndex) o;
+		final FieldIndex that = (FieldIndex) o;
 
 		if (field != null ? !field.equals(that.field) : that.field != null) {
 			return false;

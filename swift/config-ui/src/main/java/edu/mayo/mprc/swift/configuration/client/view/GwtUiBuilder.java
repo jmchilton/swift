@@ -1,7 +1,9 @@
 package edu.mayo.mprc.swift.configuration.client.view;
 
 import com.google.gwt.user.client.ui.*;
-import edu.mayo.mprc.swift.configuration.client.model.*;
+import edu.mayo.mprc.swift.configuration.client.model.ApplicationModel;
+import edu.mayo.mprc.swift.configuration.client.model.AvailableModules;
+import edu.mayo.mprc.swift.configuration.client.model.ResourceModel;
 import edu.mayo.mprc.swift.configuration.client.validation.local.IntegerValidator;
 import edu.mayo.mprc.swift.configuration.client.validation.local.RequiredFieldValidator;
 import edu.mayo.mprc.swift.configuration.client.validation.local.Validator;
@@ -38,7 +40,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 
 	private Context context;
 
-	public GwtUiBuilder(Context context, ResourceModel model) {
+	public GwtUiBuilder(final Context context, final ResourceModel model) {
 		this.model = model;
 		this.applicationModel = context.getApplicationModel();
 		this.configUIs = context.getApplicationModel().getAvailableModules();
@@ -77,8 +79,8 @@ public final class GwtUiBuilder implements UiBuilderClient {
 		return propertyList;
 	}
 
-	public GwtUiBuilder nativeInterface(String className) {
-		if ("database" .equals(className)) {
+	public GwtUiBuilder nativeInterface(final String className) {
+		if ("database".equals(className)) {
 			nativeInterface = new DatabaseView(this, model);
 		} else {
 			throw new RuntimeException("Unsupported native inteface: " + className);
@@ -93,7 +95,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 * @param displayName Property display name (user-friendly text)
 	 * @param description Property description.
 	 */
-	public GwtUiBuilder property(String name, String displayName, String description) {
+	public GwtUiBuilder property(final String name, final String displayName, final String description) {
 		if (editor != null) {
 			endPropertyUi();
 		}
@@ -116,7 +118,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 * @param displayName New property display name.
 	 * @param description New property description.
 	 */
-	private void startPropertyUi(String name, String displayName, String description) {
+	private void startPropertyUi(final String name, final String displayName, final String description) {
 		validator = new MultiValidator(model, name);
 
 		this.name = name;
@@ -134,15 +136,15 @@ public final class GwtUiBuilder implements UiBuilderClient {
 		row++;
 
 		// Add aditor and validator (+asterisk) and editor
-		String asteriskIfRequired = validator.isRequiredField() ? "<span class=\"required\">*</span>" : "";
-		String displayNameHardSpaces = displayName.replaceAll(" ", "&nbsp;");
+		final String asteriskIfRequired = validator.isRequiredField() ? "<span class=\"required\">*</span>" : "";
+		final String displayNameHardSpaces = displayName.replaceAll(" ", "&nbsp;");
 		final HTML html = new HTML(displayNameHardSpaces + asteriskIfRequired);
 		html.addStyleName("property-caption");
 		propertyList.setWidget(row, 0, html);
 		validator.setValidationPanel(validationPanel);
 
 		if (validator.hasOnDemandValidation()) {
-			HorizontalPanel panel = createOnDemandValidationPanel(editor, validator, validationPanel);
+			final HorizontalPanel panel = createOnDemandValidationPanel(editor, validator, validationPanel);
 			propertyList.setWidget(row, 1, panel);
 		} else {
 			propertyList.setWidget(row, 1, editor);
@@ -153,7 +155,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 			if (editor instanceof TextBox) {
 				((TextBox) editor).setText(defaultValue);
 			} else if (editor instanceof CheckBox) {
-				((CheckBox) editor).setChecked("true" .equals(defaultValue));
+				((CheckBox) editor).setChecked("true".equals(defaultValue));
 			}
 			defaultValue = null;
 		}
@@ -176,13 +178,13 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	private void addEditorValidator(final Widget editor, final MultiValidator validator, final ValidationPanel validationPanel) {
 		if (editor instanceof SourcesChangeEvents) {
 			((SourcesChangeEvents) editor).addChangeListener(new ChangeListener() {
-				public void onChange(Widget sender) {
+				public void onChange(final Widget sender) {
 					validator.validate(PropertyList.getEditorValue(sender));
 				}
 			});
 		} else if (editor instanceof SourcesClickEvents) {
 			((SourcesClickEvents) editor).addClickListener(new ClickListener() {
-				public void onClick(Widget sender) {
+				public void onClick(final Widget sender) {
 					validator.validate(PropertyList.getEditorValue(sender));
 				}
 			});
@@ -198,7 +200,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 * @return Validation panel consisting of the editor and "Test" button that runs the on-demand validation.
 	 */
 	private HorizontalPanel createOnDemandValidationPanel(final Widget editor, final MultiValidator validator, final ValidationPanel validationPanel) {
-		HorizontalPanel panel = new HorizontalPanel();
+		final HorizontalPanel panel = new HorizontalPanel();
 		panel.add(this.editor);
 
 		final Button test = new Button("Test");
@@ -218,7 +220,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 		validationPanel.setTestProgress(testProgress);
 		validationPanel.setSuccessIndicator(successIndicator);
 		test.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				validator.runOnDemandValidation(PropertyList.getEditorValue(editor), validationPanel);
 			}
 		});
@@ -234,7 +236,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 * represented by a TextBox, the listner must be of the type ChangeListener. If the
 	 * preceeding property is represented by a CheckBox, the listner must be of the type ClickListener.
 	 */
-	public GwtUiBuilder addEventListener(EventListener listener) {
+	public GwtUiBuilder addEventListener(final EventListener listener) {
 		if (this.editor instanceof TextBox) {
 			if (!(listener instanceof ChangeListener)) {
 				throw new RuntimeException("The event listener for TextBox must be a change listener");
@@ -254,7 +256,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 * represented by a TextBox, the listner must be of the type ChangeListener. If the
 	 * preceeding property is represented by a CheckBox, the listner must be of the type ClickListener.
 	 */
-	public GwtUiBuilder removeEventListener(EventListener listener) {
+	public GwtUiBuilder removeEventListener(final EventListener listener) {
 		if (this.editor instanceof TextBox) {
 			if (!(listener instanceof ChangeListener)) {
 				throw new RuntimeException("The event listener for TextBox must be a change listener");
@@ -281,7 +283,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	 *
 	 * @param value Default value for the current property.
 	 */
-	public GwtUiBuilder defaultValue(String value) {
+	public GwtUiBuilder defaultValue(final String value) {
 		this.defaultValue = value;
 		return this;
 	}
@@ -291,8 +293,8 @@ public final class GwtUiBuilder implements UiBuilderClient {
 		return this;
 	}
 
-	private ValidationPanel addValidationPanel(FlexTable flexTable, int nextTableRow) {
-		ValidationPanel validationMessagePanel = new ValidationPanel();
+	private ValidationPanel addValidationPanel(final FlexTable flexTable, final int nextTableRow) {
+		final ValidationPanel validationMessagePanel = new ValidationPanel();
 
 		flexTable.setWidget(nextTableRow, 0, validationMessagePanel);
 		flexTable.getFlexCellFormatter().setColSpan(nextTableRow, 0, 3);
@@ -300,7 +302,7 @@ public final class GwtUiBuilder implements UiBuilderClient {
 	}
 
 
-	public GwtUiBuilder validator(Validator validator) {
+	public GwtUiBuilder validator(final Validator validator) {
 		this.validator.addValidator(validator);
 		return this;
 	}
@@ -310,14 +312,14 @@ public final class GwtUiBuilder implements UiBuilderClient {
 		return this;
 	}
 
-	public GwtUiBuilder integerValue(Integer minimum, Integer maximum) {
-		IntegerValidator v = new IntegerValidator(minimum, maximum);
+	public GwtUiBuilder integerValue(final Integer minimum, final Integer maximum) {
+		final IntegerValidator v = new IntegerValidator(minimum, maximum);
 		validator.addValidator(v);
 		return this;
 	}
 
 
-	public GwtUiBuilder reference(String... type) {
+	public GwtUiBuilder reference(final String... type) {
 		this.editor = new ReferenceListBox(Arrays.asList(type), applicationModel, context);
 		return this;
 	}
@@ -328,11 +330,11 @@ public final class GwtUiBuilder implements UiBuilderClient {
 			final CheckBox checkBox = (CheckBox) editor;
 			checkBox.addClickListener(new ClickListener() {
 
-				public void onClick(Widget sender) {
+				public void onClick(final Widget sender) {
 
 					if (sender instanceof CheckBox) {
 						final CheckBox checkBox = (CheckBox) sender;
-						boolean enableLink = checkBox.isChecked() == synchronous;
+						final boolean enableLink = checkBox.isChecked() == synchronous;
 						final Widget editor = propertyList.getWidgetForName(propertyName);
 						if (editor != null && editor instanceof FocusWidget) {
 							((FocusWidget) editor).setEnabled(enableLink);

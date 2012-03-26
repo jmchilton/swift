@@ -9,7 +9,7 @@ public final class RawToMgfResult extends FileHolder implements ProgressInfo {
 	private static final long serialVersionUID = 20101025l;
 	private File mgf;
 
-	public RawToMgfResult(File mgfFile) {
+	public RawToMgfResult(final File mgfFile) {
 		this.mgf = mgfFile;
 	}
 

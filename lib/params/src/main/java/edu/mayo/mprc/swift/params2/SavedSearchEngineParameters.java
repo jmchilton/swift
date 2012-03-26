@@ -14,7 +14,7 @@ public class SavedSearchEngineParameters extends EvolvableBase {
 	public SavedSearchEngineParameters() {
 	}
 
-	public SavedSearchEngineParameters(String name, User user, SearchEngineParameters parameters) {
+	public SavedSearchEngineParameters(final String name, final User user, final SearchEngineParameters parameters) {
 		this.name = name;
 		this.user = user;
 		this.parameters = parameters;
@@ -24,7 +24,7 @@ public class SavedSearchEngineParameters extends EvolvableBase {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -32,7 +32,7 @@ public class SavedSearchEngineParameters extends EvolvableBase {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 
@@ -40,12 +40,12 @@ public class SavedSearchEngineParameters extends EvolvableBase {
 		return parameters;
 	}
 
-	public void setParameters(SearchEngineParameters parameters) {
+	public void setParameters(final SearchEngineParameters parameters) {
 		this.parameters = parameters;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -53,7 +53,7 @@ public class SavedSearchEngineParameters extends EvolvableBase {
 			return false;
 		}
 
-		SavedSearchEngineParameters that = (SavedSearchEngineParameters) o;
+		final SavedSearchEngineParameters that = (SavedSearchEngineParameters) o;
 
 		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) {
 			return false;

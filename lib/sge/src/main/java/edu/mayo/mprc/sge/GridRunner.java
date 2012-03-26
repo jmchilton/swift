@@ -75,16 +75,16 @@ public final class GridRunner extends AbstractRunner {
 		return "Grid Daemon Runner for " + (daemonConnection == null ? "(null)" : daemonConnection.getConnectionName());
 	}
 
-	protected void processRequest(DaemonRequest request) {
-		GridWorkPacket gridWorkPacket = getBaseGridWorkPacket(gridScriptFactory.getApplicationName(wrapperScript));
-		File daemonWorkerAllocatorInputFile = new File(sharedTempDirectory, queueName + "_" + uniqueId.incrementAndGet());
+	protected void processRequest(final DaemonRequest request) {
+		final GridWorkPacket gridWorkPacket = getBaseGridWorkPacket(gridScriptFactory.getApplicationName(wrapperScript));
+		final File daemonWorkerAllocatorInputFile = new File(sharedTempDirectory, queueName + "_" + uniqueId.incrementAndGet());
 
 		try {
-			BoundMessenger<SimpleOneWayMessenger> boundMessenger = messengerFactory.createOneWayMessenger();
-			DaemonWorkerAllocatorMessageListener allocatorListener = new DaemonWorkerAllocatorMessageListener(request);
+			final BoundMessenger<SimpleOneWayMessenger> boundMessenger = messengerFactory.createOneWayMessenger();
+			final DaemonWorkerAllocatorMessageListener allocatorListener = new DaemonWorkerAllocatorMessageListener(request);
 			boundMessenger.getMessenger().addMessageListener(allocatorListener);
 
-			GridDaemonWorkerAllocatorInputObject gridDaemonAllocatorInputObject =
+			final GridDaemonWorkerAllocatorInputObject gridDaemonAllocatorInputObject =
 					new GridDaemonWorkerAllocatorInputObject(request.getWorkPacket()
 							, boundMessenger.getMessengerInfo()
 							, workerFactoryConfig
@@ -98,20 +98,20 @@ public final class GridRunner extends AbstractRunner {
 			BufferedWriter bufferedWriter = null;
 
 			try {
-				XStream xStream = new XStream(new DomDriver());
+				final XStream xStream = new XStream(new DomDriver());
 				bufferedWriter = new BufferedWriter(new FileWriter(daemonWorkerAllocatorInputFile));
 				bufferedWriter.write(xStream.toXML(gridDaemonAllocatorInputObject));
 			} finally {
 				FileUtilities.closeQuietly(bufferedWriter);
 			}
 
-			List<String> parameters = gridScriptFactory.getParameters(wrapperScript, daemonWorkerAllocatorInputFile);
+			final List<String> parameters = gridScriptFactory.getParameters(wrapperScript, daemonWorkerAllocatorInputFile);
 			gridWorkPacket.setParameters(parameters);
 
 			// Set our own listener to the work packet progress. When the packet returns, the execution will be resumed
 			gridWorkPacket.setListener(new MyWorkPacketStateListener(request, daemonWorkerAllocatorInputFile, boundMessenger, allocatorListener));
 			// Run the job
-			String requestId = manager.passToGridEngine(gridWorkPacket);
+			final String requestId = manager.passToGridEngine(gridWorkPacket);
 			// Report the assigned ID
 			sendResponse(request,
 					new DaemonProgressMessage(DaemonProgress.UserSpecificProgressInfo, new AssignedTaskData(requestId, gridWorkPacket.getOutputLogFilePath(), gridWorkPacket.getErrorLogFilePath())),
@@ -121,7 +121,7 @@ public final class GridRunner extends AbstractRunner {
 			// and either mark the task failed or successful.
 		} catch (Exception t) {
 			FileUtilities.quietDelete(daemonWorkerAllocatorInputFile);
-			DaemonException daemonException = new DaemonException("Failed passing work packet " + gridWorkPacket.toString() + " to grid engine", t);
+			final DaemonException daemonException = new DaemonException("Failed passing work packet " + gridWorkPacket.toString() + " to grid engine", t);
 			sendResponse(request, daemonException, true);
 			throw daemonException;
 		}
@@ -135,7 +135,7 @@ public final class GridRunner extends AbstractRunner {
 		private DaemonRequest request;
 		private Throwable lastThrowable;
 
-		public DaemonWorkerAllocatorMessageListener(DaemonRequest request) {
+		public DaemonWorkerAllocatorMessageListener(final DaemonRequest request) {
 			this.request = request;
 		}
 
@@ -143,7 +143,7 @@ public final class GridRunner extends AbstractRunner {
 			return lastThrowable;
 		}
 
-		public void messageReceived(Object message) {
+		public void messageReceived(final Object message) {
 			if (message instanceof Serializable) {
 				if (message instanceof Throwable) {
 					// We do send an error message now.
@@ -174,7 +174,7 @@ public final class GridRunner extends AbstractRunner {
 		/**
 		 * @param allocatorListener The listener for the RMI messages. We use it so we can send an exception that was cached when SGE terminates.
 		 */
-		public MyWorkPacketStateListener(DaemonRequest request, File daemonWorkerAllocatorInputFile, BoundMessenger boundMessenger, DaemonWorkerAllocatorMessageListener allocatorListener) {
+		public MyWorkPacketStateListener(final DaemonRequest request, final File daemonWorkerAllocatorInputFile, final BoundMessenger boundMessenger, final DaemonWorkerAllocatorMessageListener allocatorListener) {
 			reported = false;
 			this.request = request;
 			this.daemonWorkerAllocatorInputFile = daemonWorkerAllocatorInputFile;
@@ -187,7 +187,7 @@ public final class GridRunner extends AbstractRunner {
 		 *
 		 * @param w
 		 */
-		public void stateChanged(GridWorkPacket w) {
+		public void stateChanged(final GridWorkPacket w) {
 			// We report state change just once.
 			if (!reported) {
 				try {
@@ -223,12 +223,12 @@ public final class GridRunner extends AbstractRunner {
 		return operational || !enabled;
 	}
 
-	public void setOperational(boolean operational) {
+	public void setOperational(final boolean operational) {
 		this.operational = operational;
 	}
 
-	private GridWorkPacket getBaseGridWorkPacket(String command) {
-		GridWorkPacket gridWorkPacket = new GridWorkPacket(command, null);
+	private GridWorkPacket getBaseGridWorkPacket(final String command) {
+		final GridWorkPacket gridWorkPacket = new GridWorkPacket(command, null);
 
 		if (nativeSpecification != null) {
 			gridWorkPacket.setNativeSpecification(nativeSpecification);
@@ -250,7 +250,7 @@ public final class GridRunner extends AbstractRunner {
 		return sharedWorkingDirectory;
 	}
 
-	public void setSharedWorkingDirectory(File sharedWorkingDirectory) {
+	public void setSharedWorkingDirectory(final File sharedWorkingDirectory) {
 		this.sharedWorkingDirectory = sharedWorkingDirectory;
 	}
 
@@ -258,7 +258,7 @@ public final class GridRunner extends AbstractRunner {
 		return sharedTempDirectory;
 	}
 
-	public void setSharedTempDirectory(File sharedTempDirectory) {
+	public void setSharedTempDirectory(final File sharedTempDirectory) {
 		this.sharedTempDirectory = sharedTempDirectory;
 	}
 
@@ -266,7 +266,7 @@ public final class GridRunner extends AbstractRunner {
 		return outputDirectory;
 	}
 
-	public void setOutputDirectory(File outputDirectory) {
+	public void setOutputDirectory(final File outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
 
@@ -274,7 +274,7 @@ public final class GridRunner extends AbstractRunner {
 		return sharedLogDirectory;
 	}
 
-	public void setSharedLogDirectory(File sharedLogDirectory) {
+	public void setSharedLogDirectory(final File sharedLogDirectory) {
 		this.sharedLogDirectory = sharedLogDirectory;
 	}
 
@@ -282,7 +282,7 @@ public final class GridRunner extends AbstractRunner {
 		return manager;
 	}
 
-	public void setManager(GridEngineJobManager manager) {
+	public void setManager(final GridEngineJobManager manager) {
 		this.manager = manager;
 	}
 
@@ -290,7 +290,7 @@ public final class GridRunner extends AbstractRunner {
 		return workerFactoryConfig;
 	}
 
-	public void setWorkerFactoryConfig(ResourceConfig workerFactoryConfig) {
+	public void setWorkerFactoryConfig(final ResourceConfig workerFactoryConfig) {
 		this.workerFactoryConfig = workerFactoryConfig;
 	}
 
@@ -298,7 +298,7 @@ public final class GridRunner extends AbstractRunner {
 		return nativeSpecification;
 	}
 
-	public void setNativeSpecification(String nativeSpecification) {
+	public void setNativeSpecification(final String nativeSpecification) {
 		this.nativeSpecification = nativeSpecification;
 	}
 
@@ -306,7 +306,7 @@ public final class GridRunner extends AbstractRunner {
 		return queueName;
 	}
 
-	public void setQueueName(String queueName) {
+	public void setQueueName(final String queueName) {
 		this.queueName = queueName;
 	}
 
@@ -314,7 +314,7 @@ public final class GridRunner extends AbstractRunner {
 		return memoryRequirement;
 	}
 
-	public void setMemoryRequirement(String memoryRequirement) {
+	public void setMemoryRequirement(final String memoryRequirement) {
 		this.memoryRequirement = memoryRequirement;
 	}
 
@@ -322,7 +322,7 @@ public final class GridRunner extends AbstractRunner {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 	}
 
@@ -330,7 +330,7 @@ public final class GridRunner extends AbstractRunner {
 		return messengerFactory;
 	}
 
-	public void setMessengerFactory(MessengerFactory messengerFactory) {
+	public void setMessengerFactory(final MessengerFactory messengerFactory) {
 		this.messengerFactory = messengerFactory;
 	}
 
@@ -338,7 +338,7 @@ public final class GridRunner extends AbstractRunner {
 		return gridScriptFactory;
 	}
 
-	public void setGridScriptFactory(GridScriptFactory gridScriptFactory) {
+	public void setGridScriptFactory(final GridScriptFactory gridScriptFactory) {
 		this.gridScriptFactory = gridScriptFactory;
 	}
 
@@ -346,7 +346,7 @@ public final class GridRunner extends AbstractRunner {
 		return daemonConnection;
 	}
 
-	public void setDaemonConnection(DaemonConnection daemonConnection) {
+	public void setDaemonConnection(final DaemonConnection daemonConnection) {
 		this.daemonConnection = daemonConnection;
 	}
 
@@ -354,7 +354,7 @@ public final class GridRunner extends AbstractRunner {
 		return wrapperScript;
 	}
 
-	public void setWrapperScript(String wrapperScript) {
+	public void setWrapperScript(final String wrapperScript) {
 		this.wrapperScript = wrapperScript;
 	}
 
@@ -362,7 +362,7 @@ public final class GridRunner extends AbstractRunner {
 		return fileTokenFactory;
 	}
 
-	public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 		this.fileTokenFactory = fileTokenFactory;
 	}
 
@@ -379,7 +379,7 @@ public final class GridRunner extends AbstractRunner {
 		public Config() {
 		}
 
-		public Config(ResourceConfig workerFactory) {
+		public Config(final ResourceConfig workerFactory) {
 			super(workerFactory);
 		}
 
@@ -387,7 +387,7 @@ public final class GridRunner extends AbstractRunner {
 			return queueName;
 		}
 
-		public void setQueueName(String queueName) {
+		public void setQueueName(final String queueName) {
 			this.queueName = queueName;
 		}
 
@@ -395,7 +395,7 @@ public final class GridRunner extends AbstractRunner {
 			return memoryRequirement;
 		}
 
-		public void setMemoryRequirement(String memoryRequirement) {
+		public void setMemoryRequirement(final String memoryRequirement) {
 			this.memoryRequirement = memoryRequirement;
 		}
 
@@ -407,11 +407,11 @@ public final class GridRunner extends AbstractRunner {
 			return sharedWorkingDirectory;
 		}
 
-		public void setSharedWorkingDirectory(String sharedWorkingDirectory) {
+		public void setSharedWorkingDirectory(final String sharedWorkingDirectory) {
 			this.sharedWorkingDirectory = sharedWorkingDirectory;
 		}
 
-		public void setNativeSpecification(String nativeSpecification) {
+		public void setNativeSpecification(final String nativeSpecification) {
 			this.nativeSpecification = nativeSpecification;
 		}
 
@@ -419,7 +419,7 @@ public final class GridRunner extends AbstractRunner {
 			return wrapperScript;
 		}
 
-		public void setWrapperScript(String wrapperScript) {
+		public void setWrapperScript(final String wrapperScript) {
 			this.wrapperScript = wrapperScript;
 		}
 
@@ -427,7 +427,7 @@ public final class GridRunner extends AbstractRunner {
 			return sharedTempDirectory;
 		}
 
-		public void setSharedTempDirectory(String sharedTempDirectory) {
+		public void setSharedTempDirectory(final String sharedTempDirectory) {
 			this.sharedTempDirectory = sharedTempDirectory;
 		}
 
@@ -435,12 +435,12 @@ public final class GridRunner extends AbstractRunner {
 			return sharedLogDirectory;
 		}
 
-		public void setSharedLogDirectory(String sharedLogDirectory) {
+		public void setSharedLogDirectory(final String sharedLogDirectory) {
 			this.sharedLogDirectory = sharedLogDirectory;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			TreeMap<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final TreeMap<String, String> map = new TreeMap<String, String>();
 			map.put("queueName", queueName);
 			map.put("memoryRequirement", memoryRequirement);
 			map.put("nativeSpecification", nativeSpecification);
@@ -451,7 +451,7 @@ public final class GridRunner extends AbstractRunner {
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			queueName = values.get("queueName");
 			memoryRequirement = values.get("memoryRequirement");
 			nativeSpecification = values.get("nativeSpecification");
@@ -475,11 +475,11 @@ public final class GridRunner extends AbstractRunner {
 		private FileTokenFactory fileTokenFactory;
 
 		@Override
-		public GridRunner create(Config config, DependencyResolver dependencies) {
+		public GridRunner create(final Config config, final DependencyResolver dependencies) {
 			// Check that SGE is initialized. If it cannot initialize, we cannot create the runners
 			gridEngineManager.initialize();
 
-			GridRunner runner = new GridRunner();
+			final GridRunner runner = new GridRunner();
 
 			runner.setEnabled(true);
 
@@ -511,7 +511,7 @@ public final class GridRunner extends AbstractRunner {
 			return gridEngineManager;
 		}
 
-		public void setGridEngineManager(GridEngineJobManager gridEngineManager) {
+		public void setGridEngineManager(final GridEngineJobManager gridEngineManager) {
 			this.gridEngineManager = gridEngineManager;
 		}
 
@@ -519,7 +519,7 @@ public final class GridRunner extends AbstractRunner {
 			return gridScriptFactory;
 		}
 
-		public void setGridScriptFactory(GridScriptFactory gridScriptFactory) {
+		public void setGridScriptFactory(final GridScriptFactory gridScriptFactory) {
 			this.gridScriptFactory = gridScriptFactory;
 		}
 
@@ -527,7 +527,7 @@ public final class GridRunner extends AbstractRunner {
 			return messengerFactory;
 		}
 
-		public void setMessengerFactory(MessengerFactory messengerFactory) {
+		public void setMessengerFactory(final MessengerFactory messengerFactory) {
 			this.messengerFactory = messengerFactory;
 		}
 
@@ -535,7 +535,7 @@ public final class GridRunner extends AbstractRunner {
 			return fileTokenFactory;
 		}
 
-		public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+		public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 			this.fileTokenFactory = fileTokenFactory;
 		}
 	}

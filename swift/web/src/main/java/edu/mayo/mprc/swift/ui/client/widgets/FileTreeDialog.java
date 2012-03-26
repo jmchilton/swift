@@ -20,10 +20,10 @@ public final class FileTreeDialog extends DialogBox implements ClickListener {
 	private final Button cancelButton;
 	private SelectedFilesListener selectedFilesListener;
 
-	public FileTreeDialog(int width, int height) {
+	public FileTreeDialog(final int width, final int height) {
 		super(false);
 
-		DockPanel caption = new DockPanel();
+		final DockPanel caption = new DockPanel();
 		caption.add(new Label("Select files and folders"), DockPanel.CENTER);
 		caption.addStyleName("file-dialog-caption");
 
@@ -35,20 +35,20 @@ public final class FileTreeDialog extends DialogBox implements ClickListener {
 		caption.add(okButton, DockPanel.EAST);
 		okButton.addClickListener(this);
 
-		ScrollPanel panel = new ScrollPanel();
+		final ScrollPanel panel = new ScrollPanel();
 		panel.setPixelSize(width, height);
 
-		Grid fileListTable = new Grid(1, 1);
+		final Grid fileListTable = new Grid(1, 1);
 		fileListTable.addStyleName("maintable");
 		DOM.setElementAttribute(fileListTable.getElement(), "id", "maintable");
 
 		DOM.setElementAttribute(fileListTable.getRowFormatter().getElement(0), "class", "shrink");
 
-		Element fileList = DOM.createDiv();
+		final Element fileList = DOM.createDiv();
 		DOM.setElementAttribute(fileList, "id", "filelist");
 		DOM.setElementAttribute(fileList, "class", "filelist");
 
-		Element fileListCell = fileListTable.getCellFormatter().getElement(0, 0);
+		final Element fileListCell = fileListTable.getCellFormatter().getElement(0, 0);
 		DOM.setInnerHTML(fileListCell, null);
 
 		DOM.setElementAttribute(fileListCell, "id", "filelistcell");
@@ -59,7 +59,7 @@ public final class FileTreeDialog extends DialogBox implements ClickListener {
 
 		panel.add(fileListTable);
 
-		DockPanel contents = new DockPanel();
+		final DockPanel contents = new DockPanel();
 		contents.add(panel, DockPanel.CENTER);
 		contents.add(caption, DockPanel.NORTH);
 		setWidget(contents);
@@ -75,26 +75,26 @@ public final class FileTreeDialog extends DialogBox implements ClickListener {
 		return selectedFilesListener;
 	}
 
-	public void setSelectedFilesListener(SelectedFilesListener selectedFilesListener) {
+	public void setSelectedFilesListener(final SelectedFilesListener selectedFilesListener) {
 		this.selectedFilesListener = selectedFilesListener;
 	}
 
-	public void onClick(Widget widget) {
+	public void onClick(final Widget widget) {
 		if (widget.equals(okButton)) {
-			String selectedFilesHairBall = getSelectedFiles();
+			final String selectedFilesHairBall = getSelectedFiles();
 
-			String[] eachSelectedFile = selectedFilesHairBall.split("\\n");
+			final String[] eachSelectedFile = selectedFilesHairBall.split("\\n");
 			final ServiceAsync fileFinderService = (ServiceAsync) GWT.create(Service.class);
-			ServiceDefTarget endpoint = (ServiceDefTarget) fileFinderService;
+			final ServiceDefTarget endpoint = (ServiceDefTarget) fileFinderService;
 			endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "Service");
 
 			fileFinderService.findFiles(eachSelectedFile, new AsyncCallback<FileInfo[]>() {
 
-				public void onFailure(Throwable throwable) {
+				public void onFailure(final Throwable throwable) {
 					//TODO: implement me
 				}
 
-				public void onSuccess(FileInfo[] o) {
+				public void onSuccess(final FileInfo[] o) {
 					selectedFilesListener.selectedFiles(o);
 				}
 			});

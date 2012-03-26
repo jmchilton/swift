@@ -28,7 +28,7 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	 * @param difference XMLUnit difference between two XML files.
 	 * @return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR if the difference was not significent else RETURN_ACCEPT_DIFFERENCE
 	 */
-	public int differenceFound(Difference difference) {
+	public int differenceFound(final Difference difference) {
 		if (isIgnoredDifference(difference)) {
 			return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
 		} else {
@@ -36,7 +36,7 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 		}
 	}
 
-	public void skippedComparison(Node node, Node node1) {
+	public void skippedComparison(final Node node, final Node node1) {
 		//null implementation to satisify interface
 	}
 
@@ -52,7 +52,7 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	 * @param difference Detected difference
 	 * @return Whether this deference is to be ignored.
 	 */
-	private boolean isIgnoredDifference(Difference difference) {
+	private boolean isIgnoredDifference(final Difference difference) {
 		try {
 			return isIdDifference(difference)
 					|| isAnalysisDateDifference(difference)
@@ -66,38 +66,38 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 		}
 	}
 
-	private boolean isIdDifference(Difference difference) {
+	private boolean isIdDifference(final Difference difference) {
 		final String nodeName = difference.getControlNodeDetail().getNode().getNodeName();
 		return "id".equals(nodeName) || "reference".equals(nodeName);
 	}
 
-	private boolean isIdMissing(Difference difference) {
+	private boolean isIdMissing(final Difference difference) {
 		final Node id1 = difference.getControlNodeDetail().getNode().getAttributes().getNamedItem("id");
 		final Node id2 = difference.getTestNodeDetail().getNode().getAttributes().getNamedItem("id");
 		return (id1 == null) != (id2 == null);
 	}
 
-	private boolean isAnalysisDateDifference(Difference difference) {
+	private boolean isAnalysisDateDifference(final Difference difference) {
 		return "analysisDate".equals(difference.getControlNodeDetail().getNode().getNodeName());
 	}
 
-	protected boolean isCompatibleVersionDifference(Difference difference) {
+	protected boolean isCompatibleVersionDifference(final Difference difference) {
 		return "version".equals(difference.getControlNodeDetail().getNode().getNodeName());
 	}
 
-	protected boolean isExperimentNameDifference(Difference difference) {
+	protected boolean isExperimentNameDifference(final Difference difference) {
 		return "experimentName".equals(difference.getControlNodeDetail().getNode().getNodeName());
 	}
 
-	private boolean isAcceptableFloatingPointDifference(Difference difference) {
-		Matcher matcher = FLOATING_POINT.matcher(difference.getControlNodeDetail().getValue());
+	private boolean isAcceptableFloatingPointDifference(final Difference difference) {
+		final Matcher matcher = FLOATING_POINT.matcher(difference.getControlNodeDetail().getValue());
 		try {
 			if (matcher.matches()) {
-				String value1 = difference.getControlNodeDetail().getValue();
-				String value2 = difference.getTestNodeDetail().getValue();
+				final String value1 = difference.getControlNodeDetail().getValue();
+				final String value2 = difference.getTestNodeDetail().getValue();
 
-				double double1 = Double.valueOf(value1);
-				double double2 = Double.valueOf(value2);
+				final double double1 = Double.valueOf(value1);
+				final double double2 = Double.valueOf(value2);
 
 				return similarNumbers(double1, double2);
 			}
@@ -117,8 +117,8 @@ public final class ScaffoldXMLDifferenceListener implements DifferenceListener {
 	 * @param d2 the second number to compare
 	 * @return true if the difference between the values is less than indicated by the precision
 	 */
-	private static boolean similarNumbers(double d1, double d2) {
-		double difference = Math.abs(d1 - d2);
+	private static boolean similarNumbers(final double d1, final double d2) {
+		final double difference = Math.abs(d1 - d2);
 		return (difference < DOUBLE_PRECISION);
 	}
 }

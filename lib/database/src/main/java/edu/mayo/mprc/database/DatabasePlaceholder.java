@@ -23,7 +23,7 @@ public final class DatabasePlaceholder {
 		return sessionFactory;
 	}
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(final SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
@@ -93,7 +93,7 @@ public final class DatabasePlaceholder {
 	 * can no longer be used by this thread, so make sure the commit is the very last action.
 	 */
 	public void commitTransaction() {
-		Session session = getSession();
+		final Session session = getSession();
 		if (session == null || !session.isConnected() || session.getTransaction() == null) {
 			throw new MprcException("No transaction is running");
 		}
@@ -105,7 +105,7 @@ public final class DatabasePlaceholder {
 	 * and can no longer be used by this thread, so make sure the rollback is the very last action.
 	 */
 	public void rollbackTransaction() {
-		Session session = getSession();
+		final Session session = getSession();
 		try {
 			if (session == null || !session.isConnected() || session.getTransaction() == null) {
 				throw new MprcException("No transaction is running");

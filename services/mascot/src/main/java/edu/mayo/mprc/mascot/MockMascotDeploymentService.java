@@ -26,11 +26,11 @@ public final class MockMascotDeploymentService implements Worker {
 	public MockMascotDeploymentService() {
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		// Send empty result (nobody cares anyway)
 		try {
 			progressReporter.reportStart();
-			DeploymentResult result = new DeploymentResult();
+			final DeploymentResult result = new DeploymentResult();
 			progressReporter.reportProgress(result);
 			workPacket.synchronizeFileTokensOnReceiver();
 			progressReporter.reportSuccess();
@@ -48,12 +48,12 @@ public final class MockMascotDeploymentService implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			return new TreeMap<String, String>();
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			//Do nothing
 		}
 
@@ -68,13 +68,13 @@ public final class MockMascotDeploymentService implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			return new MockMascotDeploymentService();
 		}
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			// No UI needed
 		}
 	}

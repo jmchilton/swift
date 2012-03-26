@@ -24,19 +24,19 @@ final class QaTask extends AsyncTaskBase {
 
 	public static final String QA_SUBDIRECTORY = "qa";
 
-	public QaTask(DaemonConnection daemonConnection, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public QaTask(final DaemonConnection daemonConnection, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(daemonConnection, fileTokenFactory, fromScratch);
 
 		experimentList = new ArrayList<QaTaskExperiment>(1);
 		setName("Quality Assurance");
 	}
 
-	public void addExperiment(File scaffoldXmlFile, File spectraFile) {
-		QaTaskExperiment e = new QaTaskExperiment(
+	public void addExperiment(final File scaffoldXmlFile, final File spectraFile) {
+		final QaTaskExperiment e = new QaTaskExperiment(
 				getExperimentName(scaffoldXmlFile),
 				spectraFile,
 				getScaffoldVersion(scaffoldXmlFile));
-		for (QaTaskExperiment existing : experimentList) {
+		for (final QaTaskExperiment existing : experimentList) {
 			if (existing.equals(e)) {
 				currentExperiment = existing;
 				return;
@@ -56,19 +56,19 @@ final class QaTask extends AsyncTaskBase {
 	 * @param scaffoldXmlFile Where the Scaffold .xml report is.
 	 * @return Where should the QA directory for the particular Scaffold file be.
 	 */
-	public static File getQaSubdirectory(File scaffoldXmlFile) {
+	public static File getQaSubdirectory(final File scaffoldXmlFile) {
 		return new File(scaffoldXmlFile.getParentFile().getParentFile(), QA_SUBDIRECTORY);
 	}
 
-	public void addMgfToRawEntry(MgfOutput mgfFile, File rawFile, RAWDumpTask rawDumpTask) {
+	public void addMgfToRawEntry(final MgfOutput mgfFile, final File rawFile, final RAWDumpTask rawDumpTask) {
 		currentExperiment.addMgfToRawEntry(mgfFile, rawFile, rawDumpTask);
 	}
 
-	public void addMgfToMsmsEvalEntry(MgfOutput mgfFile, SpectrumQaTask spectrumQaTask) {
+	public void addMgfToMsmsEvalEntry(final MgfOutput mgfFile, final SpectrumQaTask spectrumQaTask) {
 		currentExperiment.addMgfToMsmsEvalEntry(mgfFile, spectrumQaTask);
 	}
 
-	public void addMgfToAdditionalSearchEngineEntry(MgfOutput mgfFile, EngineSearchTask engineSearchTask) {
+	public void addMgfToAdditionalSearchEngineEntry(final MgfOutput mgfFile, final EngineSearchTask engineSearchTask) {
 		currentExperiment.addAdditionalSearchEntry(mgfFile, engineSearchTask);
 	}
 
@@ -82,11 +82,11 @@ final class QaTask extends AsyncTaskBase {
 			return null;
 		}
 
-		List<ExperimentQa> experimentQaList = new ArrayList<ExperimentQa>(experimentList.size());
-		for (QaTaskExperiment experiment : experimentList) {
-			List<MgfQaFiles> mgfInputFilePairs = new ArrayList<MgfQaFiles>();
+		final List<ExperimentQa> experimentQaList = new ArrayList<ExperimentQa>(experimentList.size());
+		for (final QaTaskExperiment experiment : experimentList) {
+			final List<MgfQaFiles> mgfInputFilePairs = new ArrayList<MgfQaFiles>();
 
-			for (Map.Entry<MgfOutput, QaTaskInputFiles> me : experiment.getMgfToQaMap().entrySet()) {
+			for (final Map.Entry<MgfOutput, QaTaskInputFiles> me : experiment.getMgfToQaMap().entrySet()) {
 				final QaTaskInputFiles value = me.getValue();
 				final MgfQaFiles files = new MgfQaFiles();
 				files.setMgfFile(me.getKey().getFilteredMgfFile());
@@ -100,12 +100,12 @@ final class QaTask extends AsyncTaskBase {
 					files.setRawSpectraFile(value.getRawDump().getRawSpectraFile());
 					files.setChromatogramFile(value.getRawDump().getChromatogramFile());
 				}
-				for (EngineSearchTask engineSearchTask : value.getAdditionalSearches()) {
+				for (final EngineSearchTask engineSearchTask : value.getAdditionalSearches()) {
 					files.addAdditionalSearchResult(engineSearchTask.getSearchEngine().getCode(), engineSearchTask.getOutputFile());
 				}
 				mgfInputFilePairs.add(files);
 			}
-			ExperimentQa experimentQa = new ExperimentQa(experiment.getName(), experiment.getSpectraFile(), mgfInputFilePairs, experiment.getScaffoldVersion());
+			final ExperimentQa experimentQa = new ExperimentQa(experiment.getName(), experiment.getSpectraFile(), mgfInputFilePairs, experiment.getScaffoldVersion());
 			experimentQaList.add(experimentQa);
 		}
 
@@ -118,15 +118,15 @@ final class QaTask extends AsyncTaskBase {
 	}
 
 	@Override
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		//Do nothing
 	}
 
-	private static String getExperimentName(File scaffoldXmlFile) {
+	private static String getExperimentName(final File scaffoldXmlFile) {
 		return FileUtilities.getFileNameWithoutExtension(scaffoldXmlFile);
 	}
 
-	private static String getScaffoldVersion(File scaffoldXmlFile) {
+	private static String getScaffoldVersion(final File scaffoldXmlFile) {
 		return scaffoldXmlFile.getParentFile().getName().equals("scaffold3") ? "3" : "2";
 	}
 

@@ -32,11 +32,11 @@ final class EnzymeLookup {
 	private EnzymeLookup() {
 	}
 
-	public static String mapEnzymeOmssaToAbstract(String omssaName) {
+	public static String mapEnzymeOmssaToAbstract(final String omssaName) {
 		return enzymeLookup.inverse().get(omssaName);
 	}
 
-	public static String mapEnzymeAbstractToOmssa(String abstractName) {
+	public static String mapEnzymeAbstractToOmssa(final String abstractName) {
 		return enzymeLookup.get(abstractName);
 	}
 

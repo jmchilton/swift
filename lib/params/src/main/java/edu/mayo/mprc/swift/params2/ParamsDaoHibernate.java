@@ -25,7 +25,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	public ParamsDaoHibernate() {
 	}
 
-	public ParamsDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+	public ParamsDaoHibernate(final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 	}
 
@@ -61,12 +61,12 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	/**
 	 * @return Criteria that selects ion series equal to given one.
 	 */
-	private SimpleExpression getIonSeriesEqCriteria(IonSeries ionSeries) {
+	private SimpleExpression getIonSeriesEqCriteria(final IonSeries ionSeries) {
 		return Restrictions.eq("name", ionSeries.getName());
 	}
 
 	@Override
-	public void addIonSeries(IonSeries ionSeries, Change creation) {
+	public void addIonSeries(final IonSeries ionSeries, final Change creation) {
 		try {
 			save(ionSeries, creation, getIonSeriesEqCriteria(ionSeries), true/*Must be new*/);
 		} catch (Exception t) {
@@ -75,7 +75,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public IonSeries updateIonSeries(IonSeries ionSeries, Change creation) {
+	public IonSeries updateIonSeries(final IonSeries ionSeries, final Change creation) {
 		try {
 			return save(ionSeries, creation, getIonSeriesEqCriteria(ionSeries), false/*Can already exist*/);
 		} catch (Exception t) {
@@ -84,7 +84,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public void deleteIonSeries(IonSeries ionSeries, Change deletion) {
+	public void deleteIonSeries(final IonSeries ionSeries, final Change deletion) {
 		try {
 			delete(ionSeries, deletion);
 		} catch (Exception t) {
@@ -98,7 +98,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public Instrument getInstrumentByName(String name) {
+	public Instrument getInstrumentByName(final String name) {
 		try {
 			return get(Instrument.class, Restrictions.eq("name", name));
 		} catch (Exception t) {
@@ -106,14 +106,14 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		}
 	}
 
-	private SimpleExpression getInstrumentEqCriteria(Instrument instrument) {
+	private SimpleExpression getInstrumentEqCriteria(final Instrument instrument) {
 		return Restrictions.eq("name", instrument.getName());
 	}
 
 	@Override
-	public Instrument addInstrument(Instrument instrument, Change change) {
+	public Instrument addInstrument(final Instrument instrument, final Change change) {
 		try {
-			Instrument newInstrument = updateInstrumentIonSeries(instrument, change);
+			final Instrument newInstrument = updateInstrumentIonSeries(instrument, change);
 			save(newInstrument, change, getInstrumentEqCriteria(instrument), true/*Must be new*/);
 			return newInstrument;
 		} catch (Exception t) {
@@ -121,19 +121,19 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		}
 	}
 
-	private Instrument updateInstrumentIonSeries(Instrument instrument, Change change) {
-		Set<IonSeries> newSeries = new HashSet<IonSeries>();
-		for (IonSeries series : instrument.getSeries()) {
-			IonSeries updateSeries = updateIonSeries(series, change);
+	private Instrument updateInstrumentIonSeries(final Instrument instrument, final Change change) {
+		final Set<IonSeries> newSeries = new HashSet<IonSeries>();
+		for (final IonSeries series : instrument.getSeries()) {
+			final IonSeries updateSeries = updateIonSeries(series, change);
 			newSeries.add(updateSeries);
 		}
 		return new Instrument(instrument.getName(), newSeries, instrument.getMascotName());
 	}
 
 	@Override
-	public Instrument updateInstrument(Instrument instrument, Change change) {
+	public Instrument updateInstrument(final Instrument instrument, final Change change) {
 		try {
-			Instrument newInstrument = updateInstrumentIonSeries(instrument, change);
+			final Instrument newInstrument = updateInstrumentIonSeries(instrument, change);
 			save(newInstrument, change, getInstrumentEqCriteria(instrument), false/*Update existing*/);
 			return newInstrument;
 		} catch (Exception t) {
@@ -142,7 +142,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public void deleteInstrument(Instrument instrument, Change change) {
+	public void deleteInstrument(final Instrument instrument, final Change change) {
 		try {
 			delete(instrument, change);
 		} catch (Exception t) {
@@ -155,17 +155,17 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		return (List<Protease>) listAll(Protease.class);
 	}
 
-	private SimpleExpression getProteaseEqCriteria(Protease protease) {
+	private SimpleExpression getProteaseEqCriteria(final Protease protease) {
 		return Restrictions.eq("name", protease.getName());
 	}
 
 	@Override
-	public Protease getProteaseByName(String name) {
+	public Protease getProteaseByName(final String name) {
 		return get(Protease.class, Restrictions.eq("name", name));
 	}
 
 	@Override
-	public void addProtease(Protease protease, Change change) {
+	public void addProtease(final Protease protease, final Change change) {
 		try {
 			save(protease, change, getProteaseEqCriteria(protease), true/*Must be new*/);
 		} catch (Exception t) {
@@ -174,7 +174,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public Protease updateProtease(Protease protease, Change change) {
+	public Protease updateProtease(final Protease protease, final Change change) {
 		try {
 			return save(protease, change, getProteaseEqCriteria(protease), false/*Can already exist*/);
 		} catch (Exception t) {
@@ -183,7 +183,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public void deleteProtease(Protease protease, Change change) {
+	public void deleteProtease(final Protease protease, final Change change) {
 		try {
 			delete(protease, change);
 		} catch (Exception t) {
@@ -191,11 +191,11 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		}
 	}
 
-	private Criterion getExtractMsnSettingsEqualityCriteria(ExtractMsnSettings extractMsnSettings) {
+	private Criterion getExtractMsnSettingsEqualityCriteria(final ExtractMsnSettings extractMsnSettings) {
 		return nullSafeEq("commandLineSwitches", extractMsnSettings.getCommandLineSwitches());
 	}
 
-	public ExtractMsnSettings addExtractMsnSettings(ExtractMsnSettings extractMsnSettings) {
+	public ExtractMsnSettings addExtractMsnSettings(final ExtractMsnSettings extractMsnSettings) {
 		try {
 			return save(extractMsnSettings, getExtractMsnSettingsEqualityCriteria(extractMsnSettings), false);
 		} catch (Exception t) {
@@ -203,7 +203,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		}
 	}
 
-	private Criterion getStarredProteinsEqualityCriteria(StarredProteins starredProteins) {
+	private Criterion getStarredProteinsEqualityCriteria(final StarredProteins starredProteins) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("starred", starredProteins.getStarred()))
 				.add(nullSafeEq("delimiter", starredProteins.getDelimiter()))
@@ -211,7 +211,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 				.add(nullSafeEq("matchName", starredProteins.isMatchName()));
 	}
 
-	private Criterion getScaffoldSettingsEqualityCriteria(ScaffoldSettings scaffoldSettings) {
+	private Criterion getScaffoldSettingsEqualityCriteria(final ScaffoldSettings scaffoldSettings) {
 		return Restrictions.conjunction()
 				.add(Restrictions.between("proteinProbability", scaffoldSettings.getProteinProbability() - ScaffoldSettings.PROBABILITY_PRECISION, scaffoldSettings.getProteinProbability() + ScaffoldSettings.PROBABILITY_PRECISION))
 				.add(Restrictions.between("peptideProbability", scaffoldSettings.getPeptideProbability() - ScaffoldSettings.PROBABILITY_PRECISION, scaffoldSettings.getPeptideProbability() + ScaffoldSettings.PROBABILITY_PRECISION))
@@ -224,7 +224,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 				.add(associationEq("starredProteins", scaffoldSettings.getStarredProteins()));
 	}
 
-	public ScaffoldSettings addScaffoldSettings(ScaffoldSettings scaffoldSettings) {
+	public ScaffoldSettings addScaffoldSettings(final ScaffoldSettings scaffoldSettings) {
 		try {
 			if (scaffoldSettings.getStarredProteins() != null) {
 				scaffoldSettings.setStarredProteins(addStarredProteins(scaffoldSettings.getStarredProteins()));
@@ -235,7 +235,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 		}
 	}
 
-	public StarredProteins addStarredProteins(StarredProteins starredProteins) {
+	public StarredProteins addStarredProteins(final StarredProteins starredProteins) {
 		try {
 			return save(starredProteins, getStarredProteinsEqualityCriteria(starredProteins), false);
 		} catch (Exception t) {
@@ -244,7 +244,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public ModSet updateModSet(ModSet modSet) {
+	public ModSet updateModSet(final ModSet modSet) {
 		if (modSet.getId() != null) {
 			// ModSet is unchangeable once saved
 			return modSet;
@@ -253,8 +253,8 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public SearchEngineParameters addSearchEngineParameters(SearchEngineParameters parameters) {
-		Session session = getSession();
+	public SearchEngineParameters addSearchEngineParameters(final SearchEngineParameters parameters) {
+		final Session session = getSession();
 
 		if (parameters.getDatabase() != null && parameters.getDatabase().getId() == null) {
 			throw new MprcException("The database must be persisted before it is assigned to search engine parameters");
@@ -289,7 +289,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 				.add(associationEq("scaffoldSettings", parameters.getScaffoldSettings()))
 		;
 		final List<SearchEngineParameters> parameterList = (List<SearchEngineParameters>) criteria.list();
-		SearchEngineParameters existing =
+		final SearchEngineParameters existing =
 				parameterList.size() == 0 ? null : (SearchEngineParameters) parameterList.get(0);
 
 		if (existing != null) {
@@ -306,7 +306,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public SearchEngineParameters getSearchEngineParameters(int key) {
+	public SearchEngineParameters getSearchEngineParameters(final int key) {
 		return (SearchEngineParameters) getSession().get(SearchEngineParameters.class, key);
 	}
 
@@ -323,17 +323,17 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public SavedSearchEngineParameters getSavedSearchEngineParameters(int key) {
+	public SavedSearchEngineParameters getSavedSearchEngineParameters(final int key) {
 		return (SavedSearchEngineParameters) getSession().get(SavedSearchEngineParameters.class, key);
 	}
 
 	@Override
-	public SavedSearchEngineParameters findSavedSearchEngineParameters(String name) {
+	public SavedSearchEngineParameters findSavedSearchEngineParameters(final String name) {
 		return get(SavedSearchEngineParameters.class, Restrictions.eq("name", name));
 	}
 
 	@Override
-	public SavedSearchEngineParameters addSavedSearchEngineParameters(SavedSearchEngineParameters params, Change change) {
+	public SavedSearchEngineParameters addSavedSearchEngineParameters(final SavedSearchEngineParameters params, final Change change) {
 		try {
 			// Make sure our parameters are normalized
 			params.setParameters(addSearchEngineParameters(params.getParameters()));
@@ -344,7 +344,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public void deleteSavedSearchEngineParameters(SavedSearchEngineParameters params, Change change) {
+	public void deleteSavedSearchEngineParameters(final SavedSearchEngineParameters params, final Change change) {
 		try {
 			delete(params, change);
 		} catch (Exception t) {
@@ -353,7 +353,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public SavedSearchEngineParameters findBestSavedSearchEngineParameters(SearchEngineParameters parameters, User user) {
+	public SavedSearchEngineParameters findBestSavedSearchEngineParameters(final SearchEngineParameters parameters, final User user) {
 		try {
 			final List<SavedSearchEngineParameters> list = (List<SavedSearchEngineParameters>)
 					allCriteria(SavedSearchEngineParameters.class)
@@ -362,7 +362,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 			if (list.size() == 0) {
 				return null;
 			}
-			for (SavedSearchEngineParameters p : list) {
+			for (final SavedSearchEngineParameters p : list) {
 				if (user.equals(p.getUser())) {
 					return p;
 				}
@@ -374,12 +374,12 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public SearchEngineParameters mergeParameterSet(SearchEngineParameters ps) {
+	public SearchEngineParameters mergeParameterSet(final SearchEngineParameters ps) {
 		return (SearchEngineParameters) getSession().merge(ps);
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		if (countAll(IonSeries.class) == 0) {
 			return "No ion series defined";
 		}
@@ -393,7 +393,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 		installIonSeries();
 		installInstruments();
 		installProteases();
@@ -401,10 +401,10 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 
 	private void installIonSeries() {
 		if (countAll(IonSeries.class) == 0) {
-			Change change = new Change("Installing initial ion series", new DateTime());
+			final Change change = new Change("Installing initial ion series", new DateTime());
 			LOGGER.info(change.getReason());
 			final List<IonSeries> list = IonSeries.getInitial();
-			for (IonSeries series : list) {
+			for (final IonSeries series : list) {
 				updateIonSeries(series, change);
 			}
 		}
@@ -412,10 +412,10 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 
 	private void installInstruments() {
 		if (countAll(Instrument.class) == 0) {
-			Change change = new Change("Installing initial instruments", new DateTime());
+			final Change change = new Change("Installing initial instruments", new DateTime());
 			LOGGER.info(change.getReason());
 			final List<Instrument> list = Instrument.getInitial();
-			for (Instrument instrument : list) {
+			for (final Instrument instrument : list) {
 				updateInstrument(instrument, change);
 			}
 		}
@@ -423,10 +423,10 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 
 	private void installProteases() {
 		if (countAll(Protease.class) == 0) {
-			Change change = new Change("Installing initial proteases", new DateTime());
+			final Change change = new Change("Installing initial proteases", new DateTime());
 			LOGGER.info(change.getReason());
 			final List<Protease> list = Protease.getInitial();
-			for (Protease protease : list) {
+			for (final Protease protease : list) {
 				updateProtease(protease, change);
 			}
 		}

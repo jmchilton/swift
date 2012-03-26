@@ -20,7 +20,7 @@ public final class GridScriptFactory {
 		return javaCommand;
 	}
 
-	public void setJavaCommand(String javaCommand) {
+	public void setJavaCommand(final String javaCommand) {
 		this.javaCommand = javaCommand;
 	}
 
@@ -28,15 +28,15 @@ public final class GridScriptFactory {
 		return swiftJar;
 	}
 
-	public void setSwiftJar(String swiftJar) {
+	public void setSwiftJar(final String swiftJar) {
 		this.swiftJar = swiftJar;
 	}
 
-	private static boolean isWrapper(String wrapper) {
+	private static boolean isWrapper(final String wrapper) {
 		return !(wrapper == null || wrapper.length() == 0);
 	}
 
-	public String getApplicationName(String wrapper) {
+	public String getApplicationName(final String wrapper) {
 		if (isWrapper(wrapper)) {
 			return wrapper;
 		}
@@ -46,8 +46,8 @@ public final class GridScriptFactory {
 
 	// We need to pass certain system properties along to make sure logging will keep working
 
-	public List<String> getParameters(String wrapper, File serializedWorkPacket) {
-		List<String> params = new ArrayList<String>(6);
+	public List<String> getParameters(final String wrapper, final File serializedWorkPacket) {
+		final List<String> params = new ArrayList<String>(6);
 
 		if (isWrapper(wrapper)) {
 			params.add(getJavaCommand());

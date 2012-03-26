@@ -24,26 +24,26 @@ public final class RemoteObjectHandler {
 
 	private final Object monitor = new Object();
 
-	public void registerRemoteObject(String remoteObjectName, Remote remoteObject) throws RemoteException {
+	public void registerRemoteObject(final String remoteObjectName, final Remote remoteObject) throws RemoteException {
 		synchronized (monitor) {
 			getLocalRegistry().rebind(remoteObjectName, UnicastRemoteObject.exportObject(remoteObject, 0));
 		}
 	}
 
-	public void unregisterRemoteObject(String remoteObjectName) throws RemoteException, NotBoundException {
+	public void unregisterRemoteObject(final String remoteObjectName) throws RemoteException, NotBoundException {
 		synchronized (monitor) {
 			getLocalRegistry().unbind(remoteObjectName);
 		}
 	}
 
-	public Remote getRemoteObject(InetSocketAddress registryInfo, String remoteObjectName) throws RemoteException, NotBoundException {
+	public Remote getRemoteObject(final InetSocketAddress registryInfo, final String remoteObjectName) throws RemoteException, NotBoundException {
 		return LocateRegistry.getRegistry(registryInfo.getHostName(), registryInfo.getPort()).lookup(remoteObjectName);
 	}
 
 	private Registry getLocalRegistry() throws RemoteException {
 		if (!isLocalRegistryValid()) {
-			AnonymousRMISocketFactory serverAnonymousRMISocketFactory = new AnonymousRMISocketFactory();
-			AnonymousRMISocketFactory clientAnonymousRMISocketFactory = new AnonymousRMISocketFactory();
+			final AnonymousRMISocketFactory serverAnonymousRMISocketFactory = new AnonymousRMISocketFactory();
+			final AnonymousRMISocketFactory clientAnonymousRMISocketFactory = new AnonymousRMISocketFactory();
 			localRegistry = LocateRegistry.createRegistry(localPort, clientAnonymousRMISocketFactory, serverAnonymousRMISocketFactory);
 
 			localPort = serverAnonymousRMISocketFactory.getLastUsedPort();

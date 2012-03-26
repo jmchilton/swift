@@ -23,7 +23,7 @@ class JmsRequest implements Request {
 	 *
 	 * @param objectMessage Message object for this request.
 	 */
-	JmsRequest(ObjectMessage objectMessage, SimpleQueueService receivedFrom) {
+	JmsRequest(final ObjectMessage objectMessage, final SimpleQueueService receivedFrom) {
 		this.receivedFrom = receivedFrom;
 		this.lastResponseSent = false;
 		this.objectMessage = objectMessage;
@@ -50,7 +50,7 @@ class JmsRequest implements Request {
 		}
 	}
 
-	public void sendResponse(Serializable response, boolean isLast) {
+	public void sendResponse(final Serializable response, final boolean isLast) {
 		assert !lastResponseSent : "Last response was already sent.";
 		lastResponseSent = isLast;
 		receivedFrom.sendResponse(response, objectMessage, isLast);

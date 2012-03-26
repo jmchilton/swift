@@ -16,11 +16,11 @@ public final class OmssaWorkPacket extends EngineWorkPacket {
 	private static final long serialVersionUID = 20101221L;
 	private List<File> databaseRelatedFiles;
 
-	public OmssaWorkPacket(String taskId, boolean fromScratch) {
+	public OmssaWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public OmssaWorkPacket(File outputFile, File searchParamsFile, File mgfFile, File databaseFile, List<File> databaseRelatedFiles, boolean publishSearchFiles, String taskId, boolean fromScratch) {
+	public OmssaWorkPacket(final File outputFile, final File searchParamsFile, final File mgfFile, final File databaseFile, final List<File> databaseRelatedFiles, final boolean publishSearchFiles, final String taskId, final boolean fromScratch) {
 		super(mgfFile, outputFile, searchParamsFile, databaseFile, publishSearchFiles, taskId, fromScratch);
 
 		this.databaseRelatedFiles = databaseRelatedFiles;
@@ -35,7 +35,7 @@ public final class OmssaWorkPacket extends EngineWorkPacket {
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new OmssaWorkPacket(
 				new File(wipFolder, getOutputFile().getName()),
 				getSearchParamsFile(),

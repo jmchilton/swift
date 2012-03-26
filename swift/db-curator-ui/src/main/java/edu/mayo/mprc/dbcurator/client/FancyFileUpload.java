@@ -105,7 +105,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 			proceed.setChecked(true);
 			// Set up a click listener on the proceed check box
 			proceed.addClickListener(new ClickListener() {
-				public void onClick(Widget sender) {
+				public void onClick(final Widget sender) {
 					// If clicked we need to check the status of the upload.
 					if (widgetState == UPLOADED_STATE) {
 						// File has previously been uploaded, so now must be deleted.
@@ -260,7 +260,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	 *
 	 * @param servletPath is the servlet that will handle the submission of this form
 	 */
-	public FancyFileUpload(String servletPath) {
+	public FancyFileUpload(final String servletPath) {
 		// Set Form details
 		// Set the action to call on submit
 		uploadForm.setAction(servletPath);
@@ -284,7 +284,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 
 		// Add an event handler to the form.
 		uploadForm.addFormHandler(new FormHandler() {
-			public void onSubmitComplete(FormSubmitCompleteEvent event) {
+			public void onSubmitComplete(final FormSubmitCompleteEvent event) {
 				// Fire an onChange Event
 				fireChangeEvent();
 				// Cancel all timers to be absolutely sure nothing is going on.
@@ -304,7 +304,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 				}
 			}
 
-			public void onSubmit(FormSubmitEvent event) {
+			public void onSubmit(final FormSubmitEvent event) {
 				//No validation in this version.
 			}
 		});
@@ -331,7 +331,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	/**
 	 * Cannot set the text of a File Upload Widget, so raise an exception.
 	 */
-	public void setText(String text) {
+	public void setText(final String text) {
 		throw new RuntimeException("Cannot set text of a FileUpload Widget");
 	}
 
@@ -351,7 +351,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	 *
 	 * @param newDelay
 	 */
-	public void setCheckForFileNameDelay(int newDelay) {
+	public void setCheckForFileNameDelay(final int newDelay) {
 		searchUpdateDelay = newDelay;
 	}
 
@@ -362,7 +362,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	 *
 	 * @param newDelay
 	 */
-	public void setPendingDelay(int newDelay) {
+	public void setPendingDelay(final int newDelay) {
 		pendingUpdateDelay = newDelay;
 	}
 
@@ -394,7 +394,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	/**
 	 * Set the word wrap value of the label in the display widget.
 	 */
-	public void setWordWrap(boolean wrap) {
+	public void setWordWrap(final boolean wrap) {
 		uploadItem.uploadFileName.setWordWrap(wrap);
 	}
 
@@ -405,7 +405,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	 *
 	 * @param listener
 	 */
-	public void addChangeListener(ChangeListener listener) {
+	public void addChangeListener(final ChangeListener listener) {
 		if (changeListeners == null) {
 			changeListeners = new ChangeListenerCollection();
 		}
@@ -417,7 +417,7 @@ public final class FancyFileUpload extends Composite implements HasText, HasWord
 	 *
 	 * @param listener
 	 */
-	public void removeChangeListener(ChangeListener listener) {
+	public void removeChangeListener(final ChangeListener listener) {
 		if (changeListeners != null) {
 			changeListeners.remove(listener);
 		}

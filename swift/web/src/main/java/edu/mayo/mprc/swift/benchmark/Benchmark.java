@@ -30,7 +30,7 @@ public final class Benchmark extends HttpServlet {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(final ServletConfig config) throws ServletException {
 		super.init(config);
 		if (ServletIntialization.initServletConfiguration(getServletConfig())) {
 			if (SwiftWebContext.getServletConfig() != null) {
@@ -40,8 +40,8 @@ public final class Benchmark extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String idString = req.getParameter("id");
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+		final String idString = req.getParameter("id");
 		final int searchId = Integer.parseInt(idString);
 		if (idString != null) {
 			swiftDao.begin();
@@ -70,9 +70,9 @@ public final class Benchmark extends HttpServlet {
 	 * @param taskDataList
 	 * @throws IOException
 	 */
-	static void printTaskTable(ServletOutputStream outputStream, List<TaskData> taskDataList) throws IOException {
-		Map<String, Column> table = makeColumnMap(taskDataList);
-		String[] types = getTaskTypes(table);
+	static void printTaskTable(final ServletOutputStream outputStream, final List<TaskData> taskDataList) throws IOException {
+		final Map<String, Column> table = makeColumnMap(taskDataList);
+		final String[] types = getTaskTypes(table);
 		if (types.length > 0) {
 			outputStream.println(StringUtilities.join(types, ","));
 			printTableData(outputStream, table, types);
@@ -87,15 +87,15 @@ public final class Benchmark extends HttpServlet {
 	 * @param types        Order in which to output the task types.
 	 * @throws IOException When writing goes wrong.
 	 */
-	private static void printTableData(ServletOutputStream outputStream, Map<String, Column> table, String[] types) throws IOException {
+	private static void printTableData(final ServletOutputStream outputStream, final Map<String, Column> table, final String[] types) throws IOException {
 		int i = 0;
 		boolean hasData = true;
-		StringBuilder line = new StringBuilder(types.length * 5);
+		final StringBuilder line = new StringBuilder(types.length * 5);
 		while (hasData) {
 			hasData = false;
 			boolean comma = false;
-			for (String type : types) {
-				String data = table.get(type).getData(i);
+			for (final String type : types) {
+				final String data = table.get(type).getData(i);
 				if (!hasData && !"".equals(data)) {
 					hasData = true;
 				}
@@ -113,18 +113,18 @@ public final class Benchmark extends HttpServlet {
 		}
 	}
 
-	private static String[] getTaskTypes(Map<String, Column> taskTypes) {
-		String[] types = new String[taskTypes.size()];
+	private static String[] getTaskTypes(final Map<String, Column> taskTypes) {
+		final String[] types = new String[taskTypes.size()];
 		taskTypes.keySet().toArray(types);
 		Arrays.sort(types);
 		return types;
 	}
 
-	private static Map<String, Column> makeColumnMap(List<TaskData> taskDataList) {
-		Map<String, Column> taskTypes = new HashMap<String, Column>(10);
+	private static Map<String, Column> makeColumnMap(final List<TaskData> taskDataList) {
+		final Map<String, Column> taskTypes = new HashMap<String, Column>(10);
 
 		// Create list of types
-		for (TaskData data : taskDataList) {
+		for (final TaskData data : taskDataList) {
 			if (TaskState.COMPLETED_SUCCESFULLY.getText().equals(data.getTaskState().getDescription())) {
 				final String key = data.getTaskName();
 				Column column = taskTypes.get(key);
@@ -133,7 +133,7 @@ public final class Benchmark extends HttpServlet {
 					taskTypes.put(key, column);
 				}
 
-				String value = getValue(data);
+				final String value = getValue(data);
 				column.addData(value);
 			}
 		}
@@ -146,7 +146,7 @@ public final class Benchmark extends HttpServlet {
 	 * @param data Task information.
 	 * @return String value for the table - currently the number of elapsed seconds.
 	 */
-	private static String getValue(TaskData data) {
+	private static String getValue(final TaskData data) {
 		String value = "";
 		if (data.getEndTimestamp() != null && data.getStartTimestamp() != null) {
 			value = String.valueOf((data.getEndTimestamp().getTime() - data.getStartTimestamp().getTime()) / 1000.0);

@@ -44,8 +44,8 @@ public final class SwiftConfig {
 	 *
 	 * @param swift Swift configuration to validate.
 	 */
-	public static List<String> validateSwiftConfig(ApplicationConfig swift) {
-		List<String> errors = new ArrayList<String>();
+	public static List<String> validateSwiftConfig(final ApplicationConfig swift) {
+		final List<String> errors = new ArrayList<String>();
 		// Make sure we have the essential modules
 		if (swift.getModulesOfConfigType(SwiftSearcher.Config.class).size() == 0) {
 			errors.add("Without " + SwiftSearcher.NAME + " module you will not be able to run any Swift searches.");
@@ -67,7 +67,7 @@ public final class SwiftConfig {
 		// Make sure that modules that have to be within one daemon are within one daemon
 		// Currently the web ui has to be at the same place as searcher it links to
 		// A searcher has to be at the same place as the database it links to
-		for (ResourceConfig config : swift.getModulesOfConfigType(SwiftSearcher.Config.class)) {
+		for (final ResourceConfig config : swift.getModulesOfConfigType(SwiftSearcher.Config.class)) {
 			final SwiftSearcher.Config searcher = (SwiftSearcher.Config) config;
 			final ResourceConfig database = searcher.getDatabase();
 			if (database == null) {
@@ -80,7 +80,7 @@ public final class SwiftConfig {
 			}
 		}
 
-		for (ResourceConfig config : swift.getModulesOfConfigType(WebUi.Config.class)) {
+		for (final ResourceConfig config : swift.getModulesOfConfigType(WebUi.Config.class)) {
 			final WebUi.Config ui = (WebUi.Config) config;
 			final ServiceConfig searcher = ui.getSearcher();
 			if (searcher == null) {
@@ -94,7 +94,7 @@ public final class SwiftConfig {
 		}
 
 		// Make sure that coupled modules (deployer + search engine) referenced by a single searcher are either both defined or both are not
-		for (ResourceConfig config : swift.getModulesOfConfigType(SwiftSearcher.Config.class)) {
+		for (final ResourceConfig config : swift.getModulesOfConfigType(SwiftSearcher.Config.class)) {
 			final SwiftSearcher.Config searcher = (SwiftSearcher.Config) config;
 			checkEngineDeployer(errors, searcher.getMascot(), searcher.getMascotDeployer(), MascotWorker.NAME, MascotDeploymentService.NAME);
 			checkEngineDeployer(errors, searcher.getSequest(), searcher.getSequestDeployer(), SequestWorker.NAME, SequestDeploymentService.NAME);
@@ -107,19 +107,19 @@ public final class SwiftConfig {
 		return errors;
 	}
 
-	private static boolean isDifferentDaemon(ApplicationConfig swift, ResourceConfig config1, ResourceConfig config2) {
+	private static boolean isDifferentDaemon(final ApplicationConfig swift, final ResourceConfig config1, final ResourceConfig config2) {
 		if (config1 == null || config2 == null) {
 			return false;
 		}
-		DaemonConfig daemon1 = swift.getDaemonForResource(config1);
+		final DaemonConfig daemon1 = swift.getDaemonForResource(config1);
 		if (daemon1 == null) {
 			return false;
 		}
-		DaemonConfig daemon2 = swift.getDaemonForResource(config2);
+		final DaemonConfig daemon2 = swift.getDaemonForResource(config2);
 		return !daemon1.equals(daemon2);
 	}
 
-	private static void checkEngineDeployer(List<String> errors, ServiceConfig searchEngine, ServiceConfig deployer, String engineName, String deployerName) {
+	private static void checkEngineDeployer(final List<String> errors, final ServiceConfig searchEngine, final ServiceConfig deployer, final String engineName, final String deployerName) {
 		if (searchEngine != null && deployer == null) {
 			errors.add(engineName + " needs to have a corresponding " + deployerName + " defined.");
 		}
@@ -133,7 +133,7 @@ public final class SwiftConfig {
 	 * @param swiftConfig Current swift config.
 	 * @return Configuration of the daemon the user wants to run.
 	 */
-	public static DaemonConfig getUserSpecifiedDaemonConfig(String daemonId, final ApplicationConfig swiftConfig) {
+	public static DaemonConfig getUserSpecifiedDaemonConfig(final String daemonId, final ApplicationConfig swiftConfig) {
 		final String daemonIdToLoad;
 		if (daemonId == null) {
 			// The user did not specify daemon name. If there is only one daemon defined, that is fine - we

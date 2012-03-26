@@ -46,7 +46,7 @@ public final class ScaffoldXmlDiffTest {
 		assertScaffoldSimilar("testInputRAW20070427.xml", "testInputRAW20070427Diff.xml", false);
 	}
 
-	private void assertScaffoldSimilar(String file1, String file2, boolean shouldBeSimilar) {
+	private void assertScaffoldSimilar(final String file1, final String file2, final boolean shouldBeSimilar) {
 		File xmlOne = null;
 		File xmlTwo = null;
 		try {

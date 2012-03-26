@@ -31,11 +31,11 @@ public final class TimeReport {
 	 * @param searchRun Search run to measure elapsed time
 	 * @return Time elapsed by given search run(in seconds). Elapsed time is time from the beginning to the end of the search run.
 	 */
-	public static double elapsedTime(SearchRun searchRun) {
+	public static double elapsedTime(final SearchRun searchRun) {
 		return duration(searchRun.getStartTimestamp(), searchRun.getEndTimestamp());
 	}
 
-	private static double duration(Date start, Date end) {
+	private static double duration(final Date start, final Date end) {
 		if (end == null || start == null) {
 			return 0.0;
 		}
@@ -49,9 +49,9 @@ public final class TimeReport {
 	 * @param tasks List of tasks
 	 * @return Consumed time by all the tasks.
 	 */
-	public static double consumedTime(List<TaskData> tasks) {
+	public static double consumedTime(final List<TaskData> tasks) {
 		double total = 0.0;
-		for (TaskData task : tasks) {
+		for (final TaskData task : tasks) {
 			if (taskDidWork(task)) {
 				total += duration(task.getStartTimestamp(), task.getEndTimestamp());
 			}
@@ -69,9 +69,9 @@ public final class TimeReport {
 	 * @param tasks List of tasks
 	 * @return Productive time when at least one task was actually running.
 	 */
-	public static double productiveTime(List<TaskData> tasks) {
-		List<TaskTimestamp> taskTimestamps = new ArrayList<TaskTimestamp>(tasks.size() * 2);
-		for (TaskData task : tasks) {
+	public static double productiveTime(final List<TaskData> tasks) {
+		final List<TaskTimestamp> taskTimestamps = new ArrayList<TaskTimestamp>(tasks.size() * 2);
+		for (final TaskData task : tasks) {
 			if (taskDidWork(task)) {
 				taskTimestamps.add(TaskTimestamp.startTimestamp(task));
 				taskTimestamps.add(TaskTimestamp.endTimestamp(task));
@@ -81,7 +81,7 @@ public final class TimeReport {
 		int intervalCounter = 0;
 		double total = 0.0;
 		Date previousTime = null;
-		for (TaskTimestamp timeStamp : taskTimestamps) {
+		for (final TaskTimestamp timeStamp : taskTimestamps) {
 			if (intervalCounter > 0) {
 				total += duration(previousTime, timeStamp.getTime());
 			}
@@ -99,16 +99,16 @@ public final class TimeReport {
 		private final boolean start;
 		private final Date time;
 
-		private TaskTimestamp(boolean start, Date time) {
+		private TaskTimestamp(final boolean start, final Date time) {
 			this.start = start;
 			this.time = time;
 		}
 
-		public static TaskTimestamp startTimestamp(TaskData task) {
+		public static TaskTimestamp startTimestamp(final TaskData task) {
 			return new TaskTimestamp(true, task.getStartTimestamp());
 		}
 
-		public static TaskTimestamp endTimestamp(TaskData task) {
+		public static TaskTimestamp endTimestamp(final TaskData task) {
 			return new TaskTimestamp(false, task.getEndTimestamp());
 		}
 
@@ -121,7 +121,7 @@ public final class TimeReport {
 		}
 
 		@Override
-		public int compareTo(TaskTimestamp o) {
+		public int compareTo(final TaskTimestamp o) {
 			return ComparisonChain.start()
 					.compare(this.time, o.time)
 					.compare(this.start, o.start)
@@ -129,7 +129,7 @@ public final class TimeReport {
 		}
 	}
 
-	public static boolean taskDidWork(TaskData task) {
+	public static boolean taskDidWork(final TaskData task) {
 		return TaskState.COMPLETED_SUCCESFULLY.equals(TaskState.fromText(task.getTaskState().getDescription())) &&
 				task.getStartTimestamp() != null && task.getEndTimestamp() != null;
 	}

@@ -65,11 +65,11 @@ public final class EngineTest {
 		runPausingTest(FailMode.RandomTasks);
 	}
 
-	private static void runSucceedingTest(FailMode failMode) {
-		Random random = new Random(1);
-		WorkflowEngine engine = fillEngineWithTasks(failMode, false, random);
+	private static void runSucceedingTest(final FailMode failMode) {
+		final Random random = new Random(1);
+		final WorkflowEngine engine = fillEngineWithTasks(failMode, false, random);
 
-		Date workStart = new Date();
+		final Date workStart = new Date();
 		boolean finished = false;
 		int iterations;
 		for (iterations = 0; iterations < NUM_TASKS; iterations++) {
@@ -83,11 +83,11 @@ public final class EngineTest {
 			}
 		}
 		Assert.assertTrue(finished, "The engine must be finished in amount of steps equal to number of tasks");
-		Date workEnd = new Date();
+		final Date workEnd = new Date();
 		logOutput(failMode, workStart, iterations, workEnd, "immediate tasks");
 	}
 
-	private static void runEngine(FailMode failMode, WorkflowEngine engine) {
+	private static void runEngine(final FailMode failMode, final WorkflowEngine engine) {
 		try {
 			engine.run();
 		} catch (CompositeException error) {
@@ -102,7 +102,7 @@ public final class EngineTest {
 		}
 	}
 
-	private static void logOutput(FailMode failMode, Date workStart, int iterations, Date workEnd, String tasks) {
+	private static void logOutput(final FailMode failMode, final Date workStart, final int iterations, final Date workEnd, final String tasks) {
 		LOGGER.debug(MessageFormat.format("{0}\t{5},\t{4},\tmax {1} dependencies/task,\ttook {2} ms,\t{3} iterations.",
 				NUM_TASKS,
 				MAX_DEPENDENCIES,
@@ -112,17 +112,17 @@ public final class EngineTest {
 				tasks));
 	}
 
-	private static void runPausingTest(FailMode failMode) throws InterruptedException {
+	private static void runPausingTest(final FailMode failMode) throws InterruptedException {
 		pausedTasks.clear();
-		Random random = new Random(1);
-		WorkflowEngine engine = fillEngineWithTasks(failMode, true, random);
+		final Random random = new Random(1);
+		final WorkflowEngine engine = fillEngineWithTasks(failMode, true, random);
 
-		MyResumer r = new MyResumer();
-		UnPauser unpauser = new UnPauser(pausedTasks, random);
-		Thread t = new Thread(unpauser, "Un-pauser");
+		final MyResumer r = new MyResumer();
+		final UnPauser unpauser = new UnPauser(pausedTasks, random);
+		final Thread t = new Thread(unpauser, "Un-pauser");
 		t.start();
 
-		Date workStart = new Date();
+		final Date workStart = new Date();
 		boolean finished = false;
 		int iterations;
 		for (iterations = 0; iterations < NUM_TASKS; iterations++) {
@@ -140,13 +140,13 @@ public final class EngineTest {
 		}
 		unpauser.stop();
 		Assert.assertTrue(finished, "The engine must be finished in amount of steps lower than number of tasks");
-		Date workEnd = new Date();
+		final Date workEnd = new Date();
 		logOutput(failMode, workStart, iterations, workEnd, "pausing tasks");
 	}
 
-	private static WorkflowEngine fillEngineWithTasks(FailMode failMode, boolean pause, Random random) {
-		WorkflowEngine engine = new WorkflowEngine("engine test");
-		List<SimpleTask> tasks = new ArrayList<SimpleTask>();
+	private static WorkflowEngine fillEngineWithTasks(final FailMode failMode, final boolean pause, final Random random) {
+		final WorkflowEngine engine = new WorkflowEngine("engine test");
+		final List<SimpleTask> tasks = new ArrayList<SimpleTask>();
 		for (int i = 0; i < NUM_TASKS; i++) {
 			boolean fail = false;
 			switch (failMode) {
@@ -166,7 +166,7 @@ public final class EngineTest {
 					fail = random.nextBoolean();
 					break;
 			}
-			SimpleTask newTask = new SimpleTask(pause, fail);
+			final SimpleTask newTask = new SimpleTask(pause, fail);
 			addRandomDependencies(random, tasks, newTask);
 			tasks.add(newTask);
 		}
@@ -174,10 +174,10 @@ public final class EngineTest {
 		return engine;
 	}
 
-	private static void addRandomDependencies(Random random, List<SimpleTask> tasks, SimpleTask newTask) {
-		int deps = random.nextInt(Math.max(Math.min(MAX_DEPENDENCIES, tasks.size()), 1));
+	private static void addRandomDependencies(final Random random, final List<SimpleTask> tasks, final SimpleTask newTask) {
+		final int deps = random.nextInt(Math.max(Math.min(MAX_DEPENDENCIES, tasks.size()), 1));
 		for (int j = 0; j < deps; j++) {
-			int k = random.nextInt(tasks.size());
+			final int k = random.nextInt(tasks.size());
 			if (newTask.declareDependency(tasks.get(k))) {
 				newTask.addDependency(tasks.get(k));
 			}
@@ -189,7 +189,7 @@ public final class EngineTest {
 		private boolean pause;
 		private boolean fail;
 
-		public SimpleTask(boolean pause, boolean fail) {
+		public SimpleTask(final boolean pause, final boolean fail) {
 			this.pause = pause;
 			this.fail = fail;
 			this.dependencies = new ArrayList<Task>();
@@ -201,7 +201,7 @@ public final class EngineTest {
 					throw new MprcException("Task failed as expected");
 				}
 				setState(TaskState.COMPLETED_SUCCESFULLY);
-				for (Task dep : dependencies) {
+				for (final Task dep : dependencies) {
 					Assert.assertEquals(dep.getState(), TaskState.COMPLETED_SUCCESFULLY, "All dependencies must be resolved before this task runs.");
 				}
 			} else {
@@ -211,7 +211,7 @@ public final class EngineTest {
 			pause = false;
 		}
 
-		public boolean declareDependency(Task task) {
+		public boolean declareDependency(final Task task) {
 			if (dependencies.contains(task)) {
 				return false;
 			}
@@ -269,7 +269,7 @@ public final class EngineTest {
 		private volatile boolean stop;
 		private Random random;
 
-		public UnPauser(List<Task> pausedTasks, Random random) {
+		public UnPauser(final List<Task> pausedTasks, final Random random) {
 			this.pausedTasks = pausedTasks;
 			this.random = random;
 			this.stop = false;
@@ -283,8 +283,8 @@ public final class EngineTest {
 			try {
 				while (!stop) {
 					if (pausedTasks.size() > 0) {
-						int index = random.nextInt(pausedTasks.size());
-						Task task = pausedTasks.get(index);
+						final int index = random.nextInt(pausedTasks.size());
+						final Task task = pausedTasks.get(index);
 						pausedTasks.remove(index);
 						task.setState(TaskState.COMPLETED_SUCCESFULLY);
 						Thread.sleep(0);

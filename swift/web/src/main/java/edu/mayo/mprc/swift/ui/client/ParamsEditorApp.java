@@ -22,7 +22,7 @@ public final class ParamsEditorApp {
 	private static void initConnection() {
 		serviceAsync = (ServiceAsync) GWT.create(Service.class);
 
-		String moduleRelativeURL = GWT.getModuleBaseURL() + "Service";
+		final String moduleRelativeURL = GWT.getModuleBaseURL() + "Service";
 		((ServiceDefTarget) serviceAsync).setServiceEntryPoint(moduleRelativeURL);
 	}
 
@@ -30,9 +30,9 @@ public final class ParamsEditorApp {
 	/**
 	 * * This is the entry point method.
 	 */
-	public static void onModuleLoad(HidesPageContentsWhileLoading contentHiding, Map<String, ClientUser> userInfo) {
+	public static void onModuleLoad(final HidesPageContentsWhileLoading contentHiding, final Map<String, ClientUser> userInfo) {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-			public void onUncaughtException(Throwable throwable) {
+			public void onUncaughtException(final Throwable throwable) {
 				SimpleParamsEditorPanel.handleGlobalError(throwable);
 			}
 		});

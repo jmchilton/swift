@@ -13,15 +13,15 @@ import java.util.List;
 public final class ProteaseListBox extends ValidatableListBox {
 	private static final List<ClientValue> EMPTY_VALUE = Collections.emptyList();
 
-	public ProteaseListBox(String param) {
+	public ProteaseListBox(final String param) {
 		super(param, false);
 	}
 
-	public ClientValue bundle(List<? extends ClientValue> selected) {
+	public ClientValue bundle(final List<? extends ClientValue> selected) {
 		return null;// not used.
 	}
 
-	public String getStringValue(ClientValue value) {
+	public String getStringValue(final ClientValue value) {
 		if (value == null) {
 			return "";
 		}
@@ -32,7 +32,7 @@ public final class ProteaseListBox extends ValidatableListBox {
 		return ((ClientProtease) value).getName();
 	}
 
-	public List<? extends ClientValue> unbundle(ClientValue value) {
+	public List<? extends ClientValue> unbundle(final ClientValue value) {
 		return EMPTY_VALUE;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 

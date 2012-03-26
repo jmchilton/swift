@@ -16,7 +16,7 @@ public class TestSet extends PersistableBase {
 		return setName;
 	}
 
-	public void setSetName(String setName) {
+	public void setSetName(final String setName) {
 		this.setName = setName;
 	}
 
@@ -24,16 +24,16 @@ public class TestSet extends PersistableBase {
 		return members;
 	}
 
-	public void setMembers(Set<TestSetMember> members) {
+	public void setMembers(final Set<TestSetMember> members) {
 		this.members = members;
 	}
 
-	public void add(TestSetMember member) {
+	public void add(final TestSetMember member) {
 		members.add(member);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -41,7 +41,7 @@ public class TestSet extends PersistableBase {
 			return false;
 		}
 
-		TestSet testSet = (TestSet) obj;
+		final TestSet testSet = (TestSet) obj;
 
 		if (getMembers() != null ? !getMembers().equals(testSet.getMembers()) : testSet.getMembers() != null) {
 			return false;

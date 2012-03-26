@@ -69,15 +69,15 @@ public final class XTandemMappings implements Mappings {
 		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.tandem.xml.template", this.getClass());
 	}
 
-	public void read(Reader isr) {
-		Document bioml;
+	public void read(final Reader isr) {
+		final Document bioml;
 		try {
 			bioml = XMLUtilities.loadDocument(isr);
 
-			Element doc = bioml.getDocumentElement();
-			NodeList notes = doc.getElementsByTagName("note");
+			final Element doc = bioml.getDocumentElement();
+			final NodeList notes = doc.getElementsByTagName("note");
 			for (int i = 0; i < notes.getLength(); i++) {
-				Node it = notes.item(i);
+				final Node it = notes.item(i);
 				if (it.hasAttributes() && it.getAttributes().getNamedItem("type") != null &&
 						"input".equals(it.getAttributes().getNamedItem("type").getTextContent())) {
 
@@ -94,15 +94,15 @@ public final class XTandemMappings implements Mappings {
 		}
 	}
 
-	public void write(Reader oldParams, Writer out) {
-		Document bioml;
+	public void write(final Reader oldParams, final Writer out) {
+		final Document bioml;
 		try {
 			bioml = XMLUtilities.loadDocument(oldParams);
 
-			Element doc = bioml.getDocumentElement();
-			NodeList notes = doc.getElementsByTagName("note");
+			final Element doc = bioml.getDocumentElement();
+			final NodeList notes = doc.getElementsByTagName("note");
 			for (int i = 0; i < notes.getLength(); i++) {
-				Node it = notes.item(i);
+				final Node it = notes.item(i);
 				if (it.hasAttributes() &&
 						"input".equals(it.getAttributes().getNamedItem("type").getTextContent())) {
 
@@ -118,12 +118,12 @@ public final class XTandemMappings implements Mappings {
 		}
 
 		// Prepare the output file
-		Result result = new StreamResult(out);
+		final Result result = new StreamResult(out);
 
 		// Write the DOM document to the file
 		try {
-			Transformer xformer = TransformerFactory.newInstance().newTransformer();
-			DOMSource ds = new DOMSource(bioml.getDocumentElement());
+			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
+			final DOMSource ds = new DOMSource(bioml.getDocumentElement());
 			xformer.transform(ds, result);
 		} catch (TransformerException e) {
 			throw new MprcException("XML transformer error when writing tandem parameter set", e);
@@ -132,16 +132,16 @@ public final class XTandemMappings implements Mappings {
 		}
 	}
 
-	public String getNativeParam(String name) {
+	public String getNativeParam(final String name) {
 		return nativeParams.get(name);
 	}
 
-	public void setNativeParam(String name, String value) {
+	public void setNativeParam(final String name, final String value) {
 		nativeParams.put(name, value);
 	}
 
-	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
-		double value = peptideTolerance.getValue();
+	public void setPeptideTolerance(final MappingContext context, final Tolerance peptideTolerance) {
+		final double value = peptideTolerance.getValue();
 		String unit = peptideTolerance.getUnit().getCode();
 		if (peptideTolerance.getUnit().equals(MassUnit.Da)) {
 			unit = DALTONS;
@@ -151,7 +151,7 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(PEP_TOL_UNIT, unit);
 	}
 
-	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final MappingContext context, final Tolerance fragmentTolerance) {
 		if (!MassUnit.Da.equals(fragmentTolerance.getUnit())) {
 			setNativeParam(FRAG_TOL_VALUE, "1");
 			setNativeParam(FRAG_TOL_UNIT, DALTONS);
@@ -162,20 +162,20 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(FRAG_TOL_UNIT, DALTONS);
 	}
 
-	public void setVariableMods(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(final MappingContext context, final ModSet variableMods) {
 		mapModsToNative(context, variableMods, VAR_MODS);
 	}
 
-	public void setFixedMods(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(final MappingContext context, final ModSet fixedMods) {
 		mapModsToNative(context, fixedMods, FIXED_MODS);
 	}
 
-	private void mapModsToNative(MappingContext context, ModSet variableMods, String modVariable) {
-		List<String> mods = new ArrayList<String>();
+	private void mapModsToNative(final MappingContext context, final ModSet variableMods, final String modVariable) {
+		final List<String> mods = new ArrayList<String>();
 
-		for (ModSpecificity ms : variableMods.getModifications()) {
-			String title = ms.toString();
-			double mass = ms.getModification().getMassMono();
+		for (final ModSpecificity ms : variableMods.getModifications()) {
+			final String title = ms.toString();
+			final double mass = ms.getModification().getMassMono();
 
 			// "Protein [NC]-term"
 			final boolean proteinNcTerm = ms.isProteinOnly() != null && ms.isProteinOnly();
@@ -200,20 +200,20 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(modVariable, makeCanonicalModsString(mods));
 	}
 
-	private static String makeCanonicalModsString(List<String> mods) {
-		String[] modsArray = new String[mods.size()];
+	private static String makeCanonicalModsString(final List<String> mods) {
+		final String[] modsArray = new String[mods.size()];
 		mods.toArray(modsArray);
 		Arrays.sort(modsArray);
 		return Joiner.on(",").join(modsArray);
 	}
 
-	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(final MappingContext context, final String shortDatabaseName) {
 		setNativeParam(DATABASE, DATABASE_TAXON);
 	}
 
 	private static final Pattern TANDEM_MOD = Pattern.compile("\\s*([\\[\\{])([A-Z]*)[\\]\\}]\\|([\\[\\{])([A-Z]*)[\\]\\}]\\s*");
 
-	public void setProtease(MappingContext context, Protease protease) {
+	public void setProtease(final MappingContext context, final Protease protease) {
 		String cle = null;
 		String rnminus1 = protease.getRnminus1();
 		String rn = protease.getRn();
@@ -247,7 +247,7 @@ public final class XTandemMappings implements Mappings {
 		setNativeParam(ENZYME, cle);
 	}
 
-	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(final MappingContext context, final Integer missedCleavages) {
 		String value = null;
 
 		try {
@@ -265,13 +265,13 @@ public final class XTandemMappings implements Mappings {
 		}
 	}
 
-	public void setInstrument(MappingContext context, Instrument instrument) {
-		Map<String, IonSeries> hasSeries = new HashMap<String, IonSeries>();
-		for (IonSeries is : instrument.getSeries()) {
+	public void setInstrument(final MappingContext context, final Instrument instrument) {
+		final Map<String, IonSeries> hasSeries = new HashMap<String, IonSeries>();
+		for (final IonSeries is : instrument.getSeries()) {
 			hasSeries.put(is.getName(), is);
 		}
-		for (String seriesName : SUPPORTED_IONS) {
-			String paramName = "scoring, " + seriesName + " ions";
+		for (final String seriesName : SUPPORTED_IONS) {
+			final String paramName = "scoring, " + seriesName + " ions";
 			if (hasSeries.containsKey(seriesName)) {
 				setNativeParam(paramName, "yes");
 				hasSeries.remove(seriesName);
@@ -280,7 +280,7 @@ public final class XTandemMappings implements Mappings {
 			}
 		}
 
-		for (String s : hasSeries.keySet()) {
+		for (final String s : hasSeries.keySet()) {
 			context.reportWarning("Tandem doesn't support ion series " + s);
 		}
 	}

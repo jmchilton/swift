@@ -41,7 +41,7 @@ public final class MgfQaFiles extends FileHolder {
 		return mgfFile;
 	}
 
-	public void setMgfFile(File mgfFile) {
+	public void setMgfFile(final File mgfFile) {
 		this.mgfFile = mgfFile;
 	}
 
@@ -49,7 +49,7 @@ public final class MgfQaFiles extends FileHolder {
 		return rawInputFile;
 	}
 
-	public void setRawInputFile(File rawInputFile) {
+	public void setRawInputFile(final File rawInputFile) {
 		this.rawInputFile = rawInputFile;
 	}
 
@@ -57,7 +57,7 @@ public final class MgfQaFiles extends FileHolder {
 		return msmsEvalOutputFile;
 	}
 
-	public void setMsmsEvalOutputFile(File msmsEvalOutputFile) {
+	public void setMsmsEvalOutputFile(final File msmsEvalOutputFile) {
 		this.msmsEvalOutputFile = msmsEvalOutputFile;
 	}
 
@@ -65,7 +65,7 @@ public final class MgfQaFiles extends FileHolder {
 		return rawInfoFile;
 	}
 
-	public void setRawInfoFile(File rawInfoFile) {
+	public void setRawInfoFile(final File rawInfoFile) {
 		this.rawInfoFile = rawInfoFile;
 	}
 
@@ -73,7 +73,7 @@ public final class MgfQaFiles extends FileHolder {
 		return rawSpectraFile;
 	}
 
-	public void setRawSpectraFile(File rawSpectraFile) {
+	public void setRawSpectraFile(final File rawSpectraFile) {
 		this.rawSpectraFile = rawSpectraFile;
 	}
 
@@ -81,7 +81,7 @@ public final class MgfQaFiles extends FileHolder {
 		return chromatogramFile;
 	}
 
-	public void setChromatogramFile(File chromatogramFile) {
+	public void setChromatogramFile(final File chromatogramFile) {
 		this.chromatogramFile = chromatogramFile;
 	}
 
@@ -89,7 +89,7 @@ public final class MgfQaFiles extends FileHolder {
 		return additionalSearchResults;
 	}
 
-	public void addAdditionalSearchResult(String searchEngineCode, File resultingFile) {
+	public void addAdditionalSearchResult(final String searchEngineCode, final File resultingFile) {
 		additionalSearchResults.put(searchEngineCode, resultingFile);
 	}
 }

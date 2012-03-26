@@ -14,7 +14,7 @@ public final class MprcFile {
 	private final File databaseFile;
 	private Connection connection = null;
 
-	public MprcFile(File databaseFile) {
+	public MprcFile(final File databaseFile) {
 		this.databaseFile = databaseFile;
 	}
 
@@ -29,8 +29,7 @@ public final class MprcFile {
 			try {
 				// create a database connection
 				connection = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getAbsolutePath());
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				// if the error message is "out of memory",
 				// it probably means no database file is found
 				throw new MprcException("Cannot open database connection to " + databaseFile.getAbsolutePath(), e);
@@ -43,8 +42,7 @@ public final class MprcFile {
 			if (connection != null) {
 				connection.close();
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			// connection close failed.
 			throw new MprcException("Closing database " + databaseFile.getAbsolutePath() + " failed.", e);
 		} finally {
@@ -68,7 +66,7 @@ public final class MprcFile {
 	 * @param callback Callback that is passed the recordset resulting from the sql command.
 	 * @return The object returned from {@link MprcFileCallback}.
 	 */
-	public Object processResultSet(String sql, MprcFileCallback callback) {
+	public Object processResultSet(final String sql, final MprcFileCallback callback) {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		try {
@@ -86,7 +84,7 @@ public final class MprcFile {
 
 	// Helper function for closing opened statements
 
-	public static void closeStatement(Statement statement) {
+	public static void closeStatement(final Statement statement) {
 		if (statement != null) {
 			try {
 				statement.close();

@@ -16,7 +16,7 @@ public final class RemoteTransferCompleteEvent implements Serializable {
 	//Files transfered successfully.
 	private List<FileInfo> fileInfos;
 
-	public RemoteTransferCompleteEvent(long requestId, List<FileInfo> fileInfos) {
+	public RemoteTransferCompleteEvent(final long requestId, final List<FileInfo> fileInfos) {
 		this.requestId = requestId;
 		this.fileInfos = fileInfos;
 	}
@@ -25,7 +25,7 @@ public final class RemoteTransferCompleteEvent implements Serializable {
 		return exception;
 	}
 
-	public void setException(Exception exception) {
+	public void setException(final Exception exception) {
 		this.exception = exception;
 	}
 
@@ -33,7 +33,7 @@ public final class RemoteTransferCompleteEvent implements Serializable {
 		return fileInfos;
 	}
 
-	public void setFileInfos(List<FileInfo> fileInfos) {
+	public void setFileInfos(final List<FileInfo> fileInfos) {
 		this.fileInfos = fileInfos;
 	}
 

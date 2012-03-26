@@ -19,19 +19,19 @@ public class MapMassSpecDataExtractor implements MassSpecDataExtractor {
 	public static final String MUDPIT_PREFIX = "Mudpit_";
 	private final Map<String/*msmsSampleName*/, RawFileMetaData> metaDataMap;
 
-	public MapMassSpecDataExtractor(Map<String, RawFileMetaData> metaDataMap) {
+	public MapMassSpecDataExtractor(final Map<String, RawFileMetaData> metaDataMap) {
 		this.metaDataMap = metaDataMap;
 	}
 
 	@Override
-	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String msmsSampleName) {
-		RawFileMetaData rawFileMetaData = getMetadata(msmsSampleName);
+	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(final String biologicalSampleName, final String msmsSampleName) {
+		final RawFileMetaData rawFileMetaData = getMetadata(msmsSampleName);
 		if (rawFileMetaData == null) {
 			return new TandemMassSpectrometrySample(null, null, 0, 0, 0, null, null, null, 0.0, null, null, null, null, null);
 		} else {
 			try {
-				InfoFileParser parser = new InfoFileParser();
-				InfoFileData data = parser.parse(rawFileMetaData.getInfo());
+				final InfoFileParser parser = new InfoFileParser();
+				final InfoFileData data = parser.parse(rawFileMetaData.getInfo());
 				return new TandemMassSpectrometrySample(
 						rawFileMetaData.getRawFile(),
 						new DateTime(rawFileMetaData.getRawFile().lastModified()),

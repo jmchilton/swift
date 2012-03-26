@@ -27,7 +27,7 @@ public final class TandemMassSpectrometrySample {
 		return fractionName;
 	}
 
-	public void setFractionName(String fractionName) {
+	public void setFractionName(final String fractionName) {
 		this.fractionName = fractionName;
 	}
 
@@ -35,7 +35,7 @@ public final class TandemMassSpectrometrySample {
 		return fractionNumber;
 	}
 
-	public void setFractionNumber(int fractionNumber) {
+	public void setFractionNumber(final int fractionNumber) {
 		this.fractionNumber = fractionNumber;
 	}
 
@@ -43,7 +43,7 @@ public final class TandemMassSpectrometrySample {
 		return massSpecMachineName;
 	}
 
-	public void setMassSpecMachineName(String massSpecMachineName) {
+	public void setMassSpecMachineName(final String massSpecMachineName) {
 		this.massSpecMachineName = massSpecMachineName;
 	}
 
@@ -51,7 +51,7 @@ public final class TandemMassSpectrometrySample {
 		return proteinGroups;
 	}
 
-	public void setProteinGroups(List<ProteinGroup> proteinGroups) {
+	public void setProteinGroups(final List<ProteinGroup> proteinGroups) {
 		this.proteinGroups = proteinGroups;
 	}
 }

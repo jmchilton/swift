@@ -21,18 +21,18 @@ public final class PeaksSearchMonitor {
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 	private List<PeaksMonitorListener> peaksOnlineMonitorListeners;
 
-	public PeaksSearchMonitor(String searchId, PeaksResult peaksOnlineResult) {
+	public PeaksSearchMonitor(final String searchId, final PeaksResult peaksOnlineResult) {
 		this.searchId = searchId;
 		this.peaksOnlineResult = peaksOnlineResult;
 
 		peaksOnlineMonitorListeners = Collections.synchronizedList(new LinkedList<PeaksMonitorListener>());
 	}
 
-	public void addPeaksOnlineMonitorListener(PeaksMonitorListener listener) {
+	public void addPeaksOnlineMonitorListener(final PeaksMonitorListener listener) {
 		peaksOnlineMonitorListeners.add(listener);
 	}
 
-	public void removePeaksOnlineMonitorListener(PeaksMonitorListener listner) {
+	public void removePeaksOnlineMonitorListener(final PeaksMonitorListener listner) {
 		peaksOnlineMonitorListeners.remove(listner);
 	}
 
@@ -41,7 +41,7 @@ public final class PeaksSearchMonitor {
 	 *
 	 * @param intervalsBetweenRuns intervals between runs in milliseconds.
 	 */
-	public void start(long intervalsBetweenRuns) {
+	public void start(final long intervalsBetweenRuns) {
 		stop();
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
 		scheduledThreadPoolExecutor.scheduleAtFixedRate(new ResultSearcher(), 0, intervalsBetweenRuns, TimeUnit.MILLISECONDS);
@@ -77,13 +77,13 @@ public final class PeaksSearchMonitor {
 
 		private String status;
 
-		private SearchStatusReported(String status) {
+		private SearchStatusReported(final String status) {
 			this.status = status;
 		}
 
 		public void run() {
 			synchronized (peaksOnlineMonitorListeners) {
-				for (PeaksMonitorListener listener : peaksOnlineMonitorListeners) {
+				for (final PeaksMonitorListener listener : peaksOnlineMonitorListeners) {
 					if (status != null) {
 						if (status.equals(PeaksResult.SEARCH_COMPLETED_STATUS)) {
 							listener.searchCompleted(new PeaksSearchStatusEvent(status, searchId));

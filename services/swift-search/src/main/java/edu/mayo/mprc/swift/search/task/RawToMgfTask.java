@@ -22,10 +22,10 @@ final class RawToMgfTask extends AsyncTaskBase implements MgfOutput {
 	 * @param publicAccess When true, the task requests the cache to give the user access to the .mgf file from the user space.
 	 */
 	public RawToMgfTask(
-			File inputFile,
-			File mgfFile,
-			String extractMsnParams,
-			boolean publicAccess, DaemonConnection raw2mgfDaemon, FileTokenFactory fileTokenFactory, boolean fromScratch
+			final File inputFile,
+			final File mgfFile,
+			final String extractMsnParams,
+			final boolean publicAccess, final DaemonConnection raw2mgfDaemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch
 
 	) {
 		super(raw2mgfDaemon, fileTokenFactory, fromScratch);
@@ -46,7 +46,7 @@ final class RawToMgfTask extends AsyncTaskBase implements MgfOutput {
 						+ " (" + this.extractMsnParameters + ")");
 	}
 
-	private static String getFileReference(File rawFile) {
+	private static String getFileReference(final File rawFile) {
 		return rawFile.getAbsolutePath();
 	}
 
@@ -87,7 +87,7 @@ final class RawToMgfTask extends AsyncTaskBase implements MgfOutput {
 		completeWhenFilesAppear(mgfFile);
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		if (progressInfo instanceof RawToMgfResult) {
 			final RawToMgfResult result = (RawToMgfResult) progressInfo;
 			result.synchronizeFileTokensOnReceiver();

@@ -30,7 +30,7 @@ public final class ExtractMsnWrapper {
 	 * @param params     - the parameter string
 	 * @param rawfile    - the full path to the raw file
 	 */
-	public ExtractMsnWrapper(File fileToExec, String params, File rawfile, String wrapperScript, String xvfbWrapperScript) {
+	public ExtractMsnWrapper(final File fileToExec, final String params, final File rawfile, final String wrapperScript, final String xvfbWrapperScript) {
 		this.fileToExecute = fileToExec;
 		this.sParams = params;
 		this.sRAWFileName = rawfile.getAbsolutePath();
@@ -45,7 +45,7 @@ public final class ExtractMsnWrapper {
 	 * @param path Path to map
 	 * @return Wine-ized path.
 	 */
-	private String toWinePathIfWine(String path) {
+	private String toWinePathIfWine(final String path) {
 		if (isWine()) {
 			return "Z:" + path.replaceAll("\\/", "\\\\");
 		} else {
@@ -59,7 +59,7 @@ public final class ExtractMsnWrapper {
 	 * @return the call
 	 */
 	private String[] getCall() {
-		List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
 
 		if (isWine()) {
 			if (xvfbWrapperScript != null) {
@@ -73,7 +73,7 @@ public final class ExtractMsnWrapper {
 		result.addAll(Arrays.asList(this.sParams.split(" ")));
 		result.add(toWinePathIfWine(this.sRAWFileName));
 
-		String[] array = new String[result.size()];
+		final String[] array = new String[result.size()];
 		return result.toArray(array);
 	}
 
@@ -95,10 +95,10 @@ public final class ExtractMsnWrapper {
 		}
 
 		final String[] theCall = getCall();
-		ProcessBuilder builder = new ProcessBuilder(theCall)
+		final ProcessBuilder builder = new ProcessBuilder(theCall)
 				.directory(folder);
 
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 
 		try {
 			caller.run();
@@ -120,7 +120,7 @@ public final class ExtractMsnWrapper {
 	 *
 	 * @param sOutputdir - the folder to place dta files  in
 	 */
-	public void setOutputDir(File sOutputdir) {
+	public void setOutputDir(final File sOutputdir) {
 		this.outputdir = sOutputdir;
 	}
 

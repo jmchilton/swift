@@ -15,21 +15,21 @@ import java.util.List;
 public class TestPersistableList {
 	@Test
 	public void emptyListsAreEqual() {
-		ObjectList list1 = new ObjectList();
-		ObjectList list2 = new ObjectList();
+		final ObjectList list1 = new ObjectList();
+		final ObjectList list2 = new ObjectList();
 		Assert.assertEquals(list1, list2, "Empty lists must be equal");
 	}
 
 	@Test
 	public void orderDoesNotMatter() {
-		TestPersistable t1 = new TestPersistable(1);
-		TestPersistable t2 = new TestPersistable(2);
+		final TestPersistable t1 = new TestPersistable(1);
+		final TestPersistable t2 = new TestPersistable(2);
 
-		ObjectList list1 = new ObjectList();
+		final ObjectList list1 = new ObjectList();
 		list1.add(t1);
 		list1.add(t2);
 
-		ObjectList list2 = new ObjectList();
+		final ObjectList list2 = new ObjectList();
 		list2.add(t2);
 		list2.add(t1);
 
@@ -38,15 +38,15 @@ public class TestPersistableList {
 
 	@Test
 	public void differentCollectionsAreOk() {
-		TestPersistable t1 = new TestPersistable(1);
-		TestPersistable t2 = new TestPersistable(2);
+		final TestPersistable t1 = new TestPersistable(1);
+		final TestPersistable t2 = new TestPersistable(2);
 
-		ObjectList list1 = new ObjectList();
+		final ObjectList list1 = new ObjectList();
 		list1.add(t1);
 		list1.add(t2);
 
-		ObjectList list2 = new ObjectList();
-		List<TestPersistable> myList = new ArrayList<TestPersistable>(2);
+		final ObjectList list2 = new ObjectList();
+		final List<TestPersistable> myList = new ArrayList<TestPersistable>(2);
 		myList.add(t2);
 		myList.add(t1);
 		list2.setList(myList);
@@ -58,12 +58,12 @@ public class TestPersistableList {
 	private class TestPersistable extends PersistableBase {
 		private int value;
 
-		private TestPersistable(int value) {
+		private TestPersistable(final int value) {
 			this.value = value;
 		}
 
 		@Override
-		public boolean equals(Object o) {
+		public boolean equals(final Object o) {
 			if (this == o) {
 				return true;
 			}
@@ -71,7 +71,7 @@ public class TestPersistableList {
 				return false;
 			}
 
-			TestPersistable that = (TestPersistable) o;
+			final TestPersistable that = (TestPersistable) o;
 
 			if (value != that.value) {
 				return false;
@@ -90,11 +90,11 @@ public class TestPersistableList {
 		private ObjectList() {
 		}
 
-		private ObjectList(int initialCapacity) {
+		private ObjectList(final int initialCapacity) {
 			super(initialCapacity);
 		}
 
-		private ObjectList(Collection<TestPersistable> items) {
+		private ObjectList(final Collection<TestPersistable> items) {
 			super(items);
 		}
 	}

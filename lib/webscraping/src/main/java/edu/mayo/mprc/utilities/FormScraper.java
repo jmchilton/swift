@@ -24,18 +24,18 @@ public final class FormScraper {
 	/**
 	 * Given an HTML Document as a string, remove any tags from it; text within those tags is preserved.
 	 */
-	public static String stripHtmlTags(String s) {
+	public static String stripHtmlTags(final String s) {
 		try {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 
 			Node node = parseHTMLintoDOM(new InputSource(new StringReader(s)), null);
-			Stack<Node> stack = new Stack<Node>();
+			final Stack<Node> stack = new Stack<Node>();
 			stack.push(null);
-			char[] chars = new char[1];
+			final char[] chars = new char[1];
 			boolean visitChildren = true;
 			while (node != null) {
 				if (node instanceof Text) {
-					String txt = ((Text) node).getData();
+					final String txt = ((Text) node).getData();
 					if (txt.length() == 0) {
 						continue;
 					}
@@ -69,15 +69,15 @@ public final class FormScraper {
 	/**
 	 * Parse the given HTML InputSource into a DOM Document, optionally specifying a systemId.
 	 */
-	private static Document parseHTMLintoDOM(InputSource insource, String systemIdForErrorMessages) {
+	private static Document parseHTMLintoDOM(final InputSource insource, final String systemIdForErrorMessages) {
 		try {
-			Parser tagsoup = new Parser();
+			final Parser tagsoup = new Parser();
 
 			if (systemIdForErrorMessages != null) {
 				insource.setSystemId(systemIdForErrorMessages);
 			}
-			Transformer xformer = TransformerFactory.newInstance().newTransformer();
-			DOMResult result = new DOMResult();
+			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
+			final DOMResult result = new DOMResult();
 			xformer.transform(new SAXSource(tagsoup, insource), result);
 			return (Document) result.getNode();
 		} catch (Exception t) {

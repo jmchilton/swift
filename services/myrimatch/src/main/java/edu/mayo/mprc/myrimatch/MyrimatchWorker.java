@@ -30,7 +30,7 @@ public final class MyrimatchWorker implements Worker {
 
 	public static final String EXECUTABLE = "executable";
 
-	public MyrimatchWorker(File executable) {
+	public MyrimatchWorker(final File executable) {
 		this.executable = executable;
 	}
 
@@ -38,18 +38,18 @@ public final class MyrimatchWorker implements Worker {
 		return executable;
 	}
 
-	public void setExecutable(File executable) {
+	public void setExecutable(final File executable) {
 		this.executable = executable;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		progressReporter.reportStart();
 
 		if (!(workPacket instanceof MyrimatchWorkPacket)) {
 			throw new DaemonException("Unexpected packet type " + workPacket.getClass().getName() + ", expected " + MyrimatchWorkPacket.class.getName());
 		}
 
-		MyrimatchWorkPacket packet = (MyrimatchWorkPacket) workPacket;
+		final MyrimatchWorkPacket packet = (MyrimatchWorkPacket) workPacket;
 
 		try {
 			checkPacketCorrectness(packet);
@@ -57,10 +57,10 @@ public final class MyrimatchWorker implements Worker {
 
 			FileUtilities.ensureFolderExists(packet.getWorkFolder());
 
-			File fastaFile = packet.getDatabaseFile();
+			final File fastaFile = packet.getDatabaseFile();
 
-			File inputFile = packet.getInputFile();
-			File paramsFile = packet.getSearchParamsFile();
+			final File inputFile = packet.getInputFile();
+			final File paramsFile = packet.getSearchParamsFile();
 			final File resultFile = packet.getOutputFile();
 
 			if (resultFile.exists() && inputFile.exists() && resultFile.lastModified() >= inputFile.lastModified()) {
@@ -76,7 +76,7 @@ public final class MyrimatchWorker implements Worker {
 					"\nDecoyPrefix = " + packet.getDecoySequencePrefix(),
 					paramsFile, Charsets.US_ASCII);
 
-			List<String> parameters = new LinkedList<String>();
+			final List<String> parameters = new LinkedList<String>();
 			parameters.add(executable.getPath());
 			parameters.add("-cfg");
 			parameters.add(paramsFile.getAbsolutePath());
@@ -85,10 +85,10 @@ public final class MyrimatchWorker implements Worker {
 			parameters.add("-DEndProteinIndex=" + packet.getNumForwardEntries());
 			parameters.add(inputFile.getAbsolutePath());
 
-			ProcessBuilder processBuilder = new ProcessBuilder(parameters);
+			final ProcessBuilder processBuilder = new ProcessBuilder(parameters);
 			processBuilder.directory(packet.getWorkFolder());
 
-			ProcessCaller processCaller = new ProcessCaller(processBuilder);
+			final ProcessCaller processCaller = new ProcessCaller(processBuilder);
 
 			LOGGER.info("Myrimatch search, " + packet.toString() + ", has been submitted.");
 			processCaller.setOutputMonitor(new MyrimatchLogMonitor(progressReporter));
@@ -111,7 +111,7 @@ public final class MyrimatchWorker implements Worker {
 		}
 	}
 
-	private void checkPacketCorrectness(MyrimatchWorkPacket packet) {
+	private void checkPacketCorrectness(final MyrimatchWorkPacket packet) {
 		if (packet.getSearchParamsFile() == null) {
 			throw new MprcException("Params file must not be null");
 		}
@@ -131,7 +131,7 @@ public final class MyrimatchWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			MyrimatchWorker worker = null;
 			try {
 				worker = new MyrimatchWorker(FileUtilities.getAbsoluteFileForExecutables(new File(config.getExecutable())));
@@ -151,7 +151,7 @@ public final class MyrimatchWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String executable) {
+		public Config(final String executable) {
 			this.executable = executable;
 		}
 
@@ -159,17 +159,17 @@ public final class MyrimatchWorker implements Worker {
 			return executable;
 		}
 
-		public void setExecutable(String executable) {
+		public void setExecutable(final String executable) {
 			this.executable = executable;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(EXECUTABLE, executable);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			executable = values.get(EXECUTABLE);
 		}
 
@@ -181,7 +181,7 @@ public final class MyrimatchWorker implements Worker {
 
 	public static final class Ui implements ServiceUiFactory {
 
-		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(EXECUTABLE, "Executable Path", "Myrimatch executable path. Myrimatch executables can be " +
 					"<br/>found at <a href=\"http://fenchurch.mc.vanderbilt.edu/software.php#MyriMatch/\"/>http://fenchurch.mc.vanderbilt.edu/software.php#MyriMatch</a>")
 					.required()

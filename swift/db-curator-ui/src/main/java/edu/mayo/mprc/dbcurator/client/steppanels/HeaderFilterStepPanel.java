@@ -32,9 +32,9 @@ public final class HeaderFilterStepPanel extends AbstractStepPanel {
 	 */
 	public HeaderFilterStepPanel() {
 
-		long radioGroup = new Date().getTime();
-		String modeGroup = String.valueOf(radioGroup);
-		String logicalGroup = String.valueOf(radioGroup + 1);
+		final long radioGroup = new Date().getTime();
+		final String modeGroup = String.valueOf(radioGroup);
+		final String logicalGroup = String.valueOf(radioGroup + 1);
 
 		radioModeSimple = new RadioButton(modeGroup, "Simple Text");
 		radioModeRegEx = new RadioButton(modeGroup, "Regular Expression");
@@ -53,14 +53,14 @@ public final class HeaderFilterStepPanel extends AbstractStepPanel {
 		criteria.setWidth("300px");
 		mainPanel.add(criteria);
 
-		HorizontalPanel textModePanel = new HorizontalPanel();
+		final HorizontalPanel textModePanel = new HorizontalPanel();
 		textModePanel.setSpacing(5);
 		textModePanel.add(new Label("Text search mode: "));
 		radioModeSimple.setChecked(true);
 		textModePanel.add(radioModeSimple);
 		textModePanel.add(radioModeRegEx);
 
-		HorizontalPanel logicModePanel = new HorizontalPanel();
+		final HorizontalPanel logicModePanel = new HorizontalPanel();
 		logicModePanel.setSpacing(5);
 		logicModePanel.add(new Label("Logical Mode: "));
 		radioLogicalAny.setChecked(true);
@@ -100,7 +100,7 @@ public final class HeaderFilterStepPanel extends AbstractStepPanel {
 	 * @param step the containedStep you want this mainPanel to represent
 	 * @throws ClassCastException if the containedStep passed in wasn't the type that the Panel can represent
 	 */
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof HeaderFilterStepStub)) {
 			ExceptionUtilities.throwCastException(step, HeaderFilterStepStub.class);
 			return;
@@ -125,7 +125,7 @@ public final class HeaderFilterStepPanel extends AbstractStepPanel {
 	public void update() {
 		criteria.setText(this.containedStep.criteria);
 
-		String logicalMode = this.containedStep.matchMode;
+		final String logicalMode = this.containedStep.matchMode;
 		if (logicalMode.equalsIgnoreCase("none")) {
 			radioLogicalNone.setChecked(true);
 		} else if (logicalMode.equalsIgnoreCase("all")) {

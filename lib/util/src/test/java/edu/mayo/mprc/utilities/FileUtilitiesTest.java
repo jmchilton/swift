@@ -34,58 +34,58 @@ public final class FileUtilitiesTest {
 
 	@Test
 	public void testGetRelativePathFileToFile() {
-		String target = "C:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
-		String base = "C:\\windows\\Speech\\Common\\sapisvr.exe";
+		final String target = "C:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
+		final String base = "C:\\windows\\Speech\\Common\\sapisvr.exe";
 
-		String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
+		final String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
 		Assert.assertEquals("..\\..\\..\\Boot\\Fonts\\chs_boot.ttf", relPath);
 	}
 
 	@Test
 	public void testGetRelativePathDirectoryToFile() {
-		String target = "c:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
-		String base = "C:\\Windows\\Speech\\Common";
+		final String target = "c:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
+		final String base = "C:\\Windows\\Speech\\Common";
 
-		String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
+		final String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
 		Assert.assertEquals("..\\..\\Boot\\Fonts\\chs_boot.ttf", relPath);
 	}
 
 	@Test(expectedExceptions = {MprcException.class})
 	public void testGetRelativePathDifferentDriveLetters() {
-		String target = "D:\\sources\\recovery\\RecEnv.exe";
-		String base = "C:\\Java\\workspace\\AcceptanceTests\\Standard test data\\geo\\";
+		final String target = "D:\\sources\\recovery\\RecEnv.exe";
+		final String base = "C:\\Java\\workspace\\AcceptanceTests\\Standard test data\\geo\\";
 
 		//  Should just return the target path because of the incompatible roots.
-		String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
+		final String relPath = FileUtilities.getRelativePath(base, target, "\\", false, false);
 	}
 
 	@Test
 	public void testShouldReturnNullIfNotParent() {
-		String target = "c:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
-		String base = "C:\\Windows\\Speech\\Common";
+		final String target = "c:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
+		final String base = "C:\\Windows\\Speech\\Common";
 
-		String relPath = FileUtilities.getRelativePath(base, target, "\\", false, true);
+		final String relPath = FileUtilities.getRelativePath(base, target, "\\", false, true);
 		Assert.assertNull(relPath);
 	}
 
 
 	@Test
 	public void testGetDateBasedDirectory() {
-		File tempFolder = FileUtilities.createTempFolder();
+		final File tempFolder = FileUtilities.createTempFolder();
 
 		try {
-			Date date = new Date();
-			Calendar calendar = Calendar.getInstance();
+			final Date date = new Date();
+			final Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
 
-			String logPath = new File(tempFolder, ""
+			final String logPath = new File(tempFolder, ""
 					+ calendar.get(Calendar.YEAR) + File.separator
 					+ (calendar.get(Calendar.MONTH) + 1) + File.separator
 					+ calendar.get(Calendar.DAY_OF_MONTH)).getAbsolutePath();
 
 			LOGGER.info("Expected log path: " + logPath);
 
-			File file = FileUtilities.getDateBasedDirectory(tempFolder, date);
+			final File file = FileUtilities.getDateBasedDirectory(tempFolder, date);
 			Assert.assertEquals(logPath, file.getAbsolutePath(), "Log path was not created as expected.");
 		} finally {
 			FileUtilities.cleanupTempFile(tempFolder);
@@ -144,7 +144,7 @@ public final class FileUtilitiesTest {
 
 	@Test
 	public void shouldDestroyContents() throws IOException {
-		File file = File.createTempFile("test", ".txt");
+		final File file = File.createTempFile("test", ".txt");
 		Files.write("hello world", file, Charsets.UTF_8);
 		Assert.assertTrue(file.length() > 0);
 		Files.copy(file, file);
@@ -154,15 +154,15 @@ public final class FileUtilitiesTest {
 
 	@Test
 	public void shouldListFolderContentsShort() throws IOException {
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 		FileUtilities.ensureFolderExists(new File(folder, "1"));
 
-		ArrayList<File> dirs = new ArrayList<File>();
-		ArrayList<File> files = new ArrayList<File>();
+		final ArrayList<File> dirs = new ArrayList<File>();
+		final ArrayList<File> files = new ArrayList<File>();
 
 		FileUtilities.listFolderContents(folder, new FilenameFilter() {
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(final File dir, final String name) {
 				return true;
 			}
 		}, dirs, files);
@@ -175,18 +175,18 @@ public final class FileUtilitiesTest {
 
 	@Test
 	public void shouldListFolderContentsLong() throws IOException {
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 		for (int i = 1; i < 50; i++) {
 			FileUtilities.ensureFolderExists(new File(folder, "a" + String.valueOf(i)));
 		}
 		FileUtilities.ensureFolderExists(new File(folder, "b"));
 
-		ArrayList<File> dirs = new ArrayList<File>();
-		ArrayList<File> files = new ArrayList<File>();
+		final ArrayList<File> dirs = new ArrayList<File>();
+		final ArrayList<File> files = new ArrayList<File>();
 
 		FileUtilities.listFolderContents(folder, new FilenameFilter() {
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(final File dir, final String name) {
 				return name.startsWith("a");
 			}
 		}, dirs, files);

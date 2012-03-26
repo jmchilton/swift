@@ -38,7 +38,7 @@ public final class DeploymentRequest extends WorkPacketBase {
 	 */
 	private Map<String, Serializable> properties;
 
-	protected DeploymentRequest(String taskId) {
+	protected DeploymentRequest(final String taskId) {
 		// Deployment is always done with caching (so far).
 		super(taskId, false);
 	}
@@ -46,7 +46,7 @@ public final class DeploymentRequest extends WorkPacketBase {
 	/**
 	 * makes a request out of a curation but copies only the essential information to send to the deployer.
 	 */
-	public DeploymentRequest(String taskid, FastaFile fastaFile) {
+	public DeploymentRequest(final String taskid, final FastaFile fastaFile) {
 		this(taskid);
 		assert fastaFile.getFile() != null : "The deployment request must have a valid Curation.";
 
@@ -60,7 +60,7 @@ public final class DeploymentRequest extends WorkPacketBase {
 	/**
 	 * @param undeployment if true, flags this request as a database undeployment.
 	 */
-	public void setUndeployment(boolean undeployment) {
+	public void setUndeployment(final boolean undeployment) {
 		this.undeployment = undeployment;
 	}
 
@@ -76,7 +76,7 @@ public final class DeploymentRequest extends WorkPacketBase {
 		return fastaFile.getAnnotation();
 	}
 
-	public Object getProperty(String key) {
+	public Object getProperty(final String key) {
 		if (this.properties == null) {
 			return null;
 		}
@@ -90,7 +90,7 @@ public final class DeploymentRequest extends WorkPacketBase {
 		return value;
 	}
 
-	public void addProperty(String key, Serializable value) {
+	public void addProperty(final String key, Serializable value) {
 		if (this.properties == null) {
 			this.properties = new HashMap<String, Serializable>();
 		}
@@ -106,11 +106,11 @@ public final class DeploymentRequest extends WorkPacketBase {
 		return fastaFile.getFile();
 	}
 
-	public void translateOnSender(SenderTokenTranslator translator) {
+	public void translateOnSender(final SenderTokenTranslator translator) {
 		super.translateOnSender(translator);
 		// We need to translate all the extra properties that are not picked up automatically
 		if (properties != null) {
-			for (Map.Entry<String, Serializable> property : properties.entrySet()) {
+			for (final Map.Entry<String, Serializable> property : properties.entrySet()) {
 				if (property.getValue() instanceof FileToken) {
 					properties.put(property.getKey(), translator.translateBeforeTransfer((FileToken) property.getValue()));
 				}

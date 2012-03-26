@@ -81,8 +81,8 @@ public final class CurationExecutor implements Runnable {
 	 *
 	 * @param curation the curation that you want to execute
 	 */
-	public CurationExecutor(Curation curation, boolean retainArtifacts, CurationDao curationDao,
-	                        File fastaFolder, File localTempFolder, File fastaArchiveFolder
+	public CurationExecutor(final Curation curation, final boolean retainArtifacts, final CurationDao curationDao,
+	                        final File fastaFolder, final File localTempFolder, final File fastaArchiveFolder
 	) {
 		this.curation = curation;
 		this.fastaFolder = fastaFolder;
@@ -95,7 +95,7 @@ public final class CurationExecutor implements Runnable {
 	/**
 	 * @return Fasta file name - simply the shortname + .fasta
 	 */
-	public File getFastaFileName(Curation c) {
+	public File getFastaFileName(final Curation c) {
 		return new File(fastaFolder, c.getShortName() + ".fasta");
 	}
 
@@ -129,11 +129,11 @@ public final class CurationExecutor implements Runnable {
 		//get the steps to keep around so we don't need to make many calls to getCurationSteps()
 		//mainly because that method returns an unmodifiableList which will take some resources
 		//to repeatedly create.
-		List<CurationStep> steps = getCuration().getCurationSteps();
+		final List<CurationStep> steps = getCuration().getCurationSteps();
 
 		//if we are performing the first step create a temporary fold based on the current time
 		if (this.status.getCurrentStepNumber() < 1) {
-			File resultFolder = localTempFolder;
+			final File resultFolder = localTempFolder;
 			do {
 				this.tempDirectory = new File(resultFolder
 						, "curationRun_" + new SimpleDateFormat("yyyyMMdd-hhmmss").format(new Date()));
@@ -148,7 +148,7 @@ public final class CurationExecutor implements Runnable {
 		}
 
 		//for each step in the curation
-		for (CurationStep step : steps) {
+		for (final CurationStep step : steps) {
 			//if we have been interupted then exit.  This is pretty course grained interuption
 			//but it would take a lot more work to make it finer grained.
 			if (this.status.isInterrupted()) {
@@ -177,7 +177,7 @@ public final class CurationExecutor implements Runnable {
 			}
 
 			//create a new outstream using the same test
-			File newOutFile = new File(this.tempDirectory.getPath(), String.valueOf(this.status.getCurrentStepNumber()));
+			final File newOutFile = new File(this.tempDirectory.getPath(), String.valueOf(this.status.getCurrentStepNumber()));
 			try {
 				this.outStream = new FASTAOutputStream(newOutFile);
 			} catch (IOException e) {
@@ -185,7 +185,7 @@ public final class CurationExecutor implements Runnable {
 				LOGGER.error(e);
 			}
 			//have the step perform itself
-			StepValidation postValidation = step.performStep(this);
+			final StepValidation postValidation = step.performStep(this);
 			//close the streams that were previously open
 			if (this.inStream != null) {
 				this.inStream.close();
@@ -196,7 +196,7 @@ public final class CurationExecutor implements Runnable {
 			if (postValidation.isOK()) {
 				this.status.addCompletedStepValidation(postValidation);
 			} else {
-				for (String msg : postValidation.getMessages()) {
+				for (final String msg : postValidation.getMessages()) {
 					this.status.addMessage("Step failed: " + msg);
 				}
 				this.status.addFailedStepValidation(postValidation);
@@ -291,8 +291,8 @@ public final class CurationExecutor implements Runnable {
 	 * @return the CurationStatus that keeps track of the status of the execution
 	 */
 	public CurationStatus execute() {
-		CurationStatus retStatus = getStatusObject();
-		Thread runner = new Thread(this);
+		final CurationStatus retStatus = getStatusObject();
+		final Thread runner = new Thread(this);
 		runner.setName("CurationExecutor: " + curation.getShortName());
 		runner.start();
 		return retStatus;
@@ -361,8 +361,8 @@ public final class CurationExecutor implements Runnable {
 		 * @return the list of messages that have been added
 		 */
 		public synchronized List<String> getMessages() {
-			List<String> retMessages = new ArrayList<String>();
-			for (String s : this.messages) {
+			final List<String> retMessages = new ArrayList<String>();
+			for (final String s : this.messages) {
 				retMessages.add(s);
 			}
 			this.messages.clear();
@@ -374,7 +374,7 @@ public final class CurationExecutor implements Runnable {
 		 *
 		 * @param toAdd message to add
 		 */
-		public synchronized void addMessage(String toAdd) {
+		public synchronized void addMessage(final String toAdd) {
 			this.messages.add(toAdd);
 		}
 
@@ -419,7 +419,7 @@ public final class CurationExecutor implements Runnable {
 		 *
 		 * @param toAdd the step that was completed successfully (it is up to caller to check)
 		 */
-		public synchronized void addCompletedStepValidation(StepValidation toAdd) {
+		public synchronized void addCompletedStepValidation(final StepValidation toAdd) {
 			if (this.completedStepValidations == null) {
 				this.completedStepValidations = new ArrayList<StepValidation>();
 			}
@@ -431,7 +431,7 @@ public final class CurationExecutor implements Runnable {
 		 *
 		 * @param toAdd - the step that was failed
 		 */
-		public synchronized void addFailedStepValidation(StepValidation toAdd) {
+		public synchronized void addFailedStepValidation(final StepValidation toAdd) {
 			if (this.failedStepValidations == null) {
 				this.failedStepValidations = new ArrayList<StepValidation>();
 			}
@@ -516,18 +516,18 @@ public final class CurationExecutor implements Runnable {
 	 * @param failedValidations Validations that failed.
 	 * @return String describing the exceptions and their stack traces that lead to the failure.
 	 */
-	public static String failedValidationsToString(List<StepValidation> failedValidations) {
-		StringBuilder sb = new StringBuilder();
-		for (StepValidation failedValidation : failedValidations) {
-			for (String msg : failedValidation.getMessages()) {
+	public static String failedValidationsToString(final List<StepValidation> failedValidations) {
+		final StringBuilder sb = new StringBuilder();
+		for (final StepValidation failedValidation : failedValidations) {
+			for (final String msg : failedValidation.getMessages()) {
 				sb.append(msg);
 				if (failedValidation.getWrappedExceptions() != null && failedValidation.getWrappedExceptions().size() > 0) {
-					for (Exception e : failedValidation.getWrappedExceptions()) {
+					for (final Exception e : failedValidation.getWrappedExceptions()) {
 						sb.append("\n\t* ");
 						sb.append(e.getMessage());
 						sb.append(" ----------------");
 						sb.append('\n');
-						StringWriter writer = new StringWriter();
+						final StringWriter writer = new StringWriter();
 						e.printStackTrace(new PrintWriter(writer));
 						sb.append(StringUtilities.appendTabBeforeLines(writer.toString()));
 						sb.append("\n");

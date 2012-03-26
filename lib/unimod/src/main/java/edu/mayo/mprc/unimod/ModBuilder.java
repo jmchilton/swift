@@ -29,7 +29,7 @@ public final class ModBuilder {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -37,7 +37,7 @@ public final class ModBuilder {
 		return fullName;
 	}
 
-	public void setFullName(String fullName) {
+	public void setFullName(final String fullName) {
 		this.fullName = fullName;
 	}
 
@@ -45,7 +45,7 @@ public final class ModBuilder {
 		return recordID;
 	}
 
-	public void setRecordID(Integer recordID) {
+	public void setRecordID(final Integer recordID) {
 		this.recordID = recordID;
 	}
 
@@ -53,7 +53,7 @@ public final class ModBuilder {
 		return massMono;
 	}
 
-	public void setMassMono(Double massMono) {
+	public void setMassMono(final Double massMono) {
 		this.massMono = massMono;
 	}
 
@@ -61,7 +61,7 @@ public final class ModBuilder {
 		return massAverage;
 	}
 
-	public void setMassAverage(Double massAverage) {
+	public void setMassAverage(final Double massAverage) {
 		this.massAverage = massAverage;
 	}
 
@@ -69,7 +69,7 @@ public final class ModBuilder {
 		return composition;
 	}
 
-	public void setComposition(String composition) {
+	public void setComposition(final String composition) {
 		this.composition = composition;
 	}
 
@@ -77,7 +77,7 @@ public final class ModBuilder {
 		return altNames;
 	}
 
-	public void setAltNames(Set<String> altNames) {
+	public void setAltNames(final Set<String> altNames) {
 		this.altNames = altNames;
 	}
 
@@ -142,7 +142,7 @@ public final class ModBuilder {
 	 * @param position - Terminus/anywhere.
 	 * @return Mod specificity corresponding to the unimod entry.
 	 */
-	public SpecificityBuilder addSpecificityFromUnimod(String site, String position, boolean hidden, String classification, Integer specificityGroup) {
+	public SpecificityBuilder addSpecificityFromUnimod(final String site, final String position, final boolean hidden, final String classification, final Integer specificityGroup) {
 		Terminus terminus;
 		boolean proteinOnly = false;
 		AminoAcid acidSite = null;
@@ -189,7 +189,7 @@ public final class ModBuilder {
 
 	}
 
-	public SpecificityBuilder addSpecificity(String title, String site, Terminus terminus, boolean proteinOnly, Integer specificityGroup) {
+	public SpecificityBuilder addSpecificity(final String title, final String site, final Terminus terminus, final boolean proteinOnly, final Integer specificityGroup) {
 		final SpecificityBuilder specificityBuilder = new SpecificityBuilder(
 				AminoAcidSet.DEFAULT.getForSingleLetterCode(site),
 				terminus,

@@ -27,18 +27,18 @@ public final class ClientValidation implements ClientValue {
 		this("No message");
 	}
 
-	public ClientValidation(String message) {
+	public ClientValidation(final String message) {
 		this.message = message;
 	}
 
-	public ClientValidation(String message, String paramId, int severity) {
+	public ClientValidation(final String message, final String paramId, final int severity) {
 		this.message = message;
 		this.paramId = paramId;
 		this.severity = severity;
 	}
 
 	public ClientValidation shallowCopy() {
-		ClientValidation cv = new ClientValidation();
+		final ClientValidation cv = new ClientValidation();
 		cv.setMessage(getMessage());
 		cv.setSeverity(getSeverity());
 		cv.setParamId(getParamId());
@@ -53,7 +53,7 @@ public final class ClientValidation implements ClientValue {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
@@ -61,7 +61,7 @@ public final class ClientValidation implements ClientValue {
 		return severity;
 	}
 
-	public void setSeverity(int severity) {
+	public void setSeverity(final int severity) {
 		this.severity = severity;
 	}
 
@@ -69,7 +69,7 @@ public final class ClientValidation implements ClientValue {
 		return paramId;
 	}
 
-	public void setParamId(String paramId) {
+	public void setParamId(final String paramId) {
 		this.paramId = paramId;
 	}
 
@@ -77,7 +77,7 @@ public final class ClientValidation implements ClientValue {
 		return value;
 	}
 
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		this.value = value;
 	}
 
@@ -85,7 +85,7 @@ public final class ClientValidation implements ClientValue {
 		return throwableMessage;
 	}
 
-	public void setThrowableMessage(String throwableMessage) {
+	public void setThrowableMessage(final String throwableMessage) {
 		this.throwableMessage = throwableMessage;
 	}
 
@@ -93,7 +93,7 @@ public final class ClientValidation implements ClientValue {
 		return throwableStackTrace;
 	}
 
-	public void setThrowableStackTrace(String throwableStackTrace) {
+	public void setThrowableStackTrace(final String throwableStackTrace) {
 		this.throwableStackTrace = throwableStackTrace;
 	}
 }

@@ -33,7 +33,7 @@ public final class ScaffoldXmlDiff {
 	 * @return true if they are deemed "comparable" else return false or if either were null return false
 	 * @throws FileNotFoundException if either of the files passed in are not equal
 	 */
-	public boolean areSimilarScaffoldXMLFiles(File f1, File f2) throws FileNotFoundException {
+	public boolean areSimilarScaffoldXMLFiles(final File f1, final File f2) throws FileNotFoundException {
 		if (f1 == null || f2 == null) {
 			return false;
 		}
@@ -63,13 +63,13 @@ public final class ScaffoldXmlDiff {
 		}
 	}
 
-	private void checkExistence(File file) throws FileNotFoundException {
+	private void checkExistence(final File file) throws FileNotFoundException {
 		if (!file.exists()) {
 			throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
 		}
 	}
 
-	public boolean compareScaffoldXml(InputStream s1, InputStream s2) throws IOException, ParserConfigurationException, SAXException {
+	public boolean compareScaffoldXml(final InputStream s1, final InputStream s2) throws IOException, ParserConfigurationException, SAXException {
 
 		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 		XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
@@ -77,18 +77,18 @@ public final class ScaffoldXmlDiff {
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
 
-		InputSource source1 = new InputSource(s1);
-		InputSource source2 = new InputSource(s2);
+		final InputSource source1 = new InputSource(s1);
+		final InputSource source2 = new InputSource(s2);
 
 
-		Diff diff = new Diff(source1, source2);
+		final Diff diff = new Diff(source1, source2);
 
 		diff.overrideDifferenceListener(new ScaffoldXMLDifferenceListener());
 
 
 		diff.overrideElementQualifier(new ElementQualifier() {
 
-			public boolean qualifyForComparison(Element e1, Element e2) {
+			public boolean qualifyForComparison(final Element e1, final Element e2) {
 				return e1.getNodeName().equals(e2.getNodeName());
 			}
 		});
@@ -110,8 +110,8 @@ public final class ScaffoldXmlDiff {
 	}
 
 	public String getDifferenceString() {
-		StringBuilder sb = new StringBuilder();
-		for (Difference diff : getLastDiffDetails()) {
+		final StringBuilder sb = new StringBuilder();
+		for (final Difference diff : getLastDiffDetails()) {
 			if (!diff.isRecoverable()) { //if is not a similarity
 				sb.append(diff.getDescription()).append(" at\n\t").append(diff.getControlNodeDetail().getXpathLocation()).append("\n");
 			}

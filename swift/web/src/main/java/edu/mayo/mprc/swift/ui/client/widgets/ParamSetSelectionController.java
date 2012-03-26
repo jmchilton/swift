@@ -38,7 +38,7 @@ public final class ParamSetSelectionController implements ChangeListener {
 	 */
 	private static final String PARAM_COOKIE = "param";
 
-	public ParamSetSelectionController(ServiceAsync service) {
+	public ParamSetSelectionController(final ServiceAsync service) {
 		this.service = service;
 	}
 
@@ -46,11 +46,11 @@ public final class ParamSetSelectionController implements ChangeListener {
 		return contentsHiding;
 	}
 
-	public void setContentsHiding(HidesPageContentsWhileLoading contentsHiding) {
+	public void setContentsHiding(final HidesPageContentsWhileLoading contentsHiding) {
 		this.contentsHiding = contentsHiding;
 	}
 
-	public void setSelector(ParamsSelector selector) {
+	public void setSelector(final ParamsSelector selector) {
 		this.selector = selector;
 		if (list != null) {
 			selector.update(list.getList(), getDefaultParamSetId());
@@ -71,7 +71,7 @@ public final class ParamSetSelectionController implements ChangeListener {
 	}
 
 	public static Date getCookieExpirationDate() {
-		Date expires = new Date();
+		final Date expires = new Date();
 		long expiresLong = expires.getTime();
 		expiresLong += 1000L * 60 * 60 * 24 * 30; //30 days
 		expires.setTime(expiresLong);
@@ -87,14 +87,14 @@ public final class ParamSetSelectionController implements ChangeListener {
 			contentsHiding.hidePageContentsWhileLoading();
 		}
 		service.getParamSetList(new Service.Token(true), new AsyncCallback<ClientParamSetList>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				if (null != contentsHiding) {
 					contentsHiding.showPageContents();
 				}
 				SimpleParamsEditorPanel.handleGlobalError(throwable);
 			}
 
-			public void onSuccess(ClientParamSetList o) {
+			public void onSuccess(final ClientParamSetList o) {
 				try {
 					setParamSetList(o);
 					if (cb != null) {
@@ -109,10 +109,10 @@ public final class ParamSetSelectionController implements ChangeListener {
 		});
 	}
 
-	public void setParamSetList(ClientParamSetList newList) {
-		boolean prime = list == null;
+	public void setParamSetList(final ClientParamSetList newList) {
+		final boolean prime = list == null;
 		list = newList;
-		List<ClientParamSet> arr = list.getList();
+		final List<ClientParamSet> arr = list.getList();
 		paramSetIndices.clear();
 		for (int i = 0; i < arr.size(); ++i) {
 			paramSetIndices.put(arr.get(i), i);
@@ -120,7 +120,7 @@ public final class ParamSetSelectionController implements ChangeListener {
 		selector.update(list.getList(), getDefaultParamSetId());
 		if (prime) {
 			int index = 0;
-			int defaultParamSetId = getDefaultParamSetId();
+			final int defaultParamSetId = getDefaultParamSetId();
 			// Find param set with the default id
 			for (int i = 0; i < arr.size(); i++) {
 				if (arr.get(i).getId() == defaultParamSetId) {
@@ -137,7 +137,7 @@ public final class ParamSetSelectionController implements ChangeListener {
 	 *
 	 * @param id {@link ClientParamSet#getId()} for the param set to use as a default.
 	 */
-	private void setDefaultParamSetId(int id) {
+	private void setDefaultParamSetId(final int id) {
 		Cookies.setCookie(PARAM_COOKIE, String.valueOf(id), getCookieExpirationDate(), null, "/", false);
 	}
 
@@ -145,7 +145,7 @@ public final class ParamSetSelectionController implements ChangeListener {
 	 * @return The user-specified default parameter set id - {@link ClientParamSet#getId()}.
 	 */
 	public int getDefaultParamSetId() {
-		String paramCookie = Cookies.getCookie(PARAM_COOKIE);
+		final String paramCookie = Cookies.getCookie(PARAM_COOKIE);
 		int id = 0;
 		if (paramCookie != null) {
 			try {
@@ -172,36 +172,36 @@ public final class ParamSetSelectionController implements ChangeListener {
 	 * <p/>
 	 * Add the new parameter set to our data structures and update all the selectors.
 	 */
-	private int addNewClientParamSet(ClientParamSet paramSet) {
+	private int addNewClientParamSet(final ClientParamSet paramSet) {
 		// New client parameter set
 		final int newSetId = paramSetIndices.size();
 		paramSetIndices.put(paramSet, newSetId);
 		final List<ClientParamSet> sets = list.getList();
-		List<ClientParamSet> newSets = new ArrayList<ClientParamSet>(sets.size() + 1);
-		int newSetIndex = sets.size();
+		final List<ClientParamSet> newSets = new ArrayList<ClientParamSet>(sets.size() + 1);
+		final int newSetIndex = sets.size();
 		newSets.addAll(sets);
 		newSets.add(paramSet);
 		selector.update(newSets, newSetIndex);
 		return newSetIndex;
 	}
 
-	public void onChange(Widget widget) {
+	public void onChange(final Widget widget) {
 		// The primary selector's changes get preserved
 		setDefaultParamSetId(selector.getSelectedParamSet().getId());
 		fireSelectionEvent();
 	}
 
-	public void addParamSetSelectionListener(ParamSetSelectionListener listener) {
+	public void addParamSetSelectionListener(final ParamSetSelectionListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeParamSetSelectionListener(ParamSetSelectionListener listener) {
+	public void removeParamSetSelectionListener(final ParamSetSelectionListener listener) {
 		listeners.remove(listener);
 	}
 
 	public void fireSelectionEvent() {
-		for (ParamSetSelectionListener listener1 : listeners) {
-			ParamSetSelectionListener listener = (ParamSetSelectionListener) listener1;
+		for (final ParamSetSelectionListener listener1 : listeners) {
+			final ParamSetSelectionListener listener = (ParamSetSelectionListener) listener1;
 			final ClientParamSet paramSet = getSelectedParamSet();
 			listener.selected(paramSet);
 		}

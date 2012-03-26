@@ -47,40 +47,40 @@ public final class OmssaMappings implements Mappings {
 		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.omssa.params.xml", this.getClass());
 	}
 
-	public void read(Reader isr) {
-		Document doc = XMLUtilities.loadDocument(isr);
+	public void read(final Reader isr) {
+		final Document doc = XMLUtilities.loadDocument(isr);
 		nativeParamsDocument = doc;
-		NodeList childNodes = doc.getDocumentElement().getChildNodes();
+		final NodeList childNodes = doc.getDocumentElement().getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node node = childNodes.item(i);
+			final Node node = childNodes.item(i);
 			if (node.getNodeName().startsWith("MSSearchSettings_")) {
-				String id = node.getNodeName().replaceFirst("MSSearchSettings_", "");
+				final String id = node.getNodeName().replaceFirst("MSSearchSettings_", "");
 				nativeParams.put(id, node);
 			}
 		}
 	}
 
-	public void write(Reader oldParams, Writer out) {
-		Document bioml = nativeParamsDocument;
+	public void write(final Reader oldParams, final Writer out) {
+		final Document bioml = nativeParamsDocument;
 		// Write the DOM document to the file
-		StreamSource tSource = new StreamSource(new StringReader(XMLUtilities.INDENT_TRANSFORM_STRING));
+		final StreamSource tSource = new StreamSource(new StringReader(XMLUtilities.INDENT_TRANSFORM_STRING));
 		try {
-			Transformer xformer = TransformerFactory.newInstance().newTransformer(tSource);
+			final Transformer xformer = TransformerFactory.newInstance().newTransformer(tSource);
 			xformer.transform(new DOMSource(bioml.getDocumentElement()), new StreamResult(out));
 		} catch (Exception t) {
 			throw new MprcException("Cannot save omssa parameter file", t);
 		}
 	}
 
-	public String getNativeParam(String name) {
+	public String getNativeParam(final String name) {
 		return nativeParams.get(name).getTextContent();
 	}
 
-	public void setNativeParam(String name, String value) {
+	public void setNativeParam(final String name, final String value) {
 		nativeParams.get(name).setTextContent(value);
 	}
 
-	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(final MappingContext context, final Tolerance peptideTolerance) {
 		if (!MassUnit.Da.equals(peptideTolerance.getUnit()) && !MassUnit.Ppm.equals(peptideTolerance.getUnit())) {
 			//the user is trying to use ppm or an unsupported unit
 			setNativeParam(PEP_TOL, "1");
@@ -88,34 +88,34 @@ public final class OmssaMappings implements Mappings {
 			return;
 		}
 
-		double value = convertToDalton(context, true, peptideTolerance);
+		final double value = convertToDalton(context, true, peptideTolerance);
 		setNativeParam(PEP_TOL, String.valueOf(value));
 	}
 
-	private double convertToDalton(MappingContext context, boolean ppmAllowed, Tolerance tolerance) {
+	private double convertToDalton(final MappingContext context, final boolean ppmAllowed, final Tolerance tolerance) {
 		double value = tolerance.getValue();
 		if (ppmAllowed && tolerance.getUnit().equals(MassUnit.Ppm)) {
 			//convert ppm to Da assuming a average peptide mass of 1000 Da
-			double normMass = AVG_PEPTIDE_MASS;
+			final double normMass = AVG_PEPTIDE_MASS;
 			value = value * normMass / MILLION;
 			context.reportWarning("Converted to " + value + " Da for OMSSA.");
 		}
 		return value;
 	}
 
-	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final MappingContext context, final Tolerance fragmentTolerance) {
 		if (!fragmentTolerance.getUnit().equals(MassUnit.Da)) {
 			//the user is trying to use ppm or an unsupported unit
 			setNativeParam(FRAG_TOL, "1");
 			context.reportWarning("OMSSA does not support '" + fragmentTolerance.getUnit() + "' tolerances; using 1 Dalton instead.");
 		}
 		//we can have a nice straight-forward conversion to Da from mmu
-		double value = convertToDalton(context, false, fragmentTolerance);
+		final double value = convertToDalton(context, false, fragmentTolerance);
 		setNativeParam(FRAG_TOL, String.valueOf(value));
 	}
 
-	public void setVariableMods(MappingContext context, ModSet variableMods) {
-		Document doc = nativeParamsDocument;
+	public void setVariableMods(final MappingContext context, final ModSet variableMods) {
+		final Document doc = nativeParamsDocument;
 		try {
 			converter.convertUnimodToOmssa(/*fixed*/ false, variableMods.getModifications(), doc);
 		} catch (Exception t) {
@@ -123,7 +123,7 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void setFixedMods(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(final MappingContext context, final ModSet fixedMods) {
 		//this converter will insert necessary into the document
 		try {
 			converter.convertUnimodToOmssa(/*fixed*/ true, fixedMods.getModifications(), nativeParamsDocument);
@@ -132,12 +132,12 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(final MappingContext context, final String shortDatabaseName) {
 		setNativeParam(DATABASE, "${DB:" + shortDatabaseName + "}");
 	}
 
-	public void setProtease(MappingContext context, Protease protease) {
-		String omssaId = EnzymeLookup.mapEnzymeAbstractToOmssa(protease.getName());
+	public void setProtease(final MappingContext context, final Protease protease) {
+		final String omssaId = EnzymeLookup.mapEnzymeAbstractToOmssa(protease.getName());
 
 		if (omssaId == null) {
 			context.reportWarning("OMSSA cannot support the enzyme " + protease.getName() + " so please disable OMSSA if you want this enzyme.");
@@ -146,27 +146,27 @@ public final class OmssaMappings implements Mappings {
 
 		//remove previously selected enzymes.
 		final Element enzymeElement = (Element) nativeParams.get(ENZYME);
-		NodeList previouslySelected = enzymeElement.getElementsByTagName("MSEnzymes");
+		final NodeList previouslySelected = enzymeElement.getElementsByTagName("MSEnzymes");
 		for (int i = previouslySelected.getLength() - 1; i >= 0; i--) {
 			enzymeElement.removeChild(previouslySelected.item(i));
 		}
 
 		if (omssaId.contains("+")) {
-			String[] ids = omssaId.split("\\+");
-			for (String id : ids) {
+			final String[] ids = omssaId.split("\\+");
+			for (final String id : ids) {
 				//all of the templates should have empty enzyme sections so just add them as children
-				Element newEnzyme = enzymeElement.getOwnerDocument().createElement("MSEnzymes");
+				final Element newEnzyme = enzymeElement.getOwnerDocument().createElement("MSEnzymes");
 				newEnzyme.setTextContent(id);
 				enzymeElement.appendChild(newEnzyme);
 			}
 		} else {
-			Element newEnzyme = enzymeElement.getOwnerDocument().createElement("MSEnzymes");
+			final Element newEnzyme = enzymeElement.getOwnerDocument().createElement("MSEnzymes");
 			newEnzyme.setTextContent(omssaId);
 			enzymeElement.appendChild(newEnzyme);
 		}
 	}
 
-	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(final MappingContext context, final Integer missedCleavages) {
 		String value = null;
 		try {
 			value = String.valueOf(missedCleavages);
@@ -176,13 +176,13 @@ public final class OmssaMappings implements Mappings {
 		}
 	}
 
-	public void setInstrument(MappingContext context, Instrument instrument) {
-		Document doc = nativeParamsDocument;
-		List<String> ionSeriesIds = new ArrayList<String>();
+	public void setInstrument(final MappingContext context, final Instrument instrument) {
+		final Document doc = nativeParamsDocument;
+		final List<String> ionSeriesIds = new ArrayList<String>();
 
-		List<String> unsupportedIons = new ArrayList<String>();
-		for (IonSeries ionSeries : instrument.getSeries()) {
-			String id = IonLookup.lookupEnum(ionSeries.getName());
+		final List<String> unsupportedIons = new ArrayList<String>();
+		for (final IonSeries ionSeries : instrument.getSeries()) {
+			final String id = IonLookup.lookupEnum(ionSeries.getName());
 			if (id == null) {
 				unsupportedIons.add(ionSeries.getName());
 			} else {
@@ -192,14 +192,14 @@ public final class OmssaMappings implements Mappings {
 		if (unsupportedIons.size() > 0) {
 			context.reportWarning("OMSSA does not support ions: " + Joiner.on(", ").join(unsupportedIons));
 		}
-		Element elemIons = (Element) nativeParams.get("ionstosearch");
+		final Element elemIons = (Element) nativeParams.get("ionstosearch");
 		// Empty this element
 		while (elemIons.hasChildNodes()) {
 			elemIons.removeChild(elemIons.getFirstChild());
 		}
 
-		for (String id : ionSeriesIds) {
-			Element newIon = doc.createElement("MSIonType");
+		for (final String id : ionSeriesIds) {
+			final Element newIon = doc.createElement("MSIonType");
 			newIon.setTextContent(id);
 			elemIons.appendChild(newIon);
 		}

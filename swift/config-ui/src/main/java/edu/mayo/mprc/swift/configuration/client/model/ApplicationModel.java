@@ -29,15 +29,15 @@ public final class ApplicationModel extends ResourceModel {
 		return availableModules;
 	}
 
-	public void setAvailableModules(AvailableModules availableModules) {
+	public void setAvailableModules(final AvailableModules availableModules) {
 		this.availableModules = availableModules;
 	}
 
-	public void addDaemon(DaemonModel daemonModel) {
+	public void addDaemon(final DaemonModel daemonModel) {
 		addChild(daemonModel);
 	}
 
-	public void removeDaemon(DaemonModel daemonModel) {
+	public void removeDaemon(final DaemonModel daemonModel) {
 		removeChild(daemonModel);
 	}
 
@@ -48,9 +48,9 @@ public final class ApplicationModel extends ResourceModel {
 	/**
 	 * Returns a service/resource of given id (go through all daemons, look at all their children)
 	 */
-	public ResourceModel getResourceModelForId(String id) {
-		for (ResourceModel daemonModel : getChildren()) {
-			for (ResourceModel resourceModel : daemonModel.getChildren()) {
+	public ResourceModel getResourceModelForId(final String id) {
+		for (final ResourceModel daemonModel : getChildren()) {
+			for (final ResourceModel resourceModel : daemonModel.getChildren()) {
 				if (resourceModel.getId().equals(id)) {
 					return resourceModel;
 				}
@@ -62,10 +62,10 @@ public final class ApplicationModel extends ResourceModel {
 	/**
 	 * Returns a service/resource of given type (go through all daemons, look at all their children)
 	 */
-	public ArrayList<ResourceModel> getResourceModelsForType(String type) {
-		ArrayList<ResourceModel> resources = new ArrayList<ResourceModel>();
-		for (ResourceModel daemonModel : getChildren()) {
-			for (ResourceModel resourceModel : daemonModel.getChildren()) {
+	public ArrayList<ResourceModel> getResourceModelsForType(final String type) {
+		final ArrayList<ResourceModel> resources = new ArrayList<ResourceModel>();
+		for (final ResourceModel daemonModel : getChildren()) {
+			for (final ResourceModel resourceModel : daemonModel.getChildren()) {
 				if (resourceModel.getType().equals(type)) {
 					resources.add(resourceModel);
 				}

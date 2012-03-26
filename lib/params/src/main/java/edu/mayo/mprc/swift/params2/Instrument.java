@@ -28,7 +28,7 @@ public class Instrument extends EvolvableBase {
 	Instrument() {
 	}
 
-	public Instrument(String name, Set<IonSeries> series, String mascotName) {
+	public Instrument(final String name, final Set<IonSeries> series, final String mascotName) {
 		if (name == null) {
 			throw new MprcException("Name of the instrument has to be specified");
 		}
@@ -45,7 +45,7 @@ public class Instrument extends EvolvableBase {
 		return name;
 	}
 
-	private void setName(String name) {
+	private void setName(final String name) {
 		this.name = name;
 	}
 
@@ -53,7 +53,7 @@ public class Instrument extends EvolvableBase {
 		return mascotName;
 	}
 
-	public void setMascotName(String mascotName) {
+	public void setMascotName(final String mascotName) {
 		this.mascotName = mascotName;
 	}
 
@@ -61,12 +61,12 @@ public class Instrument extends EvolvableBase {
 		return series;
 	}
 
-	private void setSeries(Set<IonSeries> series) {
+	private void setSeries(final Set<IonSeries> series) {
 		this.series = series;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -74,7 +74,7 @@ public class Instrument extends EvolvableBase {
 			return false;
 		}
 
-		Instrument that = (Instrument) o;
+		final Instrument that = (Instrument) o;
 
 		if (!getName().equals(that.getName())) {
 			return false;
@@ -94,11 +94,11 @@ public class Instrument extends EvolvableBase {
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(name);
 		sb.append(" (");
 		boolean first = true;
-		for (IonSeries is : getSeries()) {
+		for (final IonSeries is : getSeries()) {
 			if (!first) {
 				sb.append(", ");
 			} else {
@@ -115,12 +115,12 @@ public class Instrument extends EvolvableBase {
 	 *
 	 * @return First instrument from the list that supports given ion series.
 	 */
-	public static Instrument findInstrumentMatchingSeries(HashSet<IonSeries> hasseries, List<Instrument> supportedInstruments) {
+	public static Instrument findInstrumentMatchingSeries(final HashSet<IonSeries> hasseries, final List<Instrument> supportedInstruments) {
 		Instrument instrument = null;
-		for (Instrument inst : supportedInstruments) {
+		for (final Instrument inst : supportedInstruments) {
 			// search for instrument with matching ion series
 			int intersect = 0;
-			for (IonSeries is : inst.getSeries()) {
+			for (final IonSeries is : inst.getSeries()) {
 				if (hasseries.contains(is)) {
 					intersect++;
 				}
@@ -134,11 +134,11 @@ public class Instrument extends EvolvableBase {
 		return instrument;
 	}
 
-	private static Set<IonSeries> getInitialSeriesForNames(String... names) {
-		Set<IonSeries> result = new HashSet<IonSeries>(names.length);
-		for (String name : names) {
+	private static Set<IonSeries> getInitialSeriesForNames(final String... names) {
+		final Set<IonSeries> result = new HashSet<IonSeries>(names.length);
+		for (final String name : names) {
 			boolean found = false;
-			for (IonSeries series : IonSeries.getInitial()) {
+			for (final IonSeries series : IonSeries.getInitial()) {
 				if (series.getName().equals(name)) {
 					result.add(series);
 					found = true;
@@ -154,7 +154,7 @@ public class Instrument extends EvolvableBase {
 
 	public Instrument copy() {
 		final Set<IonSeries> seriesSet = new HashSet<IonSeries>();
-		for (IonSeries series : getSeries()) {
+		for (final IonSeries series : getSeries()) {
 			seriesSet.add(series.copy());
 		}
 		final Instrument instrument = new Instrument(getName(), seriesSet, getMascotName());

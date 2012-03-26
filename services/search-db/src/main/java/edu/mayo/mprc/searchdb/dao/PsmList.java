@@ -13,11 +13,11 @@ public final class PsmList extends PersistableListBase<PeptideSpectrumMatch> {
 	public PsmList() {
 	}
 
-	public PsmList(int initialCapacity) {
+	public PsmList(final int initialCapacity) {
 		super(initialCapacity);
 	}
 
-	public PsmList(Collection<PeptideSpectrumMatch> items) {
+	public PsmList(final Collection<PeptideSpectrumMatch> items) {
 		super(items);
 	}
 }

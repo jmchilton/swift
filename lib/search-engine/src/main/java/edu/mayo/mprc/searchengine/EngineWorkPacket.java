@@ -51,11 +51,11 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 	// Two minutes should be more than enough for the file written on one machine to appear on another machine
 	private static final int INPUT_FILE_TIMEOUT = 2 * 60 * 1000;
 
-	public EngineWorkPacket(String taskId, boolean fromScratch) {
+	public EngineWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public EngineWorkPacket(File inputFile, File outputFile, File searchParamsFile, File databaseFile, boolean publishResultFiles, String taskId, boolean fromScratch) {
+	public EngineWorkPacket(final File inputFile, final File outputFile, final File searchParamsFile, final File databaseFile, final boolean publishResultFiles, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		assert outputFile != null : "output file was null.";
@@ -83,7 +83,7 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 
 	@Override
 	public String getStringDescriptionOfTask() {
-		StringBuilder description = new StringBuilder();
+		final StringBuilder description = new StringBuilder();
 		String paramString = "";
 		try {
 			paramString = Files.toString(getSearchParamsFile(), Charsets.UTF_8);
@@ -113,7 +113,7 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 	}
 
 	@Override
-	public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+	public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 		final long outputFileModified = new File(subFolder, outputFiles.get(0)).lastModified();
 		return getInputFile().lastModified() > outputFileModified
 				||
@@ -121,7 +121,7 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 		reporter.reportProgress(new SearchEngineResult(new File(targetFolder, outputFiles.get(0))));
 	}
 
@@ -152,7 +152,7 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -160,7 +160,7 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 			return false;
 		}
 
-		EngineWorkPacket that = (EngineWorkPacket) o;
+		final EngineWorkPacket that = (EngineWorkPacket) o;
 
 		if (publishResultFiles != that.publishResultFiles) {
 			return false;

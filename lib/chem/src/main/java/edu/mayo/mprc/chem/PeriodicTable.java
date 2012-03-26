@@ -18,7 +18,7 @@ public final class PeriodicTable implements Cloneable {
 	 * Shallow copy. The returned PeriodicTable will share Elements with this.
 	 */
 	public PeriodicTable clone() throws CloneNotSupportedException {
-		PeriodicTable copy = (PeriodicTable) super.clone();
+		final PeriodicTable copy = (PeriodicTable) super.clone();
 		copy.elements = elements;
 		copy.protonMass = protonMass;
 		copy.electronMass = electronMass;
@@ -28,13 +28,13 @@ public final class PeriodicTable implements Cloneable {
 	/**
 	 * Adds an Element to this PeriodicTable.  This PeriodicTable takes ownership of the Element.
 	 */
-	public void addElement(Element element) {
+	public void addElement(final Element element) {
 		elements.put(element.getSymbol(), element);
 	}
 
-	public void removeElement(Element element) {
-		String symbol = element.getSymbol();
-		Element e = elements.get(symbol);
+	public void removeElement(final Element element) {
+		final String symbol = element.getSymbol();
+		final Element e = elements.get(symbol);
 		if (e == null) {
 			throw new MprcException("PeriodicTable does not contain element " + symbol);
 		}
@@ -46,7 +46,7 @@ public final class PeriodicTable implements Cloneable {
 	/**
 	 * Replace oldElement with newElement, which must have the same symbol.
 	 */
-	public void replaceElement(Element oldElement, Element newElement) {
+	public void replaceElement(final Element oldElement, final Element newElement) {
 		if (!oldElement.getSymbol().equals(newElement.getSymbol())) {
 			throw new MprcException(MessageFormat.format("Symbols don''t match: {0} {1}", oldElement.getSymbol(), newElement.getSymbol()));
 		}
@@ -62,7 +62,7 @@ public final class PeriodicTable implements Cloneable {
 	/**
 	 * Returns the Element with the given symbol.  If no such element exists, returns NULL.
 	 */
-	public Element getElementBySymbol(String symbol) {
+	public Element getElementBySymbol(final String symbol) {
 		return elements.get(symbol);
 	}
 
@@ -70,7 +70,7 @@ public final class PeriodicTable implements Cloneable {
 		return electronMass;
 	}
 
-	public void setElectronMass(double electronMass) {
+	public void setElectronMass(final double electronMass) {
 		this.electronMass = electronMass;
 	}
 
@@ -78,7 +78,7 @@ public final class PeriodicTable implements Cloneable {
 		return protonMass;
 	}
 
-	public void setProtonMass(double protonMass) {
+	public void setProtonMass(final double protonMass) {
 		this.protonMass = protonMass;
 	}
 

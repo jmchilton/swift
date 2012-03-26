@@ -49,7 +49,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	public ScaffoldDeploymentService() {
 	}
 
-	public DeploymentResult performDeployment(DeploymentRequest request) {
+	public DeploymentResult performDeployment(final DeploymentRequest request) {
 		final DeploymentResult reportInto = new DeploymentResult();
 
 		if (wasPreviouslyDeployed(request, reportInto)) {
@@ -70,7 +70,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 
 		reportInto.setDeployedFile(toDeploy);
 
-		List<File> generatedFiles = new LinkedList<File>();
+		final List<File> generatedFiles = new LinkedList<File>();
 		generatedFiles.add(getExistingIndex(toDeploy));
 		reportInto.setGeneratedFiles(generatedFiles);
 
@@ -78,9 +78,9 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
-		DeploymentResult reportResult = new DeploymentResult();
-		File deployedFile = this.getFileToDeploy(request.getShortName());
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
+		final DeploymentResult reportResult = new DeploymentResult();
+		final File deployedFile = this.getFileToDeploy(request.getShortName());
 
 		this.cleanUpDeployedFiles(deployedFile, reportResult);
 
@@ -88,12 +88,12 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	}
 
 	@Override
-	protected void validateAndDeleteDeploymentRelatedFiles(File deployedFastaFile, File deploymentFolder, List<File> deletedFiles, List<File> notDeletedFiles) {
-		File[] deploymentFiles = deploymentFolder.listFiles();
+	protected void validateAndDeleteDeploymentRelatedFiles(final File deployedFastaFile, final File deploymentFolder, final List<File> deletedFiles, final List<File> notDeletedFiles) {
+		final File[] deploymentFiles = deploymentFolder.listFiles();
 
-		Pattern pattern = Pattern.compile(deployedFastaFile.getName() + "\\.\\d+\\.index");
+		final Pattern pattern = Pattern.compile(deployedFastaFile.getName() + "\\.\\d+\\.index");
 
-		for (File deploymentFile : deploymentFiles) {
+		for (final File deploymentFile : deploymentFiles) {
 			if (!deploymentFile.isDirectory()
 					&& (pattern.matcher(deploymentFile.getName()).matches()
 					|| deploymentFile.getName().equals(deployedFastaFile.getName()))) {
@@ -107,34 +107,34 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 		}
 	}
 
-	private void produceIndexFile(File toDeploy, DatabaseAnnotation annotation) {
-		ScaffoldArgsBuilder execution = new ScaffoldArgsBuilder(getEngineRootFolder());
+	private void produceIndexFile(final File toDeploy, final DatabaseAnnotation annotation) {
+		final ScaffoldArgsBuilder execution = new ScaffoldArgsBuilder(getEngineRootFolder());
 
 		// Returns work folder for scaffold. Depending on the version, it is either the folder where the output is produced,
 		// or the Scaffold install folder itself.
-		File workFolder = execution.getWorkFolder(toDeploy.getParentFile());
+		final File workFolder = execution.getWorkFolder(toDeploy.getParentFile());
 
-		List<String> args = execution.buildScaffoldArgs(memoryLimit, execution.getScaffoldIndexerClassName());
+		final List<String> args = execution.buildScaffoldArgs(memoryLimit, execution.getScaffoldIndexerClassName());
 
 		// Make sure the work folder is there.
 		FileUtilities.ensureFolderExists(workFolder);
 
-		List<String> thisargs = new ArrayList<String>(args.size() + 4);
+		final List<String> thisargs = new ArrayList<String>(args.size() + 4);
 		thisargs.add(scaffoldJavaVmPath);
-		for (String arg : args) {
+		for (final String arg : args) {
 			thisargs.add(arg);
 		}
 		thisargs.add(toDeploy.getAbsolutePath());
 		thisargs.add(annotation.getAccessionRegex());
 		thisargs.add(annotation.getDescriptionRegex());
 
-		ProcessBuilder processBuilder = new ProcessBuilder(thisargs)
+		final ProcessBuilder processBuilder = new ProcessBuilder(thisargs)
 				.directory(workFolder);
 
-		ProcessCaller caller = new ProcessCaller(processBuilder);
+		final ProcessCaller caller = new ProcessCaller(processBuilder);
 
 		caller.run();
-		int exitValue = caller.getExitValue();
+		final int exitValue = caller.getExitValue();
 
 		LOGGER.debug("Scaffold finished with exit value " + String.valueOf(exitValue));
 		if (exitValue != 0) {
@@ -146,10 +146,10 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 		}
 	}
 
-	protected File getExistingIndex(File sisterFasta) {
+	protected File getExistingIndex(final File sisterFasta) {
 		final Pattern indexPattern = Pattern.compile(Pattern.quote(sisterFasta.getName()) + "\\.[^.]+\\.index");
-		File[] deployedIndices = sisterFasta.getParentFile().listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
+		final File[] deployedIndices = sisterFasta.getParentFile().listFiles(new FilenameFilter() {
+			public boolean accept(final File dir, final String name) {
 				return indexPattern.matcher(name).matches();
 			}
 		});
@@ -165,17 +165,17 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	 * Finds out the path to the file that we will want to deploy to.  This does not perform the copy action but only finds
 	 * out where we want to place the FASTA file.
 	 */
-	protected File getFileToDeploy(String uniqueName) {
-		File deploymentFolder = getCurrentDeploymentFolder(uniqueName);
+	protected File getFileToDeploy(final String uniqueName) {
+		final File deploymentFolder = getCurrentDeploymentFolder(uniqueName);
 		FileUtilities.ensureFolderExists(deploymentFolder);
 		return new File(deploymentFolder, uniqueName + ".fasta");
 	}
 
-	private File getCurrentDeploymentFolder(String uniqueName) {
+	private File getCurrentDeploymentFolder(final String uniqueName) {
 		return new File(getConfigDeploymentFolder(), uniqueName);
 	}
 
-	public boolean wasPreviouslyDeployed(DeploymentRequest request, DeploymentResult reportInto) {
+	public boolean wasPreviouslyDeployed(final DeploymentRequest request, final DeploymentResult reportInto) {
 		final File toCheckForPreviousDeployment = this.getFileToDeploy(request.getShortName());
 
 		if (!toCheckForPreviousDeployment.exists()) {
@@ -185,7 +185,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 
 		if (null != deployedIndex) {
 			reportInto.setDeployedFile(toCheckForPreviousDeployment);
-			List<File> generatedFiles = new LinkedList();
+			final List<File> generatedFiles = new LinkedList();
 			generatedFiles.add(deployedIndex);
 			reportInto.setGeneratedFiles(generatedFiles);
 			LOGGER.debug("File already deployed: " + deployedIndex.getAbsolutePath());
@@ -198,7 +198,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 		return scaffoldJavaVmPath;
 	}
 
-	public void setScaffoldJavaVmPath(String scaffoldJavaVmPath) {
+	public void setScaffoldJavaVmPath(final String scaffoldJavaVmPath) {
 		this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 	}
 
@@ -206,7 +206,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 		return memoryLimit;
 	}
 
-	public void setMemoryLimit(String memoryLimit) {
+	public void setMemoryLimit(final String memoryLimit) {
 		this.memoryLimit = memoryLimit;
 	}
 
@@ -227,7 +227,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 		public Config() {
 		}
 
-		public Config(String scaffoldJavaVmPath, String deployableDbFolder, String installDir) {
+		public Config(final String scaffoldJavaVmPath, final String deployableDbFolder, final String installDir) {
 			this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 			this.deployableDbFolder = deployableDbFolder;
 			this.installDir = installDir;
@@ -237,7 +237,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 			return scaffoldJavaVmPath;
 		}
 
-		public void setScaffoldJavaVmPath(String scaffoldJavaVmPath) {
+		public void setScaffoldJavaVmPath(final String scaffoldJavaVmPath) {
 			this.scaffoldJavaVmPath = scaffoldJavaVmPath;
 		}
 
@@ -245,7 +245,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 			return deployableDbFolder;
 		}
 
-		public void setDeployableDbFolder(String deployableDbFolder) {
+		public void setDeployableDbFolder(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
@@ -253,19 +253,19 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 			return installDir;
 		}
 
-		public void setInstallDir(String installDir) {
+		public void setInstallDir(final String installDir) {
 			this.installDir = installDir;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(SCAFFOLD_JAVA_VM_PATH, scaffoldJavaVmPath);
 			map.put(DEPLOYABLE_DB_FOLDER, deployableDbFolder);
 			map.put(INSTALL_DIR, installDir);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			scaffoldJavaVmPath = values.get(SCAFFOLD_JAVA_VM_PATH);
 			deployableDbFolder = values.get(DEPLOYABLE_DB_FOLDER);
 			installDir = values.get(INSTALL_DIR);
@@ -282,7 +282,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			ScaffoldDeploymentService worker = null;
 			try {
 				worker = new ScaffoldDeploymentService();
@@ -298,7 +298,7 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(INSTALL_DIR, "Installation Folder", "Scaffold installation folder").existingDirectory().required()
 					.property(DEPLOYABLE_DB_FOLDER, "Database Folder", "Folder where deployer copies database files to")
 					.required()

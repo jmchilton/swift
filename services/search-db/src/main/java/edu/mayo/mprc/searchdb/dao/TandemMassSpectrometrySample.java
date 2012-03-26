@@ -96,7 +96,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 	public TandemMassSpectrometrySample() {
 	}
 
-	public TandemMassSpectrometrySample(File file, DateTime lastModified, int ms1Spectra, int ms2Spectra, int ms3PlusSpectra, String instrumentName, String instrumentSerialNumber, DateTime startTime, double runTimeInSeconds, String comment, String tuneMethod, String instrumentMethod, String sampleInformation, String errorLog) {
+	public TandemMassSpectrometrySample(final File file, final DateTime lastModified, final int ms1Spectra, final int ms2Spectra, final int ms3PlusSpectra, final String instrumentName, final String instrumentSerialNumber, final DateTime startTime, final double runTimeInSeconds, final String comment, final String tuneMethod, final String instrumentMethod, final String sampleInformation, final String errorLog) {
 		this.file = file;
 		this.lastModified = lastModified;
 		this.ms1Spectra = ms1Spectra;
@@ -117,7 +117,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(final File file) {
 		this.file = file;
 	}
 
@@ -125,7 +125,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return lastModified;
 	}
 
-	public void setLastModified(DateTime lastModified) {
+	public void setLastModified(final DateTime lastModified) {
 		this.lastModified = lastModified;
 	}
 
@@ -133,7 +133,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return ms1Spectra;
 	}
 
-	public void setMs1Spectra(int ms1Spectra) {
+	public void setMs1Spectra(final int ms1Spectra) {
 		this.ms1Spectra = ms1Spectra;
 	}
 
@@ -141,7 +141,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return ms2Spectra;
 	}
 
-	public void setMs2Spectra(int ms2Spectra) {
+	public void setMs2Spectra(final int ms2Spectra) {
 		this.ms2Spectra = ms2Spectra;
 	}
 
@@ -149,7 +149,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return ms3PlusSpectra;
 	}
 
-	public void setMs3PlusSpectra(int ms3PlusSpectra) {
+	public void setMs3PlusSpectra(final int ms3PlusSpectra) {
 		this.ms3PlusSpectra = ms3PlusSpectra;
 	}
 
@@ -157,7 +157,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return instrumentName;
 	}
 
-	public void setInstrumentName(String instrumentName) {
+	public void setInstrumentName(final String instrumentName) {
 		this.instrumentName = instrumentName;
 	}
 
@@ -165,7 +165,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return instrumentSerialNumber;
 	}
 
-	public void setInstrumentSerialNumber(String instrumentSerialNumber) {
+	public void setInstrumentSerialNumber(final String instrumentSerialNumber) {
 		this.instrumentSerialNumber = instrumentSerialNumber;
 	}
 
@@ -173,7 +173,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return startTime;
 	}
 
-	public void setStartTime(DateTime startTime) {
+	public void setStartTime(final DateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -181,7 +181,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return runTimeInSeconds;
 	}
 
-	public void setRunTimeInSeconds(double runTimeInSeconds) {
+	public void setRunTimeInSeconds(final double runTimeInSeconds) {
 		this.runTimeInSeconds = runTimeInSeconds;
 	}
 
@@ -189,7 +189,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return comment;
 	}
 
-	public void setComment(String comment) {
+	public void setComment(final String comment) {
 		this.comment = comment;
 	}
 
@@ -197,7 +197,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return tuneMethod;
 	}
 
-	public void setTuneMethod(String tuneMethod) {
+	public void setTuneMethod(final String tuneMethod) {
 		this.tuneMethod = tuneMethod;
 	}
 
@@ -205,7 +205,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return instrumentMethod;
 	}
 
-	public void setInstrumentMethod(String instrumentMethod) {
+	public void setInstrumentMethod(final String instrumentMethod) {
 		this.instrumentMethod = instrumentMethod;
 	}
 
@@ -213,7 +213,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return sampleInformation;
 	}
 
-	public void setSampleInformation(String sampleInformation) {
+	public void setSampleInformation(final String sampleInformation) {
 		this.sampleInformation = sampleInformation;
 	}
 
@@ -221,12 +221,12 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 		return errorLog;
 	}
 
-	public void setErrorLog(String errorLog) {
+	public void setErrorLog(final String errorLog) {
 		this.errorLog = errorLog;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -234,7 +234,7 @@ public class TandemMassSpectrometrySample extends PersistableBase {
 			return false;
 		}
 
-		TandemMassSpectrometrySample that = (TandemMassSpectrometrySample) o;
+		final TandemMassSpectrometrySample that = (TandemMassSpectrometrySample) o;
 
 		if (getFile() != null ? !getFile().getAbsoluteFile().equals(that.getFile().getAbsoluteFile()) : that.getFile() != null) {
 			return false;

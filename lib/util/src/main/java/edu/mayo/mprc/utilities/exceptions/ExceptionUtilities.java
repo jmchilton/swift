@@ -11,9 +11,9 @@ public final class ExceptionUtilities {
 	/**
 	 * Return a string representation of a strack trace.  There's probably a much better way of doing this.
 	 */
-	public static String stringifyStackTrace(Throwable t) {
-		StringBuilder sb = new StringBuilder();
-		for (StackTraceElement ste : t.getStackTrace()) {
+	public static String stringifyStackTrace(final Throwable t) {
+		final StringBuilder sb = new StringBuilder();
+		for (final StackTraceElement ste : t.getStackTrace()) {
 			sb.append("\t");
 			sb.append(ste.toString());
 			sb.append("\n");
@@ -28,7 +28,7 @@ public final class ExceptionUtilities {
 	 * @param object        Object that was supposed to be some class.
 	 * @param expectedClass The class the object was expected to be.
 	 */
-	public static void throwCastException(Object object, Class<?> expectedClass) {
+	public static void throwCastException(final Object object, final Class<?> expectedClass) {
 		if (object != null && !expectedClass.isAssignableFrom(object.getClass())) {
 			throw new ClassCastException("Programmer error:\n"
 					+ "expected:\t" + expectedClass.getName() + "\n"

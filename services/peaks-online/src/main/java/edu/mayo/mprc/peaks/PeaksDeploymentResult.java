@@ -17,7 +17,7 @@ public final class PeaksDeploymentResult extends DeploymentResult {
 		return databaseId;
 	}
 
-	public void setDatabaseId(String databaseId) {
+	public void setDatabaseId(final String databaseId) {
 		this.databaseId = databaseId;
 	}
 }

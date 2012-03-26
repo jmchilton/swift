@@ -8,7 +8,7 @@ public final class PeaksSearchStatusEvent {
 	private String status;
 	private String searchId;
 
-	public PeaksSearchStatusEvent(String status, String searchId) {
+	public PeaksSearchStatusEvent(final String status, final String searchId) {
 		this.status = status;
 		this.searchId = searchId;
 	}

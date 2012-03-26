@@ -36,7 +36,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	public CurationDaoImpl() {
 	}
 
-	public CurationDaoImpl(DatabasePlaceholder databasePlaceholder) {
+	public CurationDaoImpl(final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 	}
 
@@ -54,7 +54,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 
 	@Override
 	public Curation getCuration(final int curationID) {
-		Session session = getSession();
+		final Session session = getSession();
 		Curation curation = null;
 		try {
 			curation = (Curation) session.get(Curation.class, curationID);
@@ -66,9 +66,9 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 
 	@Override
 	public Curation getCurationByShortName(final String shortName) {
-		Curation example = new Curation();
+		final Curation example = new Curation();
 		example.setShortName(shortName);
-		List<Curation> matches = this.getMatchingCurations(example, null, null);
+		final List<Curation> matches = this.getMatchingCurations(example, null, null);
 		if (matches == null || matches.size() == 0) {
 			return null;
 		} else {
@@ -83,8 +83,8 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	 * @param possibleUniquename
 	 * @return
 	 */
-	static String extractShortName(String possibleUniquename) {
-		Matcher uniquenameMatch = Pattern.compile("(?:\\$\\{)(?:DBPath:|DB:)([^}]*)(?:})").matcher(possibleUniquename);
+	static String extractShortName(final String possibleUniquename) {
+		final Matcher uniquenameMatch = Pattern.compile("(?:\\$\\{)(?:DBPath:|DB:)([^}]*)(?:})").matcher(possibleUniquename);
 		if (uniquenameMatch.matches()) {
 			return uniquenameMatch.group(1); //extract the uniquename from given one.  This should always match I think...
 		} else {
@@ -100,13 +100,13 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	 * @param name Name of the database.
 	 * @return Extracted short name.
 	 */
-	static String extractShortname(String name) {
-		Matcher latestMatch = Pattern.compile("(?:\\$\\{)(?:DBPath:|DB:)(.*)_LATEST(?:\\})").matcher(name);
+	static String extractShortname(final String name) {
+		final Matcher latestMatch = Pattern.compile("(?:\\$\\{)(?:DBPath:|DB:)(.*)_LATEST(?:\\})").matcher(name);
 		if (latestMatch.matches()) {
 			return latestMatch.group(1); //we have a _LATEST that we can extract shortname from
 		}
 
-		Matcher uniquenameMatch = Pattern.compile("^(.*)\\d{8}\\D\\.(fasta|FASTA)$").matcher(name);
+		final Matcher uniquenameMatch = Pattern.compile("^(.*)\\d{8}\\D\\.(fasta|FASTA)$").matcher(name);
 		if (uniquenameMatch.matches()) {
 			return uniquenameMatch.group(1); //we have a uniquename we can extract a shortname from
 		}
@@ -127,7 +127,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		// if there wasn't a match based on unqiue name then we are apprently working on a shortname in which case
 		// we will see if the request is for the latest and if so will give the latest of a particular shortname.
 		// So we will try to see if there are any matches on the shortname and find the most recently run curation with that shortname.
-		List<Curation> allMatches = getCurationsByShortname(extractShortname(name));
+		final List<Curation> allMatches = getCurationsByShortname(extractShortname(name));
 
 		if (allMatches.size() == 0) {
 			match = null;
@@ -139,7 +139,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		} else {
 			//sort the list based on the run date of the curation descending
 			Collections.sort(allMatches, new Comparator<Curation>() {
-				public int compare(Curation o1, Curation o2) {
+				public int compare(final Curation o1, final Curation o2) {
 					if (o1.getRunDate() == null && o2.getRunDate() == null) {
 						return 0;
 					}
@@ -152,7 +152,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 					return -o1.getRunDate().compareTo(o2.getRunDate());
 				}
 			});
-			for (Curation curation : allMatches) {
+			for (final Curation curation : allMatches) {
 				if (curation.getCurationFile() != null) {
 					match = curation;
 					break;
@@ -166,15 +166,15 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		return match;
 	}
 
-	public List<Curation> getCurationsByShortname(String shortname) {
+	public List<Curation> getCurationsByShortname(final String shortname) {
 		return getCurationsByShortname(shortname, false);
 	}
 
 	public List<Curation> getCurationsByShortname(final String shortname, final boolean ignoreCase) {
-		List<Curation> returnList = new ArrayList<Curation>();
+		final List<Curation> returnList = new ArrayList<Curation>();
 		List genericResults = null;
 		try {
-			Criteria criteria = allCriteria(Curation.class);
+			final Criteria criteria = allCriteria(Curation.class);
 			if (ignoreCase) {
 				criteria.add(Restrictions.eq("shortName", shortname).ignoreCase());
 			} else {
@@ -182,7 +182,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 			}
 			genericResults = criteria.list();
 			if (genericResults != null) {
-				for (Object o : genericResults) {
+				for (final Object o : genericResults) {
 					returnList.add((Curation) o);
 				}
 			}
@@ -224,11 +224,11 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	}
 
 	private List<Curation> getMatchingCurationsFromDb(final Curation templateCuration, final Date earliestRunDate, final Date latestRunDate) {
-		List<Curation> returnList = new ArrayList<Curation>();
+		final List<Curation> returnList = new ArrayList<Curation>();
 		List genericResults = null;
 
 		try {
-			Criteria criteria = allCriteria(Curation.class);
+			final Criteria criteria = allCriteria(Curation.class);
 			if (templateCuration != null) {
 				criteria.add(Example.create(templateCuration));
 			}
@@ -244,7 +244,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 					(templateCuration != null ? templateCuration.getShortName() : "") + " and dates between " + earliestRunDate + " and " + latestRunDate, t);
 		}
 		if (genericResults != null) {
-			for (Object o : genericResults) {
+			for (final Object o : genericResults) {
 				returnList.add((Curation) o);
 			}
 		}
@@ -255,9 +255,9 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	public SourceDatabaseArchive findSourceDatabaseInExistence(final String url, final DateTime fileCreationDate) {
 		List<SourceDatabaseArchive> archiveList = null;
 
-		Session session = getSession();
+		final Session session = getSession();
 		try {
-			Criteria criteria = session.createCriteria(SourceDatabaseArchive.class);
+			final Criteria criteria = session.createCriteria(SourceDatabaseArchive.class);
 			criteria.add(Restrictions.eq("sourceURL", url));
 			// serverDate has to match with one second precision - never test timestamp for equality
 			criteria.add(Restrictions.ge("serverDate", fileCreationDate.minusSeconds(1)));
@@ -268,8 +268,8 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		}
 
 		if (archiveList != null && archiveList.size() > 0) {
-			for (Object o : archiveList) {
-				SourceDatabaseArchive archive = (SourceDatabaseArchive) o;
+			for (final Object o : archiveList) {
+				final SourceDatabaseArchive archive = (SourceDatabaseArchive) o;
 				if (archive.getArchive() != null && archive.getArchive().exists()) {
 					return archive;
 				}
@@ -286,12 +286,12 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		}
 	}
 
-	private Criterion getHeaderTransformEqualityCriteria(HeaderTransform transform) {
+	private Criterion getHeaderTransformEqualityCriteria(final HeaderTransform transform) {
 		return Restrictions.eq("name", transform.getName());
 	}
 
 	@Override
-	public void addHeaderTransform(HeaderTransform sprotTrans) {
+	public void addHeaderTransform(final HeaderTransform sprotTrans) {
 		this.save(sprotTrans, getHeaderTransformEqualityCriteria(sprotTrans), true);
 	}
 
@@ -304,7 +304,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	}
 
 	@Override
-	public synchronized Curation addLegacyCuration(String legacyName) {
+	public synchronized Curation addLegacyCuration(final String legacyName) {
 		if (legacyCurationChange == null) {
 			legacyCurationChange = new Change("Adding legacy databases", new DateTime());
 		}
@@ -322,12 +322,12 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		return curation;
 	}
 
-	private Criterion getFastaSourceEqualityCriteria(FastaSource source) {
+	private Criterion getFastaSourceEqualityCriteria(final FastaSource source) {
 		return Restrictions.eq("name", source.getName());
 	}
 
 	@Override
-	public void addFastaSource(FastaSource source) {
+	public void addFastaSource(final FastaSource source) {
 		save(source, getFastaSourceEqualityCriteria(source), true);
 	}
 
@@ -345,7 +345,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	}
 
 	@Override
-	public void save(SourceDatabaseArchive archive) {
+	public void save(final SourceDatabaseArchive archive) {
 		try {
 			getSession().saveOrUpdate(archive);
 		} catch (Exception t) {
@@ -354,15 +354,15 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 	}
 
 	@Override
-	public void deleteCuration(Curation curation, Change change) {
+	public void deleteCuration(final Curation curation, final Change change) {
 		delete(curation, change);
 	}
 
-	private Criterion getCurationEqualityCriteria(Curation curation) {
+	private Criterion getCurationEqualityCriteria(final Curation curation) {
 		return Restrictions.eq("shortName", curation.getShortName());
 	}
 
-	public void delete(Object o) {
+	public void delete(final Object o) {
 		try {
 			getSession().delete(o);
 		} catch (Exception t) {
@@ -370,7 +370,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		}
 	}
 
-	public FastaSource getDataSourceByName(String name) {
+	public FastaSource getDataSourceByName(final String name) {
 		List<FastaSource> matches = null;
 		try {
 			matches = getSession()
@@ -384,7 +384,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		return matches == null || matches.isEmpty() ? null : matches.get(0);
 	}
 
-	public FastaSource getDataSourceByUrl(String url) {
+	public FastaSource getDataSourceByUrl(final String url) {
 		List<FastaSource> matches = null;
 		try {
 			matches = getSession()
@@ -398,7 +398,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		return matches == null || matches.isEmpty() ? null : matches.get(0);
 	}
 
-	public HeaderTransform getHeaderTransformByName(String name) {
+	public HeaderTransform getHeaderTransformByName(final String name) {
 		List<HeaderTransform> matches = null;
 		try {
 			matches = getSession()
@@ -411,7 +411,7 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 		return (matches == null || matches.isEmpty() ? null : matches.get(0));
 	}
 
-	public HeaderTransform getHeaderTransformByUrl(String forUrl) {
+	public HeaderTransform getHeaderTransformByUrl(final String forUrl) {
 		List<HeaderTransform> matches = null;
 		try {
 			matches = getSession()

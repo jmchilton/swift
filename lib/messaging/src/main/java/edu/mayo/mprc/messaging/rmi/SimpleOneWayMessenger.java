@@ -25,13 +25,13 @@ public final class SimpleOneWayMessenger implements OneWayMessenger {
 		}
 	}
 
-	public void addMessageListener(MessageListener messageListener) {
+	public void addMessageListener(final MessageListener messageListener) {
 		synchronized (messageListeners) {
 			messageListeners.add(messageListener);
 		}
 	}
 
-	public void removeMessageListener(MessageListener messageListener) {
+	public void removeMessageListener(final MessageListener messageListener) {
 		synchronized (messageListeners) {
 			messageListeners.remove(messageListener);
 		}

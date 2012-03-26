@@ -11,9 +11,9 @@ public class ProcessCallerTest {
 
 	@Test
 	public void shouldCallBasicCommand() {
-		ProcessBuilder builder = new ProcessBuilder()
+		final ProcessBuilder builder = new ProcessBuilder()
 				.command(getSimpleCommand());
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.setLogToConsole(false);
 		caller.setRetainLogs(true);
 		caller.run();
@@ -22,9 +22,9 @@ public class ProcessCallerTest {
 
 	@Test
 	public void shouldCallBasicCommandWithLogging() {
-		ProcessBuilder builder = new ProcessBuilder()
+		final ProcessBuilder builder = new ProcessBuilder()
 				.command(getSimpleCommand());
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.setLogToConsole(true);
 		caller.run();
 		Assert.assertEquals(caller.getOutputLog().trim(), OUTPUT);
@@ -32,10 +32,10 @@ public class ProcessCallerTest {
 
 	@Test
 	public void shouldGetDescription() {
-		ProcessBuilder builder = new ProcessBuilder()
+		final ProcessBuilder builder = new ProcessBuilder()
 				.command(getSimpleCommand())
 				.directory(new java.io.File("."));
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		final String description = caller.getCallDescription();
 		if (FileUtilities.isWindowsPlatform()) {
 			Assert.assertEquals(description, "\n\tcd .\n\tcmd /c \"echo " + OUTPUT + "\"");
@@ -46,9 +46,9 @@ public class ProcessCallerTest {
 
 	@Test
 	public void shouldUseMonitors() {
-		ProcessBuilder builder = new ProcessBuilder()
+		final ProcessBuilder builder = new ProcessBuilder()
 				.command(getSimpleCommand());
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		final MyLogMonitor outputMonitor = new MyLogMonitor();
 		caller.setOutputMonitor(outputMonitor);
 		caller.run();
@@ -67,7 +67,7 @@ public class ProcessCallerTest {
 		private String lastLine;
 
 		@Override
-		public void line(String line) {
+		public void line(final String line) {
 			lastLine = line;
 		}
 

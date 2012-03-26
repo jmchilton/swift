@@ -36,8 +36,8 @@ public final class SequestToMakeDBConverter {
 				.add(new Mapper("digest_mass_range") {
 					private final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)");
 
-					public Map<String, String> grab(Map<String, String> values, String inputKey, String inputValue) {
-						Matcher m = p.matcher(inputValue);
+					public Map<String, String> grab(Map<String, String> values, final String inputKey, final String inputValue) {
+						final Matcher m = p.matcher(inputValue);
 						if (!m.matches()) {
 							throw new MprcException("Can't understand digest_mass_range '" + inputValue + "'");
 						}
@@ -45,8 +45,8 @@ public final class SequestToMakeDBConverter {
 						return put(values, "max_peptide_mass", m.group(2));
 					}
 
-					public void output(Map<String, String> values, StringBuilder newPic) {
-						for (Map.Entry<String, String> entry : values.entrySet()) {
+					public void output(final Map<String, String> values, final StringBuilder newPic) {
+						for (final Map.Entry<String, String> entry : values.entrySet()) {
 							add(entry.getKey(), entry.getValue(), newPic);
 						}
 					}
@@ -91,7 +91,7 @@ public final class SequestToMakeDBConverter {
 	}
 
 	private abstract static class Mapper {
-		public Mapper(String regexp) {
+		public Mapper(final String regexp) {
 			this.regexp = regexp;
 		}
 
@@ -119,11 +119,11 @@ public final class SequestToMakeDBConverter {
 		 */
 		public abstract void output(Map<String, String> values, StringBuilder newPic);
 
-		protected void add(String key, String value, StringBuilder pic) {
+		protected void add(final String key, final String value, final StringBuilder pic) {
 			pic.append(key.trim()).append(" = ").append(value.trim()).append("\n");
 		}
 
-		protected Map<String, String> put(Map<String, String> values, String key, String value) {
+		protected Map<String, String> put(Map<String, String> values, final String key, final String value) {
 			if (values == null) {
 				values = new LinkedHashMap<String, String>();
 			}
@@ -136,15 +136,15 @@ public final class SequestToMakeDBConverter {
 	 * Silently ignores the input Param matching regexp.
 	 */
 	private static final class NullMapper extends Mapper {
-		public NullMapper(String regexp) {
+		public NullMapper(final String regexp) {
 			super(regexp);
 		}
 
-		public Map<String, String> grab(Map<String, String> values, String inputKey, String inputValue) {
+		public Map<String, String> grab(final Map<String, String> values, final String inputKey, final String inputValue) {
 			return values;
 		}
 
-		public void output(Map<String, String> values, StringBuilder newPic) { /* nothing */}
+		public void output(final Map<String, String> values, final StringBuilder newPic) { /* nothing */}
 	}
 
 	/**
@@ -154,18 +154,18 @@ public final class SequestToMakeDBConverter {
 		private String outputKey;
 		private String value;
 
-		public ConstantMapper(String outputKey, String value) {
+		public ConstantMapper(final String outputKey, final String value) {
 			super(null);
 			this.outputKey = outputKey;
 			this.value = value;
 		}
 
-		public Map<String, String> grab(Map<String, String> values, String inputKey, String inputValue) {
+		public Map<String, String> grab(final Map<String, String> values, final String inputKey, final String inputValue) {
 			// never called because has no regex
 			return values;
 		}
 
-		public void output(Map<String, String> values, StringBuilder newPic) {
+		public void output(final Map<String, String> values, final StringBuilder newPic) {
 			add(this.outputKey, this.value, newPic);
 		}
 
@@ -174,31 +174,31 @@ public final class SequestToMakeDBConverter {
 	/* Maps the save value from inputKey to outputKey.*/
 
 	private static final class DirectMapper extends Mapper {
-		public DirectMapper(String sameKeyRegexp) {
+		public DirectMapper(final String sameKeyRegexp) {
 			super(sameKeyRegexp);
 			this.outputKey = null;
 		}
 
-		public DirectMapper(String inputKeyRegexp, String newKey) {
+		public DirectMapper(final String inputKeyRegexp, final String newKey) {
 			super(inputKeyRegexp);
 			this.outputKey = newKey;
 		}
 
 		private String outputKey;
 
-		public Map<String, String> grab(Map<String, String> values, String inputKey, String inputValue) {
+		public Map<String, String> grab(final Map<String, String> values, final String inputKey, final String inputValue) {
 			return put(values, outputKey == null ? inputKey : outputKey, inputValue);
 		}
 
-		public void output(Map<String, String> values, StringBuilder newPic) {
-			for (Map.Entry<String, String> e : values.entrySet()) {
+		public void output(final Map<String, String> values, final StringBuilder newPic) {
+			for (final Map.Entry<String, String> e : values.entrySet()) {
 				add(e.getKey(), e.getValue(), newPic);
 			}
 		}
 	}
 
-	public SequestToMakeDBConverter add(Mapper m) {
-		String re = m.getRegexp();
+	public SequestToMakeDBConverter add(final Mapper m) {
+		final String re = m.getRegexp();
 		if (re != null && re.length() > 0) {
 			if (re.matches("\\((?!\\?)")) {
 				throw new MprcException("Can't handle regexps with capturing groups yet");
@@ -209,7 +209,7 @@ public final class SequestToMakeDBConverter {
 				}
 				sb.append("(").append(re).append(")");
 				groupMap.put(groupMap.size() + 1, re);
-				List<Mapper> l = new ArrayList<Mapper>();
+				final List<Mapper> l = new ArrayList<Mapper>();
 				l.add(m);
 				mappers.put(re, l);
 				regexp = null;
@@ -221,9 +221,9 @@ public final class SequestToMakeDBConverter {
 		return this;
 	}
 
-	private void map(SequestMappings oldPic, StringBuilder newPic) {
-		Set<String> matched = new HashSet<String>();
-		Map<Mapper, Map<String, String>> valuesHashes = new HashMap<Mapper, Map<String, String>>();
+	private void map(final SequestMappings oldPic, final StringBuilder newPic) {
+		final Set<String> matched = new HashSet<String>();
+		final Map<Mapper, Map<String, String>> valuesHashes = new HashMap<Mapper, Map<String, String>>();
 		if (regexp == null) {
 			if (sb.length() == 0) {
 				throw new MprcException("No Mapper regexps found");
@@ -232,8 +232,8 @@ public final class SequestToMakeDBConverter {
 			LOGGER.info(regexp.pattern());
 		}
 		boolean unmatched = false;
-		for (Map.Entry<String, String> p : oldPic.getNativeParams().entrySet()) {
-			Matcher m = regexp.matcher(p.getKey());
+		for (final Map.Entry<String, String> p : oldPic.getNativeParams().entrySet()) {
+			final Matcher m = regexp.matcher(p.getKey());
 			if (m.matches()) {
 				int i;
 				for (i = 1; i < m.groupCount(); ++i) {
@@ -244,10 +244,10 @@ public final class SequestToMakeDBConverter {
 				if (i == m.groupCount() + 1) {
 					throw new MprcException("No group!?");
 				}
-				String key = groupMap.get(i);
+				final String key = groupMap.get(i);
 				matched.add(key);
-				List<Mapper> mm = mappers.get(key);
-				for (Mapper mapper : mm) {
+				final List<Mapper> mm = mappers.get(key);
+				for (final Mapper mapper : mm) {
 					valuesHashes.put(mapper, mapper.grab(valuesHashes.get(mapper), p.getKey(), p.getValue()));
 				}
 			} else {
@@ -256,10 +256,10 @@ public final class SequestToMakeDBConverter {
 			}
 		}
 
-		for (Map.Entry<String, List<Mapper>> k : mappers.entrySet()) {
+		for (final Map.Entry<String, List<Mapper>> k : mappers.entrySet()) {
 			if (!matched.contains(k.getKey())) {
 				boolean missedInterestingMapper = false;
-				for (Mapper m : k.getValue()) {
+				for (final Mapper m : k.getValue()) {
 					if (!(m instanceof NullMapper)) {
 						missedInterestingMapper = true;
 					}
@@ -274,7 +274,7 @@ public final class SequestToMakeDBConverter {
 			throw new MprcException("Sequest -> Makedb mapping is incorrect");
 		}
 
-		for (Mapper mapper : mappersInOrder) {
+		for (final Mapper mapper : mappersInOrder) {
 			mapper.output(valuesHashes.get(mapper), newPic);
 		}
 	}
@@ -285,7 +285,7 @@ public final class SequestToMakeDBConverter {
 	 * @param sequestParams
 	 * @return MakeDB param file contents
 	 */
-	public StringBuilder convertSequestToMakeDB(SequestMappings sequestParams, File fastaFile) {
+	public StringBuilder convertSequestToMakeDB(final SequestMappings sequestParams, final File fastaFile) {
 		SequestMappings pic = null;
 		try {
 			pic = (SequestMappings) sequestParams.clone();
@@ -293,17 +293,17 @@ public final class SequestToMakeDBConverter {
 			throw new MprcException(e);
 		}
 		pic.setNativeParam("first_database_name", fastaFile.getAbsolutePath());
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("[MAKEDB]\n");
 		map(pic, builder);
 		return builder;
 	}
 
-	public StringBuilder convertSequestParamsFileIntoMakeDBPIC(File sequestParamsFile, File fastaFile, SequestMappingFactory factory) throws IOException {
+	public StringBuilder convertSequestParamsFileIntoMakeDBPIC(final File sequestParamsFile, final File fastaFile, final SequestMappingFactory factory) throws IOException {
 		FileReader reader = null;
 		try {
 			reader = new FileReader(sequestParamsFile);
-			SequestMappings sequestPIC = (SequestMappings) factory.createMapping();
+			final SequestMappings sequestPIC = (SequestMappings) factory.createMapping();
 			sequestPIC.read(reader);
 			return convertSequestToMakeDB(sequestPIC, fastaFile);
 		} finally {
@@ -311,7 +311,7 @@ public final class SequestToMakeDBConverter {
 		}
 	}
 
-	public void writeMakedbParams(String fileContents, File makeDbDest) throws IOException {
+	public void writeMakedbParams(final String fileContents, final File makeDbDest) throws IOException {
 		FileUtilities.writeStringToFile(makeDbDest, fileContents, false);
 	}
 }

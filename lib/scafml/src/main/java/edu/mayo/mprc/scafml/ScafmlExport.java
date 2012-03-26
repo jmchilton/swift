@@ -31,7 +31,7 @@ public final class ScafmlExport extends FileHolder {
 	public ScafmlExport() {
 	}
 
-	public ScafmlExport(File scaffoldOutputDir, boolean exportSpectra, boolean exportPeptideReport, double proteinProbability, double peptideProbability, int minimumPeptideCount, int minimumNonTrypticTerminii, String starred, String delimiter, boolean regularExpression, boolean matchName, boolean saveOnlyIdentifiedSpectra, boolean saveNoSpectra) {
+	public ScafmlExport(final File scaffoldOutputDir, final boolean exportSpectra, final boolean exportPeptideReport, final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNonTrypticTerminii, final String starred, final String delimiter, final boolean regularExpression, final boolean matchName, final boolean saveOnlyIdentifiedSpectra, final boolean saveNoSpectra) {
 		this.scaffoldOutputDir = scaffoldOutputDir;
 		this.exportSpectra = exportSpectra;
 		this.exportPeptideReport = exportPeptideReport;
@@ -47,7 +47,7 @@ public final class ScafmlExport extends FileHolder {
 		this.saveNoSpectra = saveNoSpectra;
 	}
 
-	public void appendToDocument(StringBuilder result, String indent) {
+	public void appendToDocument(final StringBuilder result, final String indent) {
 		result
 				.append(indent)
 				.append("<DisplayThresholds " +
@@ -107,7 +107,7 @@ public final class ScafmlExport extends FileHolder {
 	 * @param result Resulting XML to append the export to.
 	 * @param indent How much to indent the XML.
 	 */
-	private void appendScaffoldXmlExport(StringBuilder result, String indent) {
+	private void appendScaffoldXmlExport(final StringBuilder result, final String indent) {
 		result
 				.append(indent)
 				.append("<Export type=\"scaffoldxml\" thresholds=\"thresh\" path=\"").append(scaffoldOutputDir.getAbsolutePath()).append("\"/>\n");

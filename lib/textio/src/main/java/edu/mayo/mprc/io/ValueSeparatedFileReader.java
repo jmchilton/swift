@@ -22,7 +22,7 @@ public final class ValueSeparatedFileReader implements Closeable {
 	private String lastLine = null;
 	private static final int BUFFER_SIZE = 10 * 1024;
 
-	public ValueSeparatedFileReader(File file, String columnDelimiter) throws IOException {
+	public ValueSeparatedFileReader(final File file, final String columnDelimiter) throws IOException {
 		this.file = file;
 		this.columnDelimiter = columnDelimiter;
 		this.reader = null;
@@ -42,7 +42,7 @@ public final class ValueSeparatedFileReader implements Closeable {
 	 */
 	public boolean hasMoreRows() {
 		try {
-			List<String> contents = nextRow();
+			final List<String> contents = nextRow();
 			previousRow();
 			return contents != null;
 		} catch (IOException t) {
@@ -58,7 +58,7 @@ public final class ValueSeparatedFileReader implements Closeable {
 		if (!rereadLast) {
 			lastLine = reader.readLine();
 			if (lastLine != null) {
-				String[] split = lastLine.split(columnDelimiter, /*Keep trailing*/-1);
+				final String[] split = lastLine.split(columnDelimiter, /*Keep trailing*/-1);
 				currentRowValue = Arrays.asList(split);
 			} else {
 				currentRowValue = null;
@@ -78,8 +78,8 @@ public final class ValueSeparatedFileReader implements Closeable {
 	 *                                Only the values of listed columns are returned. If null, all columns are returned.
 	 *                                When there are missing requested columns in the input, null is returned.
 	 */
-	public List<String> nextRow(boolean includeColumnDelimiters, int[] columns) throws IOException {
-		List<String> row = nextRow();
+	public List<String> nextRow(final boolean includeColumnDelimiters, final int[] columns) throws IOException {
+		final List<String> row = nextRow();
 		if (row == null) {
 			return null;
 		}
@@ -91,7 +91,7 @@ public final class ValueSeparatedFileReader implements Closeable {
 				return interleave(row);
 			}
 		}
-		List<String> subset = new ArrayList<String>(columns.length + (includeColumnDelimiters ? columns.length - 1 : 0));
+		final List<String> subset = new ArrayList<String>(columns.length + (includeColumnDelimiters ? columns.length - 1 : 0));
 		for (int i = 0; i < columns.length; i++) {
 			if (columns[i] >= row.size()) {
 				return null;
@@ -104,10 +104,10 @@ public final class ValueSeparatedFileReader implements Closeable {
 		return subset;
 	}
 
-	private List<String> interleave(List<String> row) {
-		List<String> interleaved = new ArrayList<String>(row.size() + row.size() - 1);
+	private List<String> interleave(final List<String> row) {
+		final List<String> interleaved = new ArrayList<String>(row.size() + row.size() - 1);
 		int i = 0;
-		for (String s : row) {
+		for (final String s : row) {
 			interleaved.add(s);
 			i++;
 			if (i < row.size()) {

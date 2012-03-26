@@ -23,7 +23,7 @@ final class SpectrumQaTask extends AsyncTaskBase {
 
 	public static final String TASK_NAME = "MSMSEval Filter";
 
-	public SpectrumQaTask(DaemonConnection daemon, MgfOutput sourceMGFFile, File msmsEvalParamFile, File outputDirectory, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public SpectrumQaTask(final DaemonConnection daemon, final MgfOutput sourceMGFFile, final File msmsEvalParamFile, final File outputDirectory, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.outputDirectory = outputDirectory;
 		this.sourceMGFFile = sourceMGFFile;
@@ -48,7 +48,7 @@ final class SpectrumQaTask extends AsyncTaskBase {
 	 *         to send a work packet.
 	 */
 	public WorkPacket createWorkPacket() {
-		File msmsEvalOutputFile = getMsmsEvalOutputFile();
+		final File msmsEvalOutputFile = getMsmsEvalOutputFile();
 		if (!isFromScratch() && msmsEvalOutputFile.exists() && msmsEvalOutputFile.length() > 0) {
 			LOGGER.info("Skipping msmsEval spectrum analysis because output file, " + msmsEvalOutputFile.getAbsolutePath() + ", already exists.");
 			return null;
@@ -61,7 +61,7 @@ final class SpectrumQaTask extends AsyncTaskBase {
 		//Do nothing
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		if (progressInfo instanceof MsmsEvalResult) {
 			final MsmsEvalResult evalResult = (MsmsEvalResult) progressInfo;
 			outputFile = evalResult.getOutputFile();

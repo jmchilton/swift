@@ -10,15 +10,15 @@ public final class TsvStreamReaderTest {
 
 	@Test
 	public void testReader() throws IOException {
-		TsvStreamReader reader = new TsvStreamReader(TestingUtilities.getTempFileFromResource(this.getClass(), "/tsvFile.tsv", true, null));
+		final TsvStreamReader reader = new TsvStreamReader(TestingUtilities.getTempFileFromResource(this.getClass(), "/tsvFile.tsv", true, null));
 		Assert.assertTrue(reader.hasLine(), "Reader must report lines");
-		String header = reader.nextLine();
+		final String header = reader.nextLine();
 		Assert.assertEquals(header, "header1\theader2\theader3\theader4\theader5");
 		final int[] columnIndices = new int[]{0, 2, 4, 3};
 		final char[] columnTypes = new char[]{'f', 'i', 's', 's'};
-		float[] floats = new float[5];
-		int[] integers = new int[5];
-		String[] strings = new String[5];
+		final float[] floats = new float[5];
+		final int[] integers = new int[5];
+		final String[] strings = new String[5];
 
 		Assert.assertTrue(reader.nextValues(columnIndices, columnTypes, floats, integers, strings));
 		Assert.assertEquals(floats[0], 1.0f);

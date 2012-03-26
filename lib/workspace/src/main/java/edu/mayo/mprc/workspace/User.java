@@ -36,7 +36,7 @@ public class User extends EvolvableBase implements Serializable {
 	public User() {
 	}
 
-	public User(String firstName, String lastName, String userName, String userPassword) {
+	public User(final String firstName, final String lastName, final String userName, final String userPassword) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.userName = userName;
@@ -45,7 +45,7 @@ public class User extends EvolvableBase implements Serializable {
 		this.rights = 0L;
 	}
 
-	public User(String firstName, String lastName, String userName, String initials, String userPassword) {
+	public User(final String firstName, final String lastName, final String userName, final String initials, final String userPassword) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.userName = userName;
@@ -57,7 +57,7 @@ public class User extends EvolvableBase implements Serializable {
 	/**
 	 * Copy constructor.
 	 */
-	public User(User copyFrom) {
+	public User(final User copyFrom) {
 		this.firstName = copyFrom.firstName;
 		this.lastName = copyFrom.lastName;
 		this.userName = copyFrom.userName;
@@ -65,7 +65,7 @@ public class User extends EvolvableBase implements Serializable {
 		this.rights = copyFrom.rights;
 	}
 
-	public void setFirstName(String firstName) {
+	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
 
@@ -73,7 +73,7 @@ public class User extends EvolvableBase implements Serializable {
 		return firstName;
 	}
 
-	public void setLastName(String lastName) {
+	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
 
@@ -81,7 +81,7 @@ public class User extends EvolvableBase implements Serializable {
 		return lastName;
 	}
 
-	public void setInitials(String initials) {
+	public void setInitials(final String initials) {
 		this.initials = initials;
 	}
 
@@ -93,7 +93,7 @@ public class User extends EvolvableBase implements Serializable {
 		}
 	}
 
-	public void setUserPassword(String userPassword) {
+	public void setUserPassword(final String userPassword) {
 		this.userPassword = userPassword;
 	}
 
@@ -101,7 +101,7 @@ public class User extends EvolvableBase implements Serializable {
 		return userPassword;
 	}
 
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
@@ -113,7 +113,7 @@ public class User extends EvolvableBase implements Serializable {
 		return preferences;
 	}
 
-	void setPreferences(Map<String, String> preferences) {
+	void setPreferences(final Map<String, String> preferences) {
 		this.preferences = preferences;
 	}
 
@@ -121,7 +121,7 @@ public class User extends EvolvableBase implements Serializable {
 	 * @param key   Preference key to set.
 	 * @param value Preference value to set. When set to <code>null</code>, the preference is removed.
 	 */
-	void addPreference(String key, String value) {
+	void addPreference(final String key, final String value) {
 		if (value == null) {
 			this.preferences.remove(key);
 		} else {
@@ -129,7 +129,7 @@ public class User extends EvolvableBase implements Serializable {
 		}
 	}
 
-	String preferenceValue(String key) {
+	String preferenceValue(final String key) {
 		return this.preferences.get(key);
 	}
 
@@ -146,7 +146,7 @@ public class User extends EvolvableBase implements Serializable {
 	/**
 	 * @deprecated use the getPreference/setPreference API
 	 */
-	public void setRights(Long rights) {
+	public void setRights(final Long rights) {
 		this.rights = rights;
 	}
 
@@ -166,18 +166,18 @@ public class User extends EvolvableBase implements Serializable {
 	 *
 	 * @param enabled True if the user can edit parameter sets.
 	 */
-	public void setParameterEditorEnabled(boolean enabled) {
+	public void setParameterEditorEnabled(final boolean enabled) {
 		addPreference(PARAMETER_EDITOR_DISABLED, enabled ? null : "1");
 	}
 
 	/**
 	 * @param enabled Set to true to enable the users to change the output directory where Swift puts its results.
 	 */
-	public void setOutputPathChangeEnabled(boolean enabled) {
+	public void setOutputPathChangeEnabled(final boolean enabled) {
 		addPreference(OUTPUT_PATH_CHANGEABLE, enabled ? "1" : null);
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -185,7 +185,7 @@ public class User extends EvolvableBase implements Serializable {
 			return false;
 		}
 
-		User that = (User) o;
+		final User that = (User) o;
 
 		if (getFirstName() != null ? !getFirstName().equals(that.getFirstName()) : that.getFirstName() != null) {
 			return false;

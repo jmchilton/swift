@@ -21,7 +21,7 @@ public final class MgfToMgfWorker implements Worker {
 	public static final String NAME = ".mgf Cleanup";
 	public static final String DESC = "Swift expects <tt>.mgf</tt> headers to be in certain format (indicate the spectrum), so the results of the search engines can be more easily pieced together. If you want to search .mgf files directly, the cleaner has to check that the headers are okay and modify them if they are not. Without this module, Swift cannot process <tt>.mgf</tt> files.";
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -32,10 +32,10 @@ public final class MgfToMgfWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket wp, ProgressReporter reporter) {
-		MgfTitleCleanupWorkPacket workPacket = (MgfTitleCleanupWorkPacket) wp;
-		File mgfFile = workPacket.getMgfToCleanup();
-		File cleanedMgf = workPacket.getCleanedMgf();
+	private void process(final WorkPacket wp, final ProgressReporter reporter) {
+		final MgfTitleCleanupWorkPacket workPacket = (MgfTitleCleanupWorkPacket) wp;
+		final File mgfFile = workPacket.getMgfToCleanup();
+		final File cleanedMgf = workPacket.getCleanedMgf();
 
 		boolean cleanupNeeded = false;
 		if (!cleanedMgf.exists()) {
@@ -60,7 +60,7 @@ public final class MgfToMgfWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			return new MgfToMgfWorker();
 		}
 	}
@@ -74,12 +74,12 @@ public final class MgfToMgfWorker implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			return new HashMap<String, String>(1);
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 		}
 
 		@Override
@@ -89,7 +89,7 @@ public final class MgfToMgfWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 		}
 	}
 }

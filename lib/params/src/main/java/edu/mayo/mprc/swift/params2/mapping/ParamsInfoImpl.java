@@ -19,140 +19,140 @@ import java.util.*;
  * TODO: Merge this cache with the DAOs to ensure that it gets invalidated when the user changes something.
  */
 public final class ParamsInfoImpl extends ParamsInfo {
-    private CurationDao curationDao;
-    private UnimodDao unimodDao;
-    private ParamsDao paramsDao;
+	private CurationDao curationDao;
+	private UnimodDao unimodDao;
+	private ParamsDao paramsDao;
 
-    private List<Protease> enzymes;
+	private List<Protease> enzymes;
 
-    private Unimod unimod;
-    private Map<String, IonSeries> ions;
+	private Unimod unimod;
+	private Map<String, IonSeries> ions;
 
-    private Instrument defInst;
-    private List<Instrument> insts;
-    private final Map<String, Instrument> instsHash = new HashMap<String, Instrument>();
+	private Instrument defInst;
+	private List<Instrument> insts;
+	private final Map<String, Instrument> instsHash = new HashMap<String, Instrument>();
 
-    /**
-     * @param curationDao Access to the database with a list of supported curations (allows us to translate database names to files)
-     * @param unimodDao   Access to unimod.
-     */
-    public ParamsInfoImpl(CurationDao curationDao, UnimodDao unimodDao, ParamsDao paramsDao) {
-        this.curationDao = curationDao;
-        this.unimodDao = unimodDao;
-        this.paramsDao = paramsDao;
-    }
+	/**
+	 * @param curationDao Access to the database with a list of supported curations (allows us to translate database names to files)
+	 * @param unimodDao   Access to unimod.
+	 */
+	public ParamsInfoImpl(final CurationDao curationDao, final UnimodDao unimodDao, final ParamsDao paramsDao) {
+		this.curationDao = curationDao;
+		this.unimodDao = unimodDao;
+		this.paramsDao = paramsDao;
+	}
 
-    @Override
-    public List<Curation> getDatabaseAllowedValues() {
-        final List<Curation> matchingCurations = curationDao.getMatchingCurations(null, null, null);
-        if (matchingCurations == null || matchingCurations.size() == 0) {
-            throw new MprcException("No curations found. Did you initialize the database with curations?");
-        }
-        List<Curation> dbs = new ArrayList<Curation>();
-        for (Curation c : matchingCurations) {
-            if (!c.hasBeenRun()) {
-                continue;
-            }
-            dbs.add(c);
-        }
-        if (dbs.size() == 0) {
-            throw new MprcException("No curations have been run?!");
-        }
-        Collections.sort(dbs, new Comparator<Curation>() {
-            public int compare(Curation o1, Curation o2) {
-                String name1 = o1.getShortName();
-                String name2 = o2.getShortName();
-                return name1.compareToIgnoreCase(name2);
-            }
-        });
-        return dbs;
-    }
+	@Override
+	public List<Curation> getDatabaseAllowedValues() {
+		final List<Curation> matchingCurations = curationDao.getMatchingCurations(null, null, null);
+		if (matchingCurations == null || matchingCurations.size() == 0) {
+			throw new MprcException("No curations found. Did you initialize the database with curations?");
+		}
+		final List<Curation> dbs = new ArrayList<Curation>();
+		for (final Curation c : matchingCurations) {
+			if (!c.hasBeenRun()) {
+				continue;
+			}
+			dbs.add(c);
+		}
+		if (dbs.size() == 0) {
+			throw new MprcException("No curations have been run?!");
+		}
+		Collections.sort(dbs, new Comparator<Curation>() {
+			public int compare(final Curation o1, final Curation o2) {
+				final String name1 = o1.getShortName();
+				final String name2 = o2.getShortName();
+				return name1.compareToIgnoreCase(name2);
+			}
+		});
+		return dbs;
+	}
 
-    private void initializeEnzymes() {
-        if (enzymes == null) {
-            this.enzymes = paramsDao.proteases();
-        }
-    }
+	private void initializeEnzymes() {
+		if (enzymes == null) {
+			this.enzymes = paramsDao.proteases();
+		}
+	}
 
-    @Override
-    public List<Protease> getEnzymeAllowedValues() {
-        initializeEnzymes();
-        return enzymes;
-    }
+	@Override
+	public List<Protease> getEnzymeAllowedValues() {
+		initializeEnzymes();
+		return enzymes;
+	}
 
-    private void initializeUnimod() {
-        if (unimod == null) {
-            try {
-                this.unimod = unimodDao.load();
-            } catch (Exception t) {
-                throw new MprcException("Could not load unimod data from the database", t);
-            }
-        }
-    }
+	private void initializeUnimod() {
+		if (unimod == null) {
+			try {
+				this.unimod = unimodDao.load();
+			} catch (Exception t) {
+				throw new MprcException("Could not load unimod data from the database", t);
+			}
+		}
+	}
 
-    private Set<ModSpecificity> variableModsDefault;
+	private Set<ModSpecificity> variableModsDefault;
 
-    @Override
-    public Set<ModSpecificity> getVariableModsAllowedValues(boolean includeHidden) {
-        initializeUnimod();
-        return unimod.getAllSpecificities(includeHidden);
-    }
+	@Override
+	public Set<ModSpecificity> getVariableModsAllowedValues(final boolean includeHidden) {
+		initializeUnimod();
+		return unimod.getAllSpecificities(includeHidden);
+	}
 
-    @Override
-    public Set<ModSpecificity> getFixedModsAllowedValues(boolean includeHidden) {
-        initializeUnimod();
-        return unimod.getAllSpecificities(includeHidden);
-    }
+	@Override
+	public Set<ModSpecificity> getFixedModsAllowedValues(final boolean includeHidden) {
+		initializeUnimod();
+		return unimod.getAllSpecificities(includeHidden);
+	}
 
-    @Override
-    public Unimod getUnimod() {
-        initializeUnimod();
-        return unimod;
-    }
+	@Override
+	public Unimod getUnimod() {
+		initializeUnimod();
+		return unimod;
+	}
 
-    private void initializeInstruments() {
-        if (insts == null) {
-            this.insts = paramsDao.instruments();
-            for (Instrument instrument : insts) {
-                if (instrument.getMascotName() != null && instrument.getMascotName().equals(Instrument.ORBITRAP.getMascotName())) {
-                    defInst = instrument;
-                    break;
-                }
-            }
-            if (defInst == null) {
-                defInst = insts.get(0);
-            }
-            for (Instrument instrument : insts) {
-                instsHash.put(instrument.getName(), instrument);
-            }
-        }
-    }
+	private void initializeInstruments() {
+		if (insts == null) {
+			this.insts = paramsDao.instruments();
+			for (final Instrument instrument : insts) {
+				if (instrument.getMascotName() != null && instrument.getMascotName().equals(Instrument.ORBITRAP.getMascotName())) {
+					defInst = instrument;
+					break;
+				}
+			}
+			if (defInst == null) {
+				defInst = insts.get(0);
+			}
+			for (final Instrument instrument : insts) {
+				instsHash.put(instrument.getName(), instrument);
+			}
+		}
+	}
 
-    @Override
-    public List<Instrument> getInstrumentAllowedValues() {
-        initializeInstruments();
-        return insts;
-    }
+	@Override
+	public List<Instrument> getInstrumentAllowedValues() {
+		initializeInstruments();
+		return insts;
+	}
 
-    @Override
-    public Map<String, Instrument> getInstruments() {
-        initializeInstruments();
-        return instsHash;
-    }
+	@Override
+	public Map<String, Instrument> getInstruments() {
+		initializeInstruments();
+		return instsHash;
+	}
 
-    private void initializeIons() {
-        if (ions == null) {
-            final List<IonSeries> listIons = paramsDao.ionSeries();
-            ions = new HashMap<String, IonSeries>();
-            for (IonSeries ionSeries : listIons) {
-                ions.put(ionSeries.getName(), ionSeries);
-            }
-        }
-    }
+	private void initializeIons() {
+		if (ions == null) {
+			final List<IonSeries> listIons = paramsDao.ionSeries();
+			ions = new HashMap<String, IonSeries>();
+			for (final IonSeries ionSeries : listIons) {
+				ions.put(ionSeries.getName(), ionSeries);
+			}
+		}
+	}
 
-    @Override
-    public Map<String, IonSeries> getIons() {
-        initializeIons();
-        return ions;
-    }
+	@Override
+	public Map<String, IonSeries> getIons() {
+		initializeIons();
+		return ions;
+	}
 }

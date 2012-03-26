@@ -21,7 +21,7 @@ public final class DaemonModel extends ResourceModel {
 		return getProperty(HOST_NAME);
 	}
 
-	public void setHostName(String hostName) {
+	public void setHostName(final String hostName) {
 		setProperty(HOST_NAME, hostName);
 	}
 
@@ -29,7 +29,7 @@ public final class DaemonModel extends ResourceModel {
 		return getProperty(OS_ARCH);
 	}
 
-	public void setOsArch(String osArch) {
+	public void setOsArch(final String osArch) {
 		setProperty(OS_ARCH, osArch);
 	}
 
@@ -37,7 +37,7 @@ public final class DaemonModel extends ResourceModel {
 		return getProperty(OS_NAME);
 	}
 
-	public void setOsName(String osName) {
+	public void setOsName(final String osName) {
 		setProperty(OS_NAME, osName);
 	}
 
@@ -45,7 +45,7 @@ public final class DaemonModel extends ResourceModel {
 		return getProperty(SHARED_FILE_SPACE_PATH);
 	}
 
-	public void setSharedFileSpacePath(String sharedFileSpacePath) {
+	public void setSharedFileSpacePath(final String sharedFileSpacePath) {
 		setProperty(SHARED_FILE_SPACE_PATH, sharedFileSpacePath);
 	}
 
@@ -53,7 +53,7 @@ public final class DaemonModel extends ResourceModel {
 		return getProperty(TEMP_FOLDER_PATH);
 	}
 
-	public void setTempFolderPath(String tempFolderPath) {
+	public void setTempFolderPath(final String tempFolderPath) {
 		setProperty(TEMP_FOLDER_PATH, tempFolderPath);
 	}
 
@@ -62,13 +62,13 @@ public final class DaemonModel extends ResourceModel {
 	 *
 	 * @param type Type of the module to create.
 	 */
-	public void addNewResource(String type, final NewModuleCreatedCallback callback, final Context errorDisplay) {
+	public void addNewResource(final String type, final NewModuleCreatedCallback callback, final Context errorDisplay) {
 		ConfigurationService.App.getInstance().createChild(this.getId(), type, new AsyncCallback<ResourceModel>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				errorDisplay.displayErrorMessage("Could not add new resource", throwable);
 			}
 
-			public void onSuccess(ResourceModel model) {
+			public void onSuccess(final ResourceModel model) {
 				// By adding to the model, we get a notification that will create the UI
 				addChild(model);
 

@@ -35,13 +35,13 @@ public class AnalysisReport extends HttpServlet {
 
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
 		OutputStreamWriter writer = null;
 		try {
 			writer = new OutputStreamWriter(resp.getOutputStream(), Charsets.US_ASCII);
 
-			String reportIdStr = req.getParameter("id");
+			final String reportIdStr = req.getParameter("id");
 			final long reportId;
 			try {
 				reportId = Long.parseLong(reportIdStr);
@@ -49,11 +49,11 @@ public class AnalysisReport extends HttpServlet {
 				throw new MprcException("Cannot process report id: " + reportIdStr, e);
 			}
 
-			String highlight = req.getParameter("highlight");
+			final String highlight = req.getParameter("highlight");
 
 			searchDbDao.begin();
 			try {
-				Analysis analysis = searchDbDao.getAnalysis(reportId);
+				final Analysis analysis = searchDbDao.getAnalysis(reportId);
 
 				writer.write("<html><head><title>Scaffold Report</title>\n" +
 						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +

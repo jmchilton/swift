@@ -19,7 +19,7 @@ public abstract class DaoTest {
 	 *
 	 * @param daoToInitialize Single dao to initialize.
 	 */
-	public void initializeDatabase(DaoBase daoToInitialize) {
+	public void initializeDatabase(final DaoBase daoToInitialize) {
 		initializeDatabase(Arrays.asList(daoToInitialize));
 	}
 
@@ -29,13 +29,13 @@ public abstract class DaoTest {
 	 * @param daosToInitialize List of DAOs to initialize. The DAOs also list hibernate mapping files needed.
 	 * @param mappingFiles     Additional mapping files to use.
 	 */
-	public void initializeDatabase(Collection<? extends DaoBase> daosToInitialize, String... mappingFiles) {
+	public void initializeDatabase(final Collection<? extends DaoBase> daosToInitialize, final String... mappingFiles) {
 		final ArrayList<String> mappingResources = DatabaseFactory.collectMappingResouces(daosToInitialize, mappingFiles);
 
 		factory = DatabaseUtilities.getTestSessionFactory(mappingResources);
 		databasePlaceholder.setSessionFactory(factory);
 
-		for (DaoBase daoBase : daosToInitialize) {
+		for (final DaoBase daoBase : daosToInitialize) {
 			daoBase.setDatabasePlaceholder(databasePlaceholder);
 		}
 	}

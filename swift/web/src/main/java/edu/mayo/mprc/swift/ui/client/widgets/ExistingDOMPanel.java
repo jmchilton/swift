@@ -62,7 +62,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 *
 	 * @param domChunkId Id on an existing DOM chunk
 	 */
-	public ExistingDOMPanel(String domChunkId) {
+	public ExistingDOMPanel(final String domChunkId) {
 		super();
 		if (panels.containsKey(domChunkId)) {
 			throw new ExistingDOMPanelException("Already created ExistingDOMPanel from " + domChunkId
@@ -89,7 +89,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	/**
 	 * Gets an already created ExistingDOMPanel given it's chunk id.
 	 */
-	public static ExistingDOMPanel get(String domChunkId) {
+	public static ExistingDOMPanel get(final String domChunkId) {
 		return panels.get(domChunkId);
 	}
 
@@ -100,7 +100,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * @param cloneId id which is appended to all existing ids in the DOM chunk.
 	 * @return the clone with the given cloneId.
 	 */
-	public Element insertClone(String cloneId) {
+	public Element insertClone(final String cloneId) {
 		return insertClone(cloneId, -1);
 	}
 
@@ -112,8 +112,8 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * @param visible 1 - make the element visible, 0 - make the element invisible, -1 do not modify visibility
 	 * @return the clone with the given cloneId.
 	 */
-	private Element insertClone(String cloneId, int visible) {
-		Element clone;
+	private Element insertClone(final String cloneId, final int visible) {
+		final Element clone;
 		if (clones.containsKey(cloneId)) {
 			clone = clones.get(cloneId);
 		} else {
@@ -136,7 +136,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * @param w            the Widget to append.
 	 * @param visible      true if the cloned content should be initially visible
 	 */
-	public Element append(String cloneId, String subElementId, Widget w, boolean visible) {
+	public Element append(final String cloneId, final String subElementId, final Widget w, final boolean visible) {
 		return append(cloneId, subElementId, w, visible ? 1 : 0);
 	}
 
@@ -147,7 +147,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * @param subElementId the (unsuffixed) id of the sub-DOM element to append to.
 	 * @param w            the Widget to append.
 	 */
-	public Element append(String cloneId, String subElementId, Widget w) {
+	public Element append(final String cloneId, final String subElementId, final Widget w) {
 		return append(cloneId, subElementId, w, -1);
 	}
 
@@ -159,10 +159,10 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * @param w            the Widget to append.
 	 * @param visible      0 - invisible, 1 - visible, -1 do not modify visibility
 	 */
-	private Element append(String cloneId, String subElementId, Widget w, int visible) {
-		Element clone = insertClone(cloneId, visible);
-		String id = subElementId + "-" + cloneId;
-		Element e = findContainedElementById(clone, id);
+	private Element append(final String cloneId, final String subElementId, final Widget w, final int visible) {
+		final Element clone = insertClone(cloneId, visible);
+		final String id = subElementId + "-" + cloneId;
+		final Element e = findContainedElementById(clone, id);
 		if (e == null) {
 			throw new ExistingDOMPanelException("Can't find sub element " + id);
 		}
@@ -176,23 +176,23 @@ public final class ExistingDOMPanel extends ComplexPanel {
 	 * TODO this needs to check if any of the contained DOM is actually a widget, and remove it.
 	 */
 
-	public void replace(String cloneId, String subElementId, Widget w) {
-		Element clone = insertClone(cloneId);
-		String id = subElementId + "-" + cloneId;
-		Element e = findContainedElementById(clone, id);
+	public void replace(final String cloneId, final String subElementId, final Widget w) {
+		final Element clone = insertClone(cloneId);
+		final String id = subElementId + "-" + cloneId;
+		final Element e = findContainedElementById(clone, id);
 		for (int i = 0; i < DOM.getChildCount(e); ++i) {
 			DOM.removeChild(e, DOM.getChild(e, i));
 		}
 		append(cloneId, subElementId, w);
 	}
 
-	private Element findContainedElementById(Element e, String id) {
-		String eid = DOM.getElementAttribute(e, "id");
+	private Element findContainedElementById(final Element e, final String id) {
+		final String eid = DOM.getElementAttribute(e, "id");
 		if (eid != null && eid.equals(id)) {
 			return e;
 		}
 		for (int i = 0; i < DOM.getChildCount(e); ++i) {
-			Element ee = findContainedElementById(DOM.getChild(e, i), id);
+			final Element ee = findContainedElementById(DOM.getChild(e, i), id);
 			if (ee != null) {
 				return ee;
 			}
@@ -200,7 +200,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 		return null;
 	}
 
-	private void suffixIds(Element e, String cloneId) {
+	private void suffixIds(final Element e, final String cloneId) {
 		String id = DOM.getElementAttribute(e, "id");
 		if ((id != null) && (!id.equals(""))) {
 			id += "-" + cloneId;
@@ -215,8 +215,8 @@ public final class ExistingDOMPanel extends ComplexPanel {
 		return parent;
 	}
 
-	public Element getElement(String cloneId, String subElementId) {
-		Element clone = insertClone(cloneId);
+	public Element getElement(final String cloneId, final String subElementId) {
+		final Element clone = insertClone(cloneId);
 		return findContainedElementById(clone, subElementId + "-" + cloneId);
 	}
 
@@ -232,7 +232,7 @@ public final class ExistingDOMPanel extends ComplexPanel {
 				// all of their children's event listeners to be unhooked, which will
 				// avoid potential memory leaks.
 				for (Iterator it = panels.values().iterator(); it.hasNext(); ) {
-					ExistingDOMPanel gwt = (ExistingDOMPanel) it.next();
+					final ExistingDOMPanel gwt = (ExistingDOMPanel) it.next();
 					if (gwt.isAttached()) {
 						gwt.onDetach();
 					}
@@ -253,15 +253,15 @@ public final class ExistingDOMPanel extends ComplexPanel {
 			super();
 		}
 
-		public ExistingDOMPanelException(String s) {
+		public ExistingDOMPanelException(final String s) {
 			super(s);
 		}
 
-		public ExistingDOMPanelException(String s, Throwable throwable) {
+		public ExistingDOMPanelException(final String s, final Throwable throwable) {
 			super(s, throwable);
 		}
 
-		public ExistingDOMPanelException(Throwable throwable) {
+		public ExistingDOMPanelException(final Throwable throwable) {
 			super(throwable);
 		}
 	}

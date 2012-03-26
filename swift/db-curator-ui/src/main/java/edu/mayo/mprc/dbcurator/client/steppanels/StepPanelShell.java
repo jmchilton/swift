@@ -105,8 +105,8 @@ class StepPanelShell extends Composite {
 	 * @param toContain step that this shell contains
 	 * @return the header that should be used
 	 */
-	private Panel initializeHeader(AbstractStepPanel toContain) {
-		FlowPanel header = new FlowPanel();
+	private Panel initializeHeader(final AbstractStepPanel toContain) {
+		final FlowPanel header = new FlowPanel();
 
 		header.setStyleName("stepshell-header-panel");
 
@@ -115,14 +115,14 @@ class StepPanelShell extends Composite {
 
 		expandButton = new Image("images/rightarrow.png");
 		expandButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				toggleCollapse();
 			}
 		});
 
 		collapseButton = new Image("images/downarrow.png");
 		collapseButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				toggleCollapse();
 			}
 		});
@@ -134,12 +134,12 @@ class StepPanelShell extends Composite {
 		this.title.setText(toContain.getTitle());
 		this.title.setStyleName("shell-header-title");
 
-		Image removalButton = new Image("images/delete.png");
+		final Image removalButton = new Image("images/delete.png");
 		removalButton.setStyleName("stepshell-header-stepremover");
 //		removalButton.setOnStyle("stepshell-header-stepremover");
 //		removalButton.setOffStyle("stepshell-header-stepremover");
 		removalButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				if (StepPanelShell.this.containedStepPanel.isEditable()) {
 					container.remove(StepPanelShell.this);
 					container.refresh();
@@ -148,7 +148,7 @@ class StepPanelShell extends Composite {
 		});
 		header.add(removalButton);
 
-		Image image = new Image(this.containedStepPanel.getImageURL());
+		final Image image = new Image(this.containedStepPanel.getImageURL());
 		image.addStyleName("shell-header-stepimage");
 		header.add(image);
 
@@ -162,7 +162,7 @@ class StepPanelShell extends Composite {
 	 * @return the footer panel
 	 */
 	private Panel initializeFooter() {
-		FlowPanel panel = new FlowPanel();
+		final FlowPanel panel = new FlowPanel();
 
 		panel.setStyleName("stepshell-footer");
 		this.txtErrorReport.setVisibleLines(1);
@@ -197,7 +197,7 @@ class StepPanelShell extends Composite {
 	 *
 	 * @param stub the stub we want to update the panel with.
 	 */
-	public void update(CurationStepStub stub) {
+	public void update(final CurationStepStub stub) {
 		this.containedStepPanel.setContainedStep(stub);
 
 		this.lblStepNumber.setText(String.valueOf(this.container.getWidgetIndex(this) + 1));
@@ -205,8 +205,8 @@ class StepPanelShell extends Composite {
 		//print any error messages out into the error message box
 		if (this.containedStepPanel.getContainedStep().getErrorMessages() != null
 				&& this.containedStepPanel.getContainedStep().getErrorMessages().size() > 0) {
-			StringBuilder builder = new StringBuilder();
-			for (Object o : this.containedStepPanel.getContainedStep().getErrorMessages()) {
+			final StringBuilder builder = new StringBuilder();
+			for (final Object o : this.containedStepPanel.getContainedStep().getErrorMessages()) {
 				builder.append((String) o);
 				builder.append("\n");
 			}
@@ -224,7 +224,7 @@ class StepPanelShell extends Composite {
 			this.panel.addStyleName("stepshell-complete");
 			this.txtErrorReport.setText("Step completed successfully");
 			this.title.removeStyleName("stepshell-title-inprogress");
-			Integer completionCount = this.getContainedStepPanel().getContainedStep().getCompletionCount();
+			final Integer completionCount = this.getContainedStepPanel().getContainedStep().getCompletionCount();
 
 			this.completionCount.setText((completionCount == null ? "???" : commaFormatNumber(completionCount)));
 		} else if (this.containedStepPanel.getContainedStep().getProgress() != null) {
@@ -244,8 +244,8 @@ class StepPanelShell extends Composite {
 	 * @param toFormat the number you want to but commas into
 	 * @return the number with commas inserted
 	 */
-	private static String commaFormatNumber(Integer toFormat) {
-		int length = toFormat.toString().length();
+	private static String commaFormatNumber(final Integer toFormat) {
+		final int length = toFormat.toString().length();
 		String numberAsString = toFormat.toString();
 		int currentPlacer = length - 3;
 

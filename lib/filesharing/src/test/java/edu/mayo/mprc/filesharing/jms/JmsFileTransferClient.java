@@ -14,22 +14,22 @@ public final class JmsFileTransferClient {
 	private JmsFileTransferClient() {
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		if (args.length >= 3) {
-			String brokerURl = args[0];
-			String remoteFilePath = args[1];
-			File localFile = new File(args[2]);
+			final String brokerURl = args[0];
+			final String remoteFilePath = args[1];
+			final File localFile = new File(args[2]);
 
-			JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(new URI(brokerURl), null, null);
-			FileTransferHandler fileSharing = factory.createFileSharing("client");
+			final JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(new URI(brokerURl), null, null);
+			final FileTransferHandler fileSharing = factory.createFileSharing("client");
 			fileSharing.startProcessingRequests();
 
-			long startTime = System.currentTimeMillis();
+			final long startTime = System.currentTimeMillis();
 
-			FileTransfer fileTransfer = fileSharing.getFile("server", remoteFilePath, localFile);
-			File result = fileTransfer.done().get(0);
+			final FileTransfer fileTransfer = fileSharing.getFile("server", remoteFilePath, localFile);
+			final File result = fileTransfer.done().get(0);
 
-			long finishTime = System.currentTimeMillis();
+			final long finishTime = System.currentTimeMillis();
 
 			if (result.length() > 0) {
 				FileUtilities.out("File transfer succeeded.");

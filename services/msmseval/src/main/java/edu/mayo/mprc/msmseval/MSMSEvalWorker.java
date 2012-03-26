@@ -46,7 +46,7 @@ public final class MSMSEvalWorker implements Worker {
 		skippedExecution = false;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket);
@@ -57,38 +57,38 @@ public final class MSMSEvalWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket) {
+	private void process(final WorkPacket workPacket) {
 		if (!MSMSEvalWorkPacket.class.isInstance(workPacket)) {
 			throw new DaemonException("Unknown request type [" + workPacket.getClass().getName() + "] expecting [" + MSMSEvalWorkPacket.class.getName() + "]");
 		}
 
-		MSMSEvalWorkPacket msmsEvalWorkPacket = (MSMSEvalWorkPacket) workPacket;
+		final MSMSEvalWorkPacket msmsEvalWorkPacket = (MSMSEvalWorkPacket) workPacket;
 
 		/**
 		 * MGF source file.
 		 */
-		File sourceMGFFile = msmsEvalWorkPacket.getSourceMGFFile();
+		final File sourceMGFFile = msmsEvalWorkPacket.getSourceMGFFile();
 		checkFile(sourceMGFFile, false, "The source mgf file");
 
 		/**
 		 * MsmsEval parameter file.
 		 */
-		File msmsEvalParamFile = msmsEvalWorkPacket.getMsmsEvalParamFile();
+		final File msmsEvalParamFile = msmsEvalWorkPacket.getMsmsEvalParamFile();
 		checkFile(msmsEvalParamFile, false, "The msmsEval parameter file");
 
 		/**
 		 * Output directory.
 		 */
-		File outputDirectory = msmsEvalWorkPacket.getOutputDirectory();
+		final File outputDirectory = msmsEvalWorkPacket.getOutputDirectory();
 		FileUtilities.ensureFolderExists(outputDirectory);
 		checkFile(outputDirectory, true, "The msmsEval output directory");
 
 		/**
 		 * Output files.
 		 */
-		File outputMzXMLFile = getExpectedMzXMLOutputFileName(sourceMGFFile, outputDirectory);
-		File msmsEvalFormattedOuputFile = getExpectedResultFileName(sourceMGFFile, outputDirectory);
-		File msmsEvalOuputFile = getExpectedMsmsEvalOutputFileName(sourceMGFFile, outputDirectory); // Temporary
+		final File outputMzXMLFile = getExpectedMzXMLOutputFileName(sourceMGFFile, outputDirectory);
+		final File msmsEvalFormattedOuputFile = getExpectedResultFileName(sourceMGFFile, outputDirectory);
+		final File msmsEvalOuputFile = getExpectedMsmsEvalOutputFileName(sourceMGFFile, outputDirectory); // Temporary
 
 		//If msmsEval has been executed, skip operation.
 		if (!msmsEvalWorkPacket.isFromScratch() && hasMSMSEvalFilterWorkerRun(msmsEvalFormattedOuputFile)) {
@@ -101,7 +101,7 @@ public final class MSMSEvalWorker implements Worker {
 		try {
 			LOGGER.info("Converting mgf to mzxml.");
 
-			Map<Integer, String> mzXMLScanToMGFTitle = MGF2MzXMLConverter.convert(sourceMGFFile, outputMzXMLFile, true);
+			final Map<Integer, String> mzXMLScanToMGFTitle = MGF2MzXMLConverter.convert(sourceMGFFile, outputMzXMLFile, true);
 
 			LOGGER.info("Convertion mgf to mzxml completed.");
 			LOGGER.info("Created mzxml file: " + outputMzXMLFile.getAbsolutePath());
@@ -139,25 +139,25 @@ public final class MSMSEvalWorker implements Worker {
 		return skippedExecution;
 	}
 
-	private static File getExpectedMzXMLOutputFileName(File sourceMGFFile, File outputDirectory) {
+	private static File getExpectedMzXMLOutputFileName(final File sourceMGFFile, final File outputDirectory) {
 		return new File(outputDirectory, FileUtilities.getFileNameWithoutExtension(sourceMGFFile) + MZXML_OUTPUT_FILE_EXTENTION);
 	}
 
-	private static File getExpectedMsmsEvalOutputFileName(File sourceMGFFile, File outputDirectory) {
+	private static File getExpectedMsmsEvalOutputFileName(final File sourceMGFFile, final File outputDirectory) {
 		return new File(outputDirectory, getExpectedMzXMLOutputFileName(sourceMGFFile, outputDirectory).getName() + SCORE_FILE_SUFFIX);
 	}
 
 	/**
 	 * File with information about expectation maximization parameters.
 	 */
-	public static File getExpectedEmOutputFileName(File sourceMGFFile, File outputDirectory) {
+	public static File getExpectedEmOutputFileName(final File sourceMGFFile, final File outputDirectory) {
 		return new File(outputDirectory, getExpectedMzXMLOutputFileName(sourceMGFFile, outputDirectory).getName() + EM_FILE_SUFFIX);
 	}
 
 	/**
 	 * File with list of spectra (original spectrum numbers) + their msmsEval information.
 	 */
-	public static File getExpectedResultFileName(File sourceMGFFile, File outputDirectory) {
+	public static File getExpectedResultFileName(final File sourceMGFFile, final File outputDirectory) {
 		return new File(outputDirectory, getExpectedMzXMLOutputFileName(sourceMGFFile, outputDirectory).getName() + OUTPUT_FILE_SUFFIX);
 	}
 
@@ -165,11 +165,11 @@ public final class MSMSEvalWorker implements Worker {
 		return msmsEvalExecutable;
 	}
 
-	public void setMsmsEvalExecutable(File msmsEvalExecutable) {
+	public void setMsmsEvalExecutable(final File msmsEvalExecutable) {
 		this.msmsEvalExecutable = msmsEvalExecutable;
 	}
 
-	private void checkFile(File file, boolean directory, String fileDescription) {
+	private void checkFile(final File file, final boolean directory, final String fileDescription) {
 		if (file.exists()) {
 			if (!file.isDirectory() && directory) {
 				throw new DaemonException(fileDescription + " is not a directory: " + file.getAbsolutePath());
@@ -182,7 +182,7 @@ public final class MSMSEvalWorker implements Worker {
 		}
 	}
 
-	private boolean hasMSMSEvalFilterWorkerRun(File msmsEvalFormattedOuputFileName) {
+	private boolean hasMSMSEvalFilterWorkerRun(final File msmsEvalFormattedOuputFileName) {
 		if (msmsEvalFormattedOuputFileName.exists() && msmsEvalFormattedOuputFileName.length() > 0) {
 			LOGGER.info(MSMSEvalWorker.class.getSimpleName() + " has already run and file [" + msmsEvalFormattedOuputFileName.getAbsolutePath() + "] already exist. MSMSEval execution has been skipped.");
 			return true;
@@ -197,8 +197,8 @@ public final class MSMSEvalWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			MSMSEvalWorker worker = new MSMSEvalWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final MSMSEvalWorker worker = new MSMSEvalWorker();
 			worker.setMsmsEvalExecutable(FileUtilities.getAbsoluteFileForExecutables(new File(config.getMsmsEvalExecutable())));
 			return worker;
 		}
@@ -214,7 +214,7 @@ public final class MSMSEvalWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String msmsEvalExecutable, String paramFiles) {
+		public Config(final String msmsEvalExecutable, final String paramFiles) {
 			this.msmsEvalExecutable = msmsEvalExecutable;
 			this.paramFiles = paramFiles;
 		}
@@ -223,7 +223,7 @@ public final class MSMSEvalWorker implements Worker {
 			return msmsEvalExecutable;
 		}
 
-		public void setMsmsEvalExecutable(String msmsEvalExecutable) {
+		public void setMsmsEvalExecutable(final String msmsEvalExecutable) {
 			this.msmsEvalExecutable = msmsEvalExecutable;
 		}
 
@@ -231,18 +231,18 @@ public final class MSMSEvalWorker implements Worker {
 			return paramFiles;
 		}
 
-		public void setParamFiles(String paramFiles) {
+		public void setParamFiles(final String paramFiles) {
 			this.paramFiles = paramFiles;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(MSMS_EVAL_EXECUTABLE, msmsEvalExecutable);
 			map.put(PARAM_FILES, paramFiles);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			msmsEvalExecutable = values.get(MSMS_EVAL_EXECUTABLE);
 			paramFiles = values.get(PARAM_FILES);
 		}
@@ -259,7 +259,7 @@ public final class MSMSEvalWorker implements Worker {
 		private static final String LINUX = "bin/msmseval/linux_x86_64/msmsEval";
 		private static final String LINUX_IA = "bin/msmseval/linux_i686/msmsEval";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(MSMS_EVAL_EXECUTABLE, "Executable Path", "MsmsEval executable path."
 							+ "<br/>The msmsEval executable depends on the OS." +

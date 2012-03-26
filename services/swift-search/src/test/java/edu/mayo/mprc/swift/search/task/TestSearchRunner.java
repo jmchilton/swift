@@ -55,25 +55,25 @@ public class TestSearchRunner {
 
 	@Test
 	public void singleExperimentRunner() throws IOException {
-		SwiftSearchWorkPacket packet = new SwiftSearchWorkPacket(1, "task1", false, 0);
+		final SwiftSearchWorkPacket packet = new SwiftSearchWorkPacket(1, "task1", false, 0);
 
-		Collection<SearchEngine> searchEngines = searchEngines();
+		final Collection<SearchEngine> searchEngines = searchEngines();
 
-		EnabledEngines engines = enabledEngines();
+		final EnabledEngines engines = enabledEngines();
 
-		List<FileSearch> inputFiles = Arrays.asList(
+		final List<FileSearch> inputFiles = Arrays.asList(
 				new FileSearch(raw1, "biosample", "category", "experiment", engines),
 				new FileSearch(raw2, "biosample2", "category", "experiment", engines)
 		);
 
-		SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
+		final SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
 
-		ProgressReporter reporter = mock(ProgressReporter.class);
-		ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
+		final ProgressReporter reporter = mock(ProgressReporter.class);
+		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
 
-		SearchRun searchRun = null;
+		final SearchRun searchRun = null;
 
-		SearchRunner runner = new SearchRunner(packet,
+		final SearchRunner runner = new SearchRunner(packet,
 				definition,
 				mock(DaemonConnection.class),
 				mock(DaemonConnection.class),
@@ -97,25 +97,25 @@ public class TestSearchRunner {
 
 	@Test
 	public void multipleExperimentRunner() throws IOException {
-		SwiftSearchWorkPacket packet = new SwiftSearchWorkPacket(1, "task1", false, 0);
+		final SwiftSearchWorkPacket packet = new SwiftSearchWorkPacket(1, "task1", false, 0);
 
-		Collection<SearchEngine> searchEngines = searchEngines();
+		final Collection<SearchEngine> searchEngines = searchEngines();
 
-		EnabledEngines engines = enabledEngines();
+		final EnabledEngines engines = enabledEngines();
 
-		List<FileSearch> inputFiles = Arrays.asList(
+		final List<FileSearch> inputFiles = Arrays.asList(
 				new FileSearch(raw1, "biosample", "category", "experiment1", engines),
 				new FileSearch(raw2, "biosample2", "category", "experiment2", engines)
 		);
 
-		SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
+		final SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
 
-		ProgressReporter reporter = mock(ProgressReporter.class);
-		ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
+		final ProgressReporter reporter = mock(ProgressReporter.class);
+		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
 
-		SearchRun searchRun = null;
+		final SearchRun searchRun = null;
 
-		SearchRunner runner = new SearchRunner(packet,
+		final SearchRunner runner = new SearchRunner(packet,
 				definition,
 				mock(DaemonConnection.class),
 				mock(DaemonConnection.class),
@@ -138,7 +138,7 @@ public class TestSearchRunner {
 		Assert.assertEquals(runner.getWorkflowEngine().getNumTasks(), 23 + 2 /* Scaffold+Scaffold3 */ + 1 /* Db load */);
 	}
 
-	private SwiftSearchDefinition defaultSearchDefinition(List<FileSearch> inputFiles) {
+	private SwiftSearchDefinition defaultSearchDefinition(final List<FileSearch> inputFiles) {
 		return new SwiftSearchDefinition(
 				"Test search",
 				new User("Tester", "Testov", "test", "pwd"),
@@ -158,7 +158,7 @@ public class TestSearchRunner {
 	}
 
 	private Collection<SearchEngine> searchEngines() {
-		Collection<SearchEngine> searchEngines = new ArrayList<SearchEngine>();
+		final Collection<SearchEngine> searchEngines = new ArrayList<SearchEngine>();
 		final SearchEngine mascot = searchEngine("MASCOT");
 		final SearchEngine sequest = searchEngine("SEQUEST");
 		final SearchEngine tandem = searchEngine("TANDEM");
@@ -173,7 +173,7 @@ public class TestSearchRunner {
 	}
 
 	private EnabledEngines enabledEngines() {
-		EnabledEngines engines = new EnabledEngines();
+		final EnabledEngines engines = new EnabledEngines();
 		engines.add(createSearchEngineConfig("MASCOT"));
 		engines.add(createSearchEngineConfig("SEQUEST"));
 		engines.add(createSearchEngineConfig("TANDEM"));
@@ -183,7 +183,7 @@ public class TestSearchRunner {
 	}
 
 	private FileTokenFactory dummyFileTokenFactory() {
-		FileTokenFactory fileTokenFactory = new FileTokenFactory();
+		final FileTokenFactory fileTokenFactory = new FileTokenFactory();
 		final DaemonConfigInfo mainDaemon = new DaemonConfigInfo("daemon1", "/");
 		fileTokenFactory.setDaemonConfigInfo(mainDaemon);
 		fileTokenFactory.setDatabaseDaemonConfigInfo(mainDaemon);
@@ -196,8 +196,8 @@ public class TestSearchRunner {
 		return curation;
 	}
 
-	private SearchEngine searchEngine(String code) {
-		SearchEngine engine = new SearchEngine();
+	private SearchEngine searchEngine(final String code) {
+		final SearchEngine engine = new SearchEngine();
 		engine.setCode(code);
 		engine.setSearchDaemon(mock(DaemonConnection.class));
 		engine.setDbDeployDaemon(mock(DaemonConnection.class));
@@ -205,7 +205,7 @@ public class TestSearchRunner {
 		return engine;
 	}
 
-	private SearchEngineConfig createSearchEngineConfig(String code) {
+	private SearchEngineConfig createSearchEngineConfig(final String code) {
 		final SearchEngineConfig config = new SearchEngineConfig(code);
 		config.setCode(code);
 		return config;

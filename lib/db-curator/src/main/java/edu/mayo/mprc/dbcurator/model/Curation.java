@@ -89,7 +89,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param sharedFile the curationFile of this Curation object.
 	 */
-	public void setCurationFile(File sharedFile) {
+	public void setCurationFile(final File sharedFile) {
 		curationFile = sharedFile;
 	}
 
@@ -107,7 +107,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param curationSteps the steps to set on this Curation
 	 */
-	protected void setCurationSteps(List<CurationStep> curationSteps) {
+	protected void setCurationSteps(final List<CurationStep> curationSteps) {
 		this.curationSteps = curationSteps;
 	}
 
@@ -125,7 +125,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param deploymentDate the deploymentDate of this Curation object.
 	 */
-	public void setDeploymentDate(DateTime deploymentDate) {
+	public void setDeploymentDate(final DateTime deploymentDate) {
 		this.deploymentDate = deploymentDate;
 	}
 
@@ -143,7 +143,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param firstRunDate the firstRunDate of this Curation object.
 	 */
-	protected void setFirstRunDate(DateTime firstRunDate) {
+	protected void setFirstRunDate(final DateTime firstRunDate) {
 		this.firstRunDate = firstRunDate;
 	}
 
@@ -162,7 +162,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param notes the notes of this Curation object.
 	 */
-	public void setNotes(String notes) {
+	public void setNotes(final String notes) {
 		this.notes = notes;
 	}
 
@@ -181,7 +181,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param ownerEmail the ownerEmail of this Curation object.
 	 */
-	public void setOwnerEmail(String ownerEmail) {
+	public void setOwnerEmail(final String ownerEmail) {
 		this.ownerEmail = ownerEmail;
 	}
 
@@ -210,7 +210,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param shortName the shortName of this Curation object.
 	 */
-	public void setShortName(String shortName) {
+	public void setShortName(final String shortName) {
 		this.shortName = shortName;
 	}
 
@@ -232,7 +232,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param title the title of this Curation object.
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -250,7 +250,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	/**
 	 * @param decoyRegex Regular expression (Scaffold-supported) describing all decoy accession numbers.
 	 */
-	public void setDecoyRegex(String decoyRegex) {
+	public void setDecoyRegex(final String decoyRegex) {
 		this.decoyRegex = decoyRegex;
 	}
 
@@ -278,8 +278,8 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param forRefresh true if you want to copy only for refresh or to make changes
 	 * @return a copy of this curator
 	 */
-	public Curation createCopy(boolean forRefresh) {
-		Curation copy = new Curation();
+	public Curation createCopy(final boolean forRefresh) {
+		final Curation copy = new Curation();
 
 		// We want to retain the basics so the user can modify them and stay consistent
 		copy.setShortName(shortName);
@@ -295,7 +295,7 @@ public class Curation extends EvolvableBase implements Serializable {
 		}
 
 		//for each step we want to create a copy or use original step if this is for a refresh only.
-		for (CurationStep curationStep : getCurationSteps()) {
+		for (final CurationStep curationStep : getCurationSteps()) {
 			copy.addStep(forRefresh ? curationStep : curationStep.createCopy(), -1);
 		}
 
@@ -309,7 +309,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param toAdd    the step to add
 	 * @param toMoveTo where you want to add the step to
 	 */
-	public Curation addStep(CurationStep toAdd, int toMoveTo) {
+	public Curation addStep(final CurationStep toAdd, final int toMoveTo) {
 		curationSteps.add(translateStepIndex(toMoveTo), toAdd);
 		return this;
 	}
@@ -328,7 +328,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param step the index that you want to translate
 	 * @return the translated index
 	 */
-	protected int translateStepIndex(int step) {
+	protected int translateStepIndex(final int step) {
 		if (step > curationSteps.size()) {
 			return curationSteps.size() - 1;
 		}
@@ -347,7 +347,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * @param index the index you want to return the index of
 	 * @return the step that you requested
 	 */
-	public CurationStep getStepByIndex(int index) {
+	public CurationStep getStepByIndex(final int index) {
 		return curationSteps.get(translateStepIndex(index));
 	}
 
@@ -365,7 +365,7 @@ public class Curation extends EvolvableBase implements Serializable {
 	 *
 	 * @param runDate the runDate of this Curation object.
 	 */
-	public void setRunDate(DateTime runDate) {
+	public void setRunDate(final DateTime runDate) {
 		this.runDate = runDate;
 		if (firstRunDate == null) {
 			firstRunDate = runDate;
@@ -373,8 +373,8 @@ public class Curation extends EvolvableBase implements Serializable {
 	}
 
 	public String simpleDescription() {
-		StringBuilder sb = new StringBuilder(EXPECTED_DESCRIPTION_SIZE);
-		for (CurationStep step : curationSteps) {
+		final StringBuilder sb = new StringBuilder(EXPECTED_DESCRIPTION_SIZE);
+		for (final CurationStep step : curationSteps) {
 			if (step.simpleDescription() != null) {
 				sb.append(step.simpleDescription()).append(", ");
 			}
@@ -392,12 +392,12 @@ public class Curation extends EvolvableBase implements Serializable {
 	 * Creates a full clone of the curation. Meant to be used only for db migration.
 	 */
 	public Curation copyFull() {
-		Curation copy = new Curation();
+		final Curation copy = new Curation();
 
 		copy.setCurationFile(curationFile);
 
 		//for each step we want to create a copy or use original step if this is for a refresh only.
-		for (CurationStep curationStep : getCurationSteps()) {
+		for (final CurationStep curationStep : getCurationSteps()) {
 			copy.addStep(curationStep.createCopy(), -1);
 		}
 
@@ -413,7 +413,7 @@ public class Curation extends EvolvableBase implements Serializable {
 		return copy;
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -421,7 +421,7 @@ public class Curation extends EvolvableBase implements Serializable {
 			return false;
 		}
 
-		Curation curation = (Curation) obj;
+		final Curation curation = (Curation) obj;
 
 		if (getCurationFile() != null ? !getCurationFile().equals(curation.getCurationFile()) : curation.getCurationFile() != null) {
 			return false;

@@ -23,15 +23,15 @@ public final class IdentificationMap<T> {
 	 *                      .RAW or .mgf, with the extension dropped.<br>
 	 *                      If null, all ids are loaded.
 	 */
-	public void loadFromScaffold(Scaffold scaffold, String inputFileName, IdentificationFactory<T> idFactory) {
+	public void loadFromScaffold(final Scaffold scaffold, final String inputFileName, final IdentificationFactory<T> idFactory) {
 		spectrumMzIndex = new HashMap<Integer, List<T>>();
-		for (Experiment experiment : scaffold.getExperiments()) {
-			for (BiologicalSample sample : experiment.getBiologicalSamples()) {
-				for (TandemMassSpectrometrySample tandemMsSample : sample.getTandemMassSpectrometrySamples()) {
-					for (ProteinGroup proteinGroup : tandemMsSample.getProteinGroups()) {
-						for (ProteinAnalysisIdentification proteinAnalysisId : proteinGroup.getProteinAnalysisIdentifications()) {
-							for (PeptideGroupIdentification peptideGroupId : proteinAnalysisId.getPeptideGroupIdentifications()) {
-								for (PeptideAnalysisIdentification peptideAnalysisId : peptideGroupId.getPeptideAnalysisIdentifications()) {
+		for (final Experiment experiment : scaffold.getExperiments()) {
+			for (final BiologicalSample sample : experiment.getBiologicalSamples()) {
+				for (final TandemMassSpectrometrySample tandemMsSample : sample.getTandemMassSpectrometrySamples()) {
+					for (final ProteinGroup proteinGroup : tandemMsSample.getProteinGroups()) {
+						for (final ProteinAnalysisIdentification proteinAnalysisId : proteinGroup.getProteinAnalysisIdentifications()) {
+							for (final PeptideGroupIdentification peptideGroupId : proteinAnalysisId.getPeptideGroupIdentifications()) {
+								for (final PeptideAnalysisIdentification peptideAnalysisId : peptideGroupId.getPeptideAnalysisIdentifications()) {
 									addNewIdToMap(inputFileName, peptideAnalysisId.getSpectrumAnalysisIdentification(),
 											peptideAnalysisId, proteinAnalysisId, proteinGroup, idFactory);
 								}
@@ -43,17 +43,17 @@ public final class IdentificationMap<T> {
 		}
 	}
 
-	private void addNewIdToMap(String inputFileName,
-	                           SpectrumAnalysisIdentification spectrumAnalysisIdentification,
-	                           PeptideAnalysisIdentification peptideAnalysisId,
-	                           ProteinAnalysisIdentification proteinAnalysisId,
-	                           ProteinGroup proteinGroup,
-	                           IdentificationFactory<T> idFactory) {
+	private void addNewIdToMap(final String inputFileName,
+	                           final SpectrumAnalysisIdentification spectrumAnalysisIdentification,
+	                           final PeptideAnalysisIdentification peptideAnalysisId,
+	                           final ProteinAnalysisIdentification proteinAnalysisId,
+	                           final ProteinGroup proteinGroup,
+	                           final IdentificationFactory<T> idFactory) {
 		if (inputFileName != null && !spectrumAnalysisIdentification.getSpectrumName().equals(inputFileName)) {
 			return;
 		}
 
-		T id = idFactory.createIdentification(
+		final T id = idFactory.createIdentification(
 				spectrumAnalysisIdentification,
 				peptideAnalysisId,
 				proteinAnalysisId,
@@ -69,7 +69,7 @@ public final class IdentificationMap<T> {
 		numIds++;
 	}
 
-	public List<T> getIdsForSpectrum(int spectrumNumber) {
+	public List<T> getIdsForSpectrum(final int spectrumNumber) {
 		return spectrumMzIndex.get(spectrumNumber);
 	}
 

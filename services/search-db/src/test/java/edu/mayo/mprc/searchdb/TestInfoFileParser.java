@@ -15,8 +15,8 @@ import java.io.Reader;
 public class TestInfoFileParser {
 	@Test
 	public void shouldParseInfoFile() {
-		InfoFileParser parser = new InfoFileParser();
-		Reader reader = ResourceUtilities.getReader("classpath:edu/mayo/mprc/searchdb/info.tsv", TestInfoFileParser.class);
+		final InfoFileParser parser = new InfoFileParser();
+		final Reader reader = ResourceUtilities.getReader("classpath:edu/mayo/mprc/searchdb/info.tsv", TestInfoFileParser.class);
 		final InfoFileData data = parser.parse(reader);
 
 		Assert.assertEquals(data.getMs1Spectra(), 2334);

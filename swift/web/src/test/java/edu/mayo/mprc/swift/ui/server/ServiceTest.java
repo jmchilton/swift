@@ -39,27 +39,27 @@ public final class ServiceTest {
 
 	@Test(groups = {"fast", "db", "integration"}, enabled = false)
 	public void testListUsers() throws GWTServiceException {
-		ClientUser[] users = _service.listUsers();
+		final ClientUser[] users = _service.listUsers();
 
 		Assert.assertNotNull(users, "Returned user array must not be null");
 		Assert.assertTrue(users.length > 0, "There must be at least one user returned");
 		LOGGER.info("Following users are present:");
-		for (ClientUser user : users) {
+		for (final ClientUser user : users) {
 			LOGGER.info("\t" + user.getName() + " (" + user.getEmail() + ")");
 		}
 	}
 
 	@Test(groups = {"fast", "db", "integration"}, enabled = true)
 	public void testListFiles() throws GWTServiceException {
-		Entry entry = _service.listFiles("", null);
+		final Entry entry = _service.listFiles("", null);
 		Assert.assertNotNull(entry, "There must be at least one entry returned");
 		Assert.assertEquals(entry.getName(), "(root)", "The root entry has to be called (root)");
 		LOGGER.info("Root folder contains these items:");
 		// Remember the first dir for further tests
 		DirectoryEntry firstDir = null;
-		for (Object child : entry.getChildrenList()) {
+		for (final Object child : entry.getChildrenList()) {
 			if (child instanceof DirectoryEntry) {
-				DirectoryEntry directoryEntry = (DirectoryEntry) child;
+				final DirectoryEntry directoryEntry = (DirectoryEntry) child;
 				if (null == firstDir || directoryEntry.getName().equalsIgnoreCase(PREFERRED_FOLDER_NAME)) {
 					firstDir = directoryEntry;
 				}
@@ -76,10 +76,10 @@ public final class ServiceTest {
 			LOGGER.warn("No folder was found, cannot test automatic folder expansion");
 		} else {
 			// Let us test if we can get given folder expanded (with children listed) 
-			Entry entryWithExpansion = _service.listFiles("", new String[]{firstDir.getName()});
+			final Entry entryWithExpansion = _service.listFiles("", new String[]{firstDir.getName()});
 			DirectoryEntry expandedEntry = null;
 			// Find our expanded folder among all the others
-			for (Object child : entryWithExpansion.getChildrenList()) {
+			for (final Object child : entryWithExpansion.getChildrenList()) {
 				if (child instanceof DirectoryEntry) {
 					if (((DirectoryEntry) child).getName().equals(firstDir.getName())) {
 						expandedEntry = (DirectoryEntry) child;

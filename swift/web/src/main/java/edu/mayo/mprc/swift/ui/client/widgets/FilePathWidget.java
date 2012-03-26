@@ -6,7 +6,7 @@ public final class FilePathWidget extends Label {
 	private String fullPath;
 	private String prefixPath;
 
-	public FilePathWidget(String fullPath) {
+	public FilePathWidget(final String fullPath) {
 		this.fullPath = fullPath;
 		prefixPath = "";
 		setTitle(this.fullPath);
@@ -20,7 +20,7 @@ public final class FilePathWidget extends Label {
 		return prefixPath;
 	}
 
-	public void setPrefixPath(String prefixPath) {
+	public void setPrefixPath(final String prefixPath) {
 		this.prefixPath = prefixPath;
 		setText(getDisplayText());
 	}
@@ -29,16 +29,16 @@ public final class FilePathWidget extends Label {
 	 * @return The name of the file, without extension.
 	 */
 	public String getFileNameWithoutExtension() {
-		String path = fullPath;
+		final String path = fullPath;
 		return getFileNameWithoutExtension(path);
 	}
 
-	public static String getFileNameWithoutExtension(String path) {
+	public static String getFileNameWithoutExtension(final String path) {
 		// Crop path
-		int lastSlashPos = path.lastIndexOf('/');
-		String name = path.substring(lastSlashPos + 1);
+		final int lastSlashPos = path.lastIndexOf('/');
+		final String name = path.substring(lastSlashPos + 1);
 		// Crop extension
-		int dotPos = name.lastIndexOf('.');
+		final int dotPos = name.lastIndexOf('.');
 		return name.substring(0, dotPos);
 	}
 

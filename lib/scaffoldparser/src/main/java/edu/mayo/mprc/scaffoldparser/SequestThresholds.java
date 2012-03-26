@@ -17,7 +17,7 @@ public final class SequestThresholds implements AbstractProgramSpecificThreshold
 	@XStreamAsAttribute
 	private String xCorrs;
 
-	public SequestThresholds(double peptideProbability, double deltaCn, String xCorrs) {
+	public SequestThresholds(final double peptideProbability, final double deltaCn, final String xCorrs) {
 		this.peptideProbability = peptideProbability;
 		this.deltaCn = deltaCn;
 		this.xCorrs = xCorrs;
@@ -31,7 +31,7 @@ public final class SequestThresholds implements AbstractProgramSpecificThreshold
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -39,7 +39,7 @@ public final class SequestThresholds implements AbstractProgramSpecificThreshold
 		return deltaCn;
 	}
 
-	public void setDeltaCn(double deltaCn) {
+	public void setDeltaCn(final double deltaCn) {
 		this.deltaCn = deltaCn;
 	}
 
@@ -47,7 +47,7 @@ public final class SequestThresholds implements AbstractProgramSpecificThreshold
 		return xCorrs;
 	}
 
-	public void setXCorrs(String xCorrs) {
+	public void setXCorrs(final String xCorrs) {
 		this.xCorrs = xCorrs;
 	}
 }

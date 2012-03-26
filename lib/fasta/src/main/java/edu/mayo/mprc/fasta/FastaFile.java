@@ -14,7 +14,7 @@ public final class FastaFile implements Serializable {
 	private File file;
 	private DatabaseAnnotation annotation;
 
-	public FastaFile(String name, String description, File file, DatabaseAnnotation annotation) {
+	public FastaFile(final String name, final String description, final File file, final DatabaseAnnotation annotation) {
 		this.name = name;
 		this.description = description;
 		this.file = file;

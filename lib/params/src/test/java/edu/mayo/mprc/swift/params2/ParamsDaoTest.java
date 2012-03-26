@@ -48,9 +48,9 @@ public final class ParamsDaoTest extends DaoTest {
 		dao.begin();
 
 		// Initialize unimod and three mods
-		Unimod unimod = new Unimod();
+		final Unimod unimod = new Unimod();
 
-		HashSet<String> altNames = new HashSet<String>();
+		final HashSet<String> altNames = new HashSet<String>();
 		altNames.add("Testing mod");
 		altNames.add("Discard");
 		build1 = new SpecificityBuilder(AminoAcidSet.DEFAULT.getForSingleLetterCode("C"), Terminus.Anywhere, false, false, "Classification1", 1);
@@ -92,8 +92,8 @@ public final class ParamsDaoTest extends DaoTest {
 
 	@Test
 	public void shouldListOneIonSeriesWhenAdded() {
-		IonSeries series = new IonSeries("a");
-		Change change = new Change("test add", new DateTime());
+		final IonSeries series = new IonSeries("a");
+		final Change change = new Change("test add", new DateTime());
 		dao.addIonSeries(series, change);
 
 		final List<IonSeries> list = dao.ionSeries();
@@ -102,22 +102,22 @@ public final class ParamsDaoTest extends DaoTest {
 
 	@Test(expectedExceptions = MprcException.class)
 	public void shouldPreventDoubleIonSeriesAddition() {
-		IonSeries series = new IonSeries("a");
-		Change change = new Change("test add", new DateTime());
+		final IonSeries series = new IonSeries("a");
+		final Change change = new Change("test add", new DateTime());
 		dao.addIonSeries(series, change);
 
-		IonSeries series2 = new IonSeries("a");
-		Change change2 = new Change("test add 2", new DateTime());
+		final IonSeries series2 = new IonSeries("a");
+		final Change change2 = new Change("test add 2", new DateTime());
 		dao.addIonSeries(series2, change2);
 	}
 
 	@Test()
 	public void shouldIgnoreIonSeriesUpdates() {
 		IonSeries series = new IonSeries("a");
-		Change change = new Change("test add", new DateTime());
+		final Change change = new Change("test add", new DateTime());
 		dao.addIonSeries(series, change);
 
-		Change change2 = new Change("test add 2", new DateTime());
+		final Change change2 = new Change("test add 2", new DateTime());
 		series = dao.updateIonSeries(series, change2);
 
 		final List<IonSeries> seriesList = dao.ionSeries();
@@ -127,8 +127,8 @@ public final class ParamsDaoTest extends DaoTest {
 
 	@Test
 	public void shouldDeleteIonSeries() {
-		IonSeries series = new IonSeries("a");
-		Change change = new Change("test add", new DateTime());
+		final IonSeries series = new IonSeries("a");
+		final Change change = new Change("test add", new DateTime());
 		dao.addIonSeries(series, change);
 
 		dao.deleteIonSeries(series, new Change("test delete", new DateTime()));
@@ -151,7 +151,7 @@ public final class ParamsDaoTest extends DaoTest {
 	}
 
 	private Instrument getSimpleInstrument() {
-		HashSet<IonSeries> set = new HashSet<IonSeries>();
+		final HashSet<IonSeries> set = new HashSet<IonSeries>();
 		set.add(new IonSeries("b"));
 		set.add(new IonSeries("y"));
 		return new Instrument("Simple instrument", set, "SIMPLE");
@@ -162,9 +162,9 @@ public final class ParamsDaoTest extends DaoTest {
 		Instrument instrument = getSimpleInstrument();
 
 		instrument = dao.addInstrument(instrument, new Change("Creating new instrument", new DateTime()));
-		int oldId = instrument.getId();
+		final int oldId = instrument.getId();
 
-		HashSet<IonSeries> set2 = new HashSet<IonSeries>();
+		final HashSet<IonSeries> set2 = new HashSet<IonSeries>();
 		set2.add(new IonSeries("a"));
 		set2.add(new IonSeries("y"));
 		Instrument instrument2 = new Instrument(instrument.getName(), set2, instrument.getMascotName());
@@ -181,7 +181,7 @@ public final class ParamsDaoTest extends DaoTest {
 		Instrument instrument = getSimpleInstrument();
 
 		instrument = dao.addInstrument(instrument, new Change("Creating new instrument", new DateTime()));
-		int oldId = instrument.getId();
+		final int oldId = instrument.getId();
 
 		Instrument instrument2 = new Instrument(instrument.getName(), instrument.getSeries(), instrument.getMascotName());
 
@@ -227,7 +227,7 @@ public final class ParamsDaoTest extends DaoTest {
 	@Test
 	public void shouldAddSearchParameters() {
 		SearchEngineParameters params = new SearchEngineParameters();
-		Curation database = new Curation();
+		final Curation database = new Curation();
 		database.setTitle("Test Curation");
 		database.setShortName("test");
 		curationDao.addCuration(database);
@@ -255,7 +255,7 @@ public final class ParamsDaoTest extends DaoTest {
 
 		params.setMissedCleavages(3);
 
-		Protease protease = new Protease("Trypsin (allow P)", "KR", "");
+		final Protease protease = new Protease("Trypsin (allow P)", "KR", "");
 		dao.addProtease(protease, new Change("Adding Trypsin", new DateTime()));
 		params.setProtease(protease);
 

@@ -33,7 +33,7 @@ public final class MGFPeakListReader implements Closeable {
 	 *
 	 * @param inputFileName mgf file name.
 	 */
-	public MGFPeakListReader(String inputFileName) {
+	public MGFPeakListReader(final String inputFileName) {
 		this(new File(inputFileName));
 	}
 
@@ -42,7 +42,7 @@ public final class MGFPeakListReader implements Closeable {
 	 *
 	 * @param inputFile mgf file name.
 	 */
-	public MGFPeakListReader(File inputFile) {
+	public MGFPeakListReader(final File inputFile) {
 		this.inputFile = inputFile;
 		this.readPeaks = true;
 		bufferedReader = FileUtilities.getReader(inputFile);
@@ -64,9 +64,9 @@ public final class MGFPeakListReader implements Closeable {
 		String line = null;
 		String[] split = null;
 
-		MascotGenericFormatPeakList peaklist = new MascotGenericFormatPeakList();
+		final MascotGenericFormatPeakList peaklist = new MascotGenericFormatPeakList();
 
-		LinkedList<Peak> peaks = new LinkedList<Peak>();
+		final LinkedList<Peak> peaks = new LinkedList<Peak>();
 
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
@@ -85,7 +85,7 @@ public final class MGFPeakListReader implements Closeable {
 				 */
 				if (line.startsWith("PEPMASS")) {
 					peaklist.setTandemCount(2);
-					Matcher matcher = PEPMASS_INTENSITY.matcher(line);
+					final Matcher matcher = PEPMASS_INTENSITY.matcher(line);
 					if (matcher.matches()) {
 						peaklist.setPepmass(matcher.group(1));
 					} else {
@@ -139,10 +139,10 @@ public final class MGFPeakListReader implements Closeable {
 								 */
 								split = line.split("\\s+");
 
-								double massOverCharge = Double.parseDouble(split[0]);
-								double intensity = Double.parseDouble(split[1]);
+								final double massOverCharge = Double.parseDouble(split[0]);
+								final double intensity = Double.parseDouble(split[1]);
 
-								GenericPeak gp = new GenericPeak();
+								final GenericPeak gp = new GenericPeak();
 								gp.setMassOverCharge(massOverCharge);
 								gp.setIntensity(intensity);
 								peaks.add(gp);
@@ -194,7 +194,7 @@ public final class MGFPeakListReader implements Closeable {
 	 *
 	 * @param readPeaks Set to false to skip parsing the peaks themselves.
 	 */
-	public void setReadPeaks(boolean readPeaks) {
+	public void setReadPeaks(final boolean readPeaks) {
 		this.readPeaks = readPeaks;
 	}
 }

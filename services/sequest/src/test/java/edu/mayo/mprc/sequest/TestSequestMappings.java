@@ -21,14 +21,14 @@ public final class TestSequestMappings {
 	 */
 	@BeforeClass
 	public void setup() {
-		SequestMappingFactory mappingFactory = new SequestMappingFactory();
+		final SequestMappingFactory mappingFactory = new SequestMappingFactory();
 		sequestMappings = (SequestMappings) mappingFactory.createMapping();
 		context = new SequestContext();
 	}
 
 	@Test
 	public void shouldMap() {
-		ModSet modSet = new ModSet();
+		final ModSet modSet = new ModSet();
 		addMods(modSet, "Carbamidomethyl (C)");
 		sequestMappings.setFixedMods(context, modSet);
 		Assert.assertEquals(sequestMappings.getNativeParam("add_C_Cysteine"), "57.021464", "Cysteine did not map");
@@ -38,8 +38,8 @@ public final class TestSequestMappings {
 	 * @param modSet List of mods to add modifications to.
 	 * @param mods   Mascot names of mods to add in "mod_name(residue)" format.
 	 */
-	public void addMods(ModSet modSet, String... mods) {
-		for (String mod : mods) {
+	public void addMods(final ModSet modSet, final String... mods) {
+		for (final String mod : mods) {
 			modSet.addAll(context.getAbstractParamsInfo().getUnimod().getSpecificitiesByMascotName(mod));
 		}
 	}
@@ -56,12 +56,12 @@ public final class TestSequestMappings {
 		}
 
 		@Override
-		public void reportError(String message, Throwable t) {
+		public void reportError(final String message, final Throwable t) {
 			Assert.fail(message, t);
 		}
 
 		@Override
-		public void reportWarning(String message) {
+		public void reportWarning(final String message) {
 			Assert.fail(message);
 		}
 	}

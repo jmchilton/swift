@@ -10,7 +10,7 @@ public final class GWTServiceExceptionFactory {
 	private GWTServiceExceptionFactory() {
 	}
 
-	public static GWTServiceException createException(String message, Throwable cause) {
+	public static GWTServiceException createException(final String message, final Throwable cause) {
 		final StringWriter result = new StringWriter();
 		PrintWriter printWriter = null;
 		try {

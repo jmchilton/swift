@@ -93,7 +93,7 @@ public class TestSearchDbDao extends DaoTest {
 
 	private void loadUnimod() {
 		unimodDao.begin();
-		MockUnimodDao mockUnimodDao = new MockUnimodDao();
+		final MockUnimodDao mockUnimodDao = new MockUnimodDao();
 		unimod = mockUnimodDao.load();
 		unimodDao.upgrade(unimod, new Change("Initial Unimod install", new DateTime()));
 		unimodDao.commit();
@@ -116,8 +116,8 @@ public class TestSearchDbDao extends DaoTest {
 
 		getDatabasePlaceholder().getSession().flush();
 
-		StringWriter writer = new StringWriter();
-		Report r = new Report(writer);
+		final StringWriter writer = new StringWriter();
+		final Report r = new Report(writer);
 
 		analysis.htmlReport(r, searchDbDao, null);
 
@@ -137,14 +137,14 @@ public class TestSearchDbDao extends DaoTest {
 	}
 
 	private ReportData saveNewReportData() {
-		SearchRun searchRun = swiftDao.fillSearchRun(null);
+		final SearchRun searchRun = swiftDao.fillSearchRun(null);
 		return swiftDao.storeReport(searchRun.getId(), new File("random.sf3"));
 	}
 
-	private Analysis loadAnalysis(final DateTime now, final String reportToLoad, ReportData reportData) {
+	private Analysis loadAnalysis(final DateTime now, final String reportToLoad, final ReportData reportData) {
 		final InputStream stream = ResourceUtilities.getStream(reportToLoad, TestScaffoldSpectraSummarizer.class);
 
-		ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
+		final ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(unimod, scaffoldUnimod,
 				new SingleDatabaseTranslator(fastaDbDao, curationDao),
 				new DummyMassSpecDataExtractor(now));
 		summarizer.load(stream, -1, reportToLoad, "3", null);
@@ -160,14 +160,14 @@ public class TestSearchDbDao extends DaoTest {
 	private class ClassCounts {
 		private HashMap<Class<?>, Long> counts = new HashMap<Class<?>, Long>(10);
 
-		public void add(Class<?> clazz) {
+		public void add(final Class<?> clazz) {
 			final long count = searchDbDao.rowCount(clazz);
 			counts.put(clazz, count);
 		}
 
-		public void assertSame(ClassCounts other) {
-			for (Map.Entry<Class<?>, Long> entry : this.counts.entrySet()) {
-				Long otherCount = other.counts.get(entry.getKey());
+		public void assertSame(final ClassCounts other) {
+			for (final Map.Entry<Class<?>, Long> entry : this.counts.entrySet()) {
+				final Long otherCount = other.counts.get(entry.getKey());
 				Assert.assertEquals(entry.getValue(), otherCount, "The count of [" + entry.getKey().getSimpleName() + "] should not change.");
 			}
 		}
@@ -199,12 +199,12 @@ public class TestSearchDbDao extends DaoTest {
 	 * Make sure that if we save the same thing twice, the database stays unchanged.
 	 */
 	@Test(dataProvider = "reports")
-	public void saveShouldBeIdempotent(String report) throws DatabaseUnitException, SQLException, IOException {
+	public void saveShouldBeIdempotent(final String report) throws DatabaseUnitException, SQLException, IOException {
 		loadUnimod();
 		loadScaffoldUnimod();
 		loadFasta("/edu/mayo/mprc/searchdb/currentSp.fasta", "Current_SP");
 
-		DateTime now = new DateTime();
+		final DateTime now = new DateTime();
 		searchDbDao.begin();
 		final ReportData reportData = saveNewReportData();
 		searchDbDao.commit();
@@ -234,7 +234,7 @@ public class TestSearchDbDao extends DaoTest {
 		classCounts.assertSame(classCounts2);
 	}
 
-	private Curation loadFasta(String resource, String shortName) {
+	private Curation loadFasta(final String resource, final String shortName) {
 		File file = null;
 		try {
 			file = TestingUtilities.getTempFileFromResource(resource, true, null);
@@ -246,9 +246,9 @@ public class TestSearchDbDao extends DaoTest {
 		}
 	}
 
-	private Curation loadFasta(File file, String shortName) {
+	private Curation loadFasta(final File file, final String shortName) {
 		try {
-			Curation curation = addCurationToDatabase(shortName, file);
+			final Curation curation = addCurationToDatabase(shortName, file);
 			fastaDbDao.addFastaDatabase(curation, null);
 			return curation;
 		} catch (Exception e) {
@@ -256,7 +256,7 @@ public class TestSearchDbDao extends DaoTest {
 		}
 	}
 
-	private Curation addCurationToDatabase(String databaseName, File currentSpFasta) {
+	private Curation addCurationToDatabase(final String databaseName, final File currentSpFasta) {
 		Curation currentSp = null;
 		try {
 			curationDao.begin();

@@ -30,21 +30,21 @@ public final class FASTAFileUploadServlet extends HttpServlet {
 		return CurationWebContext.getFastaUploadFolder();
 	}
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/plain;charset=UTF-8");
 
-		Writer responseWriter = response.getWriter();
+		final Writer responseWriter = response.getWriter();
 
 		//if we are trying to perform an uplaod then perform the upload
 		if (ServletFileUpload.isMultipartContent(request)) {
 
 
-			DiskFileItemFactory fileFactory = new DiskFileItemFactory();
+			final DiskFileItemFactory fileFactory = new DiskFileItemFactory();
 
 			fileFactory.setRepository(getUploadFolder());
 
-			ServletFileUpload upload = new ServletFileUpload(fileFactory);
+			final ServletFileUpload upload = new ServletFileUpload(fileFactory);
 
 
 			upload.setFileSizeMax(MAX_FILE_SIZE);
@@ -58,10 +58,10 @@ public final class FASTAFileUploadServlet extends HttpServlet {
 				throw new IOException(e.getMessage());
 			}
 
-			StringBuilder responseMessage = new StringBuilder();
+			final StringBuilder responseMessage = new StringBuilder();
 			File toSave = null;
 			//go through the
-			for (FileItem item : items) {
+			for (final FileItem item : items) {
 				if (item.isFormField()) {
 					continue;
 				}
@@ -91,7 +91,7 @@ public final class FASTAFileUploadServlet extends HttpServlet {
 		}
 	}
 
-	private File saveFile(FileItem item) throws IOException {
+	private File saveFile(final FileItem item) throws IOException {
 		String fileName = item.getName();
 
 		//make sure the path information is not included...it might be but probably not depending on browser
@@ -104,7 +104,7 @@ public final class FASTAFileUploadServlet extends HttpServlet {
 			fileName = fileName.substring(finalSlash + 1);
 		}
 
-		File serverFile = new File(getUploadFolder(), new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "_" + fileName);
+		final File serverFile = new File(getUploadFolder(), new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + "_" + fileName);
 		try {
 			item.write(serverFile);
 		} catch (Exception e) {
@@ -121,12 +121,12 @@ public final class FASTAFileUploadServlet extends HttpServlet {
 	 * @param forFile
 	 * @return
 	 */
-	private static File checkForSimilarFile(File forFile, boolean deleteForFile) {
+	private static File checkForSimilarFile(final File forFile, final boolean deleteForFile) {
 		if (!forFile.exists()) { //if the file doesn't exist then don't worry about it
 			return forFile;
 		}
 
-		File subFile = FileUtilities.findSingleSimilarFile(forFile, forFile.getParentFile());
+		final File subFile = FileUtilities.findSingleSimilarFile(forFile, forFile.getParentFile());
 
 		if (subFile == null) {
 			return forFile;

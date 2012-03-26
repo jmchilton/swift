@@ -28,7 +28,7 @@ public final class FilterTest {
 
 	@Test
 	public static void shouldSimpleFilter() {
-		SimpleStringTextFilter filter = new SimpleStringTextFilter("HELLO world");
+		final SimpleStringTextFilter filter = new SimpleStringTextFilter("HELLO world");
 
 		Assert.assertEquals(filter.testCriteria(), TextFilter.VALID);
 		Assert.assertTrue(filter.matches("Hello world"));
@@ -68,7 +68,7 @@ public final class FilterTest {
 
 	@Test
 	public static void shouldEmptyFilter() {
-		SimpleStringTextFilter empty = new SimpleStringTextFilter("");
+		final SimpleStringTextFilter empty = new SimpleStringTextFilter("");
 		Assert.assertNotSame(empty.testCriteria(), TextFilter.VALID);
 	}
 

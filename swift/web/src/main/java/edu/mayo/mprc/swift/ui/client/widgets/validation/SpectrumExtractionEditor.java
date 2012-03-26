@@ -73,7 +73,7 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 		return extractMsnSettings;
 	}
 
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		if (!(value instanceof ClientExtractMsnSettings)) {
 			ExceptionUtilities.throwCastException(value, ClientExtractMsnSettings.class);
 			return;
@@ -86,7 +86,7 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 		settings.setFocus(true);
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		ValidationController.setValidationSeverity(validationSeverity, this);
 	}
 
@@ -94,23 +94,23 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 		return null;
 	}
 
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		// Not supported
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		settings.setEnabled(enabled);
 	}
 
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		changeListenerCollection.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		changeListenerCollection.remove(changeListener);
 	}
 
-	public void onChange(Widget widget) {
+	public void onChange(final Widget widget) {
 		extractMsnSettings.setCommandLineSwitches(settings.getText().trim());
 		changeListenerCollection.fireChange(this);
 	}

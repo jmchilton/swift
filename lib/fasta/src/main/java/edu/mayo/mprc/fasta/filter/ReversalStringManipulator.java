@@ -6,8 +6,8 @@ package edu.mayo.mprc.fasta.filter;
  * @author Eric Winter
  */
 public final class ReversalStringManipulator implements StringManipulator {
-	public String manipulateString(String toManipulate) {
-		StringBuilder manipulatedString = new StringBuilder(toManipulate);
+	public String manipulateString(final String toManipulate) {
+		final StringBuilder manipulatedString = new StringBuilder(toManipulate);
 		manipulatedString.reverse();
 		return manipulatedString.toString();
 	}

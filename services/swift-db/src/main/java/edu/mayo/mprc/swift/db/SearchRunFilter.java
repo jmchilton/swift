@@ -36,7 +36,7 @@ public final class SearchRunFilter {
 		return userSortOrder;
 	}
 
-	public void setUserSortOrder(int userSortOrder) {
+	public void setUserSortOrder(final int userSortOrder) {
 		this.userSortOrder = userSortOrder;
 	}
 
@@ -50,18 +50,18 @@ public final class SearchRunFilter {
 	 *
 	 * @param userWhereClause Comma separated list of user IDs to be displayed.
 	 */
-	public void setUserWhereClause(String userWhereClause) {
+	public void setUserWhereClause(final String userWhereClause) {
 		this.userWhereClause = userWhereClause;
 	}
 
-	public void setUserFilter(String filter) {
+	public void setUserFilter(final String filter) {
 		if (filter == null) {
 			setUserSortOrder(0);
 			return;
 		}
-		String[] parts = filter.split(";");
-		for (String part : parts) {
-			String[] keyValue = part.split("=");
+		final String[] parts = filter.split(";");
+		for (final String part : parts) {
+			final String[] keyValue = part.split("=");
 			if ("sort".equals(keyValue[0])) {
 				setUserSortOrder(Integer.parseInt(keyValue[1]));
 			} else if ("filter".equals(keyValue[0]) && keyValue.length >= 2) {
@@ -77,7 +77,7 @@ public final class SearchRunFilter {
 		return start;
 	}
 
-	public void setStart(String start) {
+	public void setStart(final String start) {
 		this.start = start;
 	}
 
@@ -88,7 +88,7 @@ public final class SearchRunFilter {
 		return count;
 	}
 
-	public void setCount(String count) {
+	public void setCount(final String count) {
 		this.count = count;
 	}
 
@@ -99,7 +99,7 @@ public final class SearchRunFilter {
 	/**
 	 * Search run must have started at time greater or equal the given one.
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(final Date startDate) {
 		this.startDate = startDate;
 	}
 
@@ -110,7 +110,7 @@ public final class SearchRunFilter {
 	/**
 	 * @param showHidden If true, all searches (including the hidden ones) are shown.
 	 */
-	public void setShowHidden(boolean showHidden) {
+	public void setShowHidden(final boolean showHidden) {
 		this.showHidden = showHidden;
 	}
 
@@ -121,11 +121,11 @@ public final class SearchRunFilter {
 	/**
 	 * Search run must have started at time less than or equal the given one.
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(final Date endDate) {
 		this.endDate = endDate;
 	}
 
-	public void updateCriteria(Criteria criteria) {
+	public void updateCriteria(final Criteria criteria) {
 		if (!StringUtilities.stringEmpty(start)) {
 			criteria.setFirstResult(Integer.parseInt(start));
 		}
@@ -168,11 +168,11 @@ public final class SearchRunFilter {
 	}
 
 	private Integer[] usersWhereClauseAsArray() {
-		String[] parts = userWhereClause.split(",");
-		Integer[] ids = new Integer[parts.length];
+		final String[] parts = userWhereClause.split(",");
+		final Integer[] ids = new Integer[parts.length];
 		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-			int userId = Integer.parseInt(part);
+			final String part = parts[i];
+			final int userId = Integer.parseInt(part);
 			ids[i] = userId;
 		}
 		return ids;

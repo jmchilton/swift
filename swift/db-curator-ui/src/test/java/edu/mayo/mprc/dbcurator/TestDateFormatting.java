@@ -10,9 +10,9 @@ public final class TestDateFormatting {
 
 	@Test
 	public void shouldParseAndFormatDate() {
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
-		DateTime date = formatter.parseDateTime("02/29/2012");
-		String formatted = formatter.print(date);
+		final DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
+		final DateTime date = formatter.parseDateTime("02/29/2012");
+		final String formatted = formatter.print(date);
 		Assert.assertEquals(formatted, "02/29/2012", "Date should match");
 	}
 

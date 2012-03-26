@@ -28,7 +28,7 @@ public final class ServiceConfig implements ResourceConfig {
 	public ServiceConfig() {
 	}
 
-	public ServiceConfig(String name, RunnerConfig runner, String brokerUrl) {
+	public ServiceConfig(final String name, final RunnerConfig runner, final String brokerUrl) {
 		this.name = name;
 		this.runner = runner;
 		this.brokerUrl = brokerUrl;
@@ -38,7 +38,7 @@ public final class ServiceConfig implements ResourceConfig {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -46,7 +46,7 @@ public final class ServiceConfig implements ResourceConfig {
 		return runner;
 	}
 
-	public void setRunner(RunnerConfig runner) {
+	public void setRunner(final RunnerConfig runner) {
 		this.runner = runner;
 	}
 
@@ -54,15 +54,15 @@ public final class ServiceConfig implements ResourceConfig {
 		return brokerUrl;
 	}
 
-	public void setBrokerUrl(String brokerUrl) {
+	public void setBrokerUrl(final String brokerUrl) {
 		this.brokerUrl = brokerUrl;
 	}
 
-	public Map<String, String> save(DependencyResolver resolver) {
+	public Map<String, String> save(final DependencyResolver resolver) {
 		return new HashMap<String, String>(0);
 	}
 
-	public void load(Map<String, String> values, DependencyResolver resolver) {
+	public void load(final Map<String, String> values, final DependencyResolver resolver) {
 	}
 
 	@Override

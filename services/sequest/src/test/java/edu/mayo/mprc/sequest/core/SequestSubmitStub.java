@@ -8,11 +8,11 @@ public final class SequestSubmitStub implements SequestSubmitterInterface {
 	private List<String> dtas;
 	private SequestCallerInterface sequestCaller;
 
-	SequestSubmitStub(long maxLineLength, long maxChunkSize, int maxDtaFiles, String paramsFileName, String workingDir, String tarName) {
+	SequestSubmitStub(final long maxLineLength, final long maxChunkSize, final int maxDtaFiles, final String paramsFileName, final String workingDir, final String tarName) {
 		dtas = new ArrayList<String>();
 	}
 
-	public void addDtaFile(String fileName, boolean forced) {
+	public void addDtaFile(final String fileName, final boolean forced) {
 		dtas.add(fileName);
 	}
 
@@ -20,7 +20,7 @@ public final class SequestSubmitStub implements SequestSubmitterInterface {
 		return dtas.size();
 	}
 
-	public void setExceptionThrown(Throwable m) {
+	public void setExceptionThrown(final Throwable m) {
 
 	}
 
@@ -32,7 +32,7 @@ public final class SequestSubmitStub implements SequestSubmitterInterface {
 		return sequestCaller;
 	}
 
-	public void setSequestCaller(SequestCallerInterface sequestCaller) {
+	public void setSequestCaller(final SequestCallerInterface sequestCaller) {
 		this.sequestCaller = sequestCaller;
 	}
 }

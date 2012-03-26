@@ -13,7 +13,7 @@ public final class EngineWorkPacketTest {
 
 	@Test
 	public static void shouldXStreamSerialize() throws IOException {
-		EngineWorkPacket packet = new TestEngineWorkPacket(
+		final EngineWorkPacket packet = new TestEngineWorkPacket(
 				new File("input"),
 				new File("output"),
 				new File("search"),
@@ -22,8 +22,8 @@ public final class EngineWorkPacketTest {
 				"task",
 				false);
 
-		XStream xStream = new XStream(new DomDriver());
-		String xml = xStream.toXML(packet);
+		final XStream xStream = new XStream(new DomDriver());
+		final String xml = xStream.toXML(packet);
 
 		final Object result = xStream.fromXML(xml);
 		Assert.assertTrue(packet.equals(result), "Deserialized object must be identical");
@@ -33,12 +33,12 @@ public final class EngineWorkPacketTest {
 
 		private static final long serialVersionUID = 4029468324506386517L;
 
-		public TestEngineWorkPacket(File inputFile, File outputFile, File searchParamsFile, File databaseFile, boolean publishResultFiles, String taskId, boolean fromScratch) {
+		public TestEngineWorkPacket(final File inputFile, final File outputFile, final File searchParamsFile, final File databaseFile, final boolean publishResultFiles, final String taskId, final boolean fromScratch) {
 			super(inputFile, outputFile, searchParamsFile, databaseFile, publishResultFiles, taskId, fromScratch);
 		}
 
 		@Override
-		public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+		public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 			return null; //TODO: implement me
 		}
 	}

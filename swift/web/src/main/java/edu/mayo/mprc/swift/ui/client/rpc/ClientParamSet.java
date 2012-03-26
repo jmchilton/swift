@@ -13,14 +13,14 @@ public final class ClientParamSet implements ClientValue {
 	public ClientParamSet() {
 	}
 
-	public ClientParamSet(int id, String name, String ownerEmail, String initials) {
+	public ClientParamSet(final int id, final String name, final String ownerEmail, final String initials) {
 		this.id = id;
 		this.name = name;
 		this.ownerEmail = ownerEmail;
 		this.initials = initials;
 	}
 
-	public ClientParamSet(String name, String ownerEmail, String initials) {
+	public ClientParamSet(final String name, final String ownerEmail, final String initials) {
 		this.name = name;
 		this.ownerEmail = ownerEmail;
 		this.initials = initials;
@@ -34,7 +34,7 @@ public final class ClientParamSet implements ClientValue {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -42,7 +42,7 @@ public final class ClientParamSet implements ClientValue {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -50,7 +50,7 @@ public final class ClientParamSet implements ClientValue {
 		return ownerEmail;
 	}
 
-	public void setOwnerEmail(String ownerEmail) {
+	public void setOwnerEmail(final String ownerEmail) {
 		this.ownerEmail = ownerEmail;
 	}
 
@@ -62,15 +62,15 @@ public final class ClientParamSet implements ClientValue {
 		return initials;
 	}
 
-	public void setInitials(String initials) {
+	public void setInitials(final String initials) {
 		this.initials = initials;
 	}
 
-	public boolean equals(Object t) {
+	public boolean equals(final Object t) {
 		if (!(t instanceof ClientParamSet)) {
 			return false;
 		}
-		ClientParamSet tt = (ClientParamSet) t;
+		final ClientParamSet tt = (ClientParamSet) t;
 		return tt.id == id;
 	}
 

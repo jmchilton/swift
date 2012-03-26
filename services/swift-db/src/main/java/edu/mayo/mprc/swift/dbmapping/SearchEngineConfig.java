@@ -18,7 +18,7 @@ public class SearchEngineConfig extends EvolvableBase {
 	public SearchEngineConfig() {
 	}
 
-	public SearchEngineConfig(String code) {
+	public SearchEngineConfig(final String code) {
 		this.code = code;
 	}
 
@@ -26,7 +26,7 @@ public class SearchEngineConfig extends EvolvableBase {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(final String code) {
 		if (code == null) {
 			throw new MprcException("Search engine code cannot be null");
 		}
@@ -34,7 +34,7 @@ public class SearchEngineConfig extends EvolvableBase {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -42,7 +42,7 @@ public class SearchEngineConfig extends EvolvableBase {
 			return false;
 		}
 
-		SearchEngineConfig that = (SearchEngineConfig) o;
+		final SearchEngineConfig that = (SearchEngineConfig) o;
 
 		if (getCode() != null ? !getCode().equals(that.getCode()) : that.getCode() != null) {
 			return false;

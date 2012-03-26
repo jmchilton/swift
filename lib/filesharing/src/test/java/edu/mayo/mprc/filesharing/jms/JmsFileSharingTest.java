@@ -50,7 +50,7 @@ public final class JmsFileSharingTest {
 
 		tempFolder = FileUtilities.createTempFolder();
 
-		JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(uri, null, null);
+		final JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(uri, null, null);
 		fileSharing = factory.createFileSharing("test");
 		fileSharing.startProcessingRequests();
 
@@ -73,9 +73,9 @@ public final class JmsFileSharingTest {
 		sourceTempFile11 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath1, false, tempFolder);
 		destinationFile11 = new File(tempFolder, "destination1.test");
 
-		FileTransfer fileTransfer = fileSharing.getFile("test", sourceTempFile11.getAbsolutePath(), destinationFile11);
+		final FileTransfer fileTransfer = fileSharing.getFile("test", sourceTempFile11.getAbsolutePath(), destinationFile11);
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertEquals(fileTransfer.getFiles().size(), fileTransfer.getTransferedFiles().size(), "Number of transfered files should be the same as requested.");
 		Assert.assertTrue(resultFile.exists(), "Resulting transfered file " + resultFile.getAbsolutePath() + " should exist.");
@@ -88,9 +88,9 @@ public final class JmsFileSharingTest {
 	public void transferFileRetrialSuccessfullyTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		FileTransfer fileTransfer = fileSharing.getFile("test", sourceTempFile11.getAbsolutePath(), destinationFile11);
+		final FileTransfer fileTransfer = fileSharing.getFile("test", sourceTempFile11.getAbsolutePath(), destinationFile11);
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertEquals(fileTransfer.getTransferedFiles().size(), 0, "No files should have been transfered.");
 		Assert.assertTrue(resultFile.exists(), "Resulting transfered file " + resultFile.getAbsolutePath() + " should exist.");
@@ -104,11 +104,11 @@ public final class JmsFileSharingTest {
 	public void transferFileDeletionSuccessfullyTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		String sourcePath = sourceTempFile11.getAbsolutePath();
+		final String sourcePath = sourceTempFile11.getAbsolutePath();
 		FileUtilities.cleanupTempFile(sourceTempFile11);
-		FileTransfer fileTransfer = fileSharing.getFile("test", sourcePath, destinationFile11);
+		final FileTransfer fileTransfer = fileSharing.getFile("test", sourcePath, destinationFile11);
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertEquals(fileTransfer.getTransferedFiles().size(), 0, "No files should have been transfered.");
 		Assert.assertFalse(destinationFile11.exists(), "Resulting transfered file " + resultFile.getAbsolutePath() + " should have been deleted.");
@@ -120,12 +120,12 @@ public final class JmsFileSharingTest {
 	public void transferFolderSuccessfullyTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File destinationFolder = new File(tempFolder, "destination");
+		final File destinationFolder = new File(tempFolder, "destination");
 		FileUtilities.ensureFolderExists(destinationFolder);
 
-		FileTransfer fileTransfer = fileSharing.getFile("test", tempFolder.getAbsolutePath(), destinationFolder);
+		final FileTransfer fileTransfer = fileSharing.getFile("test", tempFolder.getAbsolutePath(), destinationFolder);
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertTrue(resultFile.exists(), "Resulting transfered folder " + resultFile.getAbsolutePath() + " should exist.");
 
@@ -136,11 +136,11 @@ public final class JmsFileSharingTest {
 	public void transferFileFailedTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File destinationFile = new File(tempFolder, "destination2.test");
+		final File destinationFile = new File(tempFolder, "destination2.test");
 
-		FileTransfer fileTransfer = fileSharing.getFile("test", new File("./" + System.currentTimeMillis() + "/abc123.def").getAbsolutePath(), destinationFile);
+		final FileTransfer fileTransfer = fileSharing.getFile("test", new File("./" + System.currentTimeMillis() + "/abc123.def").getAbsolutePath(), destinationFile);
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertFalse(resultFile.exists(), "Resulting transfered file should not exist.");
 
@@ -151,12 +151,12 @@ public final class JmsFileSharingTest {
 	public void synchronizedRemoteFileTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File sourceTempFile = TestingUtilities.getTempFileFromResource(sourceFileResourcePath1, false, tempFolder);
-		File destinationFile = new File(tempFolder, "synchronized.test");
+		final File sourceTempFile = TestingUtilities.getTempFileFromResource(sourceFileResourcePath1, false, tempFolder);
+		final File destinationFile = new File(tempFolder, "synchronized.test");
 
-		FileTransfer fileTransfer = fileSharingClient.uploadFile("server", sourceTempFile, destinationFile.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.uploadFile("server", sourceTempFile, destinationFile.getAbsolutePath());
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertTrue(resultFile.exists(), "Resulting synchronized file " + resultFile.getAbsolutePath() + " should exist.");
 		Assert.assertTrue(TestingUtilities.compareFilesByLine(sourceTempFile, resultFile) == null, "Source and destination file contents are not the same.");
@@ -177,16 +177,16 @@ public final class JmsFileSharingTest {
 	public void synchronizedRemoteFolderTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File tempSourceSynchFolder = new File(tempFolder, "synchSource");
+		final File tempSourceSynchFolder = new File(tempFolder, "synchSource");
 		FileUtilities.ensureFolderExists(tempSourceSynchFolder);
 
-		File tempDestSynchFolder = new File(tempFolder, "synchDest");
+		final File tempDestSynchFolder = new File(tempFolder, "synchDest");
 
 		sourceTempFile1 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath1, false, tempSourceSynchFolder);
 		sourceTempFile2 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath2, false, tempSourceSynchFolder);
-		File dir1 = new File(tempSourceSynchFolder, "dir1");
+		final File dir1 = new File(tempSourceSynchFolder, "dir1");
 		FileUtilities.ensureFolderExists(dir1);
-		File dir2 = new File(tempSourceSynchFolder, "dir2");
+		final File dir2 = new File(tempSourceSynchFolder, "dir2");
 		FileUtilities.ensureFolderExists(dir2);
 		sourceTempFile3 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath3, false, dir1);
 		sourceTempFile4 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath4, false, dir2);
@@ -196,9 +196,9 @@ public final class JmsFileSharingTest {
 		destinationFile3 = new File(new File(tempDestSynchFolder, "dir1"), sourceTempFile3.getName());
 		destinationFile4 = new File(new File(tempDestSynchFolder, "dir2"), sourceTempFile4.getName());
 
-		FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
 
-		List<File> resultFiles = fileTransfer.done();
+		final List<File> resultFiles = fileTransfer.done();
 
 		Assert.assertTrue(resultFiles.size() > 0, "Resulting synchronized folder " + tempSourceSynchFolder.getAbsolutePath() + " should exist.");
 
@@ -215,14 +215,14 @@ public final class JmsFileSharingTest {
 	public void synchronizedRemoteFolderRetrialTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File tempSourceSynchFolder = new File(tempFolder, "synchSource");
+		final File tempSourceSynchFolder = new File(tempFolder, "synchSource");
 		FileUtilities.ensureFolderExists(tempSourceSynchFolder);
 
-		File tempDestSynchFolder = new File(tempFolder, "synchDest");
+		final File tempDestSynchFolder = new File(tempFolder, "synchDest");
 
-		FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
 
-		List<File> resultFiles = fileTransfer.done();
+		final List<File> resultFiles = fileTransfer.done();
 
 		Assert.assertTrue(resultFiles.size() > 0, "Resulting synchronized folder " + tempSourceSynchFolder.getAbsolutePath() + " should exist.");
 
@@ -241,17 +241,17 @@ public final class JmsFileSharingTest {
 	public void synchronizedRemoteFolderRetrialChangeTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File tempSourceSynchFolder = new File(tempFolder, "synchSource");
+		final File tempSourceSynchFolder = new File(tempFolder, "synchSource");
 		FileUtilities.ensureFolderExists(tempSourceSynchFolder);
 
-		File tempDestSynchFolder = new File(tempFolder, "synchDest");
+		final File tempDestSynchFolder = new File(tempFolder, "synchDest");
 
 		FileUtilities.setLastModified(sourceTempFile1, sourceTempFile1.lastModified() + 60000);
 		FileUtilities.setLastModified(sourceTempFile4, sourceTempFile4.lastModified() + 60000);
 
-		FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.uploadFolder("server", tempSourceSynchFolder, tempDestSynchFolder.getAbsolutePath());
 
-		List<File> resultFiles = fileTransfer.done();
+		final List<File> resultFiles = fileTransfer.done();
 
 		Assert.assertTrue(resultFiles.size() > 0, "Resulting synchronized folder " + tempSourceSynchFolder.getAbsolutePath() + " should exist.");
 
@@ -276,9 +276,9 @@ public final class JmsFileSharingTest {
 		sourceTempFile44 = TestingUtilities.getTempFileFromResource(sourceFileResourcePath1, false, tempFolder);
 		destinationFile44 = new File(tempFolder, "synchronizedLocal.test");
 
-		FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile44, sourceTempFile44.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile44, sourceTempFile44.getAbsolutePath());
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 
 		Assert.assertEquals(fileTransfer.getFiles().size(), fileTransfer.getTransferedFiles().size(), "Number of transfered files should be the same as requested.");
@@ -293,9 +293,9 @@ public final class JmsFileSharingTest {
 	public void synchronizedLocalFileRetrialTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile44, sourceTempFile44.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile44, sourceTempFile44.getAbsolutePath());
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertEquals(fileTransfer.getTransferedFiles().size(), 0, "No file should be transfered.");
 		Assert.assertTrue(resultFile.exists(), "Resulting synchronized file " + resultFile.getAbsolutePath() + " should exist.");
@@ -308,12 +308,12 @@ public final class JmsFileSharingTest {
 	public void synchronizedLocalFileFailedTest() throws Exception {
 		LOGGER.debug("Starting test");
 
-		File sourceTempFile = new File(tempFolder, "synchronizedLocal145785ABCD.test");
-		File destinationFile = new File(tempFolder, "synchronizedLocalFailed.test");
+		final File sourceTempFile = new File(tempFolder, "synchronizedLocal145785ABCD.test");
+		final File destinationFile = new File(tempFolder, "synchronizedLocalFailed.test");
 
-		FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile, sourceTempFile.getAbsolutePath());
+		final FileTransfer fileTransfer = fileSharingClient.downloadFile("server", destinationFile, sourceTempFile.getAbsolutePath());
 
-		File resultFile = fileTransfer.done().get(0);
+		final File resultFile = fileTransfer.done().get(0);
 
 		Assert.assertFalse(resultFile.exists(), "Resulting transfered file should exist for a failed transfer.");
 

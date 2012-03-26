@@ -20,7 +20,7 @@ public final class FixTag {
 	private FixTag() {
 	}
 
-	public static String getTag(String action, String description) {
+	public static String getTag(final String action, final String description) {
 		return BEGINNINGTAG + (action == null ? "" : " " + ACTIONATTRIB + action + "\"") + ">" + description + ENDTAG;
 	}
 

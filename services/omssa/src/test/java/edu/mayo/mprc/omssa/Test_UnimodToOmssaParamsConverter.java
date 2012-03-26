@@ -48,34 +48,34 @@ public final class Test_UnimodToOmssaParamsConverter {
 		/**
 		 * ommssa only supports 30 user defined modifications so that is what we will support.
 		 */
-		UnimodWriter w = new UnimodWriter(true /* include fixed */, true /* include variable */);
+		final UnimodWriter w = new UnimodWriter(true /* include fixed */, true /* include variable */);
 		w.write();
 
-		StringWriter formatedWriter = new StringWriter();
+		final StringWriter formatedWriter = new StringWriter();
 		XMLUtilities.indentXML(new StringReader(w.omssaWriter.toString()), formatedWriter);
 
-		String text = formatedWriter.toString();
+		final String text = formatedWriter.toString();
 
 		Assert.assertTrue(text.length() > 16000);
 
 		//now round trip to test convertUnimodToOmssa
 
-		Set<ModSpecificity> matchedModSpecificities = this.findMatchedSpecificities(w.converter, w.umodSet, w.elemRoot.getElementsByTagName("MSModSpec"));
+		final Set<ModSpecificity> matchedModSpecificities = this.findMatchedSpecificities(w.converter, w.umodSet, w.elemRoot.getElementsByTagName("MSModSpec"));
 
 		Assert.assertEquals(matchedModSpecificities.size(), 28, "Unexpected number of mod specificities");
 
 
 	}
 
-	private Set<ModSpecificity> findMatchedSpecificities(UnimodOmssaConverter converter, Unimod umodSet, NodeList msModSpecs) {
-		Set<ModSpecificity> matchedModSpecificities = new HashSet<ModSpecificity>();
-		Set<Element> unmatchedSpecs = new HashSet<Element>();
+	private Set<ModSpecificity> findMatchedSpecificities(final UnimodOmssaConverter converter, final Unimod umodSet, final NodeList msModSpecs) {
+		final Set<ModSpecificity> matchedModSpecificities = new HashSet<ModSpecificity>();
+		final Set<Element> unmatchedSpecs = new HashSet<Element>();
 
 
 		for (int i = 0; i < msModSpecs.getLength(); i++) {
-			Element mod = (Element) msModSpecs.item(i);
+			final Element mod = (Element) msModSpecs.item(i);
 			try {
-				ModSpecificity spec = converter.convertToModSpecificity(mod, umodSet);
+				final ModSpecificity spec = converter.convertToModSpecificity(mod, umodSet);
 				matchedModSpecificities.add(spec);
 			} catch (Exception e) {
 				unmatchedSpecs.add(mod);
@@ -100,13 +100,13 @@ public final class Test_UnimodToOmssaParamsConverter {
 		runTestonUmimodsFileWrite(true /* include fixed */, false /* include variable */, 10 + 0);
 	}
 
-	private void runTestonUmimodsFileWrite(boolean includeFixed, boolean includeVariable, int expectedSize) {
+	private void runTestonUmimodsFileWrite(final boolean includeFixed, final boolean includeVariable, final int expectedSize) {
 
-		UnimodWriter w = new UnimodWriter(includeFixed, includeVariable);
+		final UnimodWriter w = new UnimodWriter(includeFixed, includeVariable);
 		w.write();
 
 
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
 		String omssaParamsFileName = null;
 		try {
@@ -115,7 +115,7 @@ public final class Test_UnimodToOmssaParamsConverter {
 			Assert.fail("failure opening new file", e);
 		}
 		w.writePersistent(omssaParamsFileName);
-		OmssaUserModsWriter omssaUserModsWriter = new OmssaUserModsWriter();
+		final OmssaUserModsWriter omssaUserModsWriter = new OmssaUserModsWriter();
 		String finalUserModsFileName = null;
 		try {
 			finalUserModsFileName = TestingUtilities.getUniqueTempFile(true, folder, ".tmp").getAbsolutePath();
@@ -124,10 +124,10 @@ public final class Test_UnimodToOmssaParamsConverter {
 		}
 		omssaUserModsWriter.generateRuntimeUserModsFile(new File(finalUserModsFileName), new File(omssaParamsFileName));
 		// need to look in the finalUserModsFileName to see if the modifications are there...
-		OmssaModsReader r = new OmssaModsReader(new File(finalUserModsFileName));
-		NodeList msModSpecs = r.getMSModSpec();
+		final OmssaModsReader r = new OmssaModsReader(new File(finalUserModsFileName));
+		final NodeList msModSpecs = r.getMSModSpec();
 		// convert these nodes to Specificity's
-		Set<ModSpecificity> matchedModSpecificities = findMatchedSpecificities(w.converter, w.umodSet, msModSpecs);
+		final Set<ModSpecificity> matchedModSpecificities = findMatchedSpecificities(w.converter, w.umodSet, msModSpecs);
 
 		Assert.assertTrue(matchedModSpecificities.size() == expectedSize, "actual size=" + matchedModSpecificities.size());
 
@@ -135,7 +135,7 @@ public final class Test_UnimodToOmssaParamsConverter {
 
 	@Test(enabled = true)
 	public void testWithPreConfiguredParamsFile() {
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 
 		File omssaParamsFile = null;
 		try {
@@ -143,7 +143,7 @@ public final class Test_UnimodToOmssaParamsConverter {
 		} catch (IOException e) {
 			Assert.fail("failure opening new file", e);
 		}
-		OmssaUserModsWriter o = new OmssaUserModsWriter();
+		final OmssaUserModsWriter o = new OmssaUserModsWriter();
 		File finalUserModsFile = null;
 		try {
 			finalUserModsFile = TestingUtilities.getUniqueTempFile(true, folder, ".tmp");
@@ -152,8 +152,8 @@ public final class Test_UnimodToOmssaParamsConverter {
 		}
 		o.generateRuntimeUserModsFile(finalUserModsFile, omssaParamsFile);
 		// need to look in the finalUserModsFileName to see if the modifications are there...
-		OmssaModsReader r = new OmssaModsReader(finalUserModsFile);
-		NodeList msModSpecs = r.getMSModSpec();
+		final OmssaModsReader r = new OmssaModsReader(finalUserModsFile);
+		final NodeList msModSpecs = r.getMSModSpec();
 		// convert these nodes to Specificity's
 //		Set<ModSpecificity> matchedSpecificities = findMatchedSpecificities(w.converter, w.umodSet, msModSpecs);
 //
@@ -169,15 +169,15 @@ public final class Test_UnimodToOmssaParamsConverter {
 		public final UnimodOmssaConverter converter;
 		public final Unimod umodSet;
 
-		public UnimodWriter(boolean includeFixed, boolean includeVariable) {
+		public UnimodWriter(final boolean includeFixed, final boolean includeVariable) {
 			/**
 			 * ommssa only supports 30 user defined modifications so that is what we will support.
 			 */
-			List<ModSpecificity> fixedList = new ArrayList<ModSpecificity>();
-			List<ModSpecificity> varList = new ArrayList<ModSpecificity>();
+			final List<ModSpecificity> fixedList = new ArrayList<ModSpecificity>();
+			final List<ModSpecificity> varList = new ArrayList<ModSpecificity>();
 			umodSet = Test_UnimodToOmssaParamsConverter.getFixedandVariableSpecificities(fixedList, varList, includeFixed, includeVariable);
 
-			ModsUtilities modsUtilities = new ModsUtilities();
+			final ModsUtilities modsUtilities = new ModsUtilities();
 			converter = new UnimodOmssaConverter(modsUtilities);
 
 			xmldoc = new DocumentImpl(true);
@@ -193,7 +193,7 @@ public final class Test_UnimodToOmssaParamsConverter {
 
 		public void write() {
 			omssaWriter = new StringWriter();
-			XMLSerializer serializer = new XMLSerializer(omssaWriter, new OutputFormat(xmldoc));
+			final XMLSerializer serializer = new XMLSerializer(omssaWriter, new OutputFormat(xmldoc));
 			try {
 				serializer.serialize(xmldoc);
 			} catch (IOException e) {
@@ -201,9 +201,9 @@ public final class Test_UnimodToOmssaParamsConverter {
 			}
 		}
 
-		public void writePersistent(String filename) {
+		public void writePersistent(final String filename) {
 // Use a Transformer for output
-			TransformerFactory tFactory =
+			final TransformerFactory tFactory =
 					TransformerFactory.newInstance();
 			Transformer transformer = null;
 			try {
@@ -212,14 +212,14 @@ public final class Test_UnimodToOmssaParamsConverter {
 				throw new MprcException(e);
 			}
 
-			DOMSource source = new DOMSource(xmldoc);
+			final DOMSource source = new DOMSource(xmldoc);
 			FileOutputStream o = null;
 			try {
 				o = new FileOutputStream(filename);
 			} catch (FileNotFoundException e) {
 				throw new MprcException("could not open output stream on " + filename);
 			}
-			StreamResult result = new StreamResult(o);
+			final StreamResult result = new StreamResult(o);
 			try {
 				transformer.transform(source, result);
 			} catch (TransformerException e) {
@@ -239,10 +239,10 @@ public final class Test_UnimodToOmssaParamsConverter {
 	 * @param variable      - if should include the variable mods
 	 * @return
 	 */
-	private static Unimod getFixedandVariableSpecificities(List<ModSpecificity> fixedModsList, List<ModSpecificity> varModsList, boolean fixed, boolean variable) {
+	private static Unimod getFixedandVariableSpecificities(final List<ModSpecificity> fixedModsList, final List<ModSpecificity> varModsList, final boolean fixed, final boolean variable) {
 
-		InputStream umodStream = new Test_UnimodToOmssaParamsConverter().getClass().getResourceAsStream("/edu/mayo/mprc/swift/params/unimod.xml");
-		Unimod umodSet = new Unimod();
+		final InputStream umodStream = new Test_UnimodToOmssaParamsConverter().getClass().getResourceAsStream("/edu/mayo/mprc/swift/params/unimod.xml");
+		final Unimod umodSet = new Unimod();
 		umodSet.parseUnimodXML(umodStream);
 
 		/**
@@ -276,27 +276,27 @@ public final class Test_UnimodToOmssaParamsConverter {
 	 </MSModSpec_type>
 	 */
 	public void testFindElement() {
-		File folder = FileUtilities.createTempFolder();
-		String searchId = "157";
+		final File folder = FileUtilities.createTempFolder();
+		final String searchId = "157";
 		File templateFile = null;
 		try {
 			templateFile = TestingUtilities.getTempFileFromResource("/usermods.xml", true, folder);
 		} catch (IOException e) {
 			Assert.fail("failed opening temporary file on resource usermods.xml", e);
 		}
-		OmssaModsReader r = new OmssaModsReader(templateFile);
-		Element msModSpecSet = r.getMSModSpecSet();
-		Element el = XMLUtilities.findElement(searchId, "MSMod", "MSModSpec", msModSpecSet);
+		final OmssaModsReader r = new OmssaModsReader(templateFile);
+		final Element msModSpecSet = r.getMSModSpecSet();
+		final Element el = XMLUtilities.findElement(searchId, "MSMod", "MSModSpec", msModSpecSet);
 		Assert.assertNotNull(el);
 		Assert.assertTrue(el.getTagName().equals("MSModSpec"), "top tag should be MSModSpec, not " + el.getTagName());
 		// now find the id value
-		Element mod = XMLUtilities.findElement("MSMod", el);
-		String id = XMLUtilities.getElementValue(mod);
+		final Element mod = XMLUtilities.findElement("MSMod", el);
+		final String id = XMLUtilities.getElementValue(mod);
 		Assert.assertEquals(searchId, id, "id mismatch");
 
 		// now test replace
 		XMLUtilities.replaceTextValue(mod, "1");
-		String id1 = XMLUtilities.getElementValue(mod);
+		final String id1 = XMLUtilities.getElementValue(mod);
 		LOGGER.debug("id1=" + id1);
 		Assert.assertEquals(id1, "1", "id not set to 1");
 

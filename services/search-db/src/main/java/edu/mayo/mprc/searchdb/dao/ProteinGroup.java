@@ -64,7 +64,7 @@ public class ProteinGroup extends PersistableBase {
 	public ProteinGroup() {
 	}
 
-	public ProteinGroup(ProteinSequenceList proteinSequences, PsmList peptideSpectrumMatches, double proteinIdentificationProbability, int numberOfUniquePeptides, int numberOfUniqueSpectra, int numberOfTotalSpectra, double percentageOfTotalSpectra, double percentageSequenceCoverage) {
+	public ProteinGroup(final ProteinSequenceList proteinSequences, final PsmList peptideSpectrumMatches, final double proteinIdentificationProbability, final int numberOfUniquePeptides, final int numberOfUniqueSpectra, final int numberOfTotalSpectra, final double percentageOfTotalSpectra, final double percentageSequenceCoverage) {
 		this.proteinSequences = proteinSequences;
 		this.peptideSpectrumMatches = peptideSpectrumMatches;
 		this.proteinIdentificationProbability = proteinIdentificationProbability;
@@ -79,7 +79,7 @@ public class ProteinGroup extends PersistableBase {
 		return proteinSequences;
 	}
 
-	public void setProteinSequences(ProteinSequenceList proteinSequences) {
+	public void setProteinSequences(final ProteinSequenceList proteinSequences) {
 		this.proteinSequences = proteinSequences;
 	}
 
@@ -87,7 +87,7 @@ public class ProteinGroup extends PersistableBase {
 		return peptideSpectrumMatches;
 	}
 
-	public void setPeptideSpectrumMatches(PsmList peptideSpectrumMatches) {
+	public void setPeptideSpectrumMatches(final PsmList peptideSpectrumMatches) {
 		this.peptideSpectrumMatches = peptideSpectrumMatches;
 	}
 
@@ -95,7 +95,7 @@ public class ProteinGroup extends PersistableBase {
 		return proteinIdentificationProbability;
 	}
 
-	public void setProteinIdentificationProbability(double proteinIdentificationProbability) {
+	public void setProteinIdentificationProbability(final double proteinIdentificationProbability) {
 		this.proteinIdentificationProbability = proteinIdentificationProbability;
 	}
 
@@ -103,7 +103,7 @@ public class ProteinGroup extends PersistableBase {
 		return numberOfUniquePeptides;
 	}
 
-	public void setNumberOfUniquePeptides(int numberOfUniquePeptides) {
+	public void setNumberOfUniquePeptides(final int numberOfUniquePeptides) {
 		this.numberOfUniquePeptides = numberOfUniquePeptides;
 	}
 
@@ -111,7 +111,7 @@ public class ProteinGroup extends PersistableBase {
 		return numberOfUniqueSpectra;
 	}
 
-	public void setNumberOfUniqueSpectra(int numberOfUniqueSpectra) {
+	public void setNumberOfUniqueSpectra(final int numberOfUniqueSpectra) {
 		this.numberOfUniqueSpectra = numberOfUniqueSpectra;
 	}
 
@@ -119,7 +119,7 @@ public class ProteinGroup extends PersistableBase {
 		return numberOfTotalSpectra;
 	}
 
-	public void setNumberOfTotalSpectra(int numberOfTotalSpectra) {
+	public void setNumberOfTotalSpectra(final int numberOfTotalSpectra) {
 		this.numberOfTotalSpectra = numberOfTotalSpectra;
 	}
 
@@ -127,7 +127,7 @@ public class ProteinGroup extends PersistableBase {
 		return percentageOfTotalSpectra;
 	}
 
-	public void setPercentageOfTotalSpectra(double percentageOfTotalSpectra) {
+	public void setPercentageOfTotalSpectra(final double percentageOfTotalSpectra) {
 		this.percentageOfTotalSpectra = percentageOfTotalSpectra;
 	}
 
@@ -135,12 +135,12 @@ public class ProteinGroup extends PersistableBase {
 		return percentageSequenceCoverage;
 	}
 
-	public void setPercentageSequenceCoverage(double percentageSequenceCoverage) {
+	public void setPercentageSequenceCoverage(final double percentageSequenceCoverage) {
 		this.percentageSequenceCoverage = percentageSequenceCoverage;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -148,7 +148,7 @@ public class ProteinGroup extends PersistableBase {
 			return false;
 		}
 
-		ProteinGroup that = (ProteinGroup) o;
+		final ProteinGroup that = (ProteinGroup) o;
 
 		if (getNumberOfTotalSpectra() != that.getNumberOfTotalSpectra()) {
 			return false;

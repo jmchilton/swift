@@ -35,15 +35,15 @@ public final class XTandemDeploymentService extends DeploymentService<Deployment
 
 	}
 
-	public synchronized DeploymentResult performDeployment(DeploymentRequest request) {
-		DeploymentResult result = new DeploymentResult();
+	public synchronized DeploymentResult performDeployment(final DeploymentRequest request) {
+		final DeploymentResult result = new DeploymentResult();
 
-		File curationFile = request.getCurationFile();
+		final File curationFile = request.getCurationFile();
 
 		LOGGER.info("XTandem deployment services started. Deployment file [" + curationFile.getAbsolutePath() + "]");
 
 		if (!curationFile.exists()) {
-			MprcException mprcException = new MprcException("The file passed in the curation didn't exist: " + curationFile.getAbsolutePath());
+			final MprcException mprcException = new MprcException("The file passed in the curation didn't exist: " + curationFile.getAbsolutePath());
 			LOGGER.error(mprcException.getMessage());
 			throw mprcException;
 		}
@@ -56,7 +56,7 @@ public final class XTandemDeploymentService extends DeploymentService<Deployment
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
 		LOGGER.info("XTandem undeployment of database " + request.getShortName() + " completed successfully.");
 		return new DeploymentResult();
 	}
@@ -74,11 +74,11 @@ public final class XTandemDeploymentService extends DeploymentService<Deployment
 		public Config() {
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			return new TreeMap<String, String>();
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 		}
 
 		@Override
@@ -92,13 +92,13 @@ public final class XTandemDeploymentService extends DeploymentService<Deployment
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			return new XTandemDeploymentService();
 		}
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 		}
 	}
 }

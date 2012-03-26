@@ -20,7 +20,7 @@ final class ScaffoldReportTask extends AsyncTaskBase {
 
 	public static final String TASK_NAME = "ScaffoldReport";
 
-	public ScaffoldReportTask(DaemonConnection daemon, List<File> scaffoldOutputFiles, File peptideReportFile, File proteinReportFile, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public ScaffoldReportTask(final DaemonConnection daemon, final List<File> scaffoldOutputFiles, final File peptideReportFile, final File proteinReportFile, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.scaffoldOutputFiles = scaffoldOutputFiles;
 		this.peptideReportFile = peptideReportFile;
@@ -48,7 +48,7 @@ final class ScaffoldReportTask extends AsyncTaskBase {
 		completeWhenFilesAppear(proteinReportFile);
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		//Do nothing
 	}
 }

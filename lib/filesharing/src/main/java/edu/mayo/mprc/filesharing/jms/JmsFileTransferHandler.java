@@ -53,7 +53,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 	 * @param userName
 	 * @param password
 	 */
-	public JmsFileTransferHandler(URI broker, String sourceId, String userName, String password) {
+	public JmsFileTransferHandler(final URI broker, final String sourceId, final String userName, final String password) {
 		runningSemaphore = new Semaphore(1);
 		messageProducers = Collections.synchronizedMap(new TreeMap<String, MessageProducer>());
 
@@ -70,7 +70,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 		startProcessingRequests(true);
 	}
 
-	public void startProcessingRequests(boolean processRemoteRequests) {
+	public void startProcessingRequests(final boolean processRemoteRequests) {
 		synchronized (runningSemaphore) {
 			if (runningSemaphore.tryAcquire()) {
 				try {
@@ -86,11 +86,11 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 
 					LOGGER.info("Starting file transfer request processing for queue: " + queueName);
 
-					MessageConsumer consumer = getMessageConsumer();
+					final MessageConsumer consumer = getMessageConsumer();
 
 					if (processRemoteRequests) {
 						consumer.setMessageListener(new MessageListener() {
-							public void onMessage(Message message) {
+							public void onMessage(final Message message) {
 								processFileTransferRequest(message);
 							}
 						});
@@ -127,9 +127,9 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 	}
 
 	@Override
-	public FileTransfer uploadFile(String destinationId, File localSourceFile, String destinationFilePath) throws Exception {
+	public FileTransfer uploadFile(final String destinationId, final File localSourceFile, final String destinationFilePath) throws Exception {
 		if (localSourceFile.exists() && !localSourceFile.isDirectory()) {
-			Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
+			final Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
 			localFileRemoteFilePathPairs.put(localSourceFile, destinationFilePath);
 
 			return synchronizeRemoteFiles(destinationId, localFileRemoteFilePathPairs);
@@ -141,8 +141,8 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 	}
 
 	@Override
-	public FileTransfer uploadFolder(String destinationId, File localSourceFolder, String destinationFolderPath) throws Exception {
-		Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
+	public FileTransfer uploadFolder(final String destinationId, final File localSourceFolder, final String destinationFolderPath) throws Exception {
+		final Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
 
 		getFilesFromFolder(localSourceFolder, normalizedFolderPath(localSourceFolder.getAbsolutePath()), normalizedFolderPath(destinationFolderPath), localFileRemoteFilePathPairs);
 
@@ -150,15 +150,15 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 	}
 
 	@Override
-	public FileTransfer downloadFile(String sourceId, File localDestinationFile, String sourceFilePath) throws Exception {
-		Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
+	public FileTransfer downloadFile(final String sourceId, final File localDestinationFile, final String sourceFilePath) throws Exception {
+		final Map<File, String> localFileRemoteFilePathPairs = new TreeMap<File, String>();
 		localFileRemoteFilePathPairs.put(localDestinationFile, sourceFilePath);
 
 		return synchronizeLocalFiles(sourceId, localFileRemoteFilePathPairs);
 	}
 
-	private void getFilesFromFolder(File localParentFolder, String localRootFolderPath, String destinationRootFolderPath, Map<File, String> localFileRemoteFilePathPairs) {
-		for (File file : localParentFolder.listFiles()) {
+	private void getFilesFromFolder(final File localParentFolder, final String localRootFolderPath, final String destinationRootFolderPath, final Map<File, String> localFileRemoteFilePathPairs) {
+		for (final File file : localParentFolder.listFiles()) {
 			if (file.isDirectory()) {
 				getFilesFromFolder(file, localRootFolderPath, destinationRootFolderPath, localFileRemoteFilePathPairs);
 			} else {
@@ -167,7 +167,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 		}
 	}
 
-	private String normalizedFolderPath(String folderPath) {
+	private String normalizedFolderPath(final String folderPath) {
 		if (folderPath.endsWith("/")) {
 			return folderPath;
 		} else {
@@ -175,7 +175,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 		}
 	}
 
-	private FileTransfer synchronizeRemoteFiles(String remoteId, final Map<File, String> localFileRemoteFilePathPairs) throws Exception {
+	private FileTransfer synchronizeRemoteFiles(final String remoteId, final Map<File, String> localFileRemoteFilePathPairs) throws Exception {
 		if (runningSemaphore.availablePermits() == 0) {
 			return JmsFileTransferHelper.upload(session, getMessageProducer(remoteId), localFileRemoteFilePathPairs);
 		}
@@ -183,7 +183,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 		return null;
 	}
 
-	private FileTransfer synchronizeLocalFiles(String remoteId, final Map<File, String> localFileRemoteFilePathPairs) throws Exception {
+	private FileTransfer synchronizeLocalFiles(final String remoteId, final Map<File, String> localFileRemoteFilePathPairs) throws Exception {
 		if (runningSemaphore.availablePermits() == 0) {
 			return JmsFileTransferHelper.download(session, getMessageProducer(remoteId), localFileRemoteFilePathPairs);
 		}
@@ -193,7 +193,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 
 	private void processFileTransferRequest(final Message message) {
 		try {
-			Object object = ((ObjectMessage) message).getObject();
+			final Object object = ((ObjectMessage) message).getObject();
 
 			if (object instanceof MultiFileTransferRequest) {
 				final MultiFileTransferRequest fileTransferRequest = (MultiFileTransferRequest) object;
@@ -225,7 +225,7 @@ public final class JmsFileTransferHandler implements FileTransferHandler {
 		}
 	}
 
-	private synchronized MessageProducer getMessageProducer(String sourceId) throws JMSException {
+	private synchronized MessageProducer getMessageProducer(final String sourceId) throws JMSException {
 		MessageProducer producer = null;
 
 		if ((producer = messageProducers.get(sourceId)) == null) {

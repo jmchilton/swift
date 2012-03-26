@@ -9,7 +9,7 @@ public final class Isotope {
 	private final int intMass;
 	private final double abundance;
 
-	public Isotope(double mass, double abundance) {
+	public Isotope(final double mass, final double abundance) {
 		this.mass = mass;
 		this.intMass = (int) Math.round(mass);
 		this.abundance = abundance;
@@ -33,7 +33,7 @@ public final class Isotope {
 		return abundance;
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -41,7 +41,7 @@ public final class Isotope {
 			return false;
 		}
 
-		Isotope isotope = (Isotope) obj;
+		final Isotope isotope = (Isotope) obj;
 
 		if (Double.compare(isotope.abundance, abundance) != 0) {
 			return false;

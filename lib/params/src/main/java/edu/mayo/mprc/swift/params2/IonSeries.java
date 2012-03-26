@@ -31,7 +31,7 @@ public class IonSeries extends EvolvableBase {
 	IonSeries() {
 	}
 
-	public IonSeries(String name) {
+	public IonSeries(final String name) {
 		this.name = name;
 	}
 
@@ -39,7 +39,7 @@ public class IonSeries extends EvolvableBase {
 		return name;
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		this.name = name;
 	}
 
@@ -47,7 +47,7 @@ public class IonSeries extends EvolvableBase {
 		return getName();
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -55,14 +55,14 @@ public class IonSeries extends EvolvableBase {
 			return false;
 		}
 
-		IonSeries ionSeries = (IonSeries) obj;
+		final IonSeries ionSeries = (IonSeries) obj;
 
 		return !(getName() != null ? !getName().equals(ionSeries.getName()) : ionSeries.getName() != null);
 
 	}
 
 	public int hashCode() {
-		int result;
+		final int result;
 		result = (getName() != null ? getName().hashCode() : 0);
 		return result;
 	}

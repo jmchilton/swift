@@ -12,7 +12,7 @@ public class TestDouble extends PersistableBase {
 	public TestDouble() {
 	}
 
-	public TestDouble(double value1, double value2) {
+	public TestDouble(final double value1, final double value2) {
 		this.value1 = value1;
 		this.value2 = value2;
 	}
@@ -21,7 +21,7 @@ public class TestDouble extends PersistableBase {
 		return value1;
 	}
 
-	public void setValue1(double value1) {
+	public void setValue1(final double value1) {
 		this.value1 = value1;
 	}
 
@@ -29,16 +29,16 @@ public class TestDouble extends PersistableBase {
 		return value2;
 	}
 
-	public void setValue2(double value2) {
+	public void setValue2(final double value2) {
 		this.value2 = value2;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		TestDouble that = (TestDouble) o;
+		final TestDouble that = (TestDouble) o;
 
 		if (Math.abs(that.value1 - value1) >= 0.01 || Double.isNaN(that.value1) != Double.isNaN(value1)) return false;
 		if (Math.abs(that.value2 - value2) >= 0.01 || Double.isNaN(that.value2) != Double.isNaN(value2)) return false;

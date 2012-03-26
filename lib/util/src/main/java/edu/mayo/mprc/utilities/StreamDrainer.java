@@ -46,7 +46,7 @@ public final class StreamDrainer implements Runnable {
 	 * @param logLevel    Log level for the logger.
 	 * @param retainLines How many lines max to retain. Do not go too wild with this parameter, an array is being allocated. If non-positive, default size is used. If zero, nothing gets retained.
 	 */
-	public StreamDrainer(InputStream inputStream, Logger logger, Level logLevel, int retainLines, LogMonitor logMonitor) {
+	public StreamDrainer(final InputStream inputStream, final Logger logger, final Level logLevel, final int retainLines, final LogMonitor logMonitor) {
 		this.logger = logger;
 		this.inputStream = inputStream;
 		this.logLevel = logLevel;
@@ -58,7 +58,7 @@ public final class StreamDrainer implements Runnable {
 	public void run() {
 		if (inputStream != null) {
 
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 			try {
 				String line;
 				while ((line = bufferedReader.readLine()) != null) {
@@ -78,7 +78,7 @@ public final class StreamDrainer implements Runnable {
 	 *
 	 * @param line Line to be added.
 	 */
-	void addLine(String line) {
+	void addLine(final String line) {
 		if (loggedLines.length > 0) {
 			loggedLines[lastLogLine] = line;
 			lastLogLine++;
@@ -97,8 +97,8 @@ public final class StreamDrainer implements Runnable {
 	 * @return Returns abridged log that was collected - up to 100 last lines.
 	 */
 	public String getLog() {
-		StringBuilder log;
-		boolean raw = totalLines <= loggedLines.length;
+		final StringBuilder log;
+		final boolean raw = totalLines <= loggedLines.length;
 		if (raw) {
 			log = new StringBuilder(totalLines * AVG_CHARS_PER_LINE);
 			for (int i = 0; i < totalLines; i++) {

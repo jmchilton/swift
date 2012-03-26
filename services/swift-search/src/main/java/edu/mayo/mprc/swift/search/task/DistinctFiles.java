@@ -38,12 +38,12 @@ final class DistinctFiles {
 	 * <p/>
 	 * This is useful for the searches that search the same file multiple times, so different output file names have to be generated.
 	 */
-	public synchronized File getDistinctFile(File file) {
+	public synchronized File getDistinctFile(final File file) {
 		String resultingPath = file.getAbsolutePath();
 		while (fileNameDisambiguation.containsKey(resultingPath)) {
 			// There already was a file of given name issued in the past.
-			int previouslyIssuedCount = fileNameDisambiguation.get(resultingPath);
-			int newCount = previouslyIssuedCount + 1;
+			final int previouslyIssuedCount = fileNameDisambiguation.get(resultingPath);
+			final int newCount = previouslyIssuedCount + 1;
 			// Store information about the collision
 			fileNameDisambiguation.put(resultingPath, newCount);
 
@@ -53,7 +53,7 @@ final class DistinctFiles {
 				extension = "." + extension;
 			}
 
-			String basePath = resultingPath.substring(0, resultingPath.length() - extension.length());
+			final String basePath = resultingPath.substring(0, resultingPath.length() - extension.length());
 			resultingPath = basePath + "_" + String.valueOf(newCount) + extension;
 		}
 		// The freshly created name has a count 1

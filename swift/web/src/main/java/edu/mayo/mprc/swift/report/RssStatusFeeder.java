@@ -43,7 +43,7 @@ public final class RssStatusFeeder extends HttpServlet {
 		}
 	}
 
-	private static SyndFeed getCachedFeed(String id) {
+	private static SyndFeed getCachedFeed(final String id) {
 		if (cachedFeeds == null || lastFeedEntryTime == null) {
 			cachedFeeds = new HashMap<String, SyndFeed>();
 		}
@@ -60,15 +60,15 @@ public final class RssStatusFeeder extends HttpServlet {
 		return cachedFeed;
 	}
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		this.doGet(req, resp);
 	}
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		swiftDao.begin(); // Transaction-per-request
 		try {
 			Boolean showSuccess = true;
-			String showSuccessParameter = req.getParameter("showSuccess");
+			final String showSuccessParameter = req.getParameter("showSuccess");
 			if (showSuccessParameter != null) {
 				try {
 					showSuccess = Boolean.valueOf(showSuccessParameter);
@@ -76,7 +76,7 @@ public final class RssStatusFeeder extends HttpServlet {
 					LOGGER.warn("Could not convert the paramter showSuccess to a boolean");
 				}
 			}
-			SyndFeed feed = getFeed(showSuccess, true, true);
+			final SyndFeed feed = getFeed(showSuccess, true, true);
 			feed.setLink(HttpUtils.getRequestURL(req).toString());
 			feed.setFeedType("rss_2.0");
 			resp.setContentType("text/plain");
@@ -88,18 +88,18 @@ public final class RssStatusFeeder extends HttpServlet {
 		}
 	}
 
-	protected synchronized SyndFeed getFeed(boolean showSuccess, boolean showFailures, boolean showWarnings) {
+	protected synchronized SyndFeed getFeed(final boolean showSuccess, final boolean showFailures, final boolean showWarnings) {
 		final Date now = new Date();
 
-		String cacheKey = String.valueOf(showSuccess) + "_" + String.valueOf(showFailures) + "_" + String.valueOf(showWarnings);
+		final String cacheKey = String.valueOf(showSuccess) + "_" + String.valueOf(showFailures) + "_" + String.valueOf(showWarnings);
 
-		SyndFeed cachedFeed = getCachedFeed(cacheKey);
+		final SyndFeed cachedFeed = getCachedFeed(cacheKey);
 
 		if (lastFeedEntryTime != null && (now.getTime() - lastFeedEntryTime.getTime() < FEED_UPDATE_INTERVAL)) {
 			return cachedFeed;
 		}
 
-		Set<SearchRun> newTxData;
+		final Set<SearchRun> newTxData;
 		if (lastFeedEntryTime == null) {
 			//go back 48 hours (or whatever MAX_STATUS_AGE is) and get all entries that far back
 			newTxData = swiftDao.getSearchRuns(showSuccess, showFailures, showWarnings, new Date(now.getTime() - MAX_STATUS_AGE));
@@ -109,10 +109,10 @@ public final class RssStatusFeeder extends HttpServlet {
 
 		lastFeedEntryTime = now;
 
-		List<SyndEntry> entries = new ArrayList<SyndEntry>();
+		final List<SyndEntry> entries = new ArrayList<SyndEntry>();
 		entries.addAll(cachedFeed.getEntries());
 
-		for (SearchRun txDatum : newTxData) {
+		for (final SearchRun txDatum : newTxData) {
 
 			if (!showSuccess && txDatum.getTasksFailed() == 0) {
 				continue; //if no failures just skip this one.
@@ -126,7 +126,7 @@ public final class RssStatusFeeder extends HttpServlet {
 				lastFeedEntryTime = txDatum.getEndTimestamp();
 			}
 
-			SyndEntry newEntry = new SyndEntryImpl();
+			final SyndEntry newEntry = new SyndEntryImpl();
 			newEntry.setTitle(txDatum.getTitle() + " " + getSummaryInfo(txDatum));
 			newEntry.setLink(""); //todo: probably just give the link to the status page here...
 			newEntry.setPublishedDate(getMostRecentDate(txDatum));
@@ -148,8 +148,8 @@ public final class RssStatusFeeder extends HttpServlet {
 	 * @param data
 	 * @return
 	 */
-	private static Date getMostRecentDate(SearchRun data) {
-		List<Date> candidates = new ArrayList<Date>();
+	private static Date getMostRecentDate(final SearchRun data) {
+		final List<Date> candidates = new ArrayList<Date>();
 		if (data.getEndTimestamp() != null) {
 			candidates.add(data.getEndTimestamp());
 		}
@@ -165,8 +165,8 @@ public final class RssStatusFeeder extends HttpServlet {
 	 * @param data
 	 * @return
 	 */
-	private static SyndContent getContentFor(SearchRun data) {
-		StringBuilder content = new StringBuilder(200);
+	private static SyndContent getContentFor(final SearchRun data) {
+		final StringBuilder content = new StringBuilder(200);
 
 		//todo: implement this, currently just does something stupid
 
@@ -181,12 +181,12 @@ public final class RssStatusFeeder extends HttpServlet {
 			content.append(data.getTasksWithWarning()).append(" tasks have warnings, ");
 		}
 
-		SyndContent retContent = new SyndContentImpl();
+		final SyndContent retContent = new SyndContentImpl();
 		retContent.setValue(content.toString());
 		return retContent;
 	}
 
-	private static String getSummaryInfo(SearchRun data) {
+	private static String getSummaryInfo(final SearchRun data) {
 		if (data.getTasksCompleted() == data.getNumTasks()) {
 			return "Successful";
 		} else if (data.getTasksFailed() > 0) {

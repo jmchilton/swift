@@ -14,9 +14,9 @@ public final class ModuleModel extends ResourceModel {
 	public ModuleModel() {
 	}
 
-	public ModuleModel(String name, String type, ResourceModel service, ResourceModel runner) {
+	public ModuleModel(final String name, final String type, final ResourceModel service, final ResourceModel runner) {
 		super(name, type);
-		ArrayList<ResourceModel> children = new ArrayList<ResourceModel>(2);
+		final ArrayList<ResourceModel> children = new ArrayList<ResourceModel>(2);
 		runner.setParent(this);
 		children.add(runner);
 		service.setParent(this);
@@ -28,7 +28,7 @@ public final class ModuleModel extends ResourceModel {
 		return getChildren().get(RUNNER);
 	}
 
-	public void setRunner(ResourceModel runner) {
+	public void setRunner(final ResourceModel runner) {
 		runner.setParent(this);
 		getChildren().set(RUNNER, runner);
 	}
@@ -37,7 +37,7 @@ public final class ModuleModel extends ResourceModel {
 		return getChildren().get(SERVICE);
 	}
 
-	public void setService(ResourceModel service) {
+	public void setService(final ResourceModel service) {
 		service.setParent(this);
 		getChildren().set(SERVICE, service);
 	}

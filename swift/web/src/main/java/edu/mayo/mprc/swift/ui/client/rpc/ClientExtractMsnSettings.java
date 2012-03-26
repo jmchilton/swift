@@ -8,7 +8,7 @@ public final class ClientExtractMsnSettings implements ClientValue {
 	public ClientExtractMsnSettings() {
 	}
 
-	public ClientExtractMsnSettings(String commandLineSwitches) {
+	public ClientExtractMsnSettings(final String commandLineSwitches) {
 		this.commandLineSwitches = commandLineSwitches;
 	}
 
@@ -16,7 +16,7 @@ public final class ClientExtractMsnSettings implements ClientValue {
 		return commandLineSwitches;
 	}
 
-	public void setCommandLineSwitches(String commandLineSwitches) {
+	public void setCommandLineSwitches(final String commandLineSwitches) {
 		this.commandLineSwitches = commandLineSwitches;
 	}
 }

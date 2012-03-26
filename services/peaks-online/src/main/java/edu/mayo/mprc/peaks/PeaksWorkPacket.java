@@ -13,11 +13,11 @@ public final class PeaksWorkPacket extends WorkPacketBase {
 	private File paramsFile;
 	private File mgfFile;
 
-	public PeaksWorkPacket(String taskId, boolean fromScratch) {
+	public PeaksWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public PeaksWorkPacket(String taskId, boolean fromScratch, File paramsFile, File mgfFile) {
+	public PeaksWorkPacket(final String taskId, final boolean fromScratch, final File paramsFile, final File mgfFile) {
 		super(taskId, fromScratch);
 		this.paramsFile = paramsFile;
 		this.mgfFile = mgfFile;

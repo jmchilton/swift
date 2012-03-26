@@ -40,7 +40,7 @@ public final class DatabaseUndeploymentTask {
 	private LinkedList<String> messages;
 	private DaemonConnection deploymentDaemon;
 
-	public DatabaseUndeploymentTask(DaemonConnection deploymentDaemon, Curation dbToUndeploy, FileTokenFactory fileTokenFactory) {
+	public DatabaseUndeploymentTask(final DaemonConnection deploymentDaemon, final Curation dbToUndeploy, final FileTokenFactory fileTokenFactory) {
 		this.deploymentDaemon = deploymentDaemon;
 		this.dbToUndeploy = dbToUndeploy;
 
@@ -48,7 +48,7 @@ public final class DatabaseUndeploymentTask {
 	}
 
 	public WorkPacket createWorkPacket() {
-		DeploymentRequest workPacket = new DeploymentRequest(
+		final DeploymentRequest workPacket = new DeploymentRequest(
 				deploymentDaemon.getConnectionName() + TASK_ID_PREFIX + taskIdPostFix.incrementAndGet(),
 				dbToUndeploy.getFastaFile());
 		workPacket.setUndeployment(true);
@@ -61,11 +61,11 @@ public final class DatabaseUndeploymentTask {
 			throw new MprcException("The daemon for database undeployment task was not set.");
 		}
 
-		WorkPacket workPacket = createWorkPacket();
+		final WorkPacket workPacket = createWorkPacket();
 
 		deploymentDaemon.sendWork(workPacket, new ProgressListener() {
 			@Override
-			public void requestEnqueued(String hostString) {
+			public void requestEnqueued(final String hostString) {
 			}
 
 			@Override
@@ -78,12 +78,12 @@ public final class DatabaseUndeploymentTask {
 			}
 
 			@Override
-			public void requestTerminated(Exception e) {
+			public void requestTerminated(final Exception e) {
 				onFailure(e);
 			}
 
 			@Override
-			public void userProgressInformation(ProgressInfo progressInfo) {
+			public void userProgressInformation(final ProgressInfo progressInfo) {
 				onProgress(progressInfo);
 			}
 		});
@@ -108,7 +108,7 @@ public final class DatabaseUndeploymentTask {
 			errorLog = assignedTaskData.getErrorLogFile().getAbsolutePath();
 		}
 
-		UndeploymentTaskResult undeploymentTaskResult = new UndeploymentTaskResult(throwable == null, outputLog, errorLog);
+		final UndeploymentTaskResult undeploymentTaskResult = new UndeploymentTaskResult(throwable == null, outputLog, errorLog);
 		undeploymentTaskResult.setExecutionError(throwable);
 		undeploymentTaskResult.addAllMessage(messages);
 
@@ -125,7 +125,7 @@ public final class DatabaseUndeploymentTask {
 		}
 	}
 
-	private void onFailure(Throwable t) {
+	private void onFailure(final Throwable t) {
 		synchronized (monitor) {
 			try {
 				isDone = true;
@@ -136,13 +136,13 @@ public final class DatabaseUndeploymentTask {
 		}
 	}
 
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		if (progressInfo instanceof AssignedTaskData) {
 			assignedTaskData = (AssignedTaskData) progressInfo;
 		} else if (progressInfo instanceof Throwable) {
 			onFailure((Throwable) progressInfo);
 		} else if (progressInfo instanceof DeploymentResult) {
-			DeploymentResult deploymentResult = (DeploymentResult) progressInfo;
+			final DeploymentResult deploymentResult = (DeploymentResult) progressInfo;
 
 			/**
 			 * This step must synchronize the deployment folder.

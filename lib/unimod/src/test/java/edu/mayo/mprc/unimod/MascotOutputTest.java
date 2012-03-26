@@ -15,8 +15,8 @@ public final class MascotOutputTest {
 	public void shouldConvertUnimod() throws IOException {
 		final Unimod defaultUnimodSet = UnimodTest.getDefaultUnimodSet();
 		final Set<ModSpecificity> allModSpecificities = defaultUnimodSet.getAllSpecificities(true);
-		StringBuilder builder = new StringBuilder();
-		for (ModSpecificity modSpecificity : allModSpecificities) {
+		final StringBuilder builder = new StringBuilder();
+		for (final ModSpecificity modSpecificity : allModSpecificities) {
 			builder.append(modSpecificity.toMascotString()).append('\n');
 		}
 		File unimod = null;

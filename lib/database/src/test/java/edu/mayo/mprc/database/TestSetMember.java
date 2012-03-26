@@ -7,7 +7,7 @@ public class TestSetMember extends PersistableBase {
 	public TestSetMember() {
 	}
 
-	public TestSetMember(String memberName) {
+	public TestSetMember(final String memberName) {
 		this.memberName = memberName;
 	}
 
@@ -15,12 +15,12 @@ public class TestSetMember extends PersistableBase {
 		return memberName;
 	}
 
-	public void setMemberName(String memberName) {
+	public void setMemberName(final String memberName) {
 		this.memberName = memberName;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -28,7 +28,7 @@ public class TestSetMember extends PersistableBase {
 			return false;
 		}
 
-		TestSetMember that = (TestSetMember) o;
+		final TestSetMember that = (TestSetMember) o;
 
 		if (getMemberName() != null ? !getMemberName().equals(that.getMemberName()) : that.getMemberName() != null) {
 			return false;

@@ -27,10 +27,10 @@ public class MaxCommandLine {
 	 * @param inCommCall - the call to use for testing the maximum call length, for example 'echo'
 	 * @return maximum call length
 	 */
-	public static long findMaxCallLength(long tryLength, String inCommCall) {
-		String baseCommand = inCommCall == null ? "echo " : inCommCall + ' ';
+	public static long findMaxCallLength(final long tryLength, final String inCommCall) {
+		final String baseCommand = inCommCall == null ? "echo " : inCommCall + ' ';
 
-		String arg = "abcdefghij";
+		final String arg = "abcdefghij";
 
 		if (!runCommand(baseCommand + arg)) {
 			LOGGER.warn("Could not determine maximum command line length for sequest. Assuming conservative " + MIN_VALID_MAX_CALL_LENGTH);
@@ -87,14 +87,14 @@ public class MaxCommandLine {
 	 * see if the command will run under this environment.
 	 */
 
-	public static boolean runCommand(String cmd) {
+	public static boolean runCommand(final String cmd) {
 		final Iterable<String> splitCmd = Splitter.on(' ').split(cmd);
-		List<String> list = new ArrayList<String>(5);
-		for (String s : splitCmd) {
+		final List<String> list = new ArrayList<String>(5);
+		for (final String s : splitCmd) {
 			list.add(s);
 		}
-		ProcessBuilder builder = new ProcessBuilder(list);
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessBuilder builder = new ProcessBuilder(list);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.setRetainLogs(false);
 		caller.setLogToConsole(false);
 
@@ -110,8 +110,8 @@ public class MaxCommandLine {
 	/**
 	 * get a call string of given length, starting with a given command
 	 */
-	public static String buildCallOfLength(String prefix, long length, String piece) {
-		StringBuilder result = new StringBuilder(prefix);
+	public static String buildCallOfLength(final String prefix, final long length, final String piece) {
+		final StringBuilder result = new StringBuilder(prefix);
 		while (result.length() + piece.length() < length) {
 			result.append(piece);
 		}

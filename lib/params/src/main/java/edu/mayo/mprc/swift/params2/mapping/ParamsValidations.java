@@ -12,7 +12,7 @@ import java.util.Map;
 public final class ParamsValidations implements Cloneable {
 	private final Map<ParamName, ValidationList> validationMap = new HashMap<ParamName, ValidationList>();
 
-	public void addValidation(ParamName name, Validation v) {
+	public void addValidation(final ParamName name, final Validation v) {
 		ValidationList list = validationMap.get(name);
 		if (list == null) {
 			list = new ValidationList();
@@ -21,7 +21,7 @@ public final class ParamsValidations implements Cloneable {
 		list.add(v);
 	}
 
-	public ValidationList getValidationFor(ParamName name) {
+	public ValidationList getValidationFor(final ParamName name) {
 		if (validationMap.containsKey(name)) {
 			return validationMap.get(name);
 		} else {
@@ -29,7 +29,7 @@ public final class ParamsValidations implements Cloneable {
 		}
 	}
 
-	public void clearValidationsFor(ParamName param) {
+	public void clearValidationsFor(final ParamName param) {
 		if (validationMap.containsKey(param)) {
 			validationMap.remove(param);
 		}
@@ -47,10 +47,10 @@ public final class ParamsValidations implements Cloneable {
 		return super.clone();
 	}
 
-	public String toString(ValidationSeverity minSeverity) {
-		StringBuilder result = new StringBuilder();
-		for (Map.Entry<ParamName, ValidationList> entry : validationMap.entrySet()) {
-			for (Validation validation : entry.getValue()) {
+	public String toString(final ValidationSeverity minSeverity) {
+		final StringBuilder result = new StringBuilder();
+		for (final Map.Entry<ParamName, ValidationList> entry : validationMap.entrySet()) {
+			for (final Validation validation : entry.getValue()) {
 				if (validation.getSeverity().compareTo(minSeverity) >= 0) {
 					result
 							.append(entry.getKey().getDesc())

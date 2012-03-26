@@ -44,7 +44,7 @@ public final class DatabaseUndeployerRunner implements Runnable {
 	private DatabaseUndeployerState state;
 	private static final int POLLING_INTERVAL = 10000;
 
-	public DatabaseUndeployerRunner(DatabaseUndeployerWorkPacket undeployerWorkPacket, DaemonConnection mascotDeployerDaemon, DaemonConnection omssaDeployerDaemon, DaemonConnection tandemDeployerDaemon, DaemonConnection sequestDeployerDaemon, DaemonConnection scaffoldDeployerDaemon, DaemonConnection peaksDeployerDaemon, FileTokenFactory fileTokenFactory) {
+	public DatabaseUndeployerRunner(final DatabaseUndeployerWorkPacket undeployerWorkPacket, final DaemonConnection mascotDeployerDaemon, final DaemonConnection omssaDeployerDaemon, final DaemonConnection tandemDeployerDaemon, final DaemonConnection sequestDeployerDaemon, final DaemonConnection scaffoldDeployerDaemon, final DaemonConnection peaksDeployerDaemon, final FileTokenFactory fileTokenFactory) {
 		this.undeployerWorkPacket = undeployerWorkPacket;
 		this.fileTokenFactory = fileTokenFactory;
 		this.mascotDeployerDaemon = mascotDeployerDaemon;
@@ -76,7 +76,7 @@ public final class DatabaseUndeployerRunner implements Runnable {
 			taskCounter.addAndGet(undeploymentNameTaskPairs.size());
 		}
 
-		for (Map.Entry<String, DatabaseUndeploymentTask> me : undeploymentNameTaskPairs.entrySet()) {
+		for (final Map.Entry<String, DatabaseUndeploymentTask> me : undeploymentNameTaskPairs.entrySet()) {
 			me.getValue().run();
 			executorService.execute(new MyUndeploymentTaskMonitor(me.getKey()));
 		}
@@ -106,27 +106,27 @@ public final class DatabaseUndeployerRunner implements Runnable {
 
 	private void createTasks() {
 		if (mascotDeployerDaemon != null) {
-			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(mascotDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
+			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(mascotDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(mascotDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
 
 		if (scaffoldDeployerDaemon != null) {
-			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(scaffoldDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
+			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(scaffoldDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(scaffoldDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
 
 		if (sequestDeployerDaemon != null) {
-			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(sequestDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
+			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(sequestDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(sequestDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
 
 		if (tandemDeployerDaemon != null) {
-			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(tandemDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
+			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(tandemDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(tandemDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
 
 		if (omssaDeployerDaemon != null) {
-			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(omssaDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
+			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(omssaDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(omssaDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
 
@@ -147,13 +147,13 @@ public final class DatabaseUndeployerRunner implements Runnable {
 
 		private String daemonConnectionName;
 
-		private MyUndeploymentTaskMonitor(String daemonConnectionName) {
+		private MyUndeploymentTaskMonitor(final String daemonConnectionName) {
 			this.daemonConnectionName = daemonConnectionName;
 		}
 
 		@Override
 		public void run() {
-			UndeploymentTaskResult taskResult = undeploymentNameTaskPairs.get(daemonConnectionName).waitUntilDone();
+			final UndeploymentTaskResult taskResult = undeploymentNameTaskPairs.get(daemonConnectionName).waitUntilDone();
 
 			undeployerResult.addUndeploymentTaskResult(daemonConnectionName, taskResult);
 

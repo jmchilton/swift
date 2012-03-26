@@ -60,19 +60,19 @@ public class HeaderTransformStep implements CurationStep {
 	 * This step will take each header in the DBInputStream and apply the pressribed subtitution to all of the headers.
 	 * {@inheritDoc}
 	 */
-	public StepValidation performStep(CurationExecutor exe) {
+	public StepValidation performStep(final CurationExecutor exe) {
 		//perform pre-validation of the step to make sure we at least pass that.
 		lastRunValidation = this.preValidate(exe.getCurationDao());
 		if (!lastRunValidation.isOK()) {
 			return lastRunValidation;
 		}
 
-		DBInputStream in = exe.getCurrentInStream();
-		DBOutputStream out = exe.getCurrentOutStream();
-		CurationStatus status = exe.getStatusObject();
+		final DBInputStream in = exe.getCurrentInStream();
+		final DBOutputStream out = exe.getCurrentOutStream();
+		final CurationStatus status = exe.getStatusObject();
 
 		//the the number of sequences we need to manipulate
-		int numberOfSequences = status.getLastStepSequenceCount();
+		final int numberOfSequences = status.getLastStepSequenceCount();
 		int currentSequence = 0;
 		String currentHeader = "";
 		try {
@@ -116,9 +116,9 @@ public class HeaderTransformStep implements CurationStep {
 			compiledPattern = Pattern.compile(this.getMatchPattern());
 		}
 
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 
-		Matcher match = compiledPattern.matcher(toTransform);
+		final Matcher match = compiledPattern.matcher(toTransform);
 
 		while (match.find()) {
 			match.appendReplacement(result, this.substitutionPattern);
@@ -140,8 +140,8 @@ public class HeaderTransformStep implements CurationStep {
 	 *
 	 * @param curationDao
 	 */
-	public StepValidation preValidate(CurationDao curationDao) {
-		StepValidation preValidation = new StepValidation();
+	public StepValidation preValidate(final CurationDao curationDao) {
+		final StepValidation preValidation = new StepValidation();
 
 		//if the pattern is not yet compiled as expected try to compile it
 		if (compiledPattern == null || !compiledPattern.pattern().equals(getMatchPattern())) {
@@ -164,7 +164,7 @@ public class HeaderTransformStep implements CurationStep {
 	}
 
 	public CurationStep createCopy() {
-		HeaderTransformStep copy = new HeaderTransformStep();
+		final HeaderTransformStep copy = new HeaderTransformStep();
 		copy.setDescription(this.getDescription());
 		copy.setMatchPattern(this.getMatchPattern());
 		copy.setSubstitutionPattern(this.getSubstitutionPattern());
@@ -175,7 +175,7 @@ public class HeaderTransformStep implements CurationStep {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -183,7 +183,7 @@ public class HeaderTransformStep implements CurationStep {
 		return this.lastRunCompletionCount;
 	}
 
-	public void setLastRunCompletionCount(Integer count) {
+	public void setLastRunCompletionCount(final Integer count) {
 		this.lastRunCompletionCount = count;
 	}
 
@@ -201,7 +201,7 @@ public class HeaderTransformStep implements CurationStep {
 	 *
 	 * @param description to apply to the transformation
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -219,7 +219,7 @@ public class HeaderTransformStep implements CurationStep {
 	 *
 	 * @param matchPattern the pattern for identifying classes
 	 */
-	public void setMatchPattern(String matchPattern) {
+	public void setMatchPattern(final String matchPattern) {
 		this.matchPattern = matchPattern;
 	}
 
@@ -238,7 +238,7 @@ public class HeaderTransformStep implements CurationStep {
 	 *
 	 * @param substitutionPattern the pattern that should be used to guide the transformation
 	 */
-	public void setSubstitutionPattern(String substitutionPattern) {
+	public void setSubstitutionPattern(final String substitutionPattern) {
 		this.substitutionPattern = substitutionPattern;
 	}
 

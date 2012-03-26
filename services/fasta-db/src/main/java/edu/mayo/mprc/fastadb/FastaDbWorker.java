@@ -38,12 +38,12 @@ public class FastaDbWorker implements Worker {
 	private FastaDbDao fastaDbDao;
 	private CurationDao curationDao;
 
-	public FastaDbWorker(FastaDbDao fastaDbDao, CurationDao curationDao) {
+	public FastaDbWorker(final FastaDbDao fastaDbDao, final CurationDao curationDao) {
 		this.fastaDbDao = fastaDbDao;
 		this.curationDao = curationDao;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -54,11 +54,11 @@ public class FastaDbWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket wp, ProgressReporter reporter) {
-		FastaDbWorkPacket workPacket = (FastaDbWorkPacket) wp;
+	private void process(final WorkPacket wp, final ProgressReporter reporter) {
+		final FastaDbWorkPacket workPacket = (FastaDbWorkPacket) wp;
 		curationDao.begin();
 		try {
-			Curation database = curationDao.getCuration(workPacket.getCurationId());
+			final Curation database = curationDao.getCuration(workPacket.getCurationId());
 			if (database == null) {
 				throw new MprcException("Curation #" + workPacket.getCurationId() + " is not in the database.");
 			}
@@ -81,7 +81,7 @@ public class FastaDbWorker implements Worker {
 			return fastaDbDao;
 		}
 
-		public void setFastaDbDao(FastaDbDao fastaDbDao) {
+		public void setFastaDbDao(final FastaDbDao fastaDbDao) {
 			this.fastaDbDao = fastaDbDao;
 		}
 
@@ -89,13 +89,13 @@ public class FastaDbWorker implements Worker {
 			return curationDao;
 		}
 
-		public void setCurationDao(CurationDao curationDao) {
+		public void setCurationDao(final CurationDao curationDao) {
 			this.curationDao = curationDao;
 		}
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			FastaDbWorker worker = new FastaDbWorker(fastaDbDao, curationDao);
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final FastaDbWorker worker = new FastaDbWorker(fastaDbDao, curationDao);
 			return worker;
 		}
 	}
@@ -111,14 +111,14 @@ public class FastaDbWorker implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(DATABASE, resolver.getIdFromConfig(database));
 			return map;
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			database = (DatabaseFactory.Config) resolver.getConfigFromId(values.get(DATABASE));
 		}
 
@@ -131,7 +131,7 @@ public class FastaDbWorker implements Worker {
 	public static final class Ui implements ServiceUiFactory {
 
 		@Override
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			//TODO: implement me
 		}
 	}

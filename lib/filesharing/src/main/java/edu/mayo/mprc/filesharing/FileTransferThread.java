@@ -7,7 +7,7 @@ public abstract class FileTransferThread extends Thread {
 
 	protected TransferCompleteListener listener;
 
-	protected FileTransferThread(String name) {
+	protected FileTransferThread(final String name) {
 		super(name);
 	}
 
@@ -15,7 +15,7 @@ public abstract class FileTransferThread extends Thread {
 		return listener;
 	}
 
-	public void setTransferCompleteListener(TransferCompleteListener listener) {
+	public void setTransferCompleteListener(final TransferCompleteListener listener) {
 		this.listener = listener;
 	}
 }

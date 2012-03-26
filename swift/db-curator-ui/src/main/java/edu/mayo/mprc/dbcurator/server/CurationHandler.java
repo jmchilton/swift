@@ -34,7 +34,7 @@ public final class CurationHandler {
 	 * @param session the HttpSession that we want to look for the CurationHandler on
 	 * @return the curation handler that was on the session or a new one that has been put on the session
 	 */
-	public static CurationHandler getInstance(HttpSession session) {
+	public static CurationHandler getInstance(final HttpSession session) {
 
 		CurationHandler perSession = null;
 		try {
@@ -85,7 +85,7 @@ public final class CurationHandler {
 	 * @param toSync the stub that you want to synce to a curation
 	 * @return the curation that was sync'd
 	 */
-	public CurationStub syncCuration(CurationStub toSync) {
+	public CurationStub syncCuration(final CurationStub toSync) {
 
 		//clear the error messages that may have previously existed
 		toSync.getErrorMessages().clear();
@@ -95,11 +95,11 @@ public final class CurationHandler {
 			upgradeProgressInCurationStub(toSync);
 		}
 
-		Curation curation = getCurationForStub(toSync);
+		final Curation curation = getCurationForStub(toSync);
 
 		//trim and check the length of the shortName and also make sure it doesn't contain space
 		toSync.setShortName(toSync.getShortName().trim());
-		String errorMessage = CurationValidation.validateShortNameLegalCharacters(toSync.getShortName());
+		final String errorMessage = CurationValidation.validateShortNameLegalCharacters(toSync.getShortName());
 		if (errorMessage != null) {
 			toSync.getErrorMessages().add(errorMessage);
 		}
@@ -129,12 +129,12 @@ public final class CurationHandler {
 		//sync the list of steps from the stub to the curation
 
 		//create a list to temporarily hold the new list of steps as they are generateed
-		List<CurationStep> newStepList = new ArrayList<CurationStep>();
+		final List<CurationStep> newStepList = new ArrayList<CurationStep>();
 
 		//iterate through each step stub and create a step for them and add them to the new list of steps
-		for (Object stepStub : toSync.getSteps()) {
-			CurationStepStub stub = (CurationStepStub) stepStub;
-			CurationStep step = createStepFromStub(stub);
+		for (final Object stepStub : toSync.getSteps()) {
+			final CurationStepStub stub = (CurationStepStub) stepStub;
+			final CurationStep step = createStepFromStub(stub);
 			newStepList.add(step);
 		}
 
@@ -142,7 +142,7 @@ public final class CurationHandler {
 		curation.clearSteps();
 
 		//put the new list into the curation
-		for (CurationStep step : newStepList) {
+		for (final CurationStep step : newStepList) {
 			curation.addStep(step, -1);
 		}
 
@@ -158,7 +158,7 @@ public final class CurationHandler {
 	 * Return clean curation from the database/or a new object if not saved yet that corresponds to given
 	 * curation stub. We cache last curation to reduce database traffic.
 	 */
-	private Curation getCurationForStub(CurationStub toSync) {
+	private Curation getCurationForStub(final CurationStub toSync) {
 		//if we have a stub without an ID then we want to create a new curation
 		//else if the sync has an id then we want to retreive the object from the database
 		//finally we want to create a new curation if the curation wasn't found in persisetent store.
@@ -176,25 +176,25 @@ public final class CurationHandler {
 		return cache;
 	}
 
-	private void upgradeProgressInCurationStub(CurationStub toSync) {
+	private void upgradeProgressInCurationStub(final CurationStub toSync) {
 		//if there are any global error messages then sync them to the stub
-		List<String> msgs = this.lastRunStatus.getMessages();
-		for (String msg : msgs) {
+		final List<String> msgs = this.lastRunStatus.getMessages();
+		for (final String msg : msgs) {
 			toSync.getErrorMessages().add(msg);
 		}
 
 		int i = 0;
-		for (StepValidation stepValidation : this.lastRunStatus.getCompletedStepValidations()) {
+		for (final StepValidation stepValidation : this.lastRunStatus.getCompletedStepValidations()) {
 			(toSync.getSteps().get(i++)).setCompletionCount(stepValidation.getCompletionCount());
 		}
 
 		//if we have more steps to report on then one must be executing
 		if (i < toSync.getSteps().size()) { //we had a failure in the last step
 			if (this.lastRunStatus.getFailedStepValidations().size() > 0) {
-				StepValidation failedValidation = this.lastRunStatus.getFailedStepValidations().get(0);
-				CurationStepStub syncStep = toSync.getSteps().get(i);
+				final StepValidation failedValidation = this.lastRunStatus.getFailedStepValidations().get(0);
+				final CurationStepStub syncStep = toSync.getSteps().get(i);
 
-				for (String message : failedValidation.getMessages()) {
+				for (final String message : failedValidation.getMessages()) {
 					syncStep.addMessage(message);
 				}
 			} else { //we are current performing the next set sp report progress
@@ -213,18 +213,18 @@ public final class CurationHandler {
 	 * @param stub the stub you want to get a server side Step for
 	 * @return the step that the given stub could represent
 	 */
-	public CurationStep createStepFromStub(CurationStepStub stub) {
+	public CurationStep createStepFromStub(final CurationStepStub stub) {
 		CurationStep retStep = null;
 
 		//try to find out what type of stub it is and then do the appropriate syncing
 		if (stub instanceof NewDatabaseInclusionStub) {
-			NewDatabaseInclusionStub concreteStub = (NewDatabaseInclusionStub) stub;
-			NewDatabaseInclusion returnStep = new NewDatabaseInclusion();
+			final NewDatabaseInclusionStub concreteStub = (NewDatabaseInclusionStub) stub;
+			final NewDatabaseInclusion returnStep = new NewDatabaseInclusion();
 			returnStep.setUrl(concreteStub.url);
 			retStep = returnStep;
 		} else if (stub instanceof HeaderFilterStepStub) {
-			HeaderFilterStepStub concreteStub = (HeaderFilterStepStub) stub;
-			HeaderFilterStep returnStep = new HeaderFilterStep();
+			final HeaderFilterStepStub concreteStub = (HeaderFilterStepStub) stub;
+			final HeaderFilterStep returnStep = new HeaderFilterStep();
 
 			returnStep.setCriteriaString(concreteStub.criteria);
 
@@ -245,16 +245,16 @@ public final class CurationHandler {
 
 			retStep = returnStep;
 		} else if (stub instanceof ManualInclusionStepStub) {
-			ManualInclusionStepStub concreteStub = (ManualInclusionStepStub) stub;
-			ManualInclusionStep returnStep = new ManualInclusionStep();
+			final ManualInclusionStepStub concreteStub = (ManualInclusionStepStub) stub;
+			final ManualInclusionStep returnStep = new ManualInclusionStep();
 
 			returnStep.setHeader(concreteStub.header);
 			returnStep.setSequence(concreteStub.sequence);
 
 			retStep = returnStep;
 		} else if (stub instanceof SequenceManipulationStepStub) {
-			SequenceManipulationStepStub concreteStub = (SequenceManipulationStepStub) stub;
-			MakeDecoyStep returnStep = new MakeDecoyStep();
+			final SequenceManipulationStepStub concreteStub = (SequenceManipulationStepStub) stub;
+			final MakeDecoyStep returnStep = new MakeDecoyStep();
 
 			returnStep.setOverwriteMode(concreteStub.overwrite);
 			if (concreteStub.manipulationType.equalsIgnoreCase(SequenceManipulationStepStub.REVERSAL)) {
@@ -265,15 +265,15 @@ public final class CurationHandler {
 
 			retStep = returnStep;
 		} else if (stub instanceof DatabaseUploadStepStub) {
-			DatabaseUploadStepStub concreteStub = (DatabaseUploadStepStub) stub;
-			DatabaseUploadStep returnStep = new DatabaseUploadStep();
+			final DatabaseUploadStepStub concreteStub = (DatabaseUploadStepStub) stub;
+			final DatabaseUploadStep returnStep = new DatabaseUploadStep();
 			returnStep.setFileName(concreteStub.clientFilePath);
 			returnStep.setPathToUploadedFile(new File(concreteStub.serverFilePath));
 
 			retStep = returnStep;
 		} else if (stub instanceof HeaderTransformStub) {
-			HeaderTransformStub concreteStub = (HeaderTransformStub) stub;
-			HeaderTransformStep returnStep = new HeaderTransformStep();
+			final HeaderTransformStub concreteStub = (HeaderTransformStub) stub;
+			final HeaderTransformStep returnStep = new HeaderTransformStep();
 			returnStep.setDescription(concreteStub.description);
 			returnStep.setMatchPattern(concreteStub.matchPattern);
 			returnStep.setSubstitutionPattern(concreteStub.subPattern);
@@ -302,10 +302,10 @@ public final class CurationHandler {
 	 * @param toStubify the curation you want to createa  stub for
 	 * @return the corresponding stub
 	 */
-	public CurationStub createStub(Curation toStubify) {
+	public CurationStub createStub(final Curation toStubify) {
 
 		//create the stub and fill in all fields
-		CurationStub result = new CurationStub();
+		final CurationStub result = new CurationStub();
 		result.setId(toStubify.getId());
 		result.setShortName(toStubify.getShortName() != null ? toStubify.getShortName() : "");
 		result.setTitle(toStubify.getTitle() != null ? toStubify.getTitle() : "");
@@ -329,8 +329,8 @@ public final class CurationHandler {
 
 		//if there are any global error messages then sync them to the stub
 		if (this.lastRunStatus != null) {
-			List<String> msgs = this.lastRunStatus.getMessages();
-			for (String msg : msgs) {
+			final List<String> msgs = this.lastRunStatus.getMessages();
+			for (final String msg : msgs) {
 				result.getErrorMessages().add(msg);
 			}
 		}
@@ -343,20 +343,20 @@ public final class CurationHandler {
 	 * @param toStub the step that you want to create a stub for
 	 * @return a stub for the toStub step
 	 */
-	private CurationStepStub getStepStub(CurationStep toStub) {
+	private CurationStepStub getStepStub(final CurationStep toStub) {
 		CurationStepStub stub = null;
 
 		if (toStub instanceof NewDatabaseInclusion) {
-			NewDatabaseInclusionStub concreteStub = new NewDatabaseInclusionStub();
-			NewDatabaseInclusion concreteStep = (NewDatabaseInclusion) toStub;
+			final NewDatabaseInclusionStub concreteStub = new NewDatabaseInclusionStub();
+			final NewDatabaseInclusion concreteStep = (NewDatabaseInclusion) toStub;
 			concreteStub.url = concreteStep.getUrl();
 			if (concreteStub.url == null) {
 				concreteStub.url = "";
 			}
 			stub = concreteStub;
 		} else if (toStub instanceof HeaderFilterStep) {
-			HeaderFilterStepStub concreteStub = new HeaderFilterStepStub();
-			HeaderFilterStep concreteStep = (HeaderFilterStep) toStub;
+			final HeaderFilterStepStub concreteStub = new HeaderFilterStepStub();
+			final HeaderFilterStep concreteStep = (HeaderFilterStep) toStub;
 
 			concreteStub.criteria = concreteStep.getCriteriaString();
 			if (concreteStub.criteria == null) {
@@ -379,8 +379,8 @@ public final class CurationHandler {
 			stub = concreteStub;
 
 		} else if (toStub instanceof ManualInclusionStep) {
-			ManualInclusionStepStub concreteStub = new ManualInclusionStepStub();
-			ManualInclusionStep concreteStep = (ManualInclusionStep) toStub;
+			final ManualInclusionStepStub concreteStub = new ManualInclusionStepStub();
+			final ManualInclusionStep concreteStep = (ManualInclusionStep) toStub;
 
 			concreteStub.header = concreteStep.getHeader();
 			if (concreteStub.header == null) {
@@ -393,8 +393,8 @@ public final class CurationHandler {
 
 			stub = concreteStub;
 		} else if (toStub instanceof MakeDecoyStep) {
-			SequenceManipulationStepStub concreteStub = new SequenceManipulationStepStub();
-			MakeDecoyStep concreteStep = (MakeDecoyStep) toStub;
+			final SequenceManipulationStepStub concreteStub = new SequenceManipulationStepStub();
+			final MakeDecoyStep concreteStep = (MakeDecoyStep) toStub;
 
 			concreteStub.overwrite = concreteStep.isOverwriteMode();
 			if (concreteStep.getManipulatorType() == MakeDecoyStep.REVERSAL_MANIPULATOR) {
@@ -405,16 +405,16 @@ public final class CurationHandler {
 
 			stub = concreteStub;
 		} else if (toStub instanceof DatabaseUploadStep) {
-			DatabaseUploadStepStub concreteStub = new DatabaseUploadStepStub();
-			DatabaseUploadStep concreteStep = (DatabaseUploadStep) toStub;
+			final DatabaseUploadStepStub concreteStub = new DatabaseUploadStepStub();
+			final DatabaseUploadStep concreteStep = (DatabaseUploadStep) toStub;
 
 			concreteStub.serverFilePath = concreteStep.getPathToUploadedFile().getAbsolutePath();
 			concreteStub.clientFilePath = concreteStep.getFileName();
 
 			stub = concreteStub;
 		} else if (toStub instanceof HeaderTransformStep) {
-			HeaderTransformStub concreteStub = new HeaderTransformStub();
-			HeaderTransformStep concreteStep = (HeaderTransformStep) toStub;
+			final HeaderTransformStub concreteStub = new HeaderTransformStub();
+			final HeaderTransformStep concreteStep = (HeaderTransformStep) toStub;
 
 			concreteStub.description = concreteStep.getDescription();
 			concreteStub.matchPattern = concreteStep.getMatchPattern();
@@ -443,24 +443,24 @@ public final class CurationHandler {
 	 * @param latestRunDate   the latest run date (inclusive) for curations you want returned (or null for unbounded)
 	 * @return the matching curation stubs or null if there were no matches or if the sample was overly vague.
 	 */
-	public List<CurationStub> getMatchingCurations(CurationStub stub, Date earliestRunDate, Date latestRunDate) {
+	public List<CurationStub> getMatchingCurations(final CurationStub stub, final Date earliestRunDate, final Date latestRunDate) {
 		//this.syncCuration(stub);
 		//Curation sample = this.getCachedCuration();
 		this.lastRunStatus = null;
-		Curation sample = new Curation();
+		final Curation sample = new Curation();
 		sample.setId(stub.getId());
 		sample.setNotes(null);
 
 
-		List<Curation> matchingCurations = curationDao.getMatchingCurations(sample, earliestRunDate, latestRunDate);
+		final List<Curation> matchingCurations = curationDao.getMatchingCurations(sample, earliestRunDate, latestRunDate);
 
 		if (matchingCurations == null || matchingCurations.size() == 0) {
 			return new ArrayList<CurationStub>();
 		}
 
-		List<CurationStub> stubs = new ArrayList<CurationStub>();
+		final List<CurationStub> stubs = new ArrayList<CurationStub>();
 
-		for (Curation curation : matchingCurations) {
+		for (final Curation curation : matchingCurations) {
 			stubs.add(this.createStub(curation));
 		}
 
@@ -468,7 +468,7 @@ public final class CurationHandler {
 		return stubs;
 	}
 
-	public CurationStub getCurationByID(Integer id) {
+	public CurationStub getCurationByID(final Integer id) {
 		this.cache = null;
 		this.lastRunStatus = null;
 
@@ -496,14 +496,14 @@ public final class CurationHandler {
 	 * @param toExecute the CurationStub that you want to execute
 	 * @return the curationstub for the curation after it was executed.  This is needed because things may have been changed since the execution occured.
 	 */
-	public CurationStub executeCuration(CurationStub toExecute) {
+	public CurationStub executeCuration(final CurationStub toExecute) {
 		//sync the curation to the cache
 		this.syncCuration(toExecute);
 
 		// the cache is now set to curation matching our stub
-		Curation curation = this.cache;
+		final Curation curation = this.cache;
 
-		CurationExecutor curationExecutor = new CurationExecutor(curation, true, curationDao, fastaFolder, localTempFolder, fastaArchiveFolder);
+		final CurationExecutor curationExecutor = new CurationExecutor(curation, true, curationDao, fastaFolder, localTempFolder, fastaArchiveFolder);
 		this.lastRunStatus = curationExecutor.execute();
 
 		while (this.lastRunStatus.isInProgress()) {
@@ -537,7 +537,7 @@ public final class CurationHandler {
 	 *
 	 * @param toSet the curation to be associated with this handler
 	 */
-	public void setCachedCuration(Curation toSet) {
+	public void setCachedCuration(final Curation toSet) {
 		this.cache = toSet;
 	}
 

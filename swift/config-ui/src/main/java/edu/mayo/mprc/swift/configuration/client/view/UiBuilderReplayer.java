@@ -29,7 +29,7 @@ public class UiBuilderReplayer implements Serializable {
 	public UiBuilderReplayer() {
 	}
 
-	public UiBuilderReplayer(ArrayList<String> commands) {
+	public UiBuilderReplayer(final ArrayList<String> commands) {
 		this.commands = commands;
 	}
 
@@ -38,10 +38,10 @@ public class UiBuilderReplayer implements Serializable {
 	 *
 	 * @param builder Builder to replay the events on.
 	 */
-	public void replay(UiBuilderClient builder) {
+	public void replay(final UiBuilderClient builder) {
 		final Iterator<String> iterator = commands.iterator();
 		while (iterator.hasNext()) {
-			String command = iterator.next();
+			final String command = iterator.next();
 			if (NATIVE_INTERFACE.equals(command)) {
 				builder.nativeInterface(iterator.next());
 			} else if (PROPERTY.equals(command)) {
@@ -55,12 +55,12 @@ public class UiBuilderReplayer implements Serializable {
 			} else if (BOOL_VALUE.equals(command)) {
 				builder.boolValue();
 			} else if (INTEGER_VALUE.equals(command)) {
-				Integer min = nextInt(iterator);
-				Integer max = nextInt(iterator);
+				final Integer min = nextInt(iterator);
+				final Integer max = nextInt(iterator);
 				builder.integerValue(min, max);
 			} else if (REFERENCE.equals(command)) {
-				int itemCount = nextInt(iterator);
-				String[] items = new String[itemCount];
+				final int itemCount = nextInt(iterator);
+				final String[] items = new String[itemCount];
 				for (int i = 0; i < itemCount; i++) {
 					items[i] = iterator.next();
 				}
@@ -73,8 +73,8 @@ public class UiBuilderReplayer implements Serializable {
 		}
 	}
 
-	private static Integer nextInt(Iterator<String> iterator) {
-		String minimum = iterator.next();
+	private static Integer nextInt(final Iterator<String> iterator) {
+		final String minimum = iterator.next();
 		return minimum == null ? null : Integer.parseInt(minimum);
 	}
 

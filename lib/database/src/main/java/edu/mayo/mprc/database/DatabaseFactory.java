@@ -31,11 +31,11 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 	 * @param mappingFiles Array of additional mapping files.
 	 * @return All resources needed for the DAOs in a list. Each resource listed once.
 	 */
-	public static ArrayList<String> collectMappingResouces(Collection<? extends DaoBase> daos, String... mappingFiles) {
-		TreeSet<String> strings = new TreeSet<String>();
+	public static ArrayList<String> collectMappingResouces(final Collection<? extends DaoBase> daos, final String... mappingFiles) {
+		final TreeSet<String> strings = new TreeSet<String>();
 		Collections.addAll(strings, mappingFiles);
 
-		for (DaoBase daoBase : daos) {
+		for (final DaoBase daoBase : daos) {
 			strings.addAll(daoBase.getHibernateMappings());
 		}
 
@@ -46,7 +46,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 		return hibernateProperties;
 	}
 
-	public void setHibernateProperties(Map<String, String> hibernateProperties) {
+	public void setHibernateProperties(final Map<String, String> hibernateProperties) {
 		this.hibernateProperties = hibernateProperties;
 	}
 
@@ -54,7 +54,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 		return daoList;
 	}
 
-	public void setDaoList(List<DaoBase> daoList) {
+	public void setDaoList(final List<DaoBase> daoList) {
 		this.daoList = daoList;
 	}
 
@@ -62,17 +62,17 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 		return placeholder;
 	}
 
-	public void setPlaceholder(DatabasePlaceholder placeholder) {
+	public void setPlaceholder(final DatabasePlaceholder placeholder) {
 		this.placeholder = placeholder;
 	}
 
 	@Override
-	public SessionFactory create(ResourceConfig config, DependencyResolver dependencies) {
+	public SessionFactory create(final ResourceConfig config, final DependencyResolver dependencies) {
 		if (!(config instanceof Config)) {
 			ExceptionUtilities.throwCastException(config, Config.class);
 			return null;
 		}
-		Config localConfig = (Config) config;
+		final Config localConfig = (Config) config;
 
 		final SessionFactory sessionFactory = DatabaseUtilities.getSessionFactory(localConfig.getUrl()
 				, localConfig.getUserName()
@@ -106,7 +106,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 		public Config() {
 		}
 
-		public Config(String url, String userName, String password, String driverClassName, String dialect, String defaultSchema, String schema) {
+		public Config(final String url, final String userName, final String password, final String driverClassName, final String dialect, final String defaultSchema, final String schema) {
 			this.url = url;
 			this.userName = userName;
 			this.password = password;
@@ -120,7 +120,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return url;
 		}
 
-		public void setUrl(String url) {
+		public void setUrl(final String url) {
 			this.url = url;
 		}
 
@@ -128,7 +128,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return userName;
 		}
 
-		public void setUserName(String userName) {
+		public void setUserName(final String userName) {
 			this.userName = userName;
 		}
 
@@ -136,7 +136,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return password;
 		}
 
-		public void setPassword(String password) {
+		public void setPassword(final String password) {
 			this.password = password;
 		}
 
@@ -144,7 +144,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return driverClassName;
 		}
 
-		public void setDriverClassName(String driverClassName) {
+		public void setDriverClassName(final String driverClassName) {
 			this.driverClassName = driverClassName;
 		}
 
@@ -152,7 +152,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return dialect;
 		}
 
-		public void setDialect(String dialect) {
+		public void setDialect(final String dialect) {
 			this.dialect = dialect;
 		}
 
@@ -160,7 +160,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return defaultSchema;
 		}
 
-		public void setDefaultSchema(String defaultSchema) {
+		public void setDefaultSchema(final String defaultSchema) {
 			this.defaultSchema = defaultSchema;
 		}
 
@@ -168,12 +168,12 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return schema;
 		}
 
-		public void setSchema(String schema) {
+		public void setSchema(final String schema) {
 			this.schema = schema;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put("url", url);
 			map.put("username", userName);
 			map.put("password", password);
@@ -184,7 +184,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			url = values.get("url");
 			userName = values.get("username");
 			password = values.get("password");
@@ -202,7 +202,7 @@ public final class DatabaseFactory extends FactoryBase<ResourceConfig, SessionFa
 
 	public static final class Ui implements ServiceUiFactory {
 		@Override
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.nativeInterface("database");
 		}
 	}

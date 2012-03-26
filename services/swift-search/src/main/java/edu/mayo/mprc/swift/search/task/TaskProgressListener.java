@@ -13,11 +13,11 @@ abstract class TaskProgressListener implements ProgressListener {
 
 	private AsyncTaskBase task;
 
-	protected TaskProgressListener(AsyncTaskBase task) {
+	protected TaskProgressListener(final AsyncTaskBase task) {
 		this.task = task;
 	}
 
-	public void requestEnqueued(String hostString) {
+	public void requestEnqueued(final String hostString) {
 		task.setTaskEnqueued(new Date());
 		task.setExecutedOnHost(hostString);
 		task.afterProgressInformationReceived(new AssignedExecutedOnHost(hostString));
@@ -28,7 +28,7 @@ abstract class TaskProgressListener implements ProgressListener {
 		task.afterProgressInformationReceived(null);
 	}
 
-	public void requestTerminated(Exception e) {
+	public void requestTerminated(final Exception e) {
 		try {
 			NDC.push(this.task.getFullId());
 			LOGGER.error("Task failed: " + this.task.getName(), e);
@@ -38,7 +38,7 @@ abstract class TaskProgressListener implements ProgressListener {
 		}
 	}
 
-	public void userProgressInformation(ProgressInfo progressInfo) {
+	public void userProgressInformation(final ProgressInfo progressInfo) {
 		task.afterProgressInformationReceived(progressInfo);
 	}
 

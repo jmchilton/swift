@@ -7,7 +7,7 @@ public final class PeaksEnzyme implements Serializable {
 	private String enzymeId;
 	private String enzymeName;
 
-	public PeaksEnzyme(String enzymeId, String enzymeName) {
+	public PeaksEnzyme(final String enzymeId, final String enzymeName) {
 		this.enzymeId = enzymeId;
 		this.enzymeName = enzymeName;
 	}
@@ -16,7 +16,7 @@ public final class PeaksEnzyme implements Serializable {
 		return enzymeId;
 	}
 
-	public void setEnzymeId(String enzymeId) {
+	public void setEnzymeId(final String enzymeId) {
 		this.enzymeId = enzymeId;
 	}
 
@@ -24,13 +24,13 @@ public final class PeaksEnzyme implements Serializable {
 		return enzymeName;
 	}
 
-	public void setEnzymeName(String enzymeName) {
+	public void setEnzymeName(final String enzymeName) {
 		this.enzymeName = enzymeName;
 	}
 
 	public String toString() {
 
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 
 		builder.append("Enzyme Id: ").append(enzymeId).append("\n");
 		builder.append("Enzyme Name: ").append(enzymeName);

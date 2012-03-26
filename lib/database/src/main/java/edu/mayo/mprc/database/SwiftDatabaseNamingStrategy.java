@@ -11,8 +11,8 @@ public final class SwiftDatabaseNamingStrategy extends ImprovedNamingStrategy {
 	}
 
 	@Override
-	public String foreignKeyColumnName(String propertyName, String propertyEntityName, String propertyTableName, String referencedColumnName) {
-		String header = propertyName != null ? StringHelper.unqualify(propertyName) : propertyTableName;
+	public String foreignKeyColumnName(final String propertyName, final String propertyEntityName, final String propertyTableName, final String referencedColumnName) {
+		final String header = propertyName != null ? StringHelper.unqualify(propertyName) : propertyTableName;
 		if (header == null) {
 			throw new AssertionFailure("NamingStrategy not properly filled");
 		}

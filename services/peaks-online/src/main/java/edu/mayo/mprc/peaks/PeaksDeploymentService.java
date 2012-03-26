@@ -32,20 +32,20 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 	private Peaks peaks;
 	private String databaseFormat;
 
-	public PeaksDeploymentService(Peaks peaks, String databaseFormat) {
+	public PeaksDeploymentService(final Peaks peaks, final String databaseFormat) {
 		this.peaks = peaks;
 		this.databaseFormat = databaseFormat;
 	}
 
-	public DeploymentResult performDeployment(DeploymentRequest request) {
-		DeploymentResult deploymentResult = new DeploymentResult();
+	public DeploymentResult performDeployment(final DeploymentRequest request) {
+		final DeploymentResult deploymentResult = new DeploymentResult();
 
 		try {
 			if (peaks != null) {
 
-				PeaksAdmin peaksOnlineAdmin = peaks.getPeaksOnlineAdmin();
+				final PeaksAdmin peaksOnlineAdmin = peaks.getPeaksOnlineAdmin();
 
-				for (PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
+				for (final PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
 					if (peaksOnlineDatabase.getDatabaseFilePath().equals(request.getCurationFile().getAbsolutePath())) {
 						deploymentResult.addMessage("Database " + request.getShortName() + " has already been deployed.");
 						return deploymentResult;
@@ -56,7 +56,7 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 						, request.getCurationFile().getAbsolutePath()
 						, databaseFormat, false)) {
 
-					for (PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
+					for (final PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
 						if (peaksOnlineDatabase.getDatabaseName().equals(request.getShortName())) {
 							deploymentResult.addMessage("Database " + request.getShortName() + " successfully deployed.");
 						}
@@ -75,7 +75,7 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
 		return null; //TODO: implement me
 	}
 
@@ -83,7 +83,7 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 		return peaks;
 	}
 
-	public void setPeaks(Peaks peaks) {
+	public void setPeaks(final Peaks peaks) {
 		this.peaks = peaks;
 	}
 
@@ -91,7 +91,7 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 		return databaseFormat;
 	}
 
-	public void setDatabaseFormat(String databaseFormat) {
+	public void setDatabaseFormat(final String databaseFormat) {
 		this.databaseFormat = databaseFormat;
 	}
 
@@ -112,12 +112,12 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 			return databaseFormat;
 		}
 
-		public void setDatabaseFormat(String databaseFormat) {
+		public void setDatabaseFormat(final String databaseFormat) {
 			this.databaseFormat = databaseFormat;
 		}
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			PeaksDeploymentService worker = null;
 			try {
 				worker = new PeaksDeploymentService(new Peaks(new PeaksURIs(new URI(config.getBaseURI())), config.getUserName(), config.getPassword()), databaseFormat);
@@ -132,13 +132,13 @@ public final class PeaksDeploymentService extends DeploymentService<DeploymentRe
 		public Config() {
 		}
 
-		public Config(String baseURI, String userName, String password) {
+		public Config(final String baseURI, final String userName, final String password) {
 			super(baseURI, userName, password);
 		}
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property("baseURI", "Base URL", "Peaks Online base URL").required()
 					.property("userName", "User name", "Administrator account user name").required()
 					.property("password", "Password", "Administrator account password").required();

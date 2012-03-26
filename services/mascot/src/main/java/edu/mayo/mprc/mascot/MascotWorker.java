@@ -68,7 +68,7 @@ public final class MascotWorker implements Worker {
 	 */
 	public static final String MASCOT_CGI = "cgi/nph-mascot.exe?1";
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -79,8 +79,8 @@ public final class MascotWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket, ProgressReporter progressReporter) {
-		MascotWorkPacket mascotWorkPacket = (MascotWorkPacket) workPacket;
+	private void process(final WorkPacket workPacket, final ProgressReporter progressReporter) {
+		final MascotWorkPacket mascotWorkPacket = (MascotWorkPacket) workPacket;
 		assert mascotWorkPacket.getInputFile() != null : "Mascot search failed: mgf file not specified";
 		assert mascotWorkPacket.getSearchParamsFile() != null : "Mascot search failed: param file not specified";
 		assert mascotWorkPacket.getOutputFile() != null : "Mascot search failed: output file not specified";
@@ -95,7 +95,7 @@ public final class MascotWorker implements Worker {
 			this.setMascotOutputFile(mascotWorkPacket.getOutputFile());
 
 			// We have to modify the mascot params file, replacing the ${DB:whatever} tag with the supplied short db name.
-			StreamRegExMatcher matcher = new StreamRegExMatcher(DB_TAG_PATTERN, mascotWorkPacket.getSearchParamsFile());
+			final StreamRegExMatcher matcher = new StreamRegExMatcher(DB_TAG_PATTERN, mascotWorkPacket.getSearchParamsFile());
 			matcher.replaceAll(Matcher.quoteReplacement(mascotWorkPacket.getShortDbName()));
 			matcher.writeContentsToFile(mascotWorkPacket.getSearchParamsFile());
 			matcher.close();
@@ -111,7 +111,7 @@ public final class MascotWorker implements Worker {
 		// When the search completes, we are done.
 	}
 
-	public void setUrl(URL mascotUrl) {
+	public void setUrl(final URL mascotUrl) {
 		if (mascotUrl == null) {
 			throw new MprcException("The mascot url must not be null");
 		}
@@ -120,11 +120,11 @@ public final class MascotWorker implements Worker {
 		datFileBaseUrl = mascotCgiUrl(mascotUrl);
 	}
 
-	public void setPublicUrl(URL publicBaseUrl) {
+	public void setPublicUrl(final URL publicBaseUrl) {
 		this.publicBaseUrl = publicBaseUrl;
 	}
 
-	static URL mascotCgiUrl(URL mascotBaseUrl) {
+	static URL mascotCgiUrl(final URL mascotBaseUrl) {
 		try {
 			return new URL(mascotBaseUrl, MASCOT_CGI);
 		} catch (MalformedURLException e) {
@@ -132,16 +132,16 @@ public final class MascotWorker implements Worker {
 		}
 	}
 
-	private void setMascotOutputFile(File file) {
+	private void setMascotOutputFile(final File file) {
 		mascotOutputFile = file;
 	}
 
-	private ByteBuffer getFormBodyTop(Map<String, String> hash) {
-		Iterator<Map.Entry<String, String>> iterator = hash.entrySet().iterator();
+	private ByteBuffer getFormBodyTop(final Map<String, String> hash) {
+		final Iterator<Map.Entry<String, String>> iterator = hash.entrySet().iterator();
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		while (iterator.hasNext()) {
-			Map.Entry<String, String> entry = iterator.next();
+			final Map.Entry<String, String> entry = iterator.next();
 			sb.append("--").append(boundary).append("\r\n")
 					.append("Content-Disposition: form-data; name=\"").append(entry.getKey()).append("\"\r\n\r\n")
 					.append(entry.getValue())
@@ -151,7 +151,7 @@ public final class MascotWorker implements Worker {
 		return charset.encode(sb.toString());
 	}
 
-	private ByteBuffer getFormFilePreamble(String filename) {
+	private ByteBuffer getFormFilePreamble(final String filename) {
 		String s = "--" + boundary + "\r\n";
 		s += "Content-Disposition: form-data; name=\"FILE\";";
 		s += " filename=\"" + filename + "\"\r\n";
@@ -163,7 +163,7 @@ public final class MascotWorker implements Worker {
 		return charset.encode("\r\n--" + boundary + "--\r\n");
 	}
 
-	public void setupPOSTConnection(int len) {
+	public void setupPOSTConnection(final int len) {
 		try {
 			connection = (HttpURLConnection) datFileBaseUrl.openConnection();
 		} catch (Exception e) {
@@ -190,23 +190,23 @@ public final class MascotWorker implements Worker {
 	/**
 	 * @return Returns the path to the resulting Mascot .dat file
 	 */
-	private String getPOSTResponse(ProgressReporter progressReporter) {
-		StringBuilder completePage = new StringBuilder();
+	private String getPOSTResponse(final ProgressReporter progressReporter) {
+		final StringBuilder completePage = new StringBuilder();
 		BufferedReader rreader = null;
 		try {
-			DataInputStream in = new DataInputStream(connection.getInputStream());
+			final DataInputStream in = new DataInputStream(connection.getInputStream());
 			rreader = new BufferedReader(new InputStreamReader(in));
 
 			String str;
 			String link;
-			boolean inTag = false;
-			String regex = "href=\".*file=(.*\\.dat)\"";
-			Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-			Pattern whitespace = Pattern.compile("^\\s*$", Pattern.CASE_INSENSITIVE);
+			final boolean inTag = false;
+			final String regex = "href=\".*file=(.*\\.dat)\"";
+			final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			final Pattern whitespace = Pattern.compile("^\\s*$", Pattern.CASE_INSENSITIVE);
 			String url = null;
 			while ((str = rreader.readLine()) != null) {
 
-				Matcher matcher = pattern.matcher(str);
+				final Matcher matcher = pattern.matcher(str);
 				if (matcher.find()) {
 					url = matcher.group(1);
 				}
@@ -229,11 +229,11 @@ public final class MascotWorker implements Worker {
 		throw new DaemonException("no data URL for the mascot result\nHere is the returned page source:\n" + completePage.toString());
 	}
 
-	private void extractReportPercentDone(ProgressReporter progressReporter, String logLine) {
+	private void extractReportPercentDone(final ProgressReporter progressReporter, final String logLine) {
 		final Matcher percentMatcher = PERCENT_DONE.matcher(logLine);
 		if (percentMatcher.matches()) {
 			try {
-				float value = Float.parseFloat(percentMatcher.group(1));
+				final float value = Float.parseFloat(percentMatcher.group(1));
 				progressReporter.reportProgress(new PercentDone(value));
 			} catch (NumberFormatException ignore) {
 				// SWALLOWED: Not a big deal
@@ -242,22 +242,22 @@ public final class MascotWorker implements Worker {
 		}
 	}
 
-	private void getDatFile(URL url, File outputFile) {
+	private void getDatFile(final URL url, final File outputFile) {
 		int pos = 0;
-		byte[] buffer = new byte[BUFFER_SIZE];
+		final byte[] buffer = new byte[BUFFER_SIZE];
 
 		InputStream in = null;
 		OutputStream out = null;
 
 		try {
-			URLConnection connection = url.openConnection();
+			final URLConnection connection = url.openConnection();
 			in = connection.getInputStream();
 			out = new FileOutputStream(outputFile);
-			int len = connection.getContentLength();
+			final int len = connection.getContentLength();
 
 			while (pos < len) {
 				if (in.available() > 0) {
-					int read = in.read(buffer);
+					final int read = in.read(buffer);
 					pos += read;
 					out.write(buffer, 0, read);
 				}
@@ -274,7 +274,7 @@ public final class MascotWorker implements Worker {
 		return mascotOutputFile;
 	}
 
-	public void search(String parameters, String data, ProgressReporter progressReporter) {
+	public void search(final String parameters, final String data, final ProgressReporter progressReporter) {
 		if (!new File(parameters.trim()).exists()) {
 			throw new MprcException("parameters file does not exist: " + parameters.trim());
 		}
@@ -308,9 +308,9 @@ public final class MascotWorker implements Worker {
 		hash.put("COM", title);
 
 
-		ByteBuffer buffer = getFormBodyTop(hash);
-		ByteBuffer buffer2 = getFormFilePreamble(data);
-		ByteBuffer buffer3 = getFormBodyBottom();
+		final ByteBuffer buffer = getFormBodyTop(hash);
+		final ByteBuffer buffer2 = getFormFilePreamble(data);
+		final ByteBuffer buffer3 = getFormBodyBottom();
 		FileChannel mgfChannel = null;
 		long dataLength = 0;
 		try {
@@ -319,7 +319,7 @@ public final class MascotWorker implements Worker {
 		} catch (Exception e) {
 			throw new MprcException("Could not open .mgf file for Mascot search " + data, e);
 		}
-		long length = dataLength + buffer.limit() + buffer2.limit() + buffer3.limit();
+		final long length = dataLength + buffer.limit() + buffer2.limit() + buffer3.limit();
 		if (length > Integer.MAX_VALUE) {
 			throw new DaemonException("Too large data to post via HTTP: " + length + " bytes, maximum allowed is " + Integer.MAX_VALUE);
 		}
@@ -353,7 +353,7 @@ public final class MascotWorker implements Worker {
 			FileUtilities.closeQuietly(channel);
 		}
 
-		String filePath = getPOSTResponse(progressReporter);
+		final String filePath = getPOSTResponse(progressReporter);
 		try {
 			progressReporter.reportProgress(
 					new MascotResultUrl(
@@ -364,9 +364,9 @@ public final class MascotWorker implements Worker {
 		}
 	}
 
-	private Map<String, String> readParameters(BufferedReader reader)
+	private Map<String, String> readParameters(final BufferedReader reader)
 			throws IOException, IllegalArgumentException {
-		Map<String, String> hash = new HashMap<String, String>();
+		final Map<String, String> hash = new HashMap<String, String>();
 		String line;
 		int count = 0;
 
@@ -376,7 +376,7 @@ public final class MascotWorker implements Worker {
 			if ((line.length() == 0) || (line.charAt(0) == '#')) {
 				continue;
 			}
-			int pos = line.indexOf('=');
+			final int pos = line.indexOf('=');
 			// handle both the case where there is no equal sign or the key part is empty
 			// (return values -1 and 0, respectively)
 			if (pos <= 0) {
@@ -387,7 +387,7 @@ public final class MascotWorker implements Worker {
 		return hash;
 	}
 
-	private void die(String message, Throwable t) {
+	private void die(final String message, final Throwable t) {
 		LOGGER.error(t);
 		throw new DaemonException(message, t);
 	}
@@ -401,10 +401,10 @@ public final class MascotWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			MascotWorker worker = new MascotWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final MascotWorker worker = new MascotWorker();
 			try {
-				URL mascotUrl = new URL(config.getMascotUrl());
+				final URL mascotUrl = new URL(config.getMascotUrl());
 				worker.setUrl(mascotUrl);
 				if (config.getMascotPublicUrl() != null && config.getMascotPublicUrl().trim().length() > 0) {
 					worker.setPublicUrl(new URL(config.getMascotPublicUrl()));
@@ -428,7 +428,7 @@ public final class MascotWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String mascotUrl) {
+		public Config(final String mascotUrl) {
 			this.mascotUrl = mascotUrl;
 		}
 
@@ -436,7 +436,7 @@ public final class MascotWorker implements Worker {
 			return mascotUrl;
 		}
 
-		public void setMascotUrl(String mascotUrl) {
+		public void setMascotUrl(final String mascotUrl) {
 			this.mascotUrl = mascotUrl;
 		}
 
@@ -444,20 +444,20 @@ public final class MascotWorker implements Worker {
 			return mascotPublicUrl;
 		}
 
-		public void setMascotPublicUrl(String mascotPublicUrl) {
+		public void setMascotPublicUrl(final String mascotPublicUrl) {
 			this.mascotPublicUrl = mascotPublicUrl;
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(MASCOT_URL, mascotUrl);
 			map.put(MASCOT_PUBLIC_URL, mascotPublicUrl);
 			return map;
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			mascotUrl = values.get(MASCOT_URL);
 			mascotPublicUrl = values.get(MASCOT_PUBLIC_URL);
 		}
@@ -469,7 +469,7 @@ public final class MascotWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(MASCOT_URL, "URL", "Mascot search engine URL.<p>This URL is used by Swift to give commands to Mascot.</p>").required()
 					.property(MASCOT_PUBLIC_URL, "Public URL", "Mascot URL to be used when accessing Mascot by the users.<p>If not specified, the URL (above) will be used.");

@@ -9,7 +9,7 @@ public final class SearchEngineResult extends FileHolder implements ProgressInfo
 	private static final long serialVersionUID = 20101025l;
 	private File resultFile;
 
-	public SearchEngineResult(File resultFile) {
+	public SearchEngineResult(final File resultFile) {
 		this.resultFile = resultFile;
 	}
 

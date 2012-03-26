@@ -31,62 +31,62 @@ public final class Mercury6 {
 	private Mercury6() {
 	}
 
-	private static double electronMass(Chemical chem) {
+	private static double electronMass(final Chemical chem) {
 		return chem.getPeriodicTable().getElectronMass();
 	}
 
 	/**
 	 * Number of stable isotopes
 	 */
-	private static int EZNI(Chemical chem, int z) {
+	private static int EZNI(final Chemical chem, final int z) {
 		return chem.getElement(z).getNumIsotopes();
 	}
 
 	/**
 	 * Isotopic Mass
 	 */
-	private static double EZM(Chemical chem, int z, int i) {
+	private static double EZM(final Chemical chem, final int z, final int i) {
 		return chem.getElement(z).getIsotope(i).getMass();
 	}
 
 	/**
 	 * Integer Isotopic Mass
 	 */
-	private static double EZI(Chemical chem, int z, int i) {
+	private static double EZI(final Chemical chem, final int z, final int i) {
 		return chem.getElement(z).getIsotope(i).getIntMass();
 	}
 
 	/**
 	 * Isopopic probability ("abundance")
 	 */
-	private static double EZP(Chemical chem, int z, int i) {
+	private static double EZP(final Chemical chem, final int z, final int i) {
 		return chem.getElement(z).getIsotope(i).getAbundance();
 	}
 
 	/**
 	 * Number of occurances of element in molecular formula
 	 */
-	private static double EZNA(Chemical chem, int z) {
+	private static double EZNA(final Chemical chem, final int z) {
 		return chem.getAtomCount(z);
 	}
 
 	/**
 	 * Chemicals contain Elements in that Chemical numbered 0..n-1; whereas his struct array contained all Elements.
 	 */
-	private static int atomicNum(int i) {
+	private static int atomicNum(final int i) {
 		return i;
 	}
 
 	/**
 	 * Called by main()
 	 */
-	private static double[] calcVariances(double[] molVarAndIntMolVar, int numElements, final Chemical chem) {
+	private static double[] calcVariances(final double[] molVarAndIntMolVar, final int numElements, final Chemical chem) {
 		double Var, intVar;
 		double avemass, intAveMass;
 
 		molVarAndIntMolVar[0] = molVarAndIntMolVar[1] = 0;
 		for (int i = 0; i < numElements; i++) {
-			int z = atomicNum(i);
+			final int z = atomicNum(i);
 			avemass = intAveMass = 0;
 			for (int j = 0; j < EZNI(chem, z); j++) {
 				avemass += EZM(chem, z, j) * EZP(chem, z, j);
@@ -106,7 +106,7 @@ public final class Mercury6 {
 	/**
 	 * Called by main()
 	 */
-	static int calcMassRange(double molVar, int charge, int type) {
+	static int calcMassRange(final double molVar, final int charge, final int type) {
 		int i;
 		int MassRange;
 
@@ -131,7 +131,7 @@ public final class Mercury6 {
 	 * Could be done with less code, but this
 	 * saves a few operations.
 	 */
-	static void calcFreq(double freqData[], int ecount, int numPoints, int massRange, long massShift, final Chemical chem) {
+	static void calcFreq(final double[] freqData, final int ecount, final int numPoints, final int massRange, final long massShift, final Chemical chem) {
 		int i;
 		double freq;
 
@@ -148,21 +148,21 @@ public final class Mercury6 {
 		}
 	}
 
-	private static void calculateHalf(double[] freqData, int ecount, long massShift, Chemical chem, int i, double freq) {
+	private static void calculateHalf(final double[] freqData, final int ecount, final long massShift, final Chemical chem, final int i, final double freq) {
 		double r;
 		double theta;
 		double imag;
 		double real;
 		double X;
 		double tempr;
-		double a;
-		double b;
-		double c;
-		double d;
+		final double a;
+		final double b;
+		final double c;
+		final double d;
 		r = 1;
 		theta = 0;
 		for (int j = 0; j < ecount; j++) {
-			int z = atomicNum(j);
+			final int z = atomicNum(j);
 			real = imag = 0;
 			for (int k = 0; k < EZNI(chem, z); k++) {
 				X = TWOPI * EZI(chem, z, k) * freq;
@@ -200,7 +200,7 @@ public final class Mercury6 {
 	 * <p/>
 	 * If isign=1 FFT, isign=-1 IFFT
 	 */
-	static void four1(double[] data, int nn, int isign) {
+	static void four1(final double[] data, final int nn, final int isign) {
 		int i, j, m, n, mmax, istep;
 		double wr, wpr, wpi, wi, theta;
 		double wtemp, tempr, tempi;
@@ -262,11 +262,14 @@ public final class Mercury6 {
 
 	}
 
-	static void fillInDistribution(MassIntensityArray a, double data[], int numPoints, int ptsPerAmu,
-	                               float mw, double tempMW, long intMW, long mIintMW, int charge,
-	                               double molVar, double intMolVar, final PeriodicTable pt) {
+	static void fillInDistribution(final MassIntensityArray a, final double[] data, final int numPoints, final int ptsPerAmu,
+	                               final float mw, final double tempMW, final long intMW, final long mIintMW, final int charge,
+	                               final double molVar, final double intMolVar, final PeriodicTable pt) {
 		int i;
-		double mass, maxint = 0, ratio, CorrIntMW;
+		double mass;
+		double maxint = 0;
+		final double ratio;
+		final double CorrIntMW;
 
 		/* Normalize intensity to 0%-100% scale */
 		for (i = 1; i < 2 * numPoints; i += 2) {
@@ -304,15 +307,18 @@ public final class Mercury6 {
 		}
 	}
 
-	public static void mercury6(final Chemical chem, int charge, MassIntensityArray a) {
+	public static void mercury6(final Chemical chem, int charge, final MassIntensityArray a) {
 		int numElements = 0;			/* Number of elements in molecular formula */
-		int MassRange;
-		int PtsPerAmu;
-		int NumPoints;			/* Working # of datapoints (real:imag) */
-		double[] FreqData;			/* Array of real:imaginary frequency values for FFT */
+		final int MassRange;
+		final int PtsPerAmu;
+		final int NumPoints;			/* Working # of datapoints (real:imag) */
+		final double[] FreqData;			/* Array of real:imaginary frequency values for FFT */
 		float MW;
-		double tempMW, molVar, intMolVar;
-		long intMW, mIintMW;
+		double tempMW;
+		final double molVar;
+		final double intMolVar;
+		final long intMW;
+		long mIintMW;
 
 		numElements = chem.getNumElements();
 
@@ -320,7 +326,7 @@ public final class Mercury6 {
 		tempMW = 0;
 		mIintMW = 0;
 		for (int j = 0; j < numElements; j++) {
-			int z = atomicNum(j);
+			final int z = atomicNum(j);
 			for (int k = 0; k < EZNI(chem, z); k++) {
 				MW += EZNA(chem, z) * EZM(chem, z, k) * EZP(chem, z, k);
 				//cout << EZNA(Z) << " " << EZM(Z,k) << " " << EZP(Z,k) << endl;
@@ -335,7 +341,7 @@ public final class Mercury6 {
 		intMW = (long) (tempMW + 0.5);
 
 		/* Calculate mass range to use based on molecular variance */
-		double[] molIntVar = new double[2];
+		final double[] molIntVar = new double[2];
 		calcVariances(molIntVar, numElements, chem);
 		molVar = molIntVar[0];
 		intMolVar = molIntVar[1];

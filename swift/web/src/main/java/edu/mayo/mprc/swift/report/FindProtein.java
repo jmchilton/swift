@@ -35,7 +35,7 @@ public class FindProtein extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
 		OutputStreamWriter writer = null;
 		try {
@@ -45,7 +45,7 @@ public class FindProtein extends HttpServlet {
 
 			searchDbDao.begin();
 			try {
-				List<ReportData> reportDataList = searchDbDao.getSearchesForAccessionNumber(accessionNumber);
+				final List<ReportData> reportDataList = searchDbDao.getSearchesForAccessionNumber(accessionNumber);
 
 				writer.write("<html><head><title>Searches containing " + accessionNumber + "</title>\n" +
 						"<link rel=\"stylesheet\" href=\"/report/analysis.css\" type=\"text/css\">\n" +
@@ -73,7 +73,7 @@ public class FindProtein extends HttpServlet {
 		}
 	}
 
-	private void matchingSearchesTable(OutputStreamWriter writer, List<ReportData> reportDataList, String accessionNumber) throws IOException {
+	private void matchingSearchesTable(final OutputStreamWriter writer, final List<ReportData> reportDataList, final String accessionNumber) throws IOException {
 		Integer previousSearchRun = 0;
 		for (final ReportData reportData : reportDataList) {
 			final SearchRun searchRun = reportData.getSearchRun();
@@ -91,7 +91,7 @@ public class FindProtein extends HttpServlet {
 		closePreviousRun(writer, previousSearchRun);
 	}
 
-	private void closePreviousRun(OutputStreamWriter writer, Integer previousSearchRun) throws IOException {
+	private void closePreviousRun(final OutputStreamWriter writer, final Integer previousSearchRun) throws IOException {
 		if (0 != previousSearchRun) {
 			writer.write("</td>");
 			writer.write("</tr>");

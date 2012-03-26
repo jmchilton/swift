@@ -23,7 +23,7 @@ public final class SequenceManipulationStepStub extends CurationStepStub {
 	 * In this case we will create a StepPanelShell that will contain a SequenceManipulationPanel
 	 */
 	public AbstractStepPanel getStepPanel() {
-		SequenceManipulationPanel panel = new SequenceManipulationPanel();
+		final SequenceManipulationPanel panel = new SequenceManipulationPanel();
 		panel.setContainedStep(this);
 		return panel;
 	}

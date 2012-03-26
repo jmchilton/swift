@@ -24,7 +24,7 @@ public final class DaemonConnectionFactory extends FactoryBase<ServiceConfig, Da
 		return fileTokenFactory;
 	}
 
-	public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 		this.fileTokenFactory = fileTokenFactory;
 	}
 
@@ -32,11 +32,11 @@ public final class DaemonConnectionFactory extends FactoryBase<ServiceConfig, Da
 		return serviceFactory;
 	}
 
-	public void setServiceFactory(ServiceFactory serviceFactory) {
+	public void setServiceFactory(final ServiceFactory serviceFactory) {
 		this.serviceFactory = serviceFactory;
 	}
 
-	public DaemonConnection create(ServiceConfig config, DependencyResolver dependencies) {
+	public DaemonConnection create(final ServiceConfig config, final DependencyResolver dependencies) {
 		try {
 			final String brokerUrl = config.getBrokerUrl();
 			final URI serviceUri = new URI(brokerUrl);

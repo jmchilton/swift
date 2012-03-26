@@ -10,7 +10,7 @@ public final class AssignedSearchRunId implements ProgressInfo {
 
 	private long searchRunId;
 
-	public AssignedSearchRunId(long searchRunId) {
+	public AssignedSearchRunId(final long searchRunId) {
 		this.searchRunId = searchRunId;
 	}
 

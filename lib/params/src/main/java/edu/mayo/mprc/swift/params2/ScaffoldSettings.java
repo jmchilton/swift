@@ -38,7 +38,7 @@ public class ScaffoldSettings extends PersistableBase {
 			false
 	);
 
-	public ScaffoldSettings(double proteinProbability, double peptideProbability, int minimumPeptideCount, int minimumNonTrypticTerminii, StarredProteins starredProteins, boolean saveOnlyIdentifiedSpectra, boolean saveNoSpectra, boolean connectToNCBI, boolean annotateWithGOA) {
+	public ScaffoldSettings(final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNonTrypticTerminii, final StarredProteins starredProteins, final boolean saveOnlyIdentifiedSpectra, final boolean saveNoSpectra, final boolean connectToNCBI, final boolean annotateWithGOA) {
 		this.proteinProbability = proteinProbability;
 		this.peptideProbability = peptideProbability;
 		this.minimumPeptideCount = minimumPeptideCount;
@@ -54,7 +54,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return proteinProbability;
 	}
 
-	public void setProteinProbability(double proteinProbability) {
+	public void setProteinProbability(final double proteinProbability) {
 		this.proteinProbability = proteinProbability;
 	}
 
@@ -62,7 +62,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -70,7 +70,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return minimumPeptideCount;
 	}
 
-	public void setMinimumPeptideCount(int minimumPeptideCount) {
+	public void setMinimumPeptideCount(final int minimumPeptideCount) {
 		this.minimumPeptideCount = minimumPeptideCount;
 	}
 
@@ -78,7 +78,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return minimumNonTrypticTerminii;
 	}
 
-	public void setMinimumNonTrypticTerminii(int minimumNonTrypticTerminii) {
+	public void setMinimumNonTrypticTerminii(final int minimumNonTrypticTerminii) {
 		this.minimumNonTrypticTerminii = minimumNonTrypticTerminii;
 	}
 
@@ -86,7 +86,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return starredProteins;
 	}
 
-	public void setStarredProteins(StarredProteins starredProteins) {
+	public void setStarredProteins(final StarredProteins starredProteins) {
 		this.starredProteins = starredProteins;
 	}
 
@@ -94,7 +94,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return saveOnlyIdentifiedSpectra;
 	}
 
-	public void setSaveOnlyIdentifiedSpectra(boolean saveOnlyIdentifiedSpectra) {
+	public void setSaveOnlyIdentifiedSpectra(final boolean saveOnlyIdentifiedSpectra) {
 		this.saveOnlyIdentifiedSpectra = saveOnlyIdentifiedSpectra;
 	}
 
@@ -102,7 +102,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return saveNoSpectra;
 	}
 
-	public void setSaveNoSpectra(boolean saveNoSpectra) {
+	public void setSaveNoSpectra(final boolean saveNoSpectra) {
 		this.saveNoSpectra = saveNoSpectra;
 	}
 
@@ -110,7 +110,7 @@ public class ScaffoldSettings extends PersistableBase {
 		return connectToNCBI;
 	}
 
-	public void setConnectToNCBI(boolean connectToNCBI) {
+	public void setConnectToNCBI(final boolean connectToNCBI) {
 		this.connectToNCBI = connectToNCBI;
 	}
 
@@ -118,19 +118,19 @@ public class ScaffoldSettings extends PersistableBase {
 		return annotateWithGOA;
 	}
 
-	public void setAnnotateWithGOA(boolean annotateWithGOA) {
+	public void setAnnotateWithGOA(final boolean annotateWithGOA) {
 		this.annotateWithGOA = annotateWithGOA;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
 		if (obj == null || !(obj instanceof ScaffoldSettings)) {
 			return false;
 		}
-		ScaffoldSettings that = (ScaffoldSettings) obj;
+		final ScaffoldSettings that = (ScaffoldSettings) obj;
 
 		return Objects.equal(this.isAnnotateWithGOA(), that.isAnnotateWithGOA()) &&
 				Objects.equal(this.isConnectToNCBI(), that.isConnectToNCBI()) &&

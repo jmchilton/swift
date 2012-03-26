@@ -13,14 +13,14 @@ class AnonymousRMISocketFactory extends RMISocketFactory {
 		super();
 	}
 
-	public Socket createSocket(String host, int port) throws IOException {
-		Socket socket = new Socket(host, port);
+	public Socket createSocket(final String host, final int port) throws IOException {
+		final Socket socket = new Socket(host, port);
 		lastUsedPort = socket.getLocalPort();
 		return socket;
 	}
 
-	public ServerSocket createServerSocket(int port) throws IOException {
-		ServerSocket serverSocket = new ServerSocket(port);
+	public ServerSocket createServerSocket(final int port) throws IOException {
+		final ServerSocket serverSocket = new ServerSocket(port);
 		lastUsedPort = serverSocket.getLocalPort();
 		return serverSocket;
 	}

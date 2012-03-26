@@ -29,7 +29,7 @@ class Unimod2Handler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attr) {
+	public void startElement(final String namespaceURI, final String localName, final String qualifiedName, final Attributes attr) {
 		if (localName.equals("mod")) {
 			currentMod = new ModBuilder();
 			currentMod.setTitle(attr.getValue("", "title"));
@@ -74,7 +74,7 @@ class Unimod2Handler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length) {
+	public void characters(final char[] ch, final int start, final int length) {
 		if (this.tagScanner != null) {
 			for (int i = 0; i < length; i++) {
 				this.tagScanner.append(ch[start + i]);
@@ -84,7 +84,7 @@ class Unimod2Handler extends DefaultHandler {
 	}
 
 	@Override
-	public void endElement(String namespaceURI, String localName, String qualifiedName) {
+	public void endElement(final String namespaceURI, final String localName, final String qualifiedName) {
 		if (localName.equals("mod")) {
 			if (currentMod != null) {
 				into.add(currentMod.build());

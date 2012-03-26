@@ -10,7 +10,7 @@ public final class ClientProtease implements ClientValue {
 	public ClientProtease() {
 	}
 
-	public ClientProtease(String name) {
+	public ClientProtease(final String name) {
 		this.name = name;
 	}
 
@@ -18,15 +18,15 @@ public final class ClientProtease implements ClientValue {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof ClientProtease)) {
 			return false;
 		}
-		ClientProtease oo = (ClientProtease) o;
+		final ClientProtease oo = (ClientProtease) o;
 		return getName().equals(oo.getName());
 	}
 

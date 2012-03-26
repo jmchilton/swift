@@ -13,14 +13,14 @@ public final class ScaffoldReportWorkPacket extends WorkPacketBase {
 	private File peptideReportFile;
 	private File proteinReportFile;
 
-	public ScaffoldReportWorkPacket(String taskId, boolean fromScratch) {
+	public ScaffoldReportWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
 	/**
 	 * @param scaffoldOutputFiles
 	 */
-	public ScaffoldReportWorkPacket(List<File> scaffoldOutputFiles, File peptideReportFile, File proteinReportFile, String taskId, boolean fromScratch) {
+	public ScaffoldReportWorkPacket(final List<File> scaffoldOutputFiles, final File peptideReportFile, final File proteinReportFile, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		this.scaffoldOutputFiles = scaffoldOutputFiles;

@@ -10,7 +10,7 @@ public final class ClientStarredProteins implements ClientValue {
 	public ClientStarredProteins() {
 	}
 
-	public ClientStarredProteins(String starred, String delimiter, boolean regularExpression, boolean matchName) {
+	public ClientStarredProteins(final String starred, final String delimiter, final boolean regularExpression, final boolean matchName) {
 		this.starred = starred;
 		this.delimiter = delimiter;
 		this.regularExpression = regularExpression;
@@ -21,7 +21,7 @@ public final class ClientStarredProteins implements ClientValue {
 		return starred;
 	}
 
-	public void setStarred(String starred) {
+	public void setStarred(final String starred) {
 		this.starred = starred;
 	}
 
@@ -29,7 +29,7 @@ public final class ClientStarredProteins implements ClientValue {
 		return delimiter;
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 
@@ -37,7 +37,7 @@ public final class ClientStarredProteins implements ClientValue {
 		return regularExpression;
 	}
 
-	public void setRegularExpression(boolean regularExpression) {
+	public void setRegularExpression(final boolean regularExpression) {
 		this.regularExpression = regularExpression;
 	}
 
@@ -45,7 +45,7 @@ public final class ClientStarredProteins implements ClientValue {
 		return matchName;
 	}
 
-	public void setMatchName(boolean matchName) {
+	public void setMatchName(final boolean matchName) {
 		this.matchName = matchName;
 	}
 }

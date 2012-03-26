@@ -17,7 +17,7 @@ public class RawFileMetaData extends FileHolder {
 	private File sampleInformation;
 	private File errorLog;
 
-	public RawFileMetaData(File rawFile, File info, File tuneMethod, File instrumentMethod, File sampleInformation, File errorLog) {
+	public RawFileMetaData(final File rawFile, final File info, final File tuneMethod, final File instrumentMethod, final File sampleInformation, final File errorLog) {
 		this.rawFile = rawFile;
 		this.info = info;
 		this.tuneMethod = tuneMethod;

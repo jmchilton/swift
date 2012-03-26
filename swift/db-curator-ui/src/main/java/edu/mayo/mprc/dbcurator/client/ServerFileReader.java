@@ -73,36 +73,36 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 		this.add(mainPanel);
 	}
 
-	public ServerFileReader setFileToDisplay(String path) {
+	public ServerFileReader setFileToDisplay(final String path) {
 		this.fileDisplayed = path;
 		return this;
 	}
 
-	public ServerFileReader setLinesPerPage(int linesPerPage) {
+	public ServerFileReader setLinesPerPage(final int linesPerPage) {
 		if (this.linesPerPage != linesPerPage) {
 			this.linesPerPage = linesPerPage;
 		}
 		return this;
 	}
 
-	public void setGrepPattern(String pattern) {
+	public void setGrepPattern(final String pattern) {
 		this.txtGrepExpression.setText(pattern);
 	}
 
-	public void setSize(String w, String h) {
+	public void setSize(final String w, final String h) {
 		super.setSize(w, h);
 		this.mainPanel.setSize(w, h);
 		contentRenderer.setSize(w, h);
 	}
 
-	public void setPixelSize(int w, int h) {
+	public void setPixelSize(final int w, final int h) {
 		super.setPixelSize(w, h);
 		this.mainPanel.setPixelSize(w, h);
 		contentRenderer.setPixelSize(w, h - 25);
 	}
 
 	protected Panel getCommandPanel() {
-		Panel commandPanel = new HorizontalPanel();
+		final Panel commandPanel = new HorizontalPanel();
 		commandPanel.setStyleName("serverfilereader_commands");
 
 		cmdNextPage = new Hyperlink("Next Page", "Next Page");
@@ -128,10 +128,10 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 		cmdApplyGrep.setStyleName("serverfilereader_commandbuttons");
 		commandPanel.add(cmdApplyGrep);
 
-		Hyperlink cmdClose = new Hyperlink("Close", "Close");
+		final Hyperlink cmdClose = new Hyperlink("Close", "Close");
 		cmdClose.setStyleName("serverfilereader_commandbuttons");
 		cmdClose.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				if (waitPopup != null && waitPopup.isVisible()) {
 					waitPopup.hide();
 				}
@@ -146,13 +146,13 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 	}
 
 
-	protected void setCommandsEnabled(boolean enabled) {
+	protected void setCommandsEnabled(final boolean enabled) {
 		this.commandsEnabled = enabled;
 	}
 
 	public static final int PAGE_OVERLAP = 5;
 
-	public void onClick(Widget widget) {
+	public void onClick(final Widget widget) {
 		if (widget.equals(cmdApplyGrep) && ((Hyperlink) widget).getText().equals("Stop")) {
 			cancelRequest();
 		} else if (!commandsEnabled) {
@@ -171,11 +171,11 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 		}
 	}
 
-	protected void showMessage(String message) {
+	protected void showMessage(final String message) {
 		new MessagePopup(message, this.getAbsoluteLeft() + 50, this.getAbsoluteTop() + 50).show();
 	}
 
-	public void updateContent(int startingLine) {
+	public void updateContent(final int startingLine) {
 		this.startingLine = startingLine;
 
 		waitPopup = new MessagePopup("Retreiving file data.  Please wait.", this.getAbsoluteLeft() + 100, this.getAbsoluteTop() + 50);
@@ -186,13 +186,13 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 		cmdApplyGrep.setText("Stop");
 		//todo retreive content
 		getService().getLines(this.fileDisplayed, this.startingLine, this.linesPerPage, txtGrepExpression.getText(), new AsyncCallback<String[]>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				setCommandsEnabled(true);
 				resultTime.cancel();
 				showMessage("Could not get contents from server.  " + throwable.getMessage());
 			}
 
-			public void onSuccess(String[] o) {
+			public void onSuccess(final String[] o) {
 				setCommandsEnabled(true);
 				if (waitPopup != null) {
 					waitPopup.hide();
@@ -211,11 +211,11 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 		//todo retreive content
 		getService().setCancelMessage(true, new AsyncCallback<Void>() {
 
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				showMessage("Could not cancel for some reason. \n" + throwable.getMessage());
 			}
 
-			public void onSuccess(Void aVoid) {
+			public void onSuccess(final Void aVoid) {
 				cmdApplyGrep.setText("Filter");
 			}
 		});
@@ -227,23 +227,23 @@ public final class ServerFileReader extends PopupPanel implements ClickListener 
 
 	private CommonDataRequesterAsync getService() {
 		final CommonDataRequesterAsync service = (CommonDataRequesterAsync) GWT.create(CommonDataRequester.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) service;
+		final ServiceDefTarget endpoint = (ServiceDefTarget) service;
 		endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "CommonDataRequester");
 		return service;
 	}
 
 	private class ContentRetreivalCallback implements AsyncCallback<String[]> {
-		public void onFailure(Throwable throwable) {
+		public void onFailure(final Throwable throwable) {
 			setCommandsEnabled(true);
 			showMessage("Could not get contents from server.  " + throwable.getMessage());
 		}
 
-		public void onSuccess(String[] currentLines) {
+		public void onSuccess(final String[] currentLines) {
 			if (currentLines.length > 0 && waitPopup != null && waitPopup.isVisible()) {
 				waitPopup.hide();
 			}
-			StringBuilder content = new StringBuilder();
-			for (String currentLine : currentLines) {
+			final StringBuilder content = new StringBuilder();
+			for (final String currentLine : currentLines) {
 				if (currentLine == null) {
 					continue;
 				}

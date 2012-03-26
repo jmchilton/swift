@@ -5,14 +5,14 @@ public final class ValidatedDoubleTextBox extends ValidatedTextBox {
 		private double low;
 		private double high;
 
-		public DoubleValidator(double low, double high) {
+		public DoubleValidator(final double low, final double high) {
 			this.low = low;
 			this.high = high;
 		}
 
 		@Override
-		public boolean isValueValid(String data) {
-			double val;
+		public boolean isValueValid(final String data) {
+			final double val;
 
 			try {
 				val = Double.parseDouble(data);
@@ -35,7 +35,7 @@ public final class ValidatedDoubleTextBox extends ValidatedTextBox {
 	private double high;
 	private double defaultValue;
 
-	public ValidatedDoubleTextBox(double low, double high, double defaultValue) {
+	public ValidatedDoubleTextBox(final double low, final double high, final double defaultValue) {
 		super(new DoubleValidator(low, high));
 		this.low = low;
 		this.high = high;

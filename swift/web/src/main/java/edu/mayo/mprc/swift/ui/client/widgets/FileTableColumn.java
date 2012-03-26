@@ -8,18 +8,18 @@ class FileTableColumn {
 	private Widget widget;
 	private String columnStyle;
 
-	FileTableColumn(int column, String title, Widget widget) {
+	FileTableColumn(final int column, final String title, final Widget widget) {
 		this(column, title, widget, null);
 	}
 
-	FileTableColumn(int column, String title, Widget widget, String columnStyle) {
+	FileTableColumn(final int column, final String title, final Widget widget, final String columnStyle) {
 		this.column = column;
 		this.title = title;
 		this.widget = widget;
 		this.columnStyle = columnStyle;
 	}
 
-	public void init(FileTable table) {
+	public void init(final FileTable table) {
 		if (this.widget != null) {
 			table.setWidget(table.getHeaderRowIndex(), column, widget);
 		} else {

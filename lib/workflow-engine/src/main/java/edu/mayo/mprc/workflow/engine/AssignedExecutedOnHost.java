@@ -7,7 +7,7 @@ public final class AssignedExecutedOnHost {
 
 	private String hostInfo;
 
-	public AssignedExecutedOnHost(String hostInfo) {
+	public AssignedExecutedOnHost(final String hostInfo) {
 		this.hostInfo = hostInfo;
 	}
 

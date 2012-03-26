@@ -17,7 +17,7 @@ public class PeaksConfig implements ResourceConfig {
 	public PeaksConfig() {
 	}
 
-	public PeaksConfig(String baseURI, String userName, String password) {
+	public PeaksConfig(final String baseURI, final String userName, final String password) {
 		this.baseURI = baseURI;
 		this.userName = userName;
 		this.password = password;
@@ -35,15 +35,15 @@ public class PeaksConfig implements ResourceConfig {
 		return baseURI;
 	}
 
-	public final Map<String, String> save(DependencyResolver resolver) {
-		Map<String, String> map = new TreeMap<String, String>();
+	public final Map<String, String> save(final DependencyResolver resolver) {
+		final Map<String, String> map = new TreeMap<String, String>();
 		map.put("baseURI", baseURI);
 		map.put("userName", userName);
 		map.put("password", password);
 		return map;
 	}
 
-	public final void load(Map<String, String> values, DependencyResolver resolver) {
+	public final void load(final Map<String, String> values, final DependencyResolver resolver) {
 		baseURI = values.get("baseURI");
 		userName = values.get("userName");
 		password = values.get("password");

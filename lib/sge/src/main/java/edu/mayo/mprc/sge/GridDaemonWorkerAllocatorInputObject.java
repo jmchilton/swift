@@ -21,7 +21,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 	public GridDaemonWorkerAllocatorInputObject() {
 	}
 
-	public GridDaemonWorkerAllocatorInputObject(Object workPacket, MessengerInfo messengerInfo, ResourceConfig workerFactoryConfig, DaemonConfigInfo daemonConfigInfo, URI fileSharingFactoryURI) {
+	public GridDaemonWorkerAllocatorInputObject(final Object workPacket, final MessengerInfo messengerInfo, final ResourceConfig workerFactoryConfig, final DaemonConfigInfo daemonConfigInfo, final URI fileSharingFactoryURI) {
 		this.workPacket = workPacket;
 		this.messengerInfo = messengerInfo;
 		this.workerFactoryConfig = workerFactoryConfig;
@@ -33,7 +33,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return workPacket;
 	}
 
-	public void setWorkPacket(Object workPacket) {
+	public void setWorkPacket(final Object workPacket) {
 		this.workPacket = workPacket;
 	}
 
@@ -41,7 +41,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return workerFactoryConfig;
 	}
 
-	public void setWorkerFactoryConfig(ResourceConfig workerFactoryConfig) {
+	public void setWorkerFactoryConfig(final ResourceConfig workerFactoryConfig) {
 		this.workerFactoryConfig = workerFactoryConfig;
 	}
 
@@ -49,7 +49,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return messengerInfo;
 	}
 
-	public void setMessengerInfo(MessengerInfo messengerInfo) {
+	public void setMessengerInfo(final MessengerInfo messengerInfo) {
 		this.messengerInfo = messengerInfo;
 	}
 
@@ -57,7 +57,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return daemonConfigInfo;
 	}
 
-	public void setDaemonConfigInfo(DaemonConfigInfo daemonConfigInfo) {
+	public void setDaemonConfigInfo(final DaemonConfigInfo daemonConfigInfo) {
 		this.daemonConfigInfo = daemonConfigInfo;
 	}
 
@@ -65,7 +65,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return fileSharingFactoryURI;
 	}
 
-	public void setFileSharingFactoryURI(URI fileSharingFactoryURI) {
+	public void setFileSharingFactoryURI(final URI fileSharingFactoryURI) {
 		this.fileSharingFactoryURI = fileSharingFactoryURI;
 	}
 
@@ -73,7 +73,7 @@ public final class GridDaemonWorkerAllocatorInputObject {
 		return sharedTempDirectory;
 	}
 
-	public void setSharedTempDirectory(String sharedTempDirectory) {
+	public void setSharedTempDirectory(final String sharedTempDirectory) {
 		this.sharedTempDirectory = sharedTempDirectory;
 	}
 }

@@ -19,10 +19,10 @@ public final class ReportTest {
 
 	@Test(enabled = true, groups = {"fast", "unit"})
 	public void testDateFormatting() {
-		Date now = new Date();
+		final Date now = new Date();
 		Assert.assertTrue(JsonWriter.formatDateCompact(now).contains("Today"));
 
-		Calendar c = Calendar.getInstance();
+		final Calendar c = Calendar.getInstance();
 		c.setTime(now);
 		c.add(Calendar.DAY_OF_WEEK, -1);
 		Assert.assertTrue(JsonWriter.formatDateCompact(c.getTime()).contains("Yesterday"));
@@ -30,9 +30,9 @@ public final class ReportTest {
 
 	@Test
 	public void testTodayDateFormatting() {
-		Calendar now = Calendar.getInstance();
+		final Calendar now = Calendar.getInstance();
 		now.set(2009 - 1900, 0, 29, 7, 23, 30);
-		Calendar date = Calendar.getInstance();
+		final Calendar date = Calendar.getInstance();
 		date.set(2009 - 1900, 0, 28, 22, 30, 15);
 		Assert.assertTrue(JsonWriter.formatDateCompact(date, now).contains("Yesterday"));
 	}

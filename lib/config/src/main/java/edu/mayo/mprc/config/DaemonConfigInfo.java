@@ -17,12 +17,12 @@ public final class DaemonConfigInfo implements Serializable {
 	public DaemonConfigInfo() {
 	}
 
-	public DaemonConfigInfo(String daemonId, String sharedFileSpacePath) {
+	public DaemonConfigInfo(final String daemonId, final String sharedFileSpacePath) {
 		this.daemonId = daemonId;
 		storeCanonical(sharedFileSpacePath);
 	}
 
-	private void storeCanonical(String sharedFileSpacePath) {
+	private void storeCanonical(final String sharedFileSpacePath) {
 		if (sharedFileSpacePath != null) {
 			if (sharedFileSpacePath.length() > 0) {
 				this.sharedFileSpacePath = FileUtilities.canonicalDirectoryPath(new File(sharedFileSpacePath));
@@ -38,7 +38,7 @@ public final class DaemonConfigInfo implements Serializable {
 		return daemonId;
 	}
 
-	public void setDaemonId(String daemonId) {
+	public void setDaemonId(final String daemonId) {
 		this.daemonId = daemonId;
 	}
 
@@ -50,12 +50,12 @@ public final class DaemonConfigInfo implements Serializable {
 		return sharedFileSpacePath;
 	}
 
-	public void setSharedFileSpacePath(String sharedFileSpacePath) {
+	public void setSharedFileSpacePath(final String sharedFileSpacePath) {
 		storeCanonical(sharedFileSpacePath);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof DaemonConfigInfo) {
 			return daemonId.equals(((DaemonConfigInfo) obj).getDaemonId());
 		}

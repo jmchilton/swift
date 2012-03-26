@@ -20,7 +20,7 @@ public final class Score {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -28,7 +28,7 @@ public final class Score {
 		return value;
 	}
 
-	public void setValue(double value) {
+	public void setValue(final double value) {
 		this.value = value;
 	}
 }

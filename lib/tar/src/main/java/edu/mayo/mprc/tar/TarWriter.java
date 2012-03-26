@@ -59,7 +59,7 @@ public final class TarWriter {
 	/**
 	 * if the tar file exists it rolls it otherwise creates it
 	 */
-	public TarWriter(File tarFile) {
+	public TarWriter(final File tarFile) {
 		initialize(tarFile);
 	}
 
@@ -68,7 +68,7 @@ public final class TarWriter {
 	 *
 	 * @param file
 	 */
-	private void initialize(File file) {
+	private void initialize(final File file) {
 		this.tarFile = file;
 		if (this.tarFile.exists()) {
 			// backup the existing one to the file with name tarFileName + ROLL_OVER_EXTENSION
@@ -90,12 +90,12 @@ public final class TarWriter {
 	 * place the file in the tar archive, providing it a header and
 	 * content
 	 */
-	public void addFile(File file) {
+	public void addFile(final File file) {
 		if (isTarClosed()) {
 			this.rolloverContents();
 		}
-		String name = file.getName();
-		TarEntry t = new TarEntry(file);
+		final String name = file.getName();
+		final TarEntry t = new TarEntry(file);
 		t.setName(name);
 		try {
 			outputStream.putNextEntry(t);
@@ -106,7 +106,7 @@ public final class TarWriter {
 
 		try {
 			bis = new BufferedInputStream(FileUtilities.getInputStream(file));
-			byte[] buf = new byte[MAX_BUFF_SIZE];
+			final byte[] buf = new byte[MAX_BUFF_SIZE];
 			int n = 0;
 			while (true) {
 				try {
@@ -146,9 +146,9 @@ public final class TarWriter {
 	 *
 	 * @param files- files to append
 	 */
-	public void addFiles(List<File> files) {
+	public void addFiles(final List<File> files) {
 		rolloverContents();
-		for (File file : files) {
+		for (final File file : files) {
 			addFile(file);
 		}
 		this.close();
@@ -163,14 +163,14 @@ public final class TarWriter {
 	 * @param to   append to this file
 	 * @param from contents of this appended to 'to'
 	 */
-	public static void concatenateTars(File to, File from) {
+	public static void concatenateTars(final File to, final File from) {
 		if (to.getName().equals(from.getName())) {
 			return;
 		}
 		LOGGER.debug("concatenating tars, " + to.getAbsolutePath() + " << " + from.getAbsolutePath());
-		List<String> command = Arrays.asList("tar", "-A", "-f", to.getAbsolutePath(), from.getAbsolutePath());
-		ProcessBuilder builder = new ProcessBuilder(command);
-		ProcessCaller caller = new ProcessCaller(builder);
+		final List<String> command = Arrays.asList("tar", "-A", "-f", to.getAbsolutePath(), from.getAbsolutePath());
+		final ProcessBuilder builder = new ProcessBuilder(command);
+		final ProcessCaller caller = new ProcessCaller(builder);
 		caller.run();
 		FileUtilities.quietDelete(from);
 	}
@@ -193,7 +193,7 @@ public final class TarWriter {
 
 			// now concatenate this
 			// tar concatenate example : <tar --concatenate --file foo.tar fooadd.tar>
-			File newTar = getRolloverFile();
+			final File newTar = getRolloverFile();
 			if (newTar.exists()) {
 				concatenateTars(tarFile, newTar);
 			}
@@ -228,9 +228,9 @@ public final class TarWriter {
 			}
 			rolled = true;
 			// create the new tar file then append the records to it
-			File newTar = getRolloverFile();
+			final File newTar = getRolloverFile();
 			// now append to this file
-			FileOutputStream fo = FileUtilities.getOutputStream(newTar);
+			final FileOutputStream fo = FileUtilities.getOutputStream(newTar);
 			this.outputStream = new TarOutputStream(fo);
 			return newTar;
 		}

@@ -33,7 +33,7 @@ public abstract class AbstractStepPanel extends Composite {
 	 *
 	 * @param title the new title
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -88,7 +88,7 @@ public abstract class AbstractStepPanel extends Composite {
 	 * @param container the panel that will contain the returned shell
 	 * @return the shell that holds this panel
 	 */
-	public StepPanelShell getShell(StepPanelContainer container) {
+	public StepPanelShell getShell(final StepPanelContainer container) {
 		return new StepPanelShell(this, container);
 	}
 }

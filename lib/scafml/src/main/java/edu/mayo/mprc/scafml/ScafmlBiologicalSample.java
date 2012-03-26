@@ -22,7 +22,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 
 	private LinkedHashMap<String, ScafmlInputFile> inputFiles;
 
-	public ScafmlBiologicalSample(String id) {
+	public ScafmlBiologicalSample(final String id) {
 		this.id = id;
 		inputFiles = new LinkedHashMap<String, ScafmlInputFile>(5);
 	}
@@ -31,7 +31,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		this(null);
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -39,11 +39,11 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		return this.id;
 	}
 
-	public ScafmlInputFile getInputFile(String id) {
+	public ScafmlInputFile getInputFile(final String id) {
 		return this.inputFiles.get(id);
 	}
 
-	public void addInputFile(ScafmlInputFile pInputFile) {
+	public void addInputFile(final ScafmlInputFile pInputFile) {
 		if (pInputFile == null) {
 			throw new MprcException("null object for Input File");
 		}
@@ -57,7 +57,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 	}
 
 
-	public void setAnalyzeAsMudpit(String sAnalyzeMudpit) {
+	public void setAnalyzeAsMudpit(final String sAnalyzeMudpit) {
 		this.analyzeAsMudpit = sAnalyzeMudpit;
 	}
 
@@ -65,7 +65,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		return analyzeAsMudpit;
 	}
 
-	public void setDatabase(String sDatabase) {
+	public void setDatabase(final String sDatabase) {
 		this.database = sDatabase;
 	}
 
@@ -73,7 +73,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		return database;
 	}
 
-	public void setName(String sName) {
+	public void setName(final String sName) {
 		this.name = sName;
 	}
 
@@ -81,7 +81,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		return name;
 	}
 
-	public void setCategory(String sCategory) {
+	public void setCategory(final String sCategory) {
 		this.category = sCategory;
 	}
 
@@ -90,11 +90,11 @@ public final class ScafmlBiologicalSample extends FileHolder {
 	}
 
 
-	public void appendToDocument(StringBuilder result, String indent) {
+	public void appendToDocument(final StringBuilder result, final String indent) {
 		if (this.inputFiles.values().isEmpty()) {
 			result.append(indent).append("<!-- Biological sample with no input files: ").append(this.getName()).append(" -->\n");
 		} else {
-			String header = indent + "<" + "BiologicalSample" +
+			final String header = indent + "<" + "BiologicalSample" +
 					XMLUtilities.wrapatt("analyzeAsMudpit", this.getAnalyzeAsMudpit()) +
 					XMLUtilities.wrapatt("database", this.getDatabase()) +
 					XMLUtilities.wrapatt("name", this.getName()) +
@@ -102,7 +102,7 @@ public final class ScafmlBiologicalSample extends FileHolder {
 					">\n";
 			result.append(header);
 			// now the input files
-			for (ScafmlInputFile inputfile : this.inputFiles.values()) {
+			for (final ScafmlInputFile inputfile : this.inputFiles.values()) {
 				inputfile.appendToDocument(result, indent + '\t');
 			}
 

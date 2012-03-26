@@ -24,11 +24,11 @@ public final class Configuration implements EntryPoint, Context {
 
 		displayProgressMessage("Loading...");
 		ConfigurationService.App.getInstance().loadConfiguration(new AsyncCallback<ApplicationModel>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				displayErrorMessage(throwable.getMessage());
 			}
 
-			public void onSuccess(ApplicationModel applicationModel) {
+			public void onSuccess(final ApplicationModel applicationModel) {
 				displayProgressMessage(null);
 				model = applicationModel;
 				configWrapper = new ConfigWrapper(Configuration.this);
@@ -43,7 +43,7 @@ public final class Configuration implements EntryPoint, Context {
 
 		saveConfigurationButton = new Button("Save configuration");
 		saveConfigurationButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				clearErrorMessages();
 				displayProgressMessage("Saving...");
 				save();
@@ -63,22 +63,22 @@ public final class Configuration implements EntryPoint, Context {
 
 	private void save() {
 		ConfigurationService.App.getInstance().saveConfiguration(new AsyncCallback<UiChangesReplayer>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				displayProgressMessage(null);
 				displayErrorMessage(throwable.getMessage());
 			}
 
-			public void onSuccess(UiChangesReplayer changes) {
+			public void onSuccess(final UiChangesReplayer changes) {
 				displayProgressMessage(null);
 				final StringBuilder message = new StringBuilder();
 
 				changes.replay(new UiChanges() {
 					private static final long serialVersionUID = -5054481989230026680L;
 
-					public void setProperty(String resourceId, String propertyName, String newValue) {
+					public void setProperty(final String resourceId, final String propertyName, final String newValue) {
 					}
 
-					public void displayPropertyError(String resourceId, String propertyName, String error) {
+					public void displayPropertyError(final String resourceId, final String propertyName, final String error) {
 						if (error == null) {
 							message.setLength(0);
 						} else {
@@ -113,13 +113,13 @@ public final class Configuration implements EntryPoint, Context {
 		if (message != null) {
 			final Panel panel = new FlowPanel();
 
-			HTML errorMessage = new HTML(message);
+			final HTML errorMessage = new HTML(message);
 			errorMessage.addStyleName("error");
 			panel.add(errorMessage);
 
-			Button clearErrorButton = new Button("Clear Error");
+			final Button clearErrorButton = new Button("Clear Error");
 			clearErrorButton.addClickListener(new ClickListener() {
-				public void onClick(Widget sender) {
+				public void onClick(final Widget sender) {
 					multiErrorPanel.remove(panel);
 				}
 			});
@@ -129,7 +129,7 @@ public final class Configuration implements EntryPoint, Context {
 		}
 	}
 
-	public void displayErrorMessage(String message, Throwable t) {
+	public void displayErrorMessage(final String message, final Throwable t) {
 		displayErrorMessage(message + ": " + t.getMessage());
 	}
 }

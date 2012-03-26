@@ -18,7 +18,7 @@ public final class TsvStreamReader implements Closeable {
 	private BufferedReader reader;
 	private String lastLine;
 
-	public TsvStreamReader(File tsvFile) {
+	public TsvStreamReader(final File tsvFile) {
 		try {
 			open(new FileReader(tsvFile));
 		} catch (IOException e) {
@@ -30,7 +30,7 @@ public final class TsvStreamReader implements Closeable {
 		open(reader);
 	}
 
-	private void open(Reader reader) {
+	private void open(final Reader reader) {
 		try {
 			this.reader = new BufferedReader(reader, BUFFER_SIZE);
 			lastLine = this.reader.readLine();
@@ -63,7 +63,7 @@ public final class TsvStreamReader implements Closeable {
 			return null;
 		}
 		try {
-			String line = lastLine;
+			final String line = lastLine;
 			lastLine = reader.readLine();
 			return line;
 		} catch (IOException t) {
@@ -76,17 +76,17 @@ public final class TsvStreamReader implements Closeable {
 	/**
 	 * Like nextLine, only parses columns into particular data types.
 	 */
-	public boolean nextValues(int[] columnIndices, char[] columnTypes, float[] floatValues, int[] intValues, String[] stringValues) {
+	public boolean nextValues(final int[] columnIndices, final char[] columnTypes, final float[] floatValues, final int[] intValues, final String[] stringValues) {
 		if (!hasLine()) {
 			return false;
 		}
-		ArrayList<String> tokens = new ArrayList<String>(columnIndices.length);
+		final ArrayList<String> tokens = new ArrayList<String>(columnIndices.length);
 		StringUtilities.split(lastLine, DELIMITER, tokens);
 		int floatPos = 0;
 		int intPos = 0;
 		int stringPos = 0;
 		for (int i = 0; i < columnIndices.length; i++) {
-			String value = tokens.get(columnIndices[i]);
+			final String value = tokens.get(columnIndices[i]);
 			switch (columnTypes[i]) {
 				case 'f':
 					floatValues[floatPos++] = Float.parseFloat(value);
@@ -109,16 +109,16 @@ public final class TsvStreamReader implements Closeable {
 	 * Like nextLine, assumes all columns are strings, splits input into columns and retains only the requested column indices.
 	 * Fills a given array to prevent array allocation. Assumes the string array has the same length as the array of column indices.
 	 */
-	public boolean nextValues(int[] columnIndices, List<String> stringValues) {
+	public boolean nextValues(final int[] columnIndices, final List<String> stringValues) {
 		if (!hasLine()) {
 			return false;
 		}
 
-		ArrayList<String> tokens = new ArrayList<String>(columnIndices.length);
+		final ArrayList<String> tokens = new ArrayList<String>(columnIndices.length);
 		StringUtilities.split(lastLine, '\t', tokens);
 
 		stringValues.clear();
-		for (int index : columnIndices) {
+		for (final int index : columnIndices) {
 			if (index >= tokens.size()) {
 				// We could not fulfill the contract - we produce only a partial result
 				break;

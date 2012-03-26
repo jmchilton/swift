@@ -7,7 +7,7 @@ final class Column implements Comparable<Column> {
 	private String title;
 	private ArrayList<String> data = new ArrayList<String>(10);
 
-	public Column(String title) {
+	public Column(final String title) {
 		this.title = title;
 	}
 
@@ -15,11 +15,11 @@ final class Column implements Comparable<Column> {
 		return title;
 	}
 
-	public void addData(String data) {
+	public void addData(final String data) {
 		this.data.add(data);
 	}
 
-	public String getData(int index) {
+	public String getData(final int index) {
 		if (index < data.size()) {
 			return data.get(index);
 		} else {
@@ -28,7 +28,7 @@ final class Column implements Comparable<Column> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -36,7 +36,7 @@ final class Column implements Comparable<Column> {
 			return false;
 		}
 
-		Column column = (Column) o;
+		final Column column = (Column) o;
 
 		if (title != null ? !title.equals(column.title) : column.title != null) {
 			return false;
@@ -51,7 +51,7 @@ final class Column implements Comparable<Column> {
 	}
 
 	@Override
-	public int compareTo(Column o) {
+	public int compareTo(final Column o) {
 		return this.getTitle().compareTo(o.getTitle());
 	}
 }

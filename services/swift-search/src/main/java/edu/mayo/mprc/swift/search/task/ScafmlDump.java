@@ -22,7 +22,7 @@ class ScafmlDump {
 	/**
 	 * Write the experiment information as a .scafml file directly parseable by Scaffold.
 	 */
-	public static ScafmlScaffold dumpScafmlFile(String experiment, SwiftSearchDefinition definition, LinkedHashMap<FileSearch, InputFileSearches> inputs, File workFolder, SearchResults searchResults, Map<String, File> deployedDatabases) {
+	public static ScafmlScaffold dumpScafmlFile(final String experiment, final SwiftSearchDefinition definition, final LinkedHashMap<FileSearch, InputFileSearches> inputs, final File workFolder, final SearchResults searchResults, final Map<String, File> deployedDatabases) {
 		if (experiment == null) {
 			throw new DaemonException("Experiment must not be null");
 		}
@@ -36,16 +36,16 @@ class ScafmlDump {
 			throw new DaemonException("Deployed databases must not be null");
 		}
 
-		ScafmlScaffold sc = new ScafmlScaffold();
-		ScafmlExperiment se = new ScafmlExperiment(experiment);
+		final ScafmlScaffold sc = new ScafmlScaffold();
+		final ScafmlExperiment se = new ScafmlExperiment(experiment);
 		sc.setExperiment(se);
 
-		Map<String, String> path2db = new HashMap<String, String>();
+		final Map<String, String> path2db = new HashMap<String, String>();
 		int dbIdNum = 0;
 
 		// Get a list of all biological samples and their corresponding files in proper order
-		LinkedHashMap<String, List<FileSearch>> biologicalSamples = new LinkedHashMap<String, List<FileSearch>>();
-		for (FileSearch fileSearch : inputs.keySet()) {
+		final LinkedHashMap<String, List<FileSearch>> biologicalSamples = new LinkedHashMap<String, List<FileSearch>>();
+		for (final FileSearch fileSearch : inputs.keySet()) {
 			List<FileSearch> fileSearchList = biologicalSamples.get(fileSearch.getBiologicalSample());
 			if (fileSearchList == null) {
 				fileSearchList = new ArrayList<FileSearch>();
@@ -57,13 +57,13 @@ class ScafmlDump {
 		// Output files a biological sample at a time
 		// A single biological sample can be linked to a single database only, so we have to assume
 		// that all files within the sample were searched in an identical manner
-		for (Map.Entry<String, List<FileSearch>> bioSample : biologicalSamples.entrySet()) {
+		for (final Map.Entry<String, List<FileSearch>> bioSample : biologicalSamples.entrySet()) {
 			// First input file in the biological sample drives the per-sample settings.
 			// This is a shortcoming of Scaffold (same biological sample cannot be analyzed using two
 			// different databases, for instance).
-			FileSearch firstInputFile = bioSample.getValue().get(0);
-			String fastaDbId = definition.getSearchParameters().getDatabase().getShortName();
-			File deployedDatabase = deployedDatabases.get(fastaDbId);
+			final FileSearch firstInputFile = bioSample.getValue().get(0);
+			final String fastaDbId = definition.getSearchParameters().getDatabase().getShortName();
+			final File deployedDatabase = deployedDatabases.get(fastaDbId);
 			if (deployedDatabase == null) {
 				throw new DaemonException(
 						"Cannot find fasta db path for database " + fastaDbId
@@ -77,7 +77,7 @@ class ScafmlDump {
 				dbId = path2db.get(deployedDatabase.getAbsolutePath());
 			} else {
 				// We have to create fasta database and register it with the experiment
-				ScafmlFastaDatabase sfd = new ScafmlFastaDatabase(definition.getSearchParameters().getDatabase().getDatabaseAnnotation());
+				final ScafmlFastaDatabase sfd = new ScafmlFastaDatabase(definition.getSearchParameters().getDatabase().getDatabaseAnnotation());
 				sfd.setDatabase(deployedDatabase);
 				// Generate db id
 				dbId = "db" + String.valueOf(dbIdNum);
@@ -93,7 +93,7 @@ class ScafmlDump {
 			}
 
 			// add biological sample to the ScafmlExperiment
-			ScafmlBiologicalSample sb = new ScafmlBiologicalSample();
+			final ScafmlBiologicalSample sb = new ScafmlBiologicalSample();
 			sb.setId(firstInputFile.getBiologicalSample());
 			try {
 				se.addBiologicalSample(sb);
@@ -106,21 +106,21 @@ class ScafmlDump {
 			sb.setDatabase(dbId);
 
 			// add the input files to the biological sample
-			for (FileSearch inputFile : bioSample.getValue()) {
+			for (final FileSearch inputFile : bioSample.getValue()) {
 				// Find search results for given input file.
-				File inputFilePath = inputFile.getInputFile();
-				Map<String/*Search engine code*/, File> results =
+				final File inputFilePath = inputFile.getInputFile();
+				final Map<String/*Search engine code*/, File> results =
 						searchResults.getAllResults(inputFilePath);
 				int i = 0;
-				for (Map.Entry<String/*Search engine code*/, File> result : results.entrySet()) {
-					File file = result.getValue();
-					String engineCode = result.getKey();
+				for (final Map.Entry<String/*Search engine code*/, File> result : results.entrySet()) {
+					final File file = result.getValue();
+					final String engineCode = result.getKey();
 					// We add the particular search only if it is enabled for given engine
 					if (file != null
 							&& inputFile.isSearch(engineCode)
 							&& isProcessedByScaffold(inputFile)) {
 						// Add input file
-						ScafmlInputFile scafmlInputFile = new ScafmlInputFile();
+						final ScafmlInputFile scafmlInputFile = new ScafmlInputFile();
 						scafmlInputFile.setID(inputFile.getId() + '_' + String.valueOf(i));
 
 						scafmlInputFile.setFile(file);
@@ -142,7 +142,7 @@ class ScafmlDump {
 		se.setAnnotateWithGOA(scaffoldSettings.isAnnotateWithGOA());
 
 		final StarredProteins star = scaffoldSettings.getStarredProteins();
-		ScafmlExport export = new ScafmlExport(
+		final ScafmlExport export = new ScafmlExport(
 				workFolder, // Output folder
 				true, // Always export spectra for QA
 				definition.getPeptideReport() != null, // Export peptide report
@@ -162,14 +162,14 @@ class ScafmlDump {
 		return sc;
 	}
 
-	private static boolean isProcessedByScaffold(FileSearch inputFile) {
+	private static boolean isProcessedByScaffold(final FileSearch inputFile) {
 		return (inputFile.isSearch("SCAFFOLD")
 				|| inputFile.isSearch("SCAFFOLD3"));
 	}
 
-	static String deployedDatabaseTableToString(Map<String, File> deployedDatabases) {
-		StringBuilder table = new StringBuilder();
-		for (Map.Entry<String, File> entry : deployedDatabases.entrySet()) {
+	static String deployedDatabaseTableToString(final Map<String, File> deployedDatabases) {
+		final StringBuilder table = new StringBuilder();
+		for (final Map.Entry<String, File> entry : deployedDatabases.entrySet()) {
 			table.append("\t")
 					.append(entry.getKey())
 					.append(" --} ")

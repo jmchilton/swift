@@ -13,12 +13,12 @@ import java.io.File;
 public class DummyMassSpecDataExtractor implements MassSpecDataExtractor {
 	private DateTime now;
 
-	public DummyMassSpecDataExtractor(DateTime now) {
+	public DummyMassSpecDataExtractor(final DateTime now) {
 		this.now = now;
 	}
 
 	@Override
-	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(String biologicalSampleName, String msmsSampleName) {
+	public TandemMassSpectrometrySample getTandemMassSpectrometrySample(final String biologicalSampleName, final String msmsSampleName) {
 		return new TandemMassSpectrometrySample(
 				new File(msmsSampleName),
 				now,

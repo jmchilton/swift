@@ -17,7 +17,7 @@ final class OmssaModsReader {
 	/**
 	 * Null Constructor
 	 */
-	public OmssaModsReader(File userModsFile) {
+	public OmssaModsReader(final File userModsFile) {
 		this.userModsFile = userModsFile;
 	}
 
@@ -45,7 +45,7 @@ final class OmssaModsReader {
 
 	public Element getMSModSpecSet() {
 		init();
-		NodeList nl = xmlDoc.getElementsByTagName("MSModSpecSet");
+		final NodeList nl = xmlDoc.getElementsByTagName("MSModSpecSet");
 		if (nl != null && nl.getLength() > 0) {
 			return (Element) nl.item(0);
 		}

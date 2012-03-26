@@ -33,7 +33,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void noTasks() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.build();
 		Assert.assertEquals(TimeReport.consumedTime(tasks), 0.0);
 		Assert.assertEquals(TimeReport.productiveTime(tasks), 0.0);
@@ -41,7 +41,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void singleTask() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 3, 10, 22, TaskState.COMPLETED_SUCCESFULLY))
 				.build();
 		Assert.assertEquals(TimeReport.consumedTime(tasks), 12.0);
@@ -50,7 +50,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void twoTasks() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 7, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 25, 30, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.build();
@@ -60,7 +60,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void twoOverlappingTasks() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 18, 20, 40, TaskState.COMPLETED_SUCCESFULLY))
 				.build();
@@ -70,7 +70,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void threeOverlappingTasks() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 1, 10, 37, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 18, 20, 40, TaskState.COMPLETED_SUCCESFULLY))
@@ -81,7 +81,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void failedTask() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 1, 10, 57, TaskState.RUN_FAILED))
 				.add(task(start, 18, 20, 40, TaskState.COMPLETED_SUCCESFULLY))
@@ -92,7 +92,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void nullEndTask() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 1, 10, 57, TaskState.RUN_FAILED))
 				.add(task(start, 18, 20, 0, TaskState.COMPLETED_SUCCESFULLY))
@@ -103,7 +103,7 @@ public final class TestTimeReport {
 
 	@Test
 	public static void zeroLengthTasks() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 5, TaskState.COMPLETED_SUCCESFULLY))
 				.add(task(start, 18, 20, 20, TaskState.COMPLETED_SUCCESFULLY))
 				.build();
@@ -125,24 +125,24 @@ public final class TestTimeReport {
 		Assert.assertFalse(TimeReport.taskDidWork(taskData(TaskState.READY)));
 	}
 
-	private static TaskData taskData(TaskState state) {
+	private static TaskData taskData(final TaskState state) {
 		return new TaskData("test", new Date(), new Date(), new Date(), null, new TaskStateData(state.getText()), "desc");
 	}
 
-	private static TaskStateData taskStateData(TaskState state) {
+	private static TaskStateData taskStateData(final TaskState state) {
 		return new TaskStateData(state.getText());
 	}
 
 	@Test
 	public static void productiveFailedTask() {
-		List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
+		final List<TaskData> tasks = new ImmutableList.Builder<TaskData>()
 				.add(task(start, 1, 5, 7, TaskState.RUN_FAILED))
 				.add(task(start, 25, 30, 35, TaskState.COMPLETED_SUCCESFULLY))
 				.build();
 		Assert.assertEquals(TimeReport.productiveTime(tasks), 5.0);
 	}
 
-	private static TaskData task(DateTime start, int queueOffset, int startOffset, int endOffset, final TaskState state) {
+	private static TaskData task(final DateTime start, final int queueOffset, final int startOffset, final int endOffset, final TaskState state) {
 		return new TaskData(
 				"mascot",
 				start.plusSeconds(queueOffset).toDate(),
@@ -156,7 +156,7 @@ public final class TestTimeReport {
 		return new DateTime(2011, 8, 24, 10, 20, 33);
 	}
 
-	private static SearchRun makeSearchRun(DateTime start, DateTime end) {
+	private static SearchRun makeSearchRun(final DateTime start, final DateTime end) {
 		return new SearchRun("Test", null, null,
 				start == null ? null : start.toDate(), end == null ? null : end.toDate(), 0, "no error", 10, 0, 0, 10, false);
 	}

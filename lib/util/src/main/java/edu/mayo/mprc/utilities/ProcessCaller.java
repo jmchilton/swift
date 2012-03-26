@@ -69,7 +69,7 @@ public final class ProcessCaller implements Runnable {
 	 *
 	 * @param builder {@link ProcessBuilder} that defines what to execute.
 	 */
-	public ProcessCaller(ProcessBuilder builder) {
+	public ProcessCaller(final ProcessBuilder builder) {
 		this.builder = builder;
 	}
 
@@ -96,7 +96,7 @@ public final class ProcessCaller implements Runnable {
 	 *
 	 * @param millis How many milliseconds to wait before the process gets terminated.
 	 */
-	public void setKillTimeout(long millis) {
+	public void setKillTimeout(final long millis) {
 		killAtTime.set(System.currentTimeMillis() + millis);
 		if (process != null) {
 			setupKillTimer();
@@ -222,10 +222,10 @@ public final class ProcessCaller implements Runnable {
 		return isRetainLogs() ? StreamDrainer.DEFAULT_RETAIN_SIZE : 0;
 	}
 
-	private static String commandListToString(List<String> command, final boolean windowsPlatform) {
-		StringBuilder result = new StringBuilder(100);
-		for (String cmd : command) {
-			String escapedCmd = escapeCommandPart(cmd, windowsPlatform);
+	private static String commandListToString(final List<String> command, final boolean windowsPlatform) {
+		final StringBuilder result = new StringBuilder(100);
+		for (final String cmd : command) {
+			final String escapedCmd = escapeCommandPart(cmd, windowsPlatform);
 			if (result.length() > 0) {
 				result.append(' ');
 			}
@@ -234,7 +234,7 @@ public final class ProcessCaller implements Runnable {
 		return result.toString();
 	}
 
-	private static String escapeCommandPart(String cmd, final boolean windowsPlatform) {
+	private static String escapeCommandPart(final String cmd, final boolean windowsPlatform) {
 		if (null == cmd) {
 			return "<null>";
 		}
@@ -265,7 +265,7 @@ public final class ProcessCaller implements Runnable {
 				+ "\n\t" + commandListToString(builder.command(), FileUtilities.isWindowsPlatform());
 	}
 
-	public void setLogToConsole(boolean logToConsole) {
+	public void setLogToConsole(final boolean logToConsole) {
 		if (logToConsole) {
 			outputLogger = LOGGER;
 			errorLogger = LOGGER;
@@ -279,7 +279,7 @@ public final class ProcessCaller implements Runnable {
 		return retainLogs;
 	}
 
-	public void setRetainLogs(boolean retainLogs) {
+	public void setRetainLogs(final boolean retainLogs) {
 		this.retainLogs = retainLogs;
 	}
 
@@ -315,7 +315,7 @@ public final class ProcessCaller implements Runnable {
 		return outputMonitor;
 	}
 
-	public void setOutputMonitor(LogMonitor outputMonitor) {
+	public void setOutputMonitor(final LogMonitor outputMonitor) {
 		this.outputMonitor = outputMonitor;
 	}
 
@@ -323,11 +323,11 @@ public final class ProcessCaller implements Runnable {
 		return errorMonitor;
 	}
 
-	public void setErrorMonitor(LogMonitor errorMonitor) {
+	public void setErrorMonitor(final LogMonitor errorMonitor) {
 		this.errorMonitor = errorMonitor;
 	}
 
-	public void setInputStream(InputStream input) {
+	public void setInputStream(final InputStream input) {
 		this.inputStream = input;
 	}
 

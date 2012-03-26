@@ -27,14 +27,14 @@ public final class NewDatabaseInclusionPanel extends AbstractStepPanel {
 	public static final String TITLE = "Download Sequence Database";
 
 	public NewDatabaseInclusionPanel() {
-		VerticalPanel panel = new VerticalPanel();
+		final VerticalPanel panel = new VerticalPanel();
 
 		lstCommonSites.addItem("Manual Entry");
 		this.getCommonSites(); //generate the list of common sites
 		lstCommonSites.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
-				ListBox source = (ListBox) widget;
-				String selection = source.getItemText(source.getSelectedIndex());
+			public void onChange(final Widget widget) {
+				final ListBox source = (ListBox) widget;
+				final String selection = source.getItemText(source.getSelectedIndex());
 				if (!selection.equalsIgnoreCase("Manual Entry")) {
 					NewDatabaseInclusionPanel.this.url.setText(NewDatabaseInclusionPanel.this.commonSites.get(selection));
 				} else {
@@ -61,7 +61,7 @@ public final class NewDatabaseInclusionPanel extends AbstractStepPanel {
 		return this.containedStep;
 	}
 
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof NewDatabaseInclusionStub)) {
 			ExceptionUtilities.throwCastException(step, NewDatabaseInclusionStub.class);
 			return;
@@ -86,25 +86,25 @@ public final class NewDatabaseInclusionPanel extends AbstractStepPanel {
 
 			//then make an rpc call to the server requesting the list of common transforms
 			final CommonDataRequesterAsync dataRequester = (CommonDataRequesterAsync) GWT.create(CommonDataRequester.class);
-			ServiceDefTarget endpoint = (ServiceDefTarget) dataRequester;
+			final ServiceDefTarget endpoint = (ServiceDefTarget) dataRequester;
 			endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "CommonDataRequester");
 			dataRequester.getFTPDataSources(new AsyncCallback<Map<String, String>>() {
 
-				public void onFailure(Throwable throwable) {
+				public void onFailure(final Throwable throwable) {
 					//do nothing we just can't add common formatters
 				}
 
-				public void onSuccess(Map<String, String> trans) {
+				public void onSuccess(final Map<String, String> trans) {
 					commonSites.putAll(trans);
 
-					for (String s : commonSites.keySet()) {
+					for (final String s : commonSites.keySet()) {
 						lstCommonSites.addItem(s);
 					}
 				}
 			});
 		}
 
-		for (String s : commonSites.keySet()) {
+		for (final String s : commonSites.keySet()) {
 			lstCommonSites.addItem(s);
 		}
 

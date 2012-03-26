@@ -35,7 +35,7 @@ public final class ModTest {
 		testParse("Phospho (Protein C-term)", "Phospho", "Protein", "C-term", "");
 	}
 
-	private void testParse(String input, String title, String protein, String term, String aminoAcids) {
+	private void testParse(final String input, final String title, final String protein, final String term, final String aminoAcids) {
 		final IndexedModSet.MascotNameParts parts = IndexedModSet.MascotNameParts.parseMascotName(input);
 		Assert.assertNotNull(parts);
 		Assert.assertEquals(parts.getTitle(), title);

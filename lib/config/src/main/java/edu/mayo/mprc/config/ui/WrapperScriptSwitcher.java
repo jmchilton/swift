@@ -13,19 +13,19 @@ public class WrapperScriptSwitcher implements PropertyChangeListener {
 	private final DaemonConfig daemon;
 	private final String wrapperScriptProperty;
 
-	public WrapperScriptSwitcher(ResourceConfig resource, DaemonConfig daemon, String wrapperScriptProperty) {
+	public WrapperScriptSwitcher(final ResourceConfig resource, final DaemonConfig daemon, final String wrapperScriptProperty) {
 		this.resource = resource;
 		this.daemon = daemon;
 		this.wrapperScriptProperty = wrapperScriptProperty;
 	}
 
 	@Override
-	public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+	public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 		response.setProperty(resource, wrapperScriptProperty, daemon.getWrapperScript());
 	}
 
 	@Override
-	public void fixError(ResourceConfig config, String propertyName, String action) {
+	public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 		// Never needed - we do not report errors
 	}
 }

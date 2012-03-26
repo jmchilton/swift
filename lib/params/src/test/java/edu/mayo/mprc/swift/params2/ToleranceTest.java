@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 
 public final class ToleranceTest {
 
-	public void test(String text, double expectedValue, MassUnit expectedUnit, String result) {
-		Tolerance t = new Tolerance(text);
+	public void test(final String text, final double expectedValue, final MassUnit expectedUnit, final String result) {
+		final Tolerance t = new Tolerance(text);
 		Assert.assertEquals(t.getValue(), expectedValue, "Value does not match");
 		Assert.assertEquals(t.getUnit(), expectedUnit, "Unit does not match");
 		Assert.assertEquals(t.toString(), result, "Conversion back to string does not match");

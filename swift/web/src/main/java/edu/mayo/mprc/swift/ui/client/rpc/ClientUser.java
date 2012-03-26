@@ -17,7 +17,7 @@ public final class ClientUser implements Serializable {
 
 	}
 
-	public ClientUser(String email, String name, String initials, boolean parameterEditorEnabled, boolean outputPathChangeEnabled) {
+	public ClientUser(final String email, final String name, final String initials, final boolean parameterEditorEnabled, final boolean outputPathChangeEnabled) {
 		this.email = email;
 		this.name = name;
 		this.initials = initials;
@@ -29,7 +29,7 @@ public final class ClientUser implements Serializable {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -37,7 +37,7 @@ public final class ClientUser implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -45,7 +45,7 @@ public final class ClientUser implements Serializable {
 		return initials;
 	}
 
-	public void setInitials(String initials) {
+	public void setInitials(final String initials) {
 		this.initials = initials;
 	}
 
@@ -53,7 +53,7 @@ public final class ClientUser implements Serializable {
 		return parameterEditorEnabled;
 	}
 
-	public void setParameterEditorEnabled(boolean parameterEditorEnabled) {
+	public void setParameterEditorEnabled(final boolean parameterEditorEnabled) {
 		this.parameterEditorEnabled = parameterEditorEnabled;
 	}
 
@@ -61,7 +61,7 @@ public final class ClientUser implements Serializable {
 		return outputPathChangeEnabled;
 	}
 
-	public void setOutputPathChangeEnabled(boolean outputPathChangeEnabled) {
+	public void setOutputPathChangeEnabled(final boolean outputPathChangeEnabled) {
 		this.outputPathChangeEnabled = outputPathChangeEnabled;
 	}
 }

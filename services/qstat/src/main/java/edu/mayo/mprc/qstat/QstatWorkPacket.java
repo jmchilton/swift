@@ -9,7 +9,7 @@ public final class QstatWorkPacket extends WorkPacketBase {
 	private static final long serialVersionUID = 20080130;
 	private int jobId;
 
-	public QstatWorkPacket(int jobId) {
+	public QstatWorkPacket(final int jobId) {
 		super("qstat:" + jobId, true);
 		this.jobId = jobId;
 	}

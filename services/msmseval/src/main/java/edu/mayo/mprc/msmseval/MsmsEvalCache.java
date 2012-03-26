@@ -30,7 +30,7 @@ public final class MsmsEvalCache extends WorkCache<MSMSEvalWorkPacket> {
 		}
 
 		@Override
-		public WorkCache createCache(Config config, DependencyResolver dependencies) {
+		public WorkCache createCache(final Config config, final DependencyResolver dependencies) {
 			return cache = new MsmsEvalCache();
 		}
 	}
@@ -38,7 +38,7 @@ public final class MsmsEvalCache extends WorkCache<MSMSEvalWorkPacket> {
 	public static final class Ui implements ServiceUiFactory {
 		private static final String DEFAULT_CACHE = "var/cache/msmseval";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(CacheConfig.CACHE_FOLDER, "msmsEval cache folder", "When an .mgf file gets evaluated by msmsEval, the result is stored in this folder. Subsequent attempts to evaluate same file will use the cached results."
 					+ "<p>Ideally, this folder would be on a fast, potentially less reliable storage.</p>")
 					.defaultValue(DEFAULT_CACHE).required()

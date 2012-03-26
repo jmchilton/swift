@@ -21,7 +21,7 @@ public final class Modification {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -29,7 +29,7 @@ public final class Modification {
 		return location;
 	}
 
-	public void setLocation(int location) {
+	public void setLocation(final int location) {
 		this.location = location;
 	}
 }

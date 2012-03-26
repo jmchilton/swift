@@ -59,21 +59,21 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	 * @param sequestDtaFiles - the list of '.dta' files for this call to the sequest executable
 	 * @param hostsFile       - pvm.hosts file location. Needed for checking whether pvm operates ok.
 	 */
-	public SequestRunner(File workingdir, File paramsFile, List<String> sequestDtaFiles, File hostsFile) {
+	public SequestRunner(final File workingdir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
 		setWorkingDir(workingdir);
 		this.paramsFile = paramsFile;
 		this.sequestDtaFiles = sequestDtaFiles;
 		this.hostsFile = hostsFile;
 
-		List<String> newArgs = new ArrayList<String>();
+		final List<String> newArgs = new ArrayList<String>();
 
-		String paramsPath = this.paramsFile == null ? null : this.paramsFile.getAbsolutePath();
+		final String paramsPath = this.paramsFile == null ? null : this.paramsFile.getAbsolutePath();
 
 		newArgs.add(SEQUEST_OPTIONS + paramsPath);
 		//sequestDtaFiles.each {newargs.add((String) it)}
 
-		for (String dta : sequestDtaFiles) {
-			String fileName = new File(dta).getName();
+		for (final String dta : sequestDtaFiles) {
+			final String fileName = new File(dta).getName();
 			newArgs.add(fileName);
 		}
 
@@ -92,7 +92,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	}
 
 	@Override
-	public void setWatchDogTimeOut(long timeOut) {
+	public void setWatchDogTimeOut(final long timeOut) {
 		watchDogTimeOut = timeOut;
 	}
 
@@ -102,11 +102,11 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	}
 
 	@Override
-	public void setStartTimeOut(long timeOut) {
+	public void setStartTimeOut(final long timeOut) {
 		startTimeOut = timeOut;
 	}
 
-	public void setWorkingDir(File workingDir) {
+	public void setWorkingDir(final File workingDir) {
 		this.workingDir = workingDir;
 	}
 
@@ -114,7 +114,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		return args;
 	}
 
-	public void setArgs(List<String> args) {
+	public void setArgs(final List<String> args) {
 		this.args = args;
 	}
 
@@ -122,7 +122,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		return command;
 	}
 
-	public void setCommand(String command) {
+	public void setCommand(final String command) {
 		this.command = command;
 	}
 
@@ -131,8 +131,8 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	}
 
 
-	public SequestCallerInterface createInstance(File workingdir, File paramsFile, List<String> sequestDtaFiles, File hostsFile) {
-		SequestRunner runner = new SequestRunner(workingdir, paramsFile, sequestDtaFiles, this.hostsFile);
+	public SequestCallerInterface createInstance(final File workingdir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
+		final SequestRunner runner = new SequestRunner(workingdir, paramsFile, sequestDtaFiles, this.hostsFile);
 		runner.setWatchDogTimeOut(this.getWatchDogTimeOut());
 		runner.setStartTimeOut(this.getStartTimeOut());
 		if (this.getCommand() != null) {
@@ -147,7 +147,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		return runner;
 	}
 
-	public void setSequestExe(String sequestExe) {
+	public void setSequestExe(final String sequestExe) {
 		this.sequestExe = sequestExe;
 		this.setCommand(sequestExe);
 	}
@@ -156,7 +156,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		return this.searchResultsFolder;
 	}
 
-	public void setSearchResultsFolder(String folder) {
+	public void setSearchResultsFolder(final String folder) {
 		this.searchResultsFolder = folder;
 	}
 
@@ -170,10 +170,10 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 			throw new MprcException(NO_PARAMS_FILE_PASSED);
 		}
 		// use the args and cmd
-		StringBuilder cmdString = new StringBuilder();
+		final StringBuilder cmdString = new StringBuilder();
 		cmdString.append(this.getCommand());
 		cmdString.append(" ");
-		for (String arg : getArgs()) {
+		for (final String arg : getArgs()) {
 			cmdString.append(arg);
 			cmdString.append(" ");
 		}
@@ -181,7 +181,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		return cmdString.toString();
 	}
 
-	public void setParamsFile(File paramsFile) {
+	public void setParamsFile(final File paramsFile) {
 		this.paramsFile = paramsFile;
 	}
 
@@ -196,22 +196,22 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	 */
 	private ProcessBuilder createProcess() {
 
-		List<String> cmd = new ArrayList<String>();
-		String theCmd = getCommand();
+		final List<String> cmd = new ArrayList<String>();
+		final String theCmd = getCommand();
 
 		//Process p = R.exec(thecall)
 		cmd.add(theCmd.trim());
-		for (String arg : args) {
+		for (final String arg : args) {
 			cmd.add(arg.trim());
 		}
-		ProcessBuilder pb = new ProcessBuilder(cmd);
+		final ProcessBuilder pb = new ProcessBuilder(cmd);
 		if (workingDir != null) {
 			pb.directory(workingDir);
 		}
 
 		// get the environment
-		Map<String, String> env = System.getenv();
-		Map<String, String> pbenv = pb.environment();
+		final Map<String, String> env = System.getenv();
+		final Map<String, String> pbenv = pb.environment();
 		pbenv.putAll(env);
 
 		return pb;
@@ -265,9 +265,9 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 			return;
 		}
 		assert hostsFile != null : "Path to pvm_hosts file is not set";
-		String userName = System.getProperties().getProperty("user.name");
+		final String userName = System.getProperties().getProperty("user.name");
 		LOGGER.debug("validating pvm for user [" + userName + "]");
-		PvmUtilities pvm = new PvmUtilities();
+		final PvmUtilities pvm = new PvmUtilities();
 		pvm.makeSurePVMOk(userName, hostsFile.getAbsolutePath(), PVM_DAEMON, "/tmp");
 	}
 
@@ -275,12 +275,12 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		private String errorDescription;
 		private final ProcessCaller caller;
 
-		public SequestLogMonitor(ProcessCaller caller) {
+		public SequestLogMonitor(final ProcessCaller caller) {
 			this.caller = caller;
 		}
 
 		@Override
-		public void line(String line) {
+		public void line(final String line) {
 			if (line.contains("SEQUEST can't open the specified database")) {
 				// No database specified. Capture this special error
 				// And kill sequest in a second if it does not quit itself

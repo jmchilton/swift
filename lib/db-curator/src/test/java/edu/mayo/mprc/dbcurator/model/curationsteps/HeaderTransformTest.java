@@ -38,12 +38,12 @@ public final class HeaderTransformTest {
 		generateTests();
 
 		int testNumber = 0;
-		for (TransformTest test : tests) {
+		for (final TransformTest test : tests) {
 			try {
-				HeaderTransformStep toTest = new HeaderTransformStep();
+				final HeaderTransformStep toTest = new HeaderTransformStep();
 				toTest.setMatchPattern(test.matchPattern);
 				toTest.setSubstitutionPattern(test.subPattern);
-				String result = toTest.transformString(test.toTransform);
+				final String result = toTest.transformString(test.toTransform);
 				Assert.assertEquals(result, test.expectedResult, "Actual result doesn't match expected");
 
 			} catch (PatternSyntaxException e) {
@@ -59,7 +59,7 @@ public final class HeaderTransformTest {
 		public final String subPattern;
 		public final String expectedResult;
 
-		public TransformTest(String toTransform, String matchPattern, String subPattern, String expectedResult) {
+		public TransformTest(final String toTransform, final String matchPattern, final String subPattern, final String expectedResult) {
 			this.toTransform = toTransform;
 			this.matchPattern = matchPattern;
 			this.subPattern = subPattern;

@@ -20,21 +20,21 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 	public static final String TITLE = "Paste Individual Sequence";
 
 	public ManualInclusionPanel() {
-		VerticalPanel panel = new VerticalPanel();
+		final VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("100%");
 		panel.add(new Label("FASTA Header:"));
-		Panel tempPanel = new HorizontalPanel();
+		final Panel tempPanel = new HorizontalPanel();
 		tempPanel.setWidth("100%");
-		Label arrow = new Label(">");
+		final Label arrow = new Label(">");
 		tempPanel.add(arrow);
 		txtHeader.setWidth("100%");
 		txtHeader.setText(WELCOME_HEADER);
 		txtHeader.addFocusListener(new FocusListener() {
-			public void onFocus(Widget widget) {
+			public void onFocus(final Widget widget) {
 				txtHeader.selectAll();
 			}
 
-			public void onLostFocus(Widget widget) {
+			public void onLostFocus(final Widget widget) {
 				txtHeader.setText(stripHeaderChar(txtHeader.getText()));
 			}
 		});
@@ -44,11 +44,11 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 		txtSequence.setWidth("100%");
 		txtSequence.setText(WELCOME_SEQUENCE);
 		txtSequence.addFocusListener(new FocusListener() {
-			public void onFocus(Widget widget) {
+			public void onFocus(final Widget widget) {
 				txtSequence.selectAll();
 			}
 
-			public void onLostFocus(Widget widget) {
+			public void onLostFocus(final Widget widget) {
 				if (!txtSequence.getText().equals(WELCOME_SEQUENCE)) {
 					txtSequence.setText(cleanSequence(txtSequence.getText()));
 				}
@@ -79,7 +79,7 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 	 * @param step the step you want this mainPanel to represent
 	 * @throws ClassCastException if the step passed in wasn't the type that the Panel can represent
 	 */
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof ManualInclusionStepStub)) {
 			ExceptionUtilities.throwCastException(step, ManualInclusionStepStub.class);
 			return;
@@ -103,7 +103,7 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 	 * @param toStrip the string to try to strip the right arrow out of
 	 * @return the string minus a leading header character if it had existed
 	 */
-	public String stripHeaderChar(String toStrip) {
+	public String stripHeaderChar(final String toStrip) {
 		if (toStrip == null || toStrip.length() == 0) {
 			return "";
 		}
@@ -124,7 +124,7 @@ public final class ManualInclusionPanel extends AbstractStepPanel {
 
 		//if this includes a header then strip out between the header filter and th
 		if (toClean.charAt(0) == '>') {
-			int startChar = 1;
+			final int startChar = 1;
 			int endChar = toClean.indexOf('\n', 1);
 			if (endChar < 0) {
 				endChar = startChar;

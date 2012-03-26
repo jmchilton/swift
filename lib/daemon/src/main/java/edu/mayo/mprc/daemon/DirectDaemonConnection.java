@@ -30,7 +30,7 @@ final class DirectDaemonConnection implements DaemonConnection {
 	private static int listenerNumber = 0;
 	private FileTokenFactory fileTokenFactory;
 
-	public DirectDaemonConnection(Service service, FileTokenFactory fileTokenFactory) {
+	public DirectDaemonConnection(final Service service, final FileTokenFactory fileTokenFactory) {
 		if (service == null) {
 			throw new MprcException("The service must not be null");
 		}
@@ -49,12 +49,12 @@ final class DirectDaemonConnection implements DaemonConnection {
 	}
 
 	@Override
-	public void sendWork(WorkPacket workPacket, ProgressListener listener) {
+	public void sendWork(final WorkPacket workPacket, final ProgressListener listener) {
 		sendWork(workPacket, NORMAL_PRIORITY, listener);
 	}
 
 	@Override
-	public void sendWork(WorkPacket workPacket, int priority, ProgressListener listener) {
+	public void sendWork(final WorkPacket workPacket, final int priority, final ProgressListener listener) {
 		workPacket.translateOnSender(fileTokenFactory);
 
 		try {
@@ -67,7 +67,7 @@ final class DirectDaemonConnection implements DaemonConnection {
 	}
 
 	@Override
-	public DaemonRequest receiveDaemonRequest(long timeout) {
+	public DaemonRequest receiveDaemonRequest(final long timeout) {
 		final Request request = service.receiveRequest(timeout);
 		if (request != null) {
 			return new MyDaemonRequest(request, fileTokenFactory);
@@ -83,11 +83,11 @@ final class DirectDaemonConnection implements DaemonConnection {
 	private static final class MyDaemonRequest implements DaemonRequest {
 		private Request request;
 
-		private MyDaemonRequest(Request request, FileTokenFactory fileTokenFactory) {
+		private MyDaemonRequest(final Request request, final FileTokenFactory fileTokenFactory) {
 			this.request = request;
 
 			if (request.getMessageData() instanceof FileTokenHolder) {
-				FileTokenHolder fileTokenHolder = (FileTokenHolder) request.getMessageData();
+				final FileTokenHolder fileTokenHolder = (FileTokenHolder) request.getMessageData();
 				fileTokenHolder.translateOnReceiver(fileTokenFactory, fileTokenFactory);
 			}
 		}
@@ -98,7 +98,7 @@ final class DirectDaemonConnection implements DaemonConnection {
 		}
 
 		@Override
-		public void sendResponse(Serializable response, boolean isLast) {
+		public void sendResponse(final Serializable response, final boolean isLast) {
 			request.sendResponse(response, isLast);
 
 			if (isLast) {

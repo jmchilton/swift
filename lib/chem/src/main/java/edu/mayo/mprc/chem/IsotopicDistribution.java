@@ -25,18 +25,18 @@ import java.io.PrintWriter;
  * </ol>
  */
 public final class IsotopicDistribution implements Cloneable {
-	public IsotopicDistribution(double therMonoMZ, final Chemical chem, MassIntensityArray dist) {
+	public IsotopicDistribution(final double therMonoMZ, final Chemical chem, final MassIntensityArray dist) {
 		this(therMonoMZ, chem, "", -1, 0, dist, true);
 	}
 
 	/**
 	 * Typically you use {@link Chemical#getIsotopicDistribution} to get an IsotopicDistribution instead of this constructor.
 	 */
-	public IsotopicDistribution(double therMonoMZ, final Chemical chem, String name, double thresh, int extra, MassIntensityArray dist) {
+	public IsotopicDistribution(final double therMonoMZ, final Chemical chem, final String name, final double thresh, final int extra, final MassIntensityArray dist) {
 		this(therMonoMZ, chem, name, thresh, extra, dist, true);
 	}
 
-	private IsotopicDistribution(double therMonoMZ, final Chemical chem, String name, double thresh, int extra, MassIntensityArray dist, boolean init) {
+	private IsotopicDistribution(final double therMonoMZ, final Chemical chem, final String name, final double thresh, final int extra, final MassIntensityArray dist, final boolean init) {
 		this.therMonoMZ = therMonoMZ;
 		this.chem = chem;
 		this.name = name;
@@ -54,14 +54,14 @@ public final class IsotopicDistribution implements Cloneable {
 		this(rhs, true);
 	}
 
-	private IsotopicDistribution(final IsotopicDistribution rhs, boolean init) {
+	private IsotopicDistribution(final IsotopicDistribution rhs, final boolean init) {
 		set(rhs);
 		if (init) {
 			doInit();
 		}
 	}
 
-	private void set(IsotopicDistribution rhs) {
+	private void set(final IsotopicDistribution rhs) {
 		this.therMonoMZ = rhs.therMonoMZ;
 		this.chem = rhs.chem;
 		this.name = rhs.name;
@@ -87,8 +87,8 @@ public final class IsotopicDistribution implements Cloneable {
 	 * Returns a new copy of this IsotopicDistribution, with monoisotopic m/z set to <code>therMonoMZ</code>, with
 	 * <code>mzShift</code> added to all mzs, and all intensities scaled by <code>intenScale</code>.
 	 */
-	public IsotopicDistribution copy(double therMonoMZ, double mzShift, double intenScale) {
-		IsotopicDistribution ret = new IsotopicDistribution(this, false);
+	public IsotopicDistribution copy(final double therMonoMZ, final double mzShift, final double intenScale) {
+		final IsotopicDistribution ret = new IsotopicDistribution(this, false);
 		ret.therMonoMZ = therMonoMZ;
 		for (int i = 0; i < ret.dist.size(); ++i) {
 			ret.dist.setMass(i, ret.dist.getMass(i) + mzShift);
@@ -105,11 +105,11 @@ public final class IsotopicDistribution implements Cloneable {
 	/**
 	 * Returns the m/z of the num'th isotope.
 	 */
-	public double getMassOfIsotope(int num) {
+	public double getMassOfIsotope(final int num) {
 		return _getMassOfIsotope(num);
 	}
 
-	public double _getMassOfIsotope(int num) {
+	public double _getMassOfIsotope(final int num) {
 		return dist.getMass(num);
 	}
 
@@ -117,11 +117,11 @@ public final class IsotopicDistribution implements Cloneable {
 	 * Returns the intensity of the num'th isotope.  Currently this is a number between 0 and 100;
 	 * scale appropriately (it really should be a fractional value).
 	 */
-	public double getIntensityOfIsotope(int num) {
+	public double getIntensityOfIsotope(final int num) {
 		return _getIntensityOfIsotope(num);
 	}
 
-	public double _getIntensityOfIsotope(int num) {
+	public double _getIntensityOfIsotope(final int num) {
 		return dist.getIntensity(num);
 	}
 
@@ -141,7 +141,7 @@ public final class IsotopicDistribution implements Cloneable {
 	}
 
 	public String toString() {
-		StringBuilder out = new StringBuilder();
+		final StringBuilder out = new StringBuilder();
 		for (int i = 0; i < getNumIsotopes(); ++i) {
 			out.append(getMassOfIsotope(i));
 			out.append(" ");
@@ -153,7 +153,7 @@ public final class IsotopicDistribution implements Cloneable {
 		return out.toString();
 	}
 
-	public PrintWriter write(PrintWriter out) {
+	public PrintWriter write(final PrintWriter out) {
 		out.println(toString());
 		return out;
 	}
@@ -166,20 +166,20 @@ public final class IsotopicDistribution implements Cloneable {
 	 *
 	 * @return New isotopic distribution representing <code>(1-fracOther)*this + fracOther*other</code>
 	 */
-	public IsotopicDistribution add(IsotopicDistribution other, double fracOther, double errorTolPPM) {
+	public IsotopicDistribution add(final IsotopicDistribution other, final double fracOther, double errorTolPPM) {
 		// TODO: which Chemical?
 		errorTolPPM /= 1000000.;
 		double maxinten = 0.;
 		int thisi = 0;
 		int otheri = 0;
-		MassIntensityArray dist = new MassIntensityArray();
+		final MassIntensityArray dist = new MassIntensityArray();
 		while (otheri < other.getNumIsotopes() && thisi < getNumIsotopes()) {
-			double othermass = other.getMassOfIsotope(otheri);
-			double thismass = getMassOfIsotope(thisi);
-			double inten;
+			final double othermass = other.getMassOfIsotope(otheri);
+			final double thismass = getMassOfIsotope(thisi);
+			final double inten;
 			if (Math.abs(thismass - othermass) <= thismass * errorTolPPM) {
 				inten = fracOther * other.getIntensityOfIsotope(otheri) + (1. - fracOther) * getIntensityOfIsotope(thisi);
-				double mass = (thismass + othermass) / 2.;
+				final double mass = (thismass + othermass) / 2.;
 				dist.add(mass, inten);
 				++thisi;
 				++otheri;
@@ -196,7 +196,7 @@ public final class IsotopicDistribution implements Cloneable {
 		}
 		// only one of the two loops below will run
 		while (otheri < other.getNumIsotopes()) {
-			double inten = fracOther * other.getIntensityOfIsotope(otheri);
+			final double inten = fracOther * other.getIntensityOfIsotope(otheri);
 			dist.add(other.getMassOfIsotope(otheri), inten);
 			++otheri;
 			if (inten > maxinten) {
@@ -204,7 +204,7 @@ public final class IsotopicDistribution implements Cloneable {
 			}
 		}
 		while (thisi < getNumIsotopes()) {
-			double inten = (1. - fracOther) * getIntensityOfIsotope(thisi);
+			final double inten = (1. - fracOther) * getIntensityOfIsotope(thisi);
 			dist.add(getMassOfIsotope(thisi), inten);
 			++thisi;
 			if (inten > maxinten) {
@@ -236,12 +236,12 @@ public final class IsotopicDistribution implements Cloneable {
 				monoIsotope = i;
 			}
 		}
-		double maxInten = _getIntensityOfIsotope(maxIsotope);
+		final double maxInten = _getIntensityOfIsotope(maxIsotope);
 		int end = dist.size() - 1;
 		int start = monoIsotope;
 
 		// this is a cheezy upper bound on inter-isotope error.
-		double isotopeDiff = (_getMassOfIsotope(1) - _getMassOfIsotope(0));
+		final double isotopeDiff = (_getMassOfIsotope(1) - _getMassOfIsotope(0));
 
 		if (thresh >= 0.) {
 			while ((_getIntensityOfIsotope(end) / maxInten) < thresh && end >= 0) {
@@ -249,9 +249,9 @@ public final class IsotopicDistribution implements Cloneable {
 			}
 			end += extra;
 			if (end >= dist.size()) {
-				int sz = end - dist.size() + 1;
+				final int sz = end - dist.size() + 1;
 				assert (dist.size() >= 2);
-				double dist = _getMassOfIsotope(this.dist.size() - 1) - _getMassOfIsotope(this.dist.size() - 2);
+				final double dist = _getMassOfIsotope(this.dist.size() - 1) - _getMassOfIsotope(this.dist.size() - 2);
 				double mass = _getMassOfIsotope(this.dist.size() - 1) + dist;
 				for (int i = 0; i < sz; ++i) {
 					this.dist.add(mass, 0.);
@@ -264,7 +264,7 @@ public final class IsotopicDistribution implements Cloneable {
 			if (add >= 0) {
 				// if we don't have an entry for the monoisotope
 				if (monoIsotope == 0 && (_getMassOfIsotope(0) - therMonoMZ) > isotopeDiff / 2.0) {
-					int monodist = (int) (Math.round((_getMassOfIsotope(0) - therMonoMZ) / isotopeDiff));
+					final int monodist = (int) (Math.round((_getMassOfIsotope(0) - therMonoMZ) / isotopeDiff));
 					monoIsotope = extra;
 					add = monodist + extra;
 					maxIsotope += add;
@@ -325,7 +325,7 @@ public final class IsotopicDistribution implements Cloneable {
 		return name;
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		this.name = name;
 	}
 
@@ -337,7 +337,7 @@ public final class IsotopicDistribution implements Cloneable {
 		return extra;
 	}
 
-	boolean isExtraIsotope(int ison) {
+	boolean isExtraIsotope(final int ison) {
 		return ison < extra || ison >= dist.size() - extra;
 	}
 

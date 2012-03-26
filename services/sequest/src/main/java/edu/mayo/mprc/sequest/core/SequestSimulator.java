@@ -60,15 +60,15 @@ final class SequestSimulator {
 	private SequestSimulator() {
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		// write the line above out to a log file
-		File out = new File("sequest.log");
+		final File out = new File("sequest.log");
 		BufferedWriter bf = null;
 		try {
-			BufferedOutputStream s = new BufferedOutputStream(new FileOutputStream(out));
-			Writer w = new OutputStreamWriter(s);
+			final BufferedOutputStream s = new BufferedOutputStream(new FileOutputStream(out));
+			final Writer w = new OutputStreamWriter(s);
 			bf = new BufferedWriter(w);
-			for (String aSEQUEST_LOG : SEQUEST_LOG) {
+			for (final String aSEQUEST_LOG : SEQUEST_LOG) {
 				try {
 					bf.write(aSEQUEST_LOG + "\n");
 				} catch (IOException e) {

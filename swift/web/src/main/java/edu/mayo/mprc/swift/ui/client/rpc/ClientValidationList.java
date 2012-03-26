@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public final class ClientValidationList extends ArrayList<ClientValidation> implements ClientValue {
 	private static final long serialVersionUID = 20101221L;
 
-	public ClientValidationList(int initialCapacity) {
+	public ClientValidationList(final int initialCapacity) {
 		super(initialCapacity);
 	}
 
@@ -22,7 +22,7 @@ public final class ClientValidationList extends ArrayList<ClientValidation> impl
 	}
 
 	public ClientValue getValue() {
-		for (ClientValidation v : this) {
+		for (final ClientValidation v : this) {
 			if (v.getValue() != null) {
 				return v.getValue();
 			}
@@ -36,7 +36,7 @@ public final class ClientValidationList extends ArrayList<ClientValidation> impl
 
 	private int getWorstSeverityRec() {
 		int currentSeverity = -1;
-		for (ClientValidation v : this) {
+		for (final ClientValidation v : this) {
 			if (currentSeverity == -1 || v.getSeverity() > currentSeverity) {
 				currentSeverity = v.getSeverity();
 			}

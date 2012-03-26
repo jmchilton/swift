@@ -49,30 +49,30 @@ public class TestOmssaWorker {
 	@Test
 	public void runOmssaDeployer() {
 
-		File formatdbFolder = Installer.formatDb(null, Installer.Action.INSTALL);
-		File yeastFolder = Installer.yeastFastaFiles(null, Installer.Action.INSTALL);
+		final File formatdbFolder = Installer.formatDb(null, Installer.Action.INSTALL);
+		final File yeastFolder = Installer.yeastFastaFiles(null, Installer.Action.INSTALL);
 
 		try {
-			File fastaFile = new File(yeastFolder, DATABASE_SHORT_NAME + ".fasta");
+			final File fastaFile = new File(yeastFolder, DATABASE_SHORT_NAME + ".fasta");
 
 			omssaDeployedFile = new File(DATABASE_DEPLOYMENT_DIR, DATABASE_SHORT_NAME + "/" + fastaFile.getName());
 
 			final String formatdbPath = new File(formatdbFolder, FileUtilities.isWindowsPlatform() ? "formatdb.exe" : "formatdb").getAbsolutePath();
-			OmssaDeploymentService.Config omssaConfig = new OmssaDeploymentService.Config(formatdbPath, omssaTemp.getAbsolutePath());
+			final OmssaDeploymentService.Config omssaConfig = new OmssaDeploymentService.Config(formatdbPath, omssaTemp.getAbsolutePath());
 
 			final OmssaDeploymentService.Factory factory = new OmssaDeploymentService.Factory();
 
-			OmssaDeploymentService deploymentService = (OmssaDeploymentService) factory.create(omssaConfig, null);
+			final OmssaDeploymentService deploymentService = (OmssaDeploymentService) factory.create(omssaConfig, null);
 
 			FileUtilities.ensureFolderExists(deploymentService.getDeployableDbFolder());
 
-			Curation curation = new Curation();
+			final Curation curation = new Curation();
 			curation.setShortName(DATABASE_SHORT_NAME);
 			curation.setCurationFile(fastaFile);
 
-			DeploymentRequest request = new DeploymentRequest("0", curation.getFastaFile());
+			final DeploymentRequest request = new DeploymentRequest("0", curation.getFastaFile());
 			WorkPacketBase.simulateTransfer(request);
-			DeploymentResult result = deploymentService.performDeployment(request);
+			final DeploymentResult result = deploymentService.performDeployment(request);
 			WorkPacketBase.simulateTransfer(result);
 
 			omssaDeployedFile = result.getDeployedFile();
@@ -89,13 +89,13 @@ public class TestOmssaWorker {
 
 	@Test(dependsOnMethods = {"runOmssaDeployer"})
 	public void runOmssaWorker() throws IOException {
-		File omssaFolder = Installer.omssa(null, Installer.Action.INSTALL);
-		File mgfFolder = Installer.mgfFiles(null, Installer.Action.INSTALL);
+		final File omssaFolder = Installer.omssa(null, Installer.Action.INSTALL);
+		final File mgfFolder = Installer.mgfFiles(null, Installer.Action.INSTALL);
 		try {
 			final File omssaOut = new File(omssaTemp, "omssa.out");
 			final File inputMgfFile = new File(mgfFolder, "test.mgf");
 
-			File omssaParamFile = makeParamsFile();
+			final File omssaParamFile = makeParamsFile();
 
 			String omssaclPath = null;
 
@@ -107,13 +107,13 @@ public class TestOmssaWorker {
 				throw new MprcException("Unsupported platform");
 			}
 
-			OmssaWorker.Config omssaConfig = new OmssaWorker.Config(omssaclPath);
-			OmssaWorker.Factory factory = new OmssaWorker.Factory();
+			final OmssaWorker.Config omssaConfig = new OmssaWorker.Config(omssaclPath);
+			final OmssaWorker.Factory factory = new OmssaWorker.Factory();
 			factory.setOmssaUserModsWriter(new OmssaUserModsWriter());
 
-			OmssaWorker omssaWorker = (OmssaWorker) factory.create(omssaConfig, null);
+			final OmssaWorker omssaWorker = (OmssaWorker) factory.create(omssaConfig, null);
 
-			OmssaWorkPacket workPacket = new OmssaWorkPacket(omssaOut, omssaParamFile, inputMgfFile, omssaDeployedFile, new LinkedList<File>(), false, "0", false);
+			final OmssaWorkPacket workPacket = new OmssaWorkPacket(omssaOut, omssaParamFile, inputMgfFile, omssaDeployedFile, new LinkedList<File>(), false, "0", false);
 			WorkPacketBase.simulateTransfer(workPacket);
 
 			omssaWorker.processRequest(workPacket, new ProgressReporter() {
@@ -121,7 +121,7 @@ public class TestOmssaWorker {
 					LOGGER.info("Started processing");
 				}
 
-				public void reportProgress(ProgressInfo progressInfo) {
+				public void reportProgress(final ProgressInfo progressInfo) {
 					LOGGER.info(progressInfo);
 				}
 
@@ -129,7 +129,7 @@ public class TestOmssaWorker {
 					Assert.assertTrue(omssaOut.length() > 0, "Omssa result file is empty.");
 				}
 
-				public void reportFailure(Throwable t) {
+				public void reportFailure(final Throwable t) {
 					throw new MprcException("Omssa worker failed to process work packet.", t);
 				}
 			});
@@ -140,13 +140,13 @@ public class TestOmssaWorker {
 	}
 
 	private File makeParamsFile() throws IOException {
-		OmssaMappingFactory mappingFactory = new OmssaMappingFactory();
+		final OmssaMappingFactory mappingFactory = new OmssaMappingFactory();
 		final Mappings mapping = mappingFactory.createMapping();
 		final Reader isr = mapping.baseSettings();
 		mapping.read(isr);
 		FileUtilities.closeQuietly(isr);
 
-		File omssaParamFile = new File(omssaTemp, mappingFactory.getCanonicalParamFileName());
+		final File omssaParamFile = new File(omssaTemp, mappingFactory.getCanonicalParamFileName());
 
 		final BufferedWriter writer = Files.newWriter(omssaParamFile, Charsets.UTF_8);
 		final Reader oldParams = mapping.baseSettings();

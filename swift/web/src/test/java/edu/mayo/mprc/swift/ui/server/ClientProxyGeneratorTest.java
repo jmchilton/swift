@@ -24,7 +24,7 @@ public final class ClientProxyGeneratorTest {
 	public void shouldConvertInstrumentToClient() {
 		final Instrument orbi = Instrument.ORBITRAP;
 		final ClientInstrument clientInstrument = generator.convertTo(orbi);
-		ClientInstrument expected = new ClientInstrument(orbi.getName());
+		final ClientInstrument expected = new ClientInstrument(orbi.getName());
 		Assert.assertEquals(clientInstrument, expected);
 	}
 
@@ -42,10 +42,10 @@ public final class ClientProxyGeneratorTest {
 
 	@Test
 	public void shouldConvertSpectrumQaFromClient() {
-		ClientSpectrumQa qa = new ClientSpectrumQa();
+		final ClientSpectrumQa qa = new ClientSpectrumQa();
 		Assert.assertNull(generator.convertFrom(qa));
 
-		ClientSpectrumQa qaEnabled = new ClientSpectrumQa("test");
+		final ClientSpectrumQa qaEnabled = new ClientSpectrumQa("test");
 		Assert.assertEquals(generator.convertFrom(qaEnabled), new SpectrumQa("test", SpectrumQa.DEFAULT_ENGINE));
 	}
 

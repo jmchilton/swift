@@ -7,11 +7,11 @@ public class TaskStateData {
 	public TaskStateData() {
 	}
 
-	public TaskStateData(String description) {
+	public TaskStateData(final String description) {
 		this.description = description;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
@@ -19,7 +19,7 @@ public class TaskStateData {
 		return id;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -27,7 +27,7 @@ public class TaskStateData {
 		return description;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -35,7 +35,7 @@ public class TaskStateData {
 			return false;
 		}
 
-		TaskStateData that = (TaskStateData) o;
+		final TaskStateData that = (TaskStateData) o;
 
 		if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null) {
 			return false;
@@ -45,7 +45,7 @@ public class TaskStateData {
 	}
 
 	public int hashCode() {
-		int result;
+		final int result;
 		result = (getDescription() != null ? getDescription().hashCode() : 0);
 		return result;
 	}

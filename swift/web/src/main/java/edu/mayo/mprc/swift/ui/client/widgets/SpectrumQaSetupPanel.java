@@ -26,17 +26,17 @@ public final class SpectrumQaSetupPanel extends HorizontalPanel {
 			"Feel free to add your own notes to the wiki.</p>" +
 			"</div>");
 
-	public SpectrumQaSetupPanel(List<SpectrumQaParamFileInfo> paramFileInfos) {
+	public SpectrumQaSetupPanel(final List<SpectrumQaParamFileInfo> paramFileInfos) {
 		this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		spectrumQaEnabled.setChecked(true);
 
-		for (SpectrumQaParamFileInfo paramFileInfo : paramFileInfos) {
+		for (final SpectrumQaParamFileInfo paramFileInfo : paramFileInfos) {
 			propertyFile.addItem(paramFileInfo.getDescription(), paramFileInfo.getPath());
 		}
 		propertyFile.setSelectedIndex(0);
 
 		spectrumQaEnabled.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				updateEnabledControls();
 			}
 		});
@@ -60,7 +60,7 @@ public final class SpectrumQaSetupPanel extends HorizontalPanel {
 		}
 	}
 
-	public void setParameters(ClientSpectrumQa spectrumQa) {
+	public void setParameters(final ClientSpectrumQa spectrumQa) {
 		spectrumQaEnabled.setChecked(spectrumQa.isEnabled());
 		selectParamFilePath(spectrumQa.getParamFilePath());
 	}
@@ -71,7 +71,7 @@ public final class SpectrumQaSetupPanel extends HorizontalPanel {
 	 *
 	 * @param paramFilePath Path to select.
 	 */
-	private void selectParamFilePath(String paramFilePath) {
+	private void selectParamFilePath(final String paramFilePath) {
 		int indexToSelect = 0;
 		for (int itemIndex = 0; itemIndex < propertyFile.getItemCount(); itemIndex++) {
 			if (propertyFile.getValue(itemIndex).equals(paramFilePath)) {

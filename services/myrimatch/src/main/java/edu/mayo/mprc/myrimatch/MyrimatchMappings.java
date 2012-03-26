@@ -46,7 +46,7 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void read(Reader isr) {
+	public void read(final Reader isr) {
 		nativeParams = initNativeParams();
 		final BufferedReader bufferedReader = new BufferedReader(isr);
 		try {
@@ -87,13 +87,13 @@ public final class MyrimatchMappings implements Mappings {
 	 * @param s String to remove comment from
 	 * @return String without the comment part
 	 */
-	static String stripComment(String s) {
-		int pos = s.indexOf('#');
+	static String stripComment(final String s) {
+		final int pos = s.indexOf('#');
 		return pos >= 0 ? s.substring(0, pos) : s;
 	}
 
 	private Map<String, String> initNativeParams() {
-		Map<String, String> map = new HashMap<String, String>();
+		final Map<String, String> map = new HashMap<String, String>();
 		map.put(STATIC_MODS, null);
 		map.put(DYNAMIC_MODS, null);
 		map.put(CLEAVAGE_RULES, null);
@@ -108,30 +108,30 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void write(Reader oldParams, Writer out) {
-		BufferedReader bufferedReader = new BufferedReader(oldParams);
-		StringBuilder result = new StringBuilder(100);
+	public void write(final Reader oldParams, final Writer out) {
+		final BufferedReader bufferedReader = new BufferedReader(oldParams);
+		final StringBuilder result = new StringBuilder(100);
 		try {
 			while (true) {
 				boolean processed = false;
 
-				String line = bufferedReader.readLine();
+				final String line = bufferedReader.readLine();
 				if (null == line) {
 					break;
 				}
 
-				int commentPos = line.indexOf('#');
-				int lastPart;
+				final int commentPos = line.indexOf('#');
+				final int lastPart;
 				if (commentPos < 0) {
 					lastPart = line.length();
 				} else {
 					lastPart = commentPos;
 				}
 
-				int equalsSign = line.indexOf('=');
+				final int equalsSign = line.indexOf('=');
 				if (equalsSign < lastPart && equalsSign >= 0) {
-					String key = line.substring(0, equalsSign).trim();
-					String oldValue = line.substring(equalsSign + 1, lastPart).trim();
+					final String key = line.substring(0, equalsSign).trim();
+					final String oldValue = line.substring(equalsSign + 1, lastPart).trim();
 					final String newValue = nativeParams.get(key);
 					if (null != newValue && !oldValue.equals(newValue)) {
 						processed = true;
@@ -159,12 +159,12 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(final MappingContext context, final Tolerance peptideTolerance) {
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE, String.valueOf(peptideTolerance.getValue()));
 		nativeParams.put(PRECURSOR_MZ_TOLERANCE_UNITS, massUnitToMyrimatch(peptideTolerance));
 	}
 
-	private String massUnitToMyrimatch(Tolerance peptideTolerance) {
+	private String massUnitToMyrimatch(final Tolerance peptideTolerance) {
 		if (MassUnit.Da == peptideTolerance.getUnit()) {
 			return "daltons";
 		}
@@ -175,27 +175,27 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final MappingContext context, final Tolerance fragmentTolerance) {
 		final String tolerance = massUnitToMyrimatch(fragmentTolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE, fragmentTolerance.getValue() + " " + tolerance);
 		nativeParams.put(FRAGMENT_MZ_TOLERANCE_UNITS, tolerance);
 	}
 
 	@Override
-	public void setVariableMods(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(final MappingContext context, final ModSet variableMods) {
 		nativeParams.put(DYNAMIC_MODS, variableModsToString(context, variableMods));
 	}
 
-	private String variableModsToString(MappingContext context, ModSet variableMods) {
+	private String variableModsToString(final MappingContext context, final ModSet variableMods) {
 		if (variableMods.getModifications().size() == 0) {
 			return "";
 		}
 
-		StringBuilder result = new StringBuilder(100);
+		final StringBuilder result = new StringBuilder(100);
 		int index = 0;
 		boolean warnedUnsupportedProteinOnly = false;
 
-		for (ModSpecificity specificity : variableMods.getModifications()) {
+		for (final ModSpecificity specificity : variableMods.getModifications()) {
 			if (!warnedUnsupportedProteinOnly && specificity.isPositionProteinSpecific()) {
 				context.reportWarning("Protein terminus-only mods are not supported. Will allow modification at peptide terminus.");
 				warnedUnsupportedProteinOnly = true;
@@ -227,16 +227,16 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void setFixedMods(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(final MappingContext context, final ModSet fixedMods) {
 		nativeParams.put(STATIC_MODS, fixedModsToString(fixedMods));
 	}
 
-	private String fixedModsToString(ModSet fixedMods) {
+	private String fixedModsToString(final ModSet fixedMods) {
 		if (fixedMods.getModifications().size() == 0) {
 			return "";
 		}
-		StringBuilder result = new StringBuilder(50);
-		for (ModSpecificity specificity : fixedMods.getModifications()) {
+		final StringBuilder result = new StringBuilder(50);
+		for (final ModSpecificity specificity : fixedMods.getModifications()) {
 			result
 					.append(specificity.getSite())
 					.append(' ')
@@ -247,7 +247,7 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(final MappingContext context, final String shortDatabaseName) {
 		// The database is not set in the config
 	}
 
@@ -263,16 +263,16 @@ public final class MyrimatchMappings implements Mappings {
 	 *
 	 * Example: Trypsin <pre>(?<=[KR])(?!P)</pre>
 	 */
-	public void setProtease(MappingContext context, Protease protease) {
+	public void setProtease(final MappingContext context, final Protease protease) {
 		nativeParams.put(CLEAVAGE_RULES, enzymeToString(protease));
 	}
 
-	static String enzymeToString(Protease enzyme) {
+	static String enzymeToString(final Protease enzyme) {
 		if ("".equals(enzyme.getRnminus1()) && "".equals(enzyme.getRn())) {
 			return "NoEnzyme";
 		}
 
-		StringBuilder result = new StringBuilder(20);
+		final StringBuilder result = new StringBuilder(20);
 
 		if (!"".equals(enzyme.getRnminus1())) {
 			if (enzyme.getRnminus1().startsWith("!")) {
@@ -303,7 +303,7 @@ public final class MyrimatchMappings implements Mappings {
 		return result.toString();
 	}
 
-	private static String wrapAminoAcidGroup(String group) {
+	private static String wrapAminoAcidGroup(final String group) {
 		if (group.length() <= 1) {
 			return group;
 		}
@@ -311,24 +311,24 @@ public final class MyrimatchMappings implements Mappings {
 	}
 
 	@Override
-	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(final MappingContext context, final Integer missedCleavages) {
 		nativeParams.put(NUM_MAX_MISSED_CLEAVAGES, String.valueOf(missedCleavages));
 	}
 
 	@Override
-	public void setInstrument(MappingContext context, Instrument instrument) {
+	public void setInstrument(final MappingContext context, final Instrument instrument) {
 		// Only Orbitrap is precise enough to use the monoisotopic mass
 		// Is that true?
 		nativeParams.put(USE_AVG_MASS_OF_SEQUENCES, Instrument.ORBITRAP.equals(instrument) ? "false" : "true");
 	}
 
 	@Override
-	public String getNativeParam(String name) {
+	public String getNativeParam(final String name) {
 		return nativeParams.get(name);
 	}
 
 	@Override
-	public void setNativeParam(String name, String value) {
+	public void setNativeParam(final String name, final String value) {
 		nativeParams.put(name, value);
 	}
 }

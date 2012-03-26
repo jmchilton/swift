@@ -49,18 +49,18 @@ public final class ScaffoldParser {
 	 * @param stream Stream to load the .xml from.
 	 * @return The root object {@link Scaffold} representing the entire Scaffold .xml file.
 	 */
-	public static Scaffold loadScaffoldXml(InputStream stream) {
+	public static Scaffold loadScaffoldXml(final InputStream stream) {
 		// Change the replacer to keep underscores.
 		// We marshall the classes manually anyway, so this is not a big deal
 		return loadScaffoldXml(stream, new XppDriver(KEEP_UNDERSCORES));
 	}
 
-	private static Scaffold loadScaffoldXml(InputStream stream, AbstractXmlDriver driver) {
-		XStream xs = new XStream(driver) {
+	private static Scaffold loadScaffoldXml(final InputStream stream, final AbstractXmlDriver driver) {
+		final XStream xs = new XStream(driver) {
 			@Override
-			protected MapperWrapper wrapMapper(MapperWrapper next) {
+			protected MapperWrapper wrapMapper(final MapperWrapper next) {
 				return new MapperWrapper(next) {
-					public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+					public boolean shouldSerializeMember(final Class definedIn, final String fieldName) {
 						try {
 							return (!Object.class.equals(definedIn) || realClass(fieldName) != null) && super.shouldSerializeMember(definedIn, fieldName);
 						} catch (Exception ignore) {
@@ -84,12 +84,12 @@ public final class ScaffoldParser {
 	 * @param scaffold Scaffold object to save
 	 * @param stream   Stream to save into as .xml
 	 */
-	public static void saveScaffoldXml(Scaffold scaffold, OutputStream stream) {
+	public static void saveScaffoldXml(final Scaffold scaffold, final OutputStream stream) {
 		saveScaffoldXml(scaffold, stream, new XppDriver(KEEP_UNDERSCORES));
 	}
 
-	private static void saveScaffoldXml(Scaffold data, OutputStream stream, AbstractXmlDriver driver) {
-		XStream xs = new XStream(driver);
+	private static void saveScaffoldXml(final Scaffold data, final OutputStream stream, final AbstractXmlDriver driver) {
+		final XStream xs = new XStream(driver);
 		xs.setMode(XStream.ID_REFERENCES);
 		xs.processAnnotations(SCAFFOLD_CLASSES);
 

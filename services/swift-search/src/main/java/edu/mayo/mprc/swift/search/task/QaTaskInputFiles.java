@@ -27,7 +27,7 @@ final class QaTaskInputFiles {
 		return rawInputFile;
 	}
 
-	public void setRawInputFile(File rawInputFile) {
+	public void setRawInputFile(final File rawInputFile) {
 		this.rawInputFile = rawInputFile;
 	}
 
@@ -35,7 +35,7 @@ final class QaTaskInputFiles {
 		return spectrumQa;
 	}
 
-	public void setSpectrumQa(SpectrumQaTask spectrumQa) {
+	public void setSpectrumQa(final SpectrumQaTask spectrumQa) {
 		this.spectrumQa = spectrumQa;
 	}
 
@@ -43,11 +43,11 @@ final class QaTaskInputFiles {
 		return rawDump;
 	}
 
-	public void setRawDump(RAWDumpTask rawDump) {
+	public void setRawDump(final RAWDumpTask rawDump) {
 		this.rawDump = rawDump;
 	}
 
-	public void addAdditionalSearch(EngineSearchTask task) {
+	public void addAdditionalSearch(final EngineSearchTask task) {
 		additionalSearches.add(task);
 	}
 

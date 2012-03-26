@@ -96,7 +96,7 @@ public abstract class AbstractRunner {
 	 *
 	 * @param request
 	 */
-	private void requestReceived(DaemonRequest request) {
+	private void requestReceived(final DaemonRequest request) {
 		if (!isEnabled()) {
 			return;
 		}
@@ -116,7 +116,7 @@ public abstract class AbstractRunner {
 	 *
 	 * @param response Response to be sent.
 	 */
-	protected void sendResponse(DaemonRequest request, Serializable response, boolean isLast) {
+	protected void sendResponse(final DaemonRequest request, final Serializable response, final boolean isLast) {
 		try {
 			if (isLast) {
 				requestCount.decrementAndGet();
@@ -127,7 +127,7 @@ public abstract class AbstractRunner {
 			}
 
 			if (response instanceof DaemonProgressMessage) {
-				DaemonProgressMessage daemonProgressMessage = (DaemonProgressMessage) response;
+				final DaemonProgressMessage daemonProgressMessage = (DaemonProgressMessage) response;
 				//If response if a FileTokenHolder, set FileTokenFactory and force regenerating FileTokens.
 				if (daemonProgressMessage.getProgressData() instanceof FileTokenHolder) {
 					((FileTokenHolder) daemonProgressMessage.getProgressData()).translateOnSender(getDaemonConnection().getFileTokenFactory());
@@ -147,7 +147,7 @@ public abstract class AbstractRunner {
 
 		public void run() {
 			while (keepRunning) {
-				DaemonRequest request = getDaemonConnection().receiveDaemonRequest(5000);
+				final DaemonRequest request = getDaemonConnection().receiveDaemonRequest(5000);
 				if (request != null) {
 					requestReceived(request);
 				}

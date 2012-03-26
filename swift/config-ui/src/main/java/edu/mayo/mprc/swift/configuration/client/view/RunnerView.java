@@ -17,27 +17,27 @@ public final class RunnerView extends SimplePanel {
 	private LocalRunnerView localRunnerView;
 	private SgeRunnerView sgeRunnerView;
 
-	public RunnerView(Context context, final ResourceModel model) {
+	public RunnerView(final Context context, final ResourceModel model) {
 		runnerType = new TabPanel();
 		runnerType.addTabListener(new TabListener() {
-			public boolean onBeforeTabSelected(SourcesTabEvents sender, int tabIndex) {
+			public boolean onBeforeTabSelected(final SourcesTabEvents sender, final int tabIndex) {
 				return true;
 			}
 
-			public void onTabSelected(SourcesTabEvents sender, int tabIndex) {
-				String newType = runnerType.getTabBar().getSelectedTab() == 0 ? "localRunner" : "sgeRunner";
+			public void onTabSelected(final SourcesTabEvents sender, final int tabIndex) {
+				final String newType = runnerType.getTabBar().getSelectedTab() == 0 ? "localRunner" : "sgeRunner";
 				if (newType.equals(model.getType())) {
 					return;
 				}
 
 				// TODO: This is a hack, clean this up with proper model-view-controller
-				ModuleModel module = (ModuleModel) model.getParent();
+				final ModuleModel module = (ModuleModel) model.getParent();
 				ConfigurationService.App.getInstance().changeRunner(module.getService().getId(), newType,
 						new AsyncCallback<Void>() {
-							public void onFailure(Throwable caught) {
+							public void onFailure(final Throwable caught) {
 							}
 
-							public void onSuccess(Void result) {
+							public void onSuccess(final Void result) {
 							}
 						});
 				model.setType(newType);
@@ -61,13 +61,13 @@ public final class RunnerView extends SimplePanel {
 		setModel(model);
 	}
 
-	private void updateProperties(ResourceModel model, HashMap<String, String> properties) {
-		for (Map.Entry<String, String> entry : properties.entrySet()) {
+	private void updateProperties(final ResourceModel model, final HashMap<String, String> properties) {
+		for (final Map.Entry<String, String> entry : properties.entrySet()) {
 			model.setProperty(entry.getKey(), entry.getValue());
 		}
 	}
 
-	public void setModel(ResourceModel model) {
+	public void setModel(final ResourceModel model) {
 		if ("localRunner".equals(model.getType())) {
 			localRunnerView.setModel(model);
 			runnerType.selectTab(0);

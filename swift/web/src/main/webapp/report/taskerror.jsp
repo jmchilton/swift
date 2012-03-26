@@ -11,11 +11,11 @@
 <head><title>Swift Task Error Report</title></head>
 <body>
 <%
-    String browseWebRoot = SwiftWebContext.getServletConfig().getBrowseWebRoot();
-    File browseRoot = SwiftWebContext.getServletConfig().getBrowseRoot();
-    String taskIdString = request.getParameter("id");
-    String searchRunIdString = request.getParameter("tid");
-    FileTokenFactory tokenFactory = SwiftWebContext.getServletConfig().getFileTokenFactory();
+    final String browseWebRoot = SwiftWebContext.getServletConfig().getBrowseWebRoot();
+    final File browseRoot = SwiftWebContext.getServletConfig().getBrowseRoot();
+    final String taskIdString = request.getParameter("id");
+    final String searchRunIdString = request.getParameter("tid");
+    final FileTokenFactory tokenFactory = SwiftWebContext.getServletConfig().getFileTokenFactory();
     if (taskIdString == null && searchRunIdString == null) {
 %>
 <h1>Error</h1>
@@ -36,14 +36,14 @@ Neither task nor transaction ids were specified
 Task id is not valid: <%=taskIdString%><br/>
 
 <h2>Exception thrown</h2>
-<% String message = StringUtilities.escapeHtml(e.getMessage()); %>
+<% final String message = StringUtilities.escapeHtml(e.getMessage()); %>
 <%
         return;
     }
 
     SwiftWebContext.getServletConfig().getSwiftDao().begin();
     try {
-        TaskData data = SwiftWebContext.getServletConfig().getSwiftDao().getTaskData(taskid);
+        final TaskData data = SwiftWebContext.getServletConfig().getSwiftDao().getTaskData(taskid);
 %>
 <h1>Task Error</h1>
 <table border="2" cellspacing="1" cellpadding="5">
@@ -94,7 +94,7 @@ Transaction id is not valid: <%=searchRunIdString%><br/>
 
     SwiftWebContext.getServletConfig().getSwiftDao().begin();
     try {
-        SearchRun data = SwiftWebContext.getServletConfig().getSwiftDao().getSearchRunForId(transactionid);
+        final SearchRun data = SwiftWebContext.getServletConfig().getSwiftDao().getSearchRunForId(transactionid);
 %>
 <h1>Transaction Error</h1>
 <table border="2" cellspacing="1" cellpadding="5">

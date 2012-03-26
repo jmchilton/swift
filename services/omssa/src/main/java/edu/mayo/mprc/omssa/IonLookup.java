@@ -27,14 +27,14 @@ final class IonLookup {
 	/**
 	 * From ion name (b) to ion enum number (1)
 	 */
-	public static String lookupEnum(String ion) {
+	public static String lookupEnum(final String ion) {
 		return ionSeriesLookup.get(ion);
 	}
 
 	/**
 	 * From ion enum number (4) to ion name (y)
 	 */
-	public static String lookupIon(String ionEnum) {
+	public static String lookupIon(final String ionEnum) {
 		return ionSeriesLookup.inverse().get(ionEnum);
 	}
 

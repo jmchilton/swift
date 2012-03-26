@@ -7,7 +7,7 @@ public final class SpecificityTest {
 
 	@Test
 	public void shouldConvertToMascot() {
-		ModBuilder builder = new ModBuilder();
+		final ModBuilder builder = new ModBuilder();
 		builder.setTitle("Phospho");
 		builder.addSpecificityFromUnimod("S", "Anywhere", false, "...", 2);
 		builder.addSpecificityFromUnimod("T", "Anywhere", false, "...", 2);
@@ -41,8 +41,8 @@ public final class SpecificityTest {
 		Assert.assertEquals(makeSpecificity("Phospho", "C", Terminus.Anywhere, true, false).toMascotString(), "Phospho (C)");
 	}
 
-	private ModSpecificity makeSpecificity(String title, String site, Terminus terminus, boolean proteinOnly, boolean setGroup) {
-		ModBuilder builder = new ModBuilder();
+	private ModSpecificity makeSpecificity(final String title, final String site, final Terminus terminus, final boolean proteinOnly, final boolean setGroup) {
+		final ModBuilder builder = new ModBuilder();
 		builder.setTitle("Phospho");
 		builder.addSpecificity(title, site, terminus, proteinOnly, setGroup ? 1 : null);
 		final Mod mod = builder.build();

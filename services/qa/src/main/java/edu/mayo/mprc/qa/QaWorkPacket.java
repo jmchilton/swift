@@ -24,7 +24,7 @@ public final class QaWorkPacket extends WorkPacketBase {
 	 * @param reportFile         Name of the master report file (.html)
 	 * @param taskId             Id of this task, see {@link WorkPacketBase}.
 	 */
-	public QaWorkPacket(List<ExperimentQa> experimentQas, File qaReportFolderFile, File reportFile, String taskId, boolean fromScratch) {
+	public QaWorkPacket(final List<ExperimentQa> experimentQas, final File qaReportFolderFile, final File reportFile, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		this.experimentQaTokens = experimentQas;

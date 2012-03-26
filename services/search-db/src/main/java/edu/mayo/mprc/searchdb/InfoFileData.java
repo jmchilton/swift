@@ -25,7 +25,7 @@ public class InfoFileData {
 		return ms1Spectra;
 	}
 
-	public void setMs1Spectra(int ms1Spectra) {
+	public void setMs1Spectra(final int ms1Spectra) {
 		this.ms1Spectra = ms1Spectra;
 	}
 
@@ -36,7 +36,7 @@ public class InfoFileData {
 		return ms2Spectra;
 	}
 
-	public void setMs2Spectra(int ms2Spectra) {
+	public void setMs2Spectra(final int ms2Spectra) {
 		this.ms2Spectra = ms2Spectra;
 	}
 
@@ -47,7 +47,7 @@ public class InfoFileData {
 		return ms3PlusSpectra;
 	}
 
-	public void setMs3PlusSpectra(int ms3PlusSpectra) {
+	public void setMs3PlusSpectra(final int ms3PlusSpectra) {
 		this.ms3PlusSpectra = ms3PlusSpectra;
 	}
 
@@ -58,7 +58,7 @@ public class InfoFileData {
 		return instrumentName;
 	}
 
-	public void setInstrumentName(String instrumentName) {
+	public void setInstrumentName(final String instrumentName) {
 		this.instrumentName = instrumentName;
 	}
 
@@ -69,7 +69,7 @@ public class InfoFileData {
 		return instrumentSerialNumber;
 	}
 
-	public void setInstrumentSerialNumber(String instrumentSerialNumber) {
+	public void setInstrumentSerialNumber(final String instrumentSerialNumber) {
 		this.instrumentSerialNumber = instrumentSerialNumber;
 	}
 
@@ -80,7 +80,7 @@ public class InfoFileData {
 		return startTime;
 	}
 
-	public void setStartTime(DateTime startTime) {
+	public void setStartTime(final DateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -91,7 +91,7 @@ public class InfoFileData {
 		return runTimeInSeconds;
 	}
 
-	public void setRunTimeInSeconds(double runTimeInSeconds) {
+	public void setRunTimeInSeconds(final double runTimeInSeconds) {
 		this.runTimeInSeconds = runTimeInSeconds;
 	}
 
@@ -102,7 +102,7 @@ public class InfoFileData {
 		return comment;
 	}
 
-	public void setComment(String comment) {
+	public void setComment(final String comment) {
 		this.comment = comment;
 	}
 
@@ -113,7 +113,7 @@ public class InfoFileData {
 		return sampleId;
 	}
 
-	public void setSampleId(String sampleId) {
+	public void setSampleId(final String sampleId) {
 		this.sampleId = sampleId;
 	}
 }

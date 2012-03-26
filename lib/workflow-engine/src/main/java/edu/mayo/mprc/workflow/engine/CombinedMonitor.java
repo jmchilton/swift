@@ -13,28 +13,28 @@ public final class CombinedMonitor implements SearchMonitor {
 		this.monitors = new ArrayList<SearchMonitor>();
 	}
 
-	public CombinedMonitor(List<SearchMonitor> monitors) {
+	public CombinedMonitor(final List<SearchMonitor> monitors) {
 		this.monitors = monitors;
 	}
 
-	public void addMonitor(SearchMonitor monitor) {
+	public void addMonitor(final SearchMonitor monitor) {
 		this.monitors.add(monitor);
 	}
 
-	public void updateStatistics(ProgressReport report) {
-		for (SearchMonitor monitor : monitors) {
+	public void updateStatistics(final ProgressReport report) {
+		for (final SearchMonitor monitor : monitors) {
 			monitor.updateStatistics(report);
 		}
 	}
 
-	public void taskChange(TaskBase task) {
-		for (SearchMonitor monitor : monitors) {
+	public void taskChange(final TaskBase task) {
+		for (final SearchMonitor monitor : monitors) {
 			monitor.taskChange(task);
 		}
 	}
 
-	public void error(TaskBase task, Throwable t) {
-		for (SearchMonitor monitor : monitors) {
+	public void error(final TaskBase task, final Throwable t) {
+		for (final SearchMonitor monitor : monitors) {
 			monitor.error(task, t);
 		}
 	}
@@ -42,8 +42,8 @@ public final class CombinedMonitor implements SearchMonitor {
 	/**
 	 * Task progress information arrived
 	 */
-	public void taskProgress(TaskBase task, Object progressInfo) {
-		for (SearchMonitor monitor : monitors) {
+	public void taskProgress(final TaskBase task, final Object progressInfo) {
+		for (final SearchMonitor monitor : monitors) {
 			monitor.taskProgress(task, progressInfo);
 		}
 	}
@@ -52,8 +52,8 @@ public final class CombinedMonitor implements SearchMonitor {
 		return monitors;
 	}
 
-	public void error(Throwable e) {
-		for (SearchMonitor monitor : monitors) {
+	public void error(final Throwable e) {
+		for (final SearchMonitor monitor : monitors) {
 			monitor.error(e);
 		}
 	}

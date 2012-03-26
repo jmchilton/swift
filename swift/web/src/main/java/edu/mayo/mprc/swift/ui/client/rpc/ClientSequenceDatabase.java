@@ -16,7 +16,7 @@ public final class ClientSequenceDatabase implements ClientValue {
 
 	}
 
-	public ClientSequenceDatabase(int id, String displayName, String shortName, String ownerEmail) {
+	public ClientSequenceDatabase(final int id, final String displayName, final String shortName, final String ownerEmail) {
 		this.id = id;
 		this.displayName = displayName;
 		this.shortName = shortName;
@@ -39,11 +39,11 @@ public final class ClientSequenceDatabase implements ClientValue {
 		return ownerEmail;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof ClientSequenceDatabase)) {
 			return false;
 		}
-		ClientSequenceDatabase oo = (ClientSequenceDatabase) o;
+		final ClientSequenceDatabase oo = (ClientSequenceDatabase) o;
 		return oo.getId() == getId();
 	}
 

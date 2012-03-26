@@ -18,7 +18,7 @@ public final class MsSpectra {
 	 * @param charge        Z of the isotopic cluster.
 	 * @return Mass of the monoisotopic peak. Obtained by subtracting the average between peak distance from the observed mass.
 	 */
-	public static double getMonoisotopicMass(double peakMass, double isotopeOffset, double charge) {
+	public static double getMonoisotopicMass(final double peakMass, final double isotopeOffset, final double charge) {
 		return peakMass - isotopeOffset * MsSpectra.DISTANCE_BETWEEN_PEAKS / charge;
 	}
 }

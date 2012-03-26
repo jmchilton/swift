@@ -27,7 +27,7 @@ public final class Peaks {
 	private static final String SUCCESSFUL_ACTION_REDIRECT_HEADER_NAME = "Location";
 	private static final String SUCCESSFUL_ACTION_REDIRECT_HEADER_PART_VALUE = "search.jsp";
 
-	public Peaks(PeaksURIs peaksURIs, String userName, String password) throws IOException {
+	public Peaks(final PeaksURIs peaksURIs, final String userName, final String password) throws IOException {
 		this.peaksURIs = peaksURIs;
 
 		httpClient = new HttpClient();
@@ -39,7 +39,7 @@ public final class Peaks {
 		login(userName, password);
 	}
 
-	private void login(String userName, String password) throws IOException {
+	private void login(final String userName, final String password) throws IOException {
 
 		PostMethod method = null;
 
@@ -62,7 +62,7 @@ public final class Peaks {
 		return new PeaksSearch(peaksURIs.getSearchSubmitURI(), httpClient);
 	}
 
-	public PeaksResult getPeaksOnlineResult(int maximumNumberOfSearchDays) throws IOException {
+	public PeaksResult getPeaksOnlineResult(final int maximumNumberOfSearchDays) throws IOException {
 		return new PeaksResult(peaksURIs.getSearchResultURI(), peaksURIs.getSearchMonitorURI(), peaksURIs.getUserSettingsURI(), httpClient, maximumNumberOfSearchDays);
 	}
 
@@ -75,7 +75,7 @@ public final class Peaks {
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	public PeaksResult getPeaksOnlineResultWithinDays(int days) throws IOException {
+	public PeaksResult getPeaksOnlineResultWithinDays(final int days) throws IOException {
 		return new PeaksResult(peaksURIs.getSearchResultURI(), peaksURIs.getSearchMonitorURI(), peaksURIs.getUserSettingsURI(), httpClient, days);
 	}
 
@@ -87,7 +87,7 @@ public final class Peaks {
 		return peaksURIs;
 	}
 
-	private boolean wasMethodExecutedSuccessfully(HttpMethod method) {
+	private boolean wasMethodExecutedSuccessfully(final HttpMethod method) {
 		//Verify success of action by checking redirect URI.
 		for (int i = 0; i < method.getResponseHeaders().length; i++) {
 			if (method.getResponseHeaders()[i].getName().equals(SUCCESSFUL_ACTION_REDIRECT_HEADER_NAME) && method.getResponseHeaders()[i].getValue().indexOf(SUCCESSFUL_ACTION_REDIRECT_HEADER_PART_VALUE) != -1) {

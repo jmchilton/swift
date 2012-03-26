@@ -31,10 +31,10 @@ public final class TestModificationSearch {
 
 	@Test(enabled = true, groups = {"fast"})
 	public void TestSearchByMassEmptyCase() {
-		ModificationSearch m = ModificationSearch.createInstance();
+		final ModificationSearch m = ModificationSearch.createInstance();
 		// try the empty case
-		String spec = "";
-		List<ClientModSpecificity> result = m.searchByMass(spec);
+		final String spec = "";
+		final List<ClientModSpecificity> result = m.searchByMass(spec);
 		Assert.assertNull(result);
 	}
 
@@ -45,14 +45,14 @@ public final class TestModificationSearch {
 	 *                    It uses a test data set from {@link #getTestDataforModsPopup()}
 	 * @param numExpected - the number of hits expected within the test data
 	 */
-	private void massSearch(String spec, int numExpected) {
-		ModificationSearch m = ModificationSearch.createInstance();
+	private void massSearch(final String spec, final int numExpected) {
+		final ModificationSearch m = ModificationSearch.createInstance();
 
 		// get some data
-		List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
+		final List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
 		m.setAllowedValues(modSpecs);
 
-		List<ClientModSpecificity> result = m.searchByMass(spec);
+		final List<ClientModSpecificity> result = m.searchByMass(spec);
 		int numfound = 0;
 		if (result != null) {
 			numfound = result.size();
@@ -94,34 +94,34 @@ public final class TestModificationSearch {
 
 	@Test(enabled = true, groups = {"fast"})
 	public void TestSearchByWord() {
-		ModificationSearch m = ModificationSearch.createInstance();
+		final ModificationSearch m = ModificationSearch.createInstance();
 		// get some data
-		List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
+		final List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
 		m.setAllowedValues(modSpecs);
 		// try the empty case
-		String spec = "Acetyl";
-		List<ClientModSpecificity> result = m.searchByWord(spec);
-		int numfound = result.size();
+		final String spec = "Acetyl";
+		final List<ClientModSpecificity> result = m.searchByWord(spec);
+		final int numfound = result.size();
 		Assert.assertEquals(numfound, 2, "Expected acetylation C and K");
 	}
 
 
 	@Test(enabled = true, groups = {"fast"})
 	public void TestSearchByWordCaseInsensitive() {
-		ModificationSearch m = ModificationSearch.createInstance();
+		final ModificationSearch m = ModificationSearch.createInstance();
 		// get some data
-		List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
+		final List<ClientModSpecificity> modSpecs = getTestDataforModsPopup();
 		m.setAllowedValues(modSpecs);
 		// try the empty case
-		String spec = "acetyl";
-		List<ClientModSpecificity> result = m.searchByWord(spec);
-		int numfound = result.size();
+		final String spec = "acetyl";
+		final List<ClientModSpecificity> result = m.searchByWord(spec);
+		final int numfound = result.size();
 		Assert.assertEquals(numfound, 2, "Expected acetylation C and K");
 	}
 
 	public List<ClientModSpecificity> getTestDataforModsPopup() {
 
-		List<String> altnames = Arrays.asList("none");
+		final List<String> altnames = Arrays.asList("none");
 		return Arrays.asList(
 				new ClientModSpecificity(
 						"Acetylation",

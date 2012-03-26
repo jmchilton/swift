@@ -31,11 +31,11 @@ public class TaskData {
 		this.setTaskState(new TaskStateData(TaskState.UNINITIALIZED.getText()));
 	}
 
-	public TaskData(String name,
-	                Date queueTimeStamp,
-	                Date startTimeStamp,
-	                Date endTimeStamp,
-	                SearchRun searchRun, TaskStateData taskState, String descriptionLong) {
+	public TaskData(final String name,
+	                final Date queueTimeStamp,
+	                final Date startTimeStamp,
+	                final Date endTimeStamp,
+	                final SearchRun searchRun, final TaskStateData taskState, final String descriptionLong) {
 		setId(null);
 		this.taskName = name;
 		this.queueTimestamp = queueTimeStamp;
@@ -50,7 +50,7 @@ public class TaskData {
 		this.percentDone = null;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -58,7 +58,7 @@ public class TaskData {
 		return id;
 	}
 
-	public void setTaskName(String taskName) {
+	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
 
@@ -70,11 +70,11 @@ public class TaskData {
 		return queueTimestamp;
 	}
 
-	public void setQueueTimestamp(Date queueTimestamp) {
+	public void setQueueTimestamp(final Date queueTimestamp) {
 		this.queueTimestamp = queueTimestamp;
 	}
 
-	public void setStartTimestamp(Date startTimestamp) {
+	public void setStartTimestamp(final Date startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
 
@@ -82,7 +82,7 @@ public class TaskData {
 		return startTimestamp;
 	}
 
-	public void setEndTimestamp(Date endTimestamp) {
+	public void setEndTimestamp(final Date endTimestamp) {
 		this.endTimestamp = endTimestamp;
 	}
 
@@ -90,7 +90,7 @@ public class TaskData {
 		return endTimestamp;
 	}
 
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(final int errorCode) {
 		this.errorCode = errorCode;
 	}
 
@@ -102,11 +102,11 @@ public class TaskData {
 		return searchRun;
 	}
 
-	public void setSearchRun(SearchRun searchRun) {
+	public void setSearchRun(final SearchRun searchRun) {
 		this.searchRun = searchRun;
 	}
 
-	public void setTaskState(TaskStateData taskState) {
+	public void setTaskState(final TaskStateData taskState) {
 		assert (taskState != null);
 		this.taskState = taskState;
 	}
@@ -115,7 +115,7 @@ public class TaskData {
 		return taskState;
 	}
 
-	public void setDescriptionLong(String descriptionLong) {
+	public void setDescriptionLong(final String descriptionLong) {
 		this.descriptionLong = descriptionLong;
 	}
 
@@ -127,11 +127,11 @@ public class TaskData {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
-	public void setOutputLogDatabaseToken(String outputLogDatabaseToken) {
+	public void setOutputLogDatabaseToken(final String outputLogDatabaseToken) {
 		this.outputLogDatabaseToken = outputLogDatabaseToken;
 	}
 
@@ -143,7 +143,7 @@ public class TaskData {
 		return errorLogDatabaseToken;
 	}
 
-	public void setErrorLogDatabaseToken(String errorLogDatabaseToken) {
+	public void setErrorLogDatabaseToken(final String errorLogDatabaseToken) {
 		this.errorLogDatabaseToken = errorLogDatabaseToken;
 	}
 
@@ -151,7 +151,7 @@ public class TaskData {
 		return gridJobId;
 	}
 
-	public void setGridJobId(String gridJobId) {
+	public void setGridJobId(final String gridJobId) {
 		if (gridJobId == null && this.gridJobId != null) {
 			// TODO: Hack. This should never happen in practice.
 			return;
@@ -159,7 +159,7 @@ public class TaskData {
 		this.gridJobId = gridJobId;
 	}
 
-	public void setHostString(String hostString) {
+	public void setHostString(final String hostString) {
 		this.host = hostString;
 	}
 
@@ -167,7 +167,7 @@ public class TaskData {
 		return host;
 	}
 
-	public void setExceptionString(String exceptionString) {
+	public void setExceptionString(final String exceptionString) {
 		this.exceptionString = exceptionString;
 	}
 
@@ -183,24 +183,24 @@ public class TaskData {
 		return percentDone;
 	}
 
-	public void setPercentDone(Float percentDone) {
+	public void setPercentDone(final Float percentDone) {
 		this.percentDone = percentDone;
 	}
 
-	public void setException(Throwable t) {
+	public void setException(final Throwable t) {
 		setErrorMessage(MprcException.getDetailedMessage(t));
-		StringWriter sw = new StringWriter();
-		PrintWriter writer = new PrintWriter(sw);
+		final StringWriter sw = new StringWriter();
+		final PrintWriter writer = new PrintWriter(sw);
 		try {
 			t.printStackTrace(writer);
-			String stackTrace = sw.toString();
+			final String stackTrace = sw.toString();
 			setExceptionString(stackTrace);
 		} finally {
 			writer.close();
 		}
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -208,7 +208,7 @@ public class TaskData {
 			return false;
 		}
 
-		TaskData taskData = (TaskData) obj;
+		final TaskData taskData = (TaskData) obj;
 
 		return Objects.equal(getEndTimestamp(), taskData.getEndTimestamp()) &&
 				Objects.equal(getHost(), taskData.getHost()) &&

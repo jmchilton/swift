@@ -22,7 +22,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 	public ClientScaffoldSettings() {
 	}
 
-	public ClientScaffoldSettings(double proteinProbability, double peptideProbability, int minimumPeptideCount, int minimumNonTrypticTerminii, ClientStarredProteins starredProteins, boolean saveOnlyIdentifiedSpectra, boolean saveNoSpectra, boolean connectToNCBI, boolean annotateWithGOA) {
+	public ClientScaffoldSettings(final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNonTrypticTerminii, final ClientStarredProteins starredProteins, final boolean saveOnlyIdentifiedSpectra, final boolean saveNoSpectra, final boolean connectToNCBI, final boolean annotateWithGOA) {
 		this.proteinProbability = proteinProbability;
 		this.peptideProbability = peptideProbability;
 		this.minimumPeptideCount = minimumPeptideCount;
@@ -38,7 +38,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return proteinProbability;
 	}
 
-	public void setProteinProbability(double proteinProbability) {
+	public void setProteinProbability(final double proteinProbability) {
 		this.proteinProbability = proteinProbability;
 	}
 
@@ -46,7 +46,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -54,7 +54,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return minimumPeptideCount;
 	}
 
-	public void setMinimumPeptideCount(int minimumPeptideCount) {
+	public void setMinimumPeptideCount(final int minimumPeptideCount) {
 		this.minimumPeptideCount = minimumPeptideCount;
 	}
 
@@ -62,7 +62,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return minimumNonTrypticTerminii;
 	}
 
-	public void setMinimumNonTrypticTerminii(int minimumNonTrypticTerminii) {
+	public void setMinimumNonTrypticTerminii(final int minimumNonTrypticTerminii) {
 		this.minimumNonTrypticTerminii = minimumNonTrypticTerminii;
 	}
 
@@ -70,7 +70,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return starredProteins;
 	}
 
-	public void setStarredProteins(ClientStarredProteins starredProteins) {
+	public void setStarredProteins(final ClientStarredProteins starredProteins) {
 		this.starredProteins = starredProteins;
 	}
 
@@ -78,7 +78,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return saveOnlyIdentifiedSpectra;
 	}
 
-	public void setSaveOnlyIdentifiedSpectra(boolean saveOnlyIdentifiedSpectra) {
+	public void setSaveOnlyIdentifiedSpectra(final boolean saveOnlyIdentifiedSpectra) {
 		this.saveOnlyIdentifiedSpectra = saveOnlyIdentifiedSpectra;
 	}
 
@@ -86,7 +86,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return saveNoSpectra;
 	}
 
-	public void setSaveNoSpectra(boolean saveNoSpectra) {
+	public void setSaveNoSpectra(final boolean saveNoSpectra) {
 		this.saveNoSpectra = saveNoSpectra;
 	}
 
@@ -94,7 +94,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return connectToNCBI;
 	}
 
-	public void setConnectToNCBI(boolean connectToNCBI) {
+	public void setConnectToNCBI(final boolean connectToNCBI) {
 		this.connectToNCBI = connectToNCBI;
 	}
 
@@ -102,7 +102,7 @@ public final class ClientScaffoldSettings implements ClientValue {
 		return annotateWithGOA;
 	}
 
-	public void setAnnotateWithGOA(boolean annotateWithGOA) {
+	public void setAnnotateWithGOA(final boolean annotateWithGOA) {
 		this.annotateWithGOA = annotateWithGOA;
 	}
 }

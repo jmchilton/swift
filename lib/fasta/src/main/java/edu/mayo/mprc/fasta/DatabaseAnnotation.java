@@ -31,11 +31,11 @@ public final class DatabaseAnnotation implements Serializable {
 		this(DEFAULT_ACCESSION_REGEX, DEFAULT_DESCRIPTION_REGEX, DEFAULT_DECOY_REGEX);
 	}
 
-	public DatabaseAnnotation(String decoyRegex) {
+	public DatabaseAnnotation(final String decoyRegex) {
 		this(DEFAULT_ACCESSION_REGEX, DEFAULT_DESCRIPTION_REGEX, decoyRegex == null ? DEFAULT_DECOY_REGEX : decoyRegex);
 	}
 
-	public DatabaseAnnotation(String accessionRegex, String descriptionRegex, String decoyRegex) {
+	public DatabaseAnnotation(final String accessionRegex, final String descriptionRegex, final String decoyRegex) {
 		this.accessionRegex = accessionRegex;
 		this.descriptionRegex = descriptionRegex;
 		this.decoyRegex = decoyRegex;

@@ -53,7 +53,7 @@ public final class Swift {
 	private Swift() {
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		try {
 			MainFactoryContext.initialize();
 			runSwift(args);
@@ -65,10 +65,10 @@ public final class Swift {
 		}
 	}
 
-	private static void runSwift(String[] args) {
+	private static void runSwift(final String[] args) {
 		LOGGER.info(ReleaseInfoCore.infoString());
-		CommandLineParser parser = new CommandLineParser(args);
-		SwiftCommandLine commandLine = parser.getCommandLine();
+		final CommandLineParser parser = new CommandLineParser(args);
+		final SwiftCommandLine commandLine = parser.getCommandLine();
 		if (commandLine.getError() != null) {
 			FileUtilities.err(commandLine.getError() + "\nUse --" + DisplayHelp.COMMAND + " for more information.");
 			ExitCode.Error.exit();

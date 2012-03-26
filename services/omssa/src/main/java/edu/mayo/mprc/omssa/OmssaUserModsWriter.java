@@ -47,9 +47,9 @@ final class OmssaUserModsWriter {
 	 * @param document
 	 * @param resultingFile
 	 */
-	private void writeRevisedModsDocument(Document document, File resultingFile) {
+	private void writeRevisedModsDocument(final Document document, final File resultingFile) {
 		// Use a Transformer for output
-		TransformerFactory tFactory =
+		final TransformerFactory tFactory =
 				TransformerFactory.newInstance();
 		Transformer transformer = null;
 		try {
@@ -58,7 +58,7 @@ final class OmssaUserModsWriter {
 			throw new MprcException(e);
 		}
 
-		DOMSource source = new DOMSource(document);
+		final DOMSource source = new DOMSource(document);
 		FileOutputStream o = null;
 		final File tempFile = new File(resultingFile.getParentFile(), resultingFile.getName() + ".1");
 		try {
@@ -67,7 +67,7 @@ final class OmssaUserModsWriter {
 			} catch (FileNotFoundException e) {
 				throw new MprcException("could not open output stream on " + tempFile.getAbsolutePath(), e);
 			}
-			StreamResult result = new StreamResult(o);
+			final StreamResult result = new StreamResult(o);
 			try {
 				transformer.transform(source, result);
 			} catch (TransformerException e) {
@@ -102,7 +102,7 @@ final class OmssaUserModsWriter {
 	 * @param usermodsFile    - modified user mods file - output, lists only the user mods portion of the original document
 	 * @param omssaParamsFile - omssa params file - input, defines which mods to be used
 	 */
-	public void generateRuntimeUserModsFile(File usermodsFile, File omssaParamsFile) {
+	public void generateRuntimeUserModsFile(final File usermodsFile, final File omssaParamsFile) {
 		final Reader reader = ResourceUtilities.getReader("classpath:usermods.xml", OmssaUserModsWriter.class);
 		final Document template;
 		final Node root;
@@ -135,13 +135,13 @@ final class OmssaUserModsWriter {
 
 	}
 
-	private Node getNodeWithXPath(Document document, String xpath) throws XPathExpressionException {
+	private Node getNodeWithXPath(final Document document, final String xpath) throws XPathExpressionException {
 		final XPath xPath = XPATH_FACTORY.newXPath();
 		final XPathExpression xPathExpression = xPath.compile(xpath);
 		return (Node) xPathExpression.evaluate(document, XPathConstants.NODE);
 	}
 
-	private static void removeAllChildren(Node root) {
+	private static void removeAllChildren(final Node root) {
 		while (root.hasChildNodes()) {
 			root.removeChild(root.getChildNodes().item(0));
 		}
@@ -154,10 +154,10 @@ final class OmssaUserModsWriter {
 	 * @param ids  - variable and fixed mod ids
 	 * @return ArrayList of ids as String
 	 */
-	public static List<String> getIds(Collection<ModSpecificity> mods, Map<ModSpecificity, String> ids) {
-		List<String> selected = new ArrayList<String>();
-		for (ModSpecificity spec : mods) {
-			String id = ids.get(spec);
+	public static List<String> getIds(final Collection<ModSpecificity> mods, final Map<ModSpecificity, String> ids) {
+		final List<String> selected = new ArrayList<String>();
+		for (final ModSpecificity spec : mods) {
+			final String id = ids.get(spec);
 			if (spec != null) {
 				selected.add(id);
 			}

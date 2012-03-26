@@ -34,7 +34,7 @@ public final class ValidationPanel extends Composite {
 
 	private static SeverityImageBundle bundle;
 
-	public static synchronized Image getImageForSeverity(int severity) {
+	public static synchronized Image getImageForSeverity(final int severity) {
 		if (bundle == null) {
 			bundle = (SeverityImageBundle) GWT.create(SeverityImageBundle.class);
 		}
@@ -52,7 +52,7 @@ public final class ValidationPanel extends Composite {
 		}
 	}
 
-	public static String getSeverityName(int severity) {
+	public static String getSeverityName(final int severity) {
 		switch (severity) {
 			case ClientValidation.SEVERITY_NONE:
 				return "";
@@ -79,14 +79,14 @@ public final class ValidationPanel extends Composite {
 	 *
 	 * @param numLines Number of validations to display in vertical lines;
 	 */
-	public ValidationPanel(int numLines) {
+	public ValidationPanel(final int numLines) {
 		this.numLines = numLines;
 
 		initWidget(vp);
 	}
 
 
-	public void addValidation(ClientValidation cv, Validatable v) {
+	public void addValidation(final ClientValidation cv, final Validatable v) {
 		if (!currentValidations.contains(cv)) {
 			currentValidations.add(cv);
 			byValidation.put(cv, v);
@@ -101,17 +101,17 @@ public final class ValidationPanel extends Composite {
 		delayedReflow();
 	}
 
-	public void removeValidation(ClientValidation cv) {
+	public void removeValidation(final ClientValidation cv) {
 		currentValidations.remove(cv);
 		delayedReflow();
 	}
 
-	public void removeValidationsFor(Validatable v) {
+	public void removeValidationsFor(final Validatable v) {
 		final List<ClientValidation> al = byValidatable.get(v);
 		if (al == null) {
 			return;
 		}
-		for (ClientValidation cv : al) {
+		for (final ClientValidation cv : al) {
 			currentValidations.remove(cv);
 			byValidation.remove(cv);
 		}
@@ -141,7 +141,7 @@ public final class ValidationPanel extends Composite {
 		vp.clear();  // TODO lame!
 		int i = 0;
 		for (int slotsLeft = numLines; slotsLeft > 1 && i < currentValidations.size(); --slotsLeft) {
-			ClientValidation cv = currentValidations.get(i);
+			final ClientValidation cv = currentValidations.get(i);
 			vp.add(new ValidationWidget(cv));
 			++i;
 		}
@@ -155,32 +155,32 @@ public final class ValidationPanel extends Composite {
 
 		private FlowPanel hp = new FlowPanel();
 
-		public ValidationWidget(ClientValidation cv) {
+		public ValidationWidget(final ClientValidation cv) {
 			this.cv = cv;
 			img = getImageForSeverity(cv.getSeverity());
 			img.addStyleName("params-validation");
 			hp.add(img);
-			Label label;
+			final Label label;
 			hp.add(label = new Label(cv.getMessage()));
 			label.addStyleName("params-validation");
 
 			if (cv.getThrowableMessage() != null) {
-				HTML sp = new HTML("&nbsp;&nbsp;");
+				final HTML sp = new HTML("&nbsp;&nbsp;");
 				sp.addStyleName("params-validation");
 				hp.add(sp);
-				HTML pb;
+				final HTML pb;
 				hp.add(pb = new HTML("(more)"));
 				pb.addStyleName("actionLink");
 				pb.addStyleName("params-validation");
 				pb.addClickListener(new ClickListener() {
-					public void onClick(Widget sender) {
+					public void onClick(final Widget sender) {
 						popup();
 					}
 				});
 			}
 
 			fp.addClickListener(new ClickListener() {
-				public void onClick(Widget sender) {
+				public void onClick(final Widget sender) {
 					focus();
 				}
 			});
@@ -190,15 +190,15 @@ public final class ValidationPanel extends Composite {
 		}
 
 		public void popup() {
-			VerticalPanel vp = new VerticalPanel();
-			HorizontalPanel hp = new HorizontalPanel();
+			final VerticalPanel vp = new VerticalPanel();
+			final HorizontalPanel hp = new HorizontalPanel();
 			hp.add(getImageForSeverity(cv.getSeverity()));
-			Label label = new Label(cv.getMessage());
+			final Label label = new Label(cv.getMessage());
 			label.setWordWrap(true);
 			hp.add(label);
 			vp.add(hp);
 			if (cv.getThrowableMessage() != null) {
-				TextArea ta = new TextArea();
+				final TextArea ta = new TextArea();
 				ta.setText(cv.getThrowableMessage());
 				ta.setEnabled(false);
 				ta.setSize("400px", "300px");
@@ -208,7 +208,7 @@ public final class ValidationPanel extends Composite {
 		}
 
 		public void focus() {
-			Validatable v = (Validatable) byValidation.get(cv);
+			final Validatable v = (Validatable) byValidation.get(cv);
 			v.focus();
 		}
 
@@ -217,7 +217,7 @@ public final class ValidationPanel extends Composite {
 	private static final class ValidationComparator implements Comparator<ClientValidation>, Serializable {
 		private static final long serialVersionUID = 20101221L;
 
-		public int compare(ClientValidation o1, ClientValidation o2) {
+		public int compare(final ClientValidation o1, final ClientValidation o2) {
 			return o2.getSeverity() - o1.getSeverity(); // reverse order of integer severity (ie: errors first).
 		}
 	}

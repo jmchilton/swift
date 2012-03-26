@@ -22,7 +22,7 @@ public final class StringUtilities {
 	 * @param text Text to prepend with tabs.
 	 * @return Text prepended with tabs.
 	 */
-	public static String appendTabBeforeLines(String text) {
+	public static String appendTabBeforeLines(final String text) {
 		return LINE_START.matcher(text).replaceAll("\t");
 	}
 
@@ -31,7 +31,7 @@ public final class StringUtilities {
 	 * @param times How many times is the character repeated.
 	 * @return String where a given character repeats given amount of times.
 	 */
-	public static String repeat(char c, int times) {
+	public static String repeat(final char c, final int times) {
 		if (times <= 0) {
 			return "";
 		}
@@ -44,14 +44,14 @@ public final class StringUtilities {
 	 * @param html HTML to be rendered as is.
 	 * @return Escaped version with &<>" replaced with entities.
 	 */
-	public static String escapeHtml(String html) {
+	public static String escapeHtml(final String html) {
 		return html.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
 	}
 
 	/**
 	 * Convert first character of the string to uppercase (English locale to stay consistent).
 	 */
-	public static String firstToUpper(String s) {
+	public static String firstToUpper(final String s) {
 		if (s.length() == 0) {
 			return "";
 		}
@@ -61,7 +61,7 @@ public final class StringUtilities {
 	/**
 	 * Convert first character of the string to uppercase, rest of the string to lowercase (English locale to stay consistent).
 	 */
-	public static String firstToUpperRestToLower(String s) {
+	public static String firstToUpperRestToLower(final String s) {
 		if (s.length() == 0) {
 			return "";
 		}
@@ -71,21 +71,21 @@ public final class StringUtilities {
 	/**
 	 * Like {@link String#startsWith(String)} just using English locale for case-insensitive comparison.
 	 */
-	public static boolean startsWithIgnoreCase(String s, String prefix) {
+	public static boolean startsWithIgnoreCase(final String s, final String prefix) {
 		return s.toLowerCase(Locale.ENGLISH).startsWith(prefix.toLowerCase(Locale.ENGLISH));
 	}
 
 	/**
 	 * Like {@link String#endsWith(String)} just using English locale for case-insensitive comparison.
 	 */
-	public static boolean endsWithIgnoreCase(String s, String suffix) {
+	public static boolean endsWithIgnoreCase(final String s, final String suffix) {
 		return s.toLowerCase(Locale.ENGLISH).endsWith(suffix.toLowerCase(Locale.ENGLISH));
 	}
 
 	/**
 	 * Like {@link String#contains(CharSequence)} just using English locale for case-insensitive comparison.
 	 */
-	public static boolean containsIgnoreCase(String haystack, String needle) {
+	public static boolean containsIgnoreCase(final String haystack, final String needle) {
 		return haystack.toLowerCase(Locale.ENGLISH).contains(needle.toLowerCase(Locale.ENGLISH));
 	}
 
@@ -96,10 +96,10 @@ public final class StringUtilities {
 	 * @param str String to escape
 	 * @return string with all unicode characters encoded as \\uxxxx
 	 */
-	public static String toUnicodeEscapeString(String str) {
+	public static String toUnicodeEscapeString(final String str) {
 		// Modeled after the code in java.util.Properties.save()
 		final StringBuilder buf = new StringBuilder();
-		int len = str.length();
+		final int len = str.length();
 		char ch;
 		for (int i = 0; i < len; i++) {
 			ch = str.charAt(i);
@@ -115,7 +115,7 @@ public final class StringUtilities {
 		return buf.toString();
 	}
 
-	public static void charToUnicodeSequence(StringBuilder buf, char ch) {
+	public static void charToUnicodeSequence(final StringBuilder buf, final char ch) {
 		buf.append("\\u");
 		buf.append(toHex((ch >> 12) & MAX_HEX_DIGIT));
 		buf.append(toHex((ch >> 8) & MAX_HEX_DIGIT));
@@ -123,7 +123,7 @@ public final class StringUtilities {
 		buf.append(toHex(ch & MAX_HEX_DIGIT));
 	}
 
-	public static char toHex(int nibble) {
+	public static char toHex(final int nibble) {
 		return HEX_DIGIT[(nibble & MAX_HEX_DIGIT)];
 	}
 
@@ -132,12 +132,12 @@ public final class StringUtilities {
 	 * @param separator How to separate the bytes in the output
 	 * @return The byte array encoded as a string of hex digits separated by given separator.
 	 */
-	public static String toHex(byte[] data, String separator) {
+	public static String toHex(final byte[] data, final String separator) {
 		if (data.length == 0) {
 			return "";
 		}
 
-		StringBuilder sb = new StringBuilder(data.length * (separator.length() + 2) - separator.length());
+		final StringBuilder sb = new StringBuilder(data.length * (separator.length() + 2) - separator.length());
 
 		for (int i = 0; i < data.length; i++) {
 			if (i > 0) {
@@ -153,7 +153,7 @@ public final class StringUtilities {
 	/**
 	 * @return True if the string contains just whitespace or is null.
 	 */
-	public static boolean stringEmpty(String s) {
+	public static boolean stringEmpty(final String s) {
 		return s == null || s.trim().length() == 0;
 	}
 

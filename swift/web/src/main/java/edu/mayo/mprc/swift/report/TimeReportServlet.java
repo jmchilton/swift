@@ -30,7 +30,7 @@ public final class TimeReportServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		final SearchRunFilter filter;
 		final boolean screen;
 		try {
@@ -52,7 +52,7 @@ public final class TimeReportServlet extends HttpServlet {
 		}
 	}
 
-	private void prepareHeader(HttpServletResponse resp, final SearchRunFilter filter, final boolean screen) {
+	private void prepareHeader(final HttpServletResponse resp, final SearchRunFilter filter, final boolean screen) {
 		resp.setHeader("Cache-Control", "no-cache");
 		if (!screen) {
 			resp.setHeader("Content-disposition", "attachment; filename=" + getReportFilename(filter));
@@ -62,14 +62,14 @@ public final class TimeReportServlet extends HttpServlet {
 		}
 	}
 
-	private static String getReportFilename(SearchRunFilter filter) {
+	private static String getReportFilename(final SearchRunFilter filter) {
 		final String startDate = new DateTime(filter.getStartDate()).toString("yyyy-MM-dd");
 		final String endDate = new DateTime(filter.getEndDate()).toString("yyyy-MM-dd");
 		return "swift_time_report__" + startDate + "__" + endDate + ".csv";
 	}
 
-	private static SearchRunFilter parseSearchRunFilter(String startParam, String endParam) {
-		SearchRunFilter filter;
+	private static SearchRunFilter parseSearchRunFilter(final String startParam, final String endParam) {
+		final SearchRunFilter filter;
 		final DateTime start = ReportUtils.parseDate(startParam, "start");
 		final DateTime end = ReportUtils.parseDate(endParam, "end");
 		filter = new SearchRunFilter();
@@ -79,10 +79,10 @@ public final class TimeReportServlet extends HttpServlet {
 		return filter;
 	}
 
-	private void printReport(SearchRunFilter filter, ServletOutputStream out, char separator) throws IOException {
+	private void printReport(final SearchRunFilter filter, final ServletOutputStream out, final char separator) throws IOException {
 		final List<SearchRun> searchRuns = swiftDao.getSearchRunList(filter);
 		out.println("Search run" + separator + "Start time" + separator + "Elapsed time" + separator + "Consumed time" + separator + "Productive time");
-		for (SearchRun searchRun : searchRuns) {
+		for (final SearchRun searchRun : searchRuns) {
 			// TODO: Optimize this - fetch the task data for all search runs at once, do not order
 			final List<TaskData> taskDataList = swiftDao.getTaskDataList(searchRun.getId());
 			out.print(searchRun.getTitle());
@@ -100,15 +100,15 @@ public final class TimeReportServlet extends HttpServlet {
 
 	@Override
 	protected void doPost
-			(HttpServletRequest
-					 req, HttpServletResponse
+			(final HttpServletRequest
+					 req, final HttpServletResponse
 					resp) throws ServletException, IOException {
 		doGet(req, resp);
 	}
 
 	@Override
 	public void init
-			(ServletConfig
+			(final ServletConfig
 					 config) throws ServletException {
 		super.init(config);
 		if (ServletIntialization.initServletConfiguration(config)) {

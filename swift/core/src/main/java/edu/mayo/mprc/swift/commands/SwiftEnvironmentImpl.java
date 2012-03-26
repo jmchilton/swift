@@ -145,12 +145,12 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	}
 
 	@Override
-	public Daemon createDaemon(DaemonConfig config) {
+	public Daemon createDaemon(final DaemonConfig config) {
 		return daemonFactory.createDaemon(config);
 	}
 
 	@Override
-	public DaemonConnection getConnection(ServiceConfig service) {
+	public DaemonConnection getConnection(final ServiceConfig service) {
 		final Object singleton = dependencyResolver.createSingleton(service);
 		if (singleton instanceof DaemonConnection) {
 			return (DaemonConnection) singleton;

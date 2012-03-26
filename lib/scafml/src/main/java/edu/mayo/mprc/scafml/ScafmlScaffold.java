@@ -26,7 +26,7 @@ public final class ScafmlScaffold extends FileHolder {
 	public ScafmlScaffold() {
 	}
 
-	public void setExperiment(ScafmlExperiment experiment) {
+	public void setExperiment(final ScafmlExperiment experiment) {
 		this.experiment = experiment;
 	}
 
@@ -38,7 +38,7 @@ public final class ScafmlScaffold extends FileHolder {
 		return versionMajor;
 	}
 
-	public void setVersionMajor(int versionMajor) {
+	public void setVersionMajor(final int versionMajor) {
 		this.versionMajor = versionMajor;
 	}
 
@@ -46,7 +46,7 @@ public final class ScafmlScaffold extends FileHolder {
 		return versionMinor;
 	}
 
-	public void setVersionMinor(int versionMinor) {
+	public void setVersionMinor(final int versionMinor) {
 		this.versionMinor = versionMinor;
 	}
 
@@ -54,12 +54,12 @@ public final class ScafmlScaffold extends FileHolder {
 	 * @return .scafml file as a string.
 	 */
 	public String getDocument() {
-		StringBuilder result = new StringBuilder(4096);
+		final StringBuilder result = new StringBuilder(4096);
 		result.append(XMLUtilities.XML_START)
 				.append("\n")
 				.append("<" + "Scaffold" + XMLUtilities.wrapatt("version", "" + versionMajor + "." + versionMinor) + ">\n");
 
-		ScafmlExperiment e = this.getExperiment();
+		final ScafmlExperiment e = this.getExperiment();
 		e.appendToDocument(result, "\t", this);
 
 		result.append("</" + "Scaffold" + ">\n");

@@ -28,7 +28,7 @@ public final class UnimodUpgrade {
 	 * @param change   Change description we are performing now.
 	 * @param session  Database session.
 	 */
-	public void upgrade(Collection<Mod> original, IndexedModSet current, Change change, Session session) {
+	public void upgrade(final Collection<Mod> original, final IndexedModSet current, final Change change, final Session session) {
 		session.saveOrUpdate(change);
 
 		originalItems = original.size();
@@ -38,13 +38,13 @@ public final class UnimodUpgrade {
 		itemsModified = 0;
 		itemsDeleted = 0;
 
-		Set<Mod> toAdd = new HashSet<Mod>();
+		final Set<Mod> toAdd = new HashSet<Mod>();
 		toAdd.addAll(current);
 
 		int flushCounter = 0;
 
-		for (Mod orig : original) {
-			Mod matching = findMatching(orig, current);
+		for (final Mod orig : original) {
+			final Mod matching = findMatching(orig, current);
 			if (matching == null) {
 				orig.setDeletion(change);
 				session.saveOrUpdate(orig);
@@ -64,7 +64,7 @@ public final class UnimodUpgrade {
 			flushCounter = flushPeriodically(session, flushCounter);
 		}
 
-		for (Mod added : toAdd) {
+		for (final Mod added : toAdd) {
 			added.setCreation(change);
 			session.saveOrUpdate(added);
 			itemsAdded++;
@@ -81,7 +81,7 @@ public final class UnimodUpgrade {
 	 * @param flushCounter Counter
 	 * @return Incremented counter
 	 */
-	private int flushPeriodically(Session session, int flushCounter) {
+	private int flushPeriodically(final Session session, int flushCounter) {
 		flushCounter++;
 		if (flushCounter % FLUSH_FREQUENCY == 0) {
 			session.flush();
@@ -114,7 +114,7 @@ public final class UnimodUpgrade {
 	 * Find matching element in the current collection. The element does not have to be identical.
 	 * If no matching element is found, return 0.
 	 */
-	protected Mod findMatching(Mod orig, IndexedModSet current) {
+	protected Mod findMatching(final Mod orig, final IndexedModSet current) {
 		return current.getByTitle(orig.getTitle());
 	}
 
@@ -123,7 +123,7 @@ public final class UnimodUpgrade {
 	 * @param matching Matching new object.
 	 * @return True if the new object is identical to the original one.
 	 */
-	protected boolean identical(Mod orig, Mod matching) {
+	protected boolean identical(final Mod orig, final Mod matching) {
 		return orig.equals(matching);
 	}
 

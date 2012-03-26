@@ -13,11 +13,11 @@ public final class BiologicalSampleList extends PersistableListBase<BiologicalSa
 	public BiologicalSampleList() {
 	}
 
-	public BiologicalSampleList(int initialCapacity) {
+	public BiologicalSampleList(final int initialCapacity) {
 		super(initialCapacity);
 	}
 
-	public BiologicalSampleList(Collection<BiologicalSample> items) {
+	public BiologicalSampleList(final Collection<BiologicalSample> items) {
 		super(items);
 	}
 }

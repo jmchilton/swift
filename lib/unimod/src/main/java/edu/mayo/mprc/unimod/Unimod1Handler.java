@@ -43,7 +43,7 @@ class Unimod1Handler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attr) {
+	public void startElement(final String namespaceURI, final String localName, final String qualifiedName, final Attributes attr) {
 		if ("unimod".equals(localName)) {
 			into.setMajorVersion(attr.getValue("majorVersion"));
 			into.setMinorVersion(attr.getValue("minorVersion"));
@@ -98,11 +98,11 @@ class Unimod1Handler extends DefaultHandler {
 			// <misc_notes></misc_notes>
 			// </specificity_row>
 			currentMod = getModBuilder(UnimodHandler.getIntegerValue(attr, "mod_key"));
-			Boolean hidden = UnimodHandler.getBooleanValue(attr, "hidden");
-			String oneLetter = attr.getValue("", "one_letter");
-			Integer specificityGroup = UnimodHandler.getIntegerValue(attr, "spec_group");
-			String classification = classifications.get(UnimodHandler.getIntegerValue(attr, "classifications_key"));
-			String position = positions.get(UnimodHandler.getIntegerValue(attr, "position_key"));
+			final Boolean hidden = UnimodHandler.getBooleanValue(attr, "hidden");
+			final String oneLetter = attr.getValue("", "one_letter");
+			final Integer specificityGroup = UnimodHandler.getIntegerValue(attr, "spec_group");
+			final String classification = classifications.get(UnimodHandler.getIntegerValue(attr, "classifications_key"));
+			final String position = positions.get(UnimodHandler.getIntegerValue(attr, "position_key"));
 			currentSpecificity = currentMod.addSpecificityFromUnimod(oneLetter, position, hidden, classification, specificityGroup);
 		} else if ("misc_notes".equals(localName)) {
 			miscNotes.setLength(0);
@@ -110,14 +110,14 @@ class Unimod1Handler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length) {
+	public void characters(final char[] ch, final int start, final int length) {
 		if (notesState != NotesState.NO_NOTES) {
 			miscNotes.append(ch, start, length);
 		}
 	}
 
 	@Override
-	public void endElement(String namespaceURI, String localName, String qualifiedName) {
+	public void endElement(final String namespaceURI, final String localName, final String qualifiedName) {
 		if ("unimod".equals(localName)) {
 			dump();
 		} else if ("misc_notes".equals(localName)) {
@@ -138,17 +138,17 @@ class Unimod1Handler extends DefaultHandler {
 	 * format. E.g. <sup>18</sup>O isotope is reported as {@code O18}, which has been changed in Unimod 2 to actual 18O.
 	 * In order to be consistent, we upgrade to 2.0 by flipping the number after the text to the beginning of it.
 	 */
-	static String convertComposition(String composition) {
+	static String convertComposition(final String composition) {
 		final Iterable<String> parts = Splitter.on(' ').trimResults().omitEmptyStrings().split(composition);
-		StringBuilder result = new StringBuilder(composition.length() + 1);
-		for (String part : parts) {
+		final StringBuilder result = new StringBuilder(composition.length() + 1);
+		for (final String part : parts) {
 			result.append(' ');
 			result.append(COMPOSITION_CONVERT.matcher(part).replaceFirst(ELEMENT_NUMBER_SWAP));
 		}
 		return result.length() > 0 ? result.substring(1) : "";
 	}
 
-	private ModBuilder getModBuilder(int recordId) {
+	private ModBuilder getModBuilder(final int recordId) {
 		final ModBuilder builder = modBuilders.get(recordId);
 		if (builder == null) {
 			final ModBuilder newBuilder = new ModBuilder();
@@ -160,7 +160,7 @@ class Unimod1Handler extends DefaultHandler {
 	}
 
 	private void dump() {
-		for (ModBuilder builder : modBuilders.values()) {
+		for (final ModBuilder builder : modBuilders.values()) {
 			into.add(builder.build());
 		}
 	}

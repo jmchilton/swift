@@ -10,7 +10,7 @@ public final class CurationValidation {
 	private CurationValidation() {
 	}
 
-	public static String validateShortNameLegalCharacters(String toValidate) {
+	public static String validateShortNameLegalCharacters(final String toValidate) {
 		final String spacesMessage = "Must not contain anything but a-z A-Z 0-9 : _ . - ( ) (no spaces)";
 		final String lengthMessage = "Must be between " + SHORTNAME_MIN_LENGTH + " and " + SHORTNAME_MAX_LENGTH + " characters";
 

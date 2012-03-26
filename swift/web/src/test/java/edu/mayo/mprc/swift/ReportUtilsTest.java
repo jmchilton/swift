@@ -14,15 +14,15 @@ public final class ReportUtilsTest {
 
 	@Test
 	public void shouldConvertTokens() {
-		DaemonConfigInfo info = new DaemonConfigInfo("my daemon", "/mnt/raid1");
-		DaemonConfigInfo dbInfo = new DaemonConfigInfo("database daemon", "/mnt/raid1");
-		FileTokenFactory tokenFactory = new FileTokenFactory(info);
+		final DaemonConfigInfo info = new DaemonConfigInfo("my daemon", "/mnt/raid1");
+		final DaemonConfigInfo dbInfo = new DaemonConfigInfo("database daemon", "/mnt/raid1");
+		final FileTokenFactory tokenFactory = new FileTokenFactory(info);
 		tokenFactory.setDatabaseDaemonConfigInfo(dbInfo);
 		Assert.assertEquals(
 				ReportUtils.replaceTokensWithHyperlinks("hello world", new File("/mnt/raid1/browsing"), "file:///rome/mprc", tokenFactory),
 				"hello world", "Simple strings must remain unchanged");
 
-		File sharedFile = new File("/mnt/raid1/browsing/test.txt");
+		final File sharedFile = new File("/mnt/raid1/browsing/test.txt");
 		Assert.assertEquals(
 				ReportUtils.replaceTokensWithHyperlinks(
 						"hello <file>shared:/browsing/test.txt</file> world",
@@ -56,7 +56,7 @@ public final class ReportUtilsTest {
 	}
 
 	@Test(dataProvider = "dates")
-	public void shouldParseDates(String input, String output) {
+	public void shouldParseDates(final String input, final String output) {
 		try {
 			final DateTime date = ReportUtils.parseDate(input, "start");
 			Assert.assertEquals(date.toString("MM-dd-yyyy HH:mm:ss"), output);

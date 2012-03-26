@@ -14,17 +14,17 @@ public final class ConversionTest {
 
 	@Test(enabled = true, groups = {"fast", "unit"})
 	public void testNullRemoval() {
-		String noNulls = NUL_STRING.replaceAll("\\x00", "");
+		final String noNulls = NUL_STRING.replaceAll("\\x00", "");
 		Assert.assertEquals(noNulls, "test:abcd" + '\r' + '\n' + "123", "The nulls were not removed properly");
 	}
 
 	@Test(enabled = true, groups = {"fast", "unit"})
 	public void testReader() throws IOException {
-		StringReader stringReader = new StringReader(NUL_STRING);
-		BufferedReader reader = new BufferedReader(stringReader);
-		String line1 = reader.readLine().replaceAll("\\x00", "");
+		final StringReader stringReader = new StringReader(NUL_STRING);
+		final BufferedReader reader = new BufferedReader(stringReader);
+		final String line1 = reader.readLine().replaceAll("\\x00", "");
 		Assert.assertEquals(line1, "test:abcd", "First line read through reader does not match");
-		String line2 = reader.readLine().replaceAll("\\x00", "");
+		final String line2 = reader.readLine().replaceAll("\\x00", "");
 		Assert.assertEquals(line2, "123", "Second line read through reader does not match");
 	}
 

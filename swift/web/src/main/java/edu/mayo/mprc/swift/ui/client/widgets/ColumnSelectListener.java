@@ -8,13 +8,13 @@ public final class ColumnSelectListener implements ClickListener {
 	private int column;
 	private FileTable table;
 
-	public ColumnSelectListener(int column, FileTable table) {
+	public ColumnSelectListener(final int column, final FileTable table) {
 		this.column = column;
 		this.table = table;
 	}
 
-	public void onClick(Widget widget) {
-		CheckBox mainCheckBox = (CheckBox) widget;
+	public void onClick(final Widget widget) {
+		final CheckBox mainCheckBox = (CheckBox) widget;
 		for (int row = table.getFirstDataRow(); row < table.getRowCount(); row++) {
 			table.setChecked(row, column, mainCheckBox.isChecked());
 		}

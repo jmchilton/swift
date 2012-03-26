@@ -52,13 +52,13 @@ public final class RAWDumpWorker implements Worker {
 	// If the raw file path is longer than this, we will attempt to shorten it
 	private static final int MAX_UNSHORTENED_PATH_LENGTH = 100;
 
-	protected RAWDumpWorker(Config config) {
+	protected RAWDumpWorker(final Config config) {
 		setWrapperScript(config.getWrapperScript() != null && config.getWrapperScript().length() > 0 ? new File(config.getWrapperScript()) : null);
 		setWindowsExecWrapperScript(config.getWindowsExecWrapperScript());
 	}
 
 	@Override
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			processLocal(workPacket);
@@ -71,17 +71,17 @@ public final class RAWDumpWorker implements Worker {
 		}
 	}
 
-	protected void processLocal(WorkPacket workPacket) throws IOException {
-		RAWDumpWorkPacket rawDumpWorkPacket = (RAWDumpWorkPacket) workPacket;
+	protected void processLocal(final WorkPacket workPacket) throws IOException {
+		final RAWDumpWorkPacket rawDumpWorkPacket = (RAWDumpWorkPacket) workPacket;
 
-		File rawInfo = rawDumpWorkPacket.getRawInfoFile();
-		File rawSpectra = rawDumpWorkPacket.getRawSpectraFile();
-		File rawFile = rawDumpWorkPacket.getRawFile();
-		File chromatogramFile = rawDumpWorkPacket.getChromatogramFile();
-		File tuneFile = rawDumpWorkPacket.getTuneMethodFile();
-		File instrumentMethodFile = rawDumpWorkPacket.getInstrumentMethodFile();
-		File sampleInformationFile = rawDumpWorkPacket.getSampleInformationFile();
-		File errorLogFile = rawDumpWorkPacket.getErrorLogFile();
+		final File rawInfo = rawDumpWorkPacket.getRawInfoFile();
+		final File rawSpectra = rawDumpWorkPacket.getRawSpectraFile();
+		final File rawFile = rawDumpWorkPacket.getRawFile();
+		final File chromatogramFile = rawDumpWorkPacket.getChromatogramFile();
+		final File tuneFile = rawDumpWorkPacket.getTuneMethodFile();
+		final File instrumentMethodFile = rawDumpWorkPacket.getInstrumentMethodFile();
+		final File sampleInformationFile = rawDumpWorkPacket.getSampleInformationFile();
+		final File errorLogFile = rawDumpWorkPacket.getErrorLogFile();
 
 		FileUtilities.ensureFolderExists(rawInfo.getParentFile());
 		FileUtilities.ensureFolderExists(rawSpectra.getParentFile());
@@ -109,12 +109,12 @@ public final class RAWDumpWorker implements Worker {
 		}
 	}
 
-	private List<String> getCommandLine(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile,
-	                                    File tuneFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) throws IOException {
+	private List<String> getCommandLine(final File rawFile, final File rawInfo, final File rawSpectra, final File chromatogramFile,
+	                                    final File tuneFile, final File instrumentMethodFile, final File sampleInformationFile, final File errorLogFile) throws IOException {
 
 		createParamFile(rawFile, rawInfo, rawSpectra, chromatogramFile, tuneFile, instrumentMethodFile, sampleInformationFile, errorLogFile);
 
-		List<String> commandLineParams = new LinkedList<String>();
+		final List<String> commandLineParams = new LinkedList<String>();
 		commandLineParams.add(rawDumpExecutable.getAbsolutePath());
 		commandLineParams.add(PARAM_FILE_CMD);
 		commandLineParams.add(tempParamFile.getAbsolutePath());
@@ -122,8 +122,8 @@ public final class RAWDumpWorker implements Worker {
 		return commandLineParams;
 	}
 
-	private void createParamFile(File rawFile, File rawInfo, File rawSpectra, File chromatogramFile,
-	                             File tuneFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) throws IOException {
+	private void createParamFile(final File rawFile, final File rawInfo, final File rawSpectra, final File chromatogramFile,
+	                             final File tuneFile, final File instrumentMethodFile, final File sampleInformationFile, final File errorLogFile) throws IOException {
 		tempParamFile = File.createTempFile("inputParamFile", null);
 
 		LOGGER.info("Creating parameter file: " + tempParamFile.getAbsolutePath() + ".");
@@ -133,7 +133,7 @@ public final class RAWDumpWorker implements Worker {
 		try {
 			bufferedWriter = new BufferedWriter(new FileWriter(tempParamFile));
 
-			StringTokenizer stringTokenizer = new StringTokenizer(commandLineOptions, ",");
+			final StringTokenizer stringTokenizer = new StringTokenizer(commandLineOptions, ",");
 
 			while (stringTokenizer.hasMoreTokens()) {
 				bufferedWriter.write(stringTokenizer.nextToken().trim());
@@ -156,7 +156,7 @@ public final class RAWDumpWorker implements Worker {
 		}
 	}
 
-	private void addFile(BufferedWriter bufferedWriter, String commandLine, File file) throws IOException {
+	private void addFile(final BufferedWriter bufferedWriter, final String commandLine, final File file) throws IOException {
 		bufferedWriter.write(commandLine);
 		bufferedWriter.write("\n");
 		bufferedWriter.write(file.getAbsolutePath());
@@ -167,7 +167,7 @@ public final class RAWDumpWorker implements Worker {
 		return wrapperScript;
 	}
 
-	public void setWrapperScript(File wrapperScript) {
+	public void setWrapperScript(final File wrapperScript) {
 		this.wrapperScript = wrapperScript;
 	}
 
@@ -175,7 +175,7 @@ public final class RAWDumpWorker implements Worker {
 		return windowsExecWrapperScript;
 	}
 
-	public void setWindowsExecWrapperScript(String windowsExecWrapperScript) {
+	public void setWindowsExecWrapperScript(final String windowsExecWrapperScript) {
 		this.windowsExecWrapperScript = windowsExecWrapperScript;
 	}
 
@@ -183,7 +183,7 @@ public final class RAWDumpWorker implements Worker {
 		return rawDumpExecutable;
 	}
 
-	public void setRawDumpExecutable(File rawDumpExecutable) {
+	public void setRawDumpExecutable(final File rawDumpExecutable) {
 		this.rawDumpExecutable = rawDumpExecutable;
 	}
 
@@ -191,7 +191,7 @@ public final class RAWDumpWorker implements Worker {
 		return commandLineOptions;
 	}
 
-	public void setCommandLineOptions(String commandLineOptions) {
+	public void setCommandLineOptions(final String commandLineOptions) {
 		this.commandLineOptions = commandLineOptions;
 	}
 
@@ -204,8 +204,8 @@ public final class RAWDumpWorker implements Worker {
 	 *                             platform, this wrapper will turn the executable into something that would run.
 	 *                             Typically this wrapper is a script that executes <c>wine</c> or <c>wineconsole</c>.
 	 */
-	static void process(List<String> commandLine, boolean isWindowsExecutable, final File wrapperScript, final String windowsWrapperScript) {
-		List<String> parameters = new ArrayList<String>();
+	static void process(final List<String> commandLine, final boolean isWindowsExecutable, final File wrapperScript, final String windowsWrapperScript) {
+		final List<String> parameters = new ArrayList<String>();
 
 		if (wrapperScript != null) {
 			parameters.add(wrapperScript.getAbsolutePath());
@@ -219,9 +219,9 @@ public final class RAWDumpWorker implements Worker {
 
 		LOGGER.info("Running command from the following parameters " + parameters.toString());
 
-		ProcessBuilder builder = new ProcessBuilder(parameters.toArray(new String[parameters.size()]));
+		final ProcessBuilder builder = new ProcessBuilder(parameters.toArray(new String[parameters.size()]));
 
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 
 		try {
 			caller.run();
@@ -240,8 +240,8 @@ public final class RAWDumpWorker implements Worker {
 	 * A factory capable of creating the worker
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
-		public Worker create(Config config, DependencyResolver dependencies) {
-			RAWDumpWorker worker = new RAWDumpWorker(config);
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final RAWDumpWorker worker = new RAWDumpWorker(config);
 
 			//Raw dump values
 			worker.setRawDumpExecutable(FileUtilities.getAbsoluteFileForExecutables(new File(config.getRawDumpExecutable())));
@@ -265,7 +265,7 @@ public final class RAWDumpWorker implements Worker {
 			super();
 		}
 
-		public Config(String rawDumpExecutable, String commandLineOptions) {
+		public Config(final String rawDumpExecutable, final String commandLineOptions) {
 			super();
 			this.rawDumpExecutable = rawDumpExecutable;
 			this.commandLineOptions = commandLineOptions;
@@ -287,8 +287,8 @@ public final class RAWDumpWorker implements Worker {
 			return commandLineOptions;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put("wrapperScript", wrapperScript);
 			map.put("windowsExecWrapperScript", windowsExecWrapperScript);
 			map.put("rawDumpExecutable", rawDumpExecutable);
@@ -296,7 +296,7 @@ public final class RAWDumpWorker implements Worker {
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			wrapperScript = values.get("wrapperScript");
 			windowsExecWrapperScript = values.get("windowsExecWrapperScript");
 			rawDumpExecutable = values.get("rawDumpExecutable");
@@ -316,7 +316,7 @@ public final class RAWDumpWorker implements Worker {
 		private static final String DEFAULT_RAWDUMP_EXEC = "bin/rawExtract/MprcExtractRaw.exe";
 		private static final String DEFAULT_CMDS = "--data";
 
-		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property("rawDumpExecutable", "Executable Path", "RAW Dump executable path."
 					+ "<br/>The RAW Dump executable has been inplemented in house and is included with the Swift installation. "
 					+ "<br/>Executable can be found in the Swift installation directory: "

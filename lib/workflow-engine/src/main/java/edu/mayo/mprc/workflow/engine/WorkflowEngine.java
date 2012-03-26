@@ -36,7 +36,7 @@ public final class WorkflowEngine {
 	// We use this lock to check the size of the queue and add a new element atomically
 	private final Object resumeLock = new Object();
 
-	public WorkflowEngine(String id) {
+	public WorkflowEngine(final String id) {
 		this.id = id;
 		done = false;
 		initialized = false;
@@ -56,7 +56,7 @@ public final class WorkflowEngine {
 	 *
 	 * @param task Task to be executed.
 	 */
-	public void addTask(Task task) {
+	public void addTask(final Task task) {
 		allTasks.add(task);
 	}
 
@@ -65,7 +65,7 @@ public final class WorkflowEngine {
 	 *
 	 * @param tasks Tasks to be executed.
 	 */
-	public void addAllTasks(Collection<? extends Task> tasks) {
+	public void addAllTasks(final Collection<? extends Task> tasks) {
 		allTasks.addAll(tasks);
 	}
 
@@ -73,11 +73,11 @@ public final class WorkflowEngine {
 	 * @return Dump of all the current tasks, their dependencies and states in the form of a .dot file.
 	 */
 	public String dumpDot() {
-		StringBuilder dot = new StringBuilder();
+		final StringBuilder dot = new StringBuilder();
 		dot.append("digraph template { \n");
 
 		for (int i = 0; i < allTasks.size(); i++) {
-			Task task = allTasks.get(i);
+			final Task task = allTasks.get(i);
 			String color = "white";
 			switch (task.getState()) {
 				case COMPLETED_SUCCESFULLY:
@@ -112,8 +112,8 @@ public final class WorkflowEngine {
 		}
 
 		for (int i = 0; i < allTasks.size(); i++) {
-			Task task = allTasks.get(i);
-			for (Task output : task.getOutputs()) {
+			final Task task = allTasks.get(i);
+			for (final Task output : task.getOutputs()) {
 				int index = -1;
 				for (int j = 0; j < allTasks.size(); j++) {
 					if (allTasks.get(j).equals(output)) {
@@ -138,7 +138,7 @@ public final class WorkflowEngine {
 	 *
 	 * @param monitor Monitor for the execution.
 	 */
-	public void addMonitor(SearchMonitor monitor) {
+	public void addMonitor(final SearchMonitor monitor) {
 		this.monitor.addMonitor(monitor);
 	}
 
@@ -152,7 +152,7 @@ public final class WorkflowEngine {
 	private void initialize() {
 		// We will start processing all tasks without dependencies
 		synchronized (resumeLock) {
-			for (Task task : allTasks) {
+			for (final Task task : allTasks) {
 				task.setWorkflowEngine(this);
 				if (task.getInputs().size() == 0) {
 					task.setState(TaskState.READY);
@@ -177,14 +177,14 @@ public final class WorkflowEngine {
 			}
 
 			// Drain all we collected in the queue so we can start processing it properly
-			List<Task> taskList = new ArrayList<Task>();
+			final List<Task> taskList = new ArrayList<Task>();
 			synchronized (resumeLock) {
 				tasksToProcess.drainTo(taskList);
 			}
 
 			// Task is in the queue because it can actually run - it is either ready or running (running tasks can be called multiple times)
 			// All its dependencies are resolved, it was not run before, etc. Thenrefore we do not have to do any checking.
-			for (Task task : taskList) {
+			for (final Task task : taskList) {
 				assert task.getState() != TaskState.UNINITIALIZED : "The task " + task.getName() + " must be ready to run";
 				if (task.getState() == TaskState.READY) {
 					task.setState(TaskState.RUNNING);
@@ -202,8 +202,8 @@ public final class WorkflowEngine {
 			// If we are completely done, we report it.
 			if (done) {
 				int numFailed = 0;
-				CompositeException exception = new CompositeException("Search failed");
-				for (Task task : allTasks) {
+				final CompositeException exception = new CompositeException("Search failed");
+				for (final Task task : allTasks) {
 					if (!task.stateEquals(TaskState.COMPLETED_SUCCESFULLY)) {
 						if (task.getLastError() != null) {
 							exception.addCause(task.getLastError());
@@ -214,7 +214,7 @@ public final class WorkflowEngine {
 				if (numFailed != 0) {
 					// Throw an exception - failure
 					if (exception.getCauses().size() == 1) {
-						Throwable t = exception.getCauses().iterator().next();
+						final Throwable t = exception.getCauses().iterator().next();
 						if (t instanceof MprcException) {
 							throw (MprcException) t;
 						} else {
@@ -258,7 +258,7 @@ public final class WorkflowEngine {
 	 *
 	 * @param resumer Resumer to call when work appears in the queue.
 	 */
-	public void resumeOnWork(Resumer resumer) {
+	public void resumeOnWork(final Resumer resumer) {
 		boolean runResumer = false;
 
 		synchronized (resumeLock) {
@@ -280,7 +280,7 @@ public final class WorkflowEngine {
 	 */
 	private boolean updateProgress() {
 		// Notify all the monitors about the updated progress statistics
-		ProgressReport report = new ProgressReport(
+		final ProgressReport report = new ProgressReport(
 				allTasks.size(),
 				0,
 				0,
@@ -292,7 +292,7 @@ public final class WorkflowEngine {
 
 		// Only if there is a change
 		if (!report.equals(previousProgressReport)) {
-			for (SearchMonitor m : monitor.getMonitors()) {
+			for (final SearchMonitor m : monitor.getMonitors()) {
 				m.updateStatistics(report);
 			}
 			this.previousProgressReport = report;
@@ -304,14 +304,14 @@ public final class WorkflowEngine {
 	/**
 	 * The task notifies the engine when the description changes. Call only from the task.
 	 */
-	public void taskDescriptionChange(TaskBase taskBase) {
+	public void taskDescriptionChange(final TaskBase taskBase) {
 		monitor.taskChange(taskBase);
 	}
 
 	/**
 	 * The task notifies the engine when the name changes. Call only from the task.
 	 */
-	public void taskNameChange(TaskBase taskBase) {
+	public void taskNameChange(final TaskBase taskBase) {
 		monitor.taskChange(taskBase);
 	}
 
@@ -319,7 +319,7 @@ public final class WorkflowEngine {
 	 * Task notifies the engine when its state changes. This is done AFTER the task flips the state.
 	 * Call only from the task.
 	 */
-	public void afterTaskStateChange(TaskBase taskBase, TaskState oldState, TaskState currentState) {
+	public void afterTaskStateChange(final TaskBase taskBase, final TaskState oldState, final TaskState currentState) {
 		if (oldState == currentState) {
 			return;
 		}
@@ -355,12 +355,12 @@ public final class WorkflowEngine {
 				currentState == TaskState.RUN_FAILED ||
 				currentState == TaskState.INIT_FAILED) {
 			// Tell all of our outputs that we are done
-			for (Task dependent : taskBase.getOutputs()) {
+			for (final Task dependent : taskBase.getOutputs()) {
 				dependent.inputDone(taskBase);
 			}
 
 			// We update the progress information
-			boolean allDone = updateProgress();
+			final boolean allDone = updateProgress();
 
 			// If absolutely everything is done, we do one last resume to report this.
 			if (allDone) {
@@ -375,11 +375,11 @@ public final class WorkflowEngine {
 		}
 	}
 
-	public void afterProgressInformationReceived(TaskBase task, Object progressInfo) {
+	public void afterProgressInformationReceived(final TaskBase task, final Object progressInfo) {
 		monitor.taskProgress(task, progressInfo);
 	}
 
-	public void workflowFailure(Throwable e) {
+	public void workflowFailure(final Throwable e) {
 		monitor.error(e);
 	}
 
@@ -396,7 +396,7 @@ public final class WorkflowEngine {
 		}
 	}
 
-	public String getNewTaskId(String name) {
+	public String getNewTaskId(final String name) {
 		if (name == null) {
 			return null;
 		}
@@ -408,7 +408,7 @@ public final class WorkflowEngine {
 	 *
 	 * @param t Exception to report.
 	 */
-	public void reportError(Throwable t) {
+	public void reportError(final Throwable t) {
 		try {
 			monitor.error(t);
 		} catch (Exception e) {

@@ -19,7 +19,7 @@ public class FastaSource extends PersistableBase {
 	public FastaSource() {
 	}
 
-	public FastaSource(String name, String url) {
+	public FastaSource(final String name, final String url) {
 		this.name = name;
 		this.url = url;
 	}
@@ -28,7 +28,7 @@ public class FastaSource extends PersistableBase {
 		return name;
 	}
 
-	public FastaSource setName(String name) {
+	public FastaSource setName(final String name) {
 		this.name = name;
 		return this;
 	}
@@ -37,7 +37,7 @@ public class FastaSource extends PersistableBase {
 		return url;
 	}
 
-	public FastaSource setUrl(String url) {
+	public FastaSource setUrl(final String url) {
 		this.url = url;
 		return this;
 	}
@@ -46,7 +46,7 @@ public class FastaSource extends PersistableBase {
 		return transform;
 	}
 
-	public FastaSource setTransform(HeaderTransform transform) {
+	public FastaSource setTransform(final HeaderTransform transform) {
 		this.transform = transform;
 		return this;
 	}
@@ -55,13 +55,13 @@ public class FastaSource extends PersistableBase {
 		return common;
 	}
 
-	public FastaSource setCommon(Boolean common) {
+	public FastaSource setCommon(final Boolean common) {
 		this.common = common;
 		return this;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -69,7 +69,7 @@ public class FastaSource extends PersistableBase {
 			return false;
 		}
 
-		FastaSource that = (FastaSource) o;
+		final FastaSource that = (FastaSource) o;
 
 		if (getCommon() != null ? !getCommon().equals(that.getCommon()) : that.getCommon() != null) {
 			return false;

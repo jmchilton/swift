@@ -26,7 +26,7 @@ public enum TaskState {
 	 */
 	INIT_FAILED("InitializationFailed");
 
-	TaskState(String text) {
+	TaskState(final String text) {
 		this.text = text;
 	}
 
@@ -34,8 +34,8 @@ public enum TaskState {
 		return text;
 	}
 
-	public static TaskState fromText(String text) {
-		for (TaskState state : TaskState.values()) {
+	public static TaskState fromText(final String text) {
+		for (final TaskState state : TaskState.values()) {
 			if (state.getText().equals(text)) {
 				return state;
 			}

@@ -29,7 +29,7 @@ final class LoggingSetup {
 
 	private static final AtomicLong UNIQUE_LOG_FILE_ID = new AtomicLong(System.currentTimeMillis());
 
-	public LoggingSetup(File logOutputFolder) {
+	public LoggingSetup(final File logOutputFolder) {
 		this.logOutputFolder = logOutputFolder;
 	}
 
@@ -40,10 +40,10 @@ final class LoggingSetup {
 	 * @throws IOException
 	 */
 	public void startLogging() throws IOException {
-		Date date = new Date();
+		final Date date = new Date();
 		final File logSubFolder = FileUtilities.getDateBasedDirectory(logOutputFolder, date);
 
-		long logFileId = UNIQUE_LOG_FILE_ID.incrementAndGet();
+		final long logFileId = UNIQUE_LOG_FILE_ID.incrementAndGet();
 		standardOutFile = new File(logSubFolder, STD_OUT_FILE_PREFIX + logFileId + LOG_FILE_EXTENSION);
 		standardErrorFile = new File(logSubFolder, STD_ERR_FILE_PREFIX + logFileId + LOG_FILE_EXTENSION);
 

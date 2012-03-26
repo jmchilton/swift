@@ -29,7 +29,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 	 * @param fileTokenFactory Used to translate files to tokens that can be sent over the network.
 	 * @param fromScratch      Do not reuse old results, redo everything from scratch.
 	 */
-	protected AsyncTaskBase(DaemonConnection daemon, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	protected AsyncTaskBase(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		assert daemon != null : "The daemon for the task has to be set";
 		this.daemon = daemon;
 		wasSubmitted = false;
@@ -43,7 +43,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 		return taskEnqueued;
 	}
 
-	public void setTaskEnqueued(Date enqueued) {
+	public void setTaskEnqueued(final Date enqueued) {
 		this.taskEnqueued = enqueued;
 	}
 
@@ -51,7 +51,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 		return taskProcessingStarted;
 	}
 
-	public void setTaskProcessingStarted(Date processingStarted) {
+	public void setTaskProcessingStarted(final Date processingStarted) {
 		this.taskProcessingStarted = processingStarted;
 	}
 
@@ -59,7 +59,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 		return fileTokenFactory;
 	}
 
-	public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 		this.fileTokenFactory = fileTokenFactory;
 	}
 
@@ -83,7 +83,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 				throw new MprcException("The daemon for asynchronous task '" + this.getName() + "' was not set.");
 			}
 			wasSubmitted = true;
-			WorkPacket workPacket = createWorkPacket();
+			final WorkPacket workPacket = createWorkPacket();
 			if (workPacket == null) {
 				// We are already done.
 				setState(TaskState.COMPLETED_SUCCESFULLY);
@@ -101,7 +101,7 @@ public abstract class AsyncTaskBase extends TaskBase {
 					}
 				}
 
-				public void userProgressInformation(ProgressInfo progressInfo) {
+				public void userProgressInformation(final ProgressInfo progressInfo) {
 					try {
 						onProgress(progressInfo);
 					} catch (Exception t) {

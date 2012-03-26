@@ -15,7 +15,7 @@ public enum Terminus {
 
 	private char code;
 
-	Terminus(char code) {
+	Terminus(final char code) {
 		this.code = code;
 	}
 
@@ -23,8 +23,8 @@ public enum Terminus {
 		return code;
 	}
 
-	public static Terminus getForCode(String code) {
-		for (Terminus t : values()) {
+	public static Terminus getForCode(final String code) {
+		for (final Terminus t : values()) {
 			if (String.valueOf(t.getCode()).equals(code)) {
 				return t;
 			}

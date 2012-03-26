@@ -32,7 +32,7 @@ public final class SpectrumAnalysisIdentification {
 		return spectrum;
 	}
 
-	public void setSpectrum(String spectrum) {
+	public void setSpectrum(final String spectrum) {
 		this.spectrum = spectrum;
 	}
 
@@ -40,7 +40,7 @@ public final class SpectrumAnalysisIdentification {
 		return analysisProgram;
 	}
 
-	public void setAnalysisProgram(String analysisProgram) {
+	public void setAnalysisProgram(final String analysisProgram) {
 		this.analysisProgram = analysisProgram;
 	}
 
@@ -48,7 +48,7 @@ public final class SpectrumAnalysisIdentification {
 		return charge;
 	}
 
-	public void setCharge(int charge) {
+	public void setCharge(final int charge) {
 		this.charge = charge;
 	}
 
@@ -60,7 +60,7 @@ public final class SpectrumAnalysisIdentification {
 		return getSpectrumName(spectrum);
 	}
 
-	static int getSpectrumNumber(String spectrum) {
+	static int getSpectrumNumber(final String spectrum) {
 		final Matcher matcher = SPECTRUM_PATTERN.matcher(spectrum);
 		if (matcher.matches()) {
 			return Integer.parseInt(matcher.group(2));
@@ -72,7 +72,7 @@ public final class SpectrumAnalysisIdentification {
 		throw new MprcException("Cannot parse spectrum number from the string " + spectrum);
 	}
 
-	static String getSpectrumName(String spectrum) {
+	static String getSpectrumName(final String spectrum) {
 		final Matcher matcher = SPECTRUM_PATTERN.matcher(spectrum);
 		if (matcher.matches()) {
 			return matcher.group(1);

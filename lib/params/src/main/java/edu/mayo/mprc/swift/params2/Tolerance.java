@@ -26,7 +26,7 @@ public class Tolerance implements Serializable {
 	public Tolerance() {
 	}
 
-	public Tolerance(double value, MassUnit unit) {
+	public Tolerance(final double value, final MassUnit unit) {
 		this.value = value;
 		this.unit = unit;
 	}
@@ -36,12 +36,12 @@ public class Tolerance implements Serializable {
 	 *
 	 * @param text Textual representation, e.g. "0.8 Da" or "5 ppm"
 	 */
-	public Tolerance(String text) {
-		String trimmed = text.trim();
-		String lower = trimmed.toLowerCase(Locale.ENGLISH);
-		for (MassUnit massUnit : MassUnit.values()) {
+	public Tolerance(final String text) {
+		final String trimmed = text.trim();
+		final String lower = trimmed.toLowerCase(Locale.ENGLISH);
+		for (final MassUnit massUnit : MassUnit.values()) {
 			if (lower.length() > massUnit.getCode().length() && lower.endsWith(massUnit.getCode().toLowerCase(Locale.ENGLISH))) {
-				String number = trimmed.substring(0, trimmed.length() - massUnit.getCode().length());
+				final String number = trimmed.substring(0, trimmed.length() - massUnit.getCode().length());
 				try {
 					value = Double.parseDouble(number);
 					unit = massUnit;
@@ -54,7 +54,7 @@ public class Tolerance implements Serializable {
 		throw new MprcException("Unrecognized unit, please use one of " + MassUnit.getOptions());
 	}
 
-	void setValue(double value) {
+	void setValue(final double value) {
 		this.value = value;
 	}
 
@@ -62,7 +62,7 @@ public class Tolerance implements Serializable {
 		return value;
 	}
 
-	void setUnit(MassUnit unit) {
+	void setUnit(final MassUnit unit) {
 		this.unit = unit;
 	}
 
@@ -80,7 +80,7 @@ public class Tolerance implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -88,7 +88,7 @@ public class Tolerance implements Serializable {
 			return false;
 		}
 
-		Tolerance tolerance = (Tolerance) obj;
+		final Tolerance tolerance = (Tolerance) obj;
 
 		if (Double.compare(tolerance.value, value) != 0) {
 			return false;
@@ -99,7 +99,7 @@ public class Tolerance implements Serializable {
 	@Override
 	public int hashCode() {
 		int result;
-		long temp;
+		final long temp;
 		temp = value == +0.0d ? 0L : Double.doubleToLongBits(value);
 		result = (int) (temp ^ (temp >>> 32));
 		result = 31 * result + (unit != null ? unit.hashCode() : 0);

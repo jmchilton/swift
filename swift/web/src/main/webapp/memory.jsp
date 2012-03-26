@@ -11,9 +11,9 @@
 
 
 
-		Iterator iter = ManagementFactory.getMemoryPoolMXBeans().iterator();
+		final Iterator iter = ManagementFactory.getMemoryPoolMXBeans().iterator();
 		while (iter.hasNext()) {
-			MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
+			final MemoryPoolMXBean item = (MemoryPoolMXBean) iter.next();
 
 
 
@@ -49,9 +49,9 @@
         <td colspan="2" align="center"><h3>Memory Pool MXBeans</h3></td>
     </tr>
     <%
-        Iterator iter2 = ManagementFactory.getMemoryPoolMXBeans().iterator();
+        final Iterator iter2 = ManagementFactory.getMemoryPoolMXBeans().iterator();
         while (iter2.hasNext()) {
-            MemoryPoolMXBean item2 = (MemoryPoolMXBean) iter2.next();
+            final MemoryPoolMXBean item2 = (MemoryPoolMXBean) iter2.next();
     %>
     <tr>
         <td colspan="2">

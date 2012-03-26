@@ -71,7 +71,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 
 	private long creationTime;
 
-	public SequestSubmit(final long maxLineLength, File paramsFile, File workingDir, File tarFile, File hostsFile) {
+	public SequestSubmit(final long maxLineLength, final File paramsFile, final File workingDir, final File tarFile, final File hostsFile) {
 		// this needs to be grabbed from the system
 		this.maxLineLength = (int) maxLineLength;
 		this.paramsFile = paramsFile;
@@ -86,7 +86,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	/**
 	 * add a dta file for submission
 	 */
-	public void addDtaFile(String fileName, boolean forced) {
+	public void addDtaFile(final String fileName, final boolean forced) {
 		if (n == 0) {
 			this.creationTime = new Date().getTime();
 		}
@@ -118,16 +118,16 @@ final class SequestSubmit implements SequestSubmitterInterface {
 
 		// do the cleanup
 		// now create the zip file
-		File zipFile = new File(tarFile + ".gz");
-		Date startZip = new Date();
+		final File zipFile = new File(tarFile + ".gz");
+		final Date startZip = new Date();
 		FileUtilities.quietDelete(zipFile);
 		try {
 			GZipUtilities.compressFile(this.tarFile, zipFile);
 		} catch (IOException e) {
 			throw new MprcException("gzip failed for " + this.tarFile, e);
 		}
-		Date endZip = new Date();
-		long zipTime = endZip.getTime() - startZip.getTime();
+		final Date endZip = new Date();
+		final long zipTime = endZip.getTime() - startZip.getTime();
 		LOGGER.debug("ziptime = " + zipTime);
 
 		// remove the tar file as no longer needed
@@ -147,25 +147,25 @@ final class SequestSubmit implements SequestSubmitterInterface {
 
 		this.submitCount++;
 		// see if a sequest.log exists
-		File sequestLog = new File(outputDir, SEQUEST_LOG);
+		final File sequestLog = new File(outputDir, SEQUEST_LOG);
 		if (sequestLog.exists()) {
 			// move the file to a name incremented one
 			FileUtilities.copyFile(sequestLog, new File(outputDir, sequestLog.getName() + "." + submitCount), true);
 		}
 
 
-		boolean lastFileNotProcessed = (this.accumulatedLength > this.maxLineLength);
+		final boolean lastFileNotProcessed = (this.accumulatedLength > this.maxLineLength);
 
 		// make a new list with one less file to submit to sequest
-		List<String> dtaFiles = new ArrayList<String>(this.getSequestDtaFiles());
+		final List<String> dtaFiles = new ArrayList<String>(this.getSequestDtaFiles());
 		if (lastFileNotProcessed) {
 			dtaFiles.remove(dtaFiles.size() - 1);
 		}
 
 		// recheck the length
 		long length = 0;
-		for (String dtaFile : dtaFiles) {
-			File file = new File(dtaFile);
+		for (final String dtaFile : dtaFiles) {
+			final File file = new File(dtaFile);
 			length += (file.getName()).length() + 1;
 		}
 		if (length > this.accumulatedLength) {
@@ -186,9 +186,9 @@ final class SequestSubmit implements SequestSubmitterInterface {
 
 		// blocking call for now
 
-		Thread t = new Thread(sequestRunner);
+		final Thread t = new Thread(sequestRunner);
 		t.setUncaughtExceptionHandler(new ProcessExceptionCatcher(this));
-		Date startSearch = new Date();
+		final Date startSearch = new Date();
 		t.start();
 
 		try {
@@ -196,8 +196,8 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		} catch (InterruptedException ignore) {
 			// SWALLOWED Does not affect the main flow
 		}
-		Date endSearch = new Date();
-		long searchTime = endSearch.getTime() - startSearch.getTime();
+		final Date endSearch = new Date();
+		final long searchTime = endSearch.getTime() - startSearch.getTime();
 		LOGGER.debug("searchtime = " + searchTime);
 
 
@@ -211,21 +211,21 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		try {
 			tt = new TarWriter(this.tarFile);
 			// .out and .dta files are in the working  dir for sequest
-			List<String> DtaToTar = new ArrayList<String>();
-			List<String> sequestDtaSnapshot = new ArrayList<String>(this.getSequestDtaFiles());
-			for (String aSequestDtaSnapshot : sequestDtaSnapshot) {
-				File sequestDtaSnapshotFile = new File(aSequestDtaSnapshot);
+			final List<String> DtaToTar = new ArrayList<String>();
+			final List<String> sequestDtaSnapshot = new ArrayList<String>(this.getSequestDtaFiles());
+			for (final String aSequestDtaSnapshot : sequestDtaSnapshot) {
+				final File sequestDtaSnapshotFile = new File(aSequestDtaSnapshot);
 				DtaToTar.add((new File(sequestRunner.getWorkingDir(), sequestDtaSnapshotFile.getName())).getAbsolutePath());
 			}
 			if (lastFileNotProcessed) {
 				DtaToTar.remove(DtaToTar.size() - 1);
 			}
 			// need to tar these files and the corresponding .out files
-			Date startTar = new Date();
-			Dta2TarWriter dtaWriter = new Dta2TarWriter();
+			final Date startTar = new Date();
+			final Dta2TarWriter dtaWriter = new Dta2TarWriter();
 			dtaWriter.writeDtaFilesToTar(DtaToTar, this.outputDir, tt);
-			Date endTar = new Date();
-			long tarTime = endTar.getTime() - startTar.getTime();
+			final Date endTar = new Date();
+			final long tarTime = endTar.getTime() - startTar.getTime();
 			LOGGER.debug("tartime = " + tarTime);
 		} finally {
 			if (tt != null) {
@@ -243,8 +243,8 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		LOGGER.debug("tar file = " + tt.getTarFile() + " has " + TarReader.readNumberHeaders(tt.getTarFile()) + " headers");
 
 		// then remove the files
-		int tn = this.sequestDtaFiles.size();
-		String last = this.sequestDtaFiles.get(tn - 1);
+		final int tn = this.sequestDtaFiles.size();
+		final String last = this.sequestDtaFiles.get(tn - 1);
 		this.sequestDtaFiles = new ArrayList<String>();
 		if (lastFileNotProcessed) {
 			this.sequestDtaFiles.add(last);
@@ -259,11 +259,11 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	class ProcessExceptionCatcher implements Thread.UncaughtExceptionHandler {
 		private SequestSubmitterInterface submitter;
 
-		public ProcessExceptionCatcher(SequestSubmitterInterface sequestSubmitter) {
+		public ProcessExceptionCatcher(final SequestSubmitterInterface sequestSubmitter) {
 			submitter = sequestSubmitter;
 		}
 
-		public void uncaughtException(Thread t, Throwable e) {
+		public void uncaughtException(final Thread t, final Throwable e) {
 			submitter.setExceptionThrown(e);
 			throw new MprcException(e);
 		}
@@ -274,7 +274,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	 *
 	 * @param tarFile - the tar file
 	 */
-	void validateTarFile(File tarFile) {
+	void validateTarFile(final File tarFile) {
 
 		try {
 			TarReader.readNumberHeaders(tarFile);
@@ -290,8 +290,8 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	 * @param tarFile - the tar file name
 	 * @param t       - the exception
 	 */
-	private void cleanTarOnFailure(File tarFile, Throwable t) {
-		String newName = FileUtilities.stripExtension(tarFile.getAbsolutePath()) + "_tar_backup";
+	private void cleanTarOnFailure(final File tarFile, final Throwable t) {
+		final String newName = FileUtilities.stripExtension(tarFile.getAbsolutePath()) + "_tar_backup";
 		if (tarFile.exists()) {
 			FileUtilities.rename(tarFile, new File(newName));
 		}
@@ -302,7 +302,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		return this.sequestDtaFiles.size();
 	}
 
-	public void setExceptionThrown(Throwable exceptionThrown) {
+	public void setExceptionThrown(final Throwable exceptionThrown) {
 		this.exceptionThrown = exceptionThrown;
 	}
 
@@ -310,7 +310,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		return sequestCaller;
 	}
 
-	public void setSequestCaller(SequestCallerInterface sequestCaller) {
+	public void setSequestCaller(final SequestCallerInterface sequestCaller) {
 		this.sequestCaller = sequestCaller;
 	}
 
@@ -318,7 +318,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		return this.maxLineLength;
 	}
 
-	public void setMaxLineLength(int maxLineLength) {
+	public void setMaxLineLength(final int maxLineLength) {
 		this.maxLineLength = maxLineLength;
 	}
 

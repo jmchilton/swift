@@ -35,7 +35,7 @@ public final class RegExTextFilter implements TextFilter {
 	 * @param regex the pattern you want to look for
 	 * @throws PatternSyntaxException
 	 */
-	public RegExTextFilter(String regex) {
+	public RegExTextFilter(final String regex) {
 		this.searchRegEx = regex;
 	}
 
@@ -46,7 +46,7 @@ public final class RegExTextFilter implements TextFilter {
 	 * @param toMatch the String that you want to test
 	 * @return true if this filter matches at least one segment of the toMatch String
 	 */
-	public boolean matches(String toMatch) {
+	public boolean matches(final String toMatch) {
 		compilePattern();
 
 		boolean result = this.pattern.matcher(toMatch).find();
@@ -61,7 +61,7 @@ public final class RegExTextFilter implements TextFilter {
 	 *
 	 * @param mode the mode that we want to use
 	 */
-	public void setMatchMode(MatchMode mode) {
+	public void setMatchMode(final MatchMode mode) {
 		this.mode = mode;
 	}
 

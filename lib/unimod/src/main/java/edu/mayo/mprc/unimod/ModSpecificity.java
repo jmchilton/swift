@@ -64,7 +64,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 	 * @param terminus     If the modification happens only at the terminus, specify which one.
 	 * @param proteinOnly  If the modification happens only at the terminus, can it be protein terminus only, or any peptide. Otherwise store null.
 	 */
-	public ModSpecificity(Mod modification, Character site, Terminus terminus, boolean proteinOnly, boolean hidden, String classification, Integer specificityGroup, String comments) {
+	public ModSpecificity(final Mod modification, final Character site, final Terminus terminus, final boolean proteinOnly, final boolean hidden, final String classification, final Integer specificityGroup, final String comments) {
 		setModification(modification);
 		setSite(site);
 		setTerm(terminus);
@@ -82,7 +82,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return modification;
 	}
 
-	private void setModification(Mod modification) {
+	private void setModification(final Mod modification) {
 		this.modification = modification;
 	}
 
@@ -94,7 +94,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return hidden != null && hidden;
 	}
 
-	private void setHidden(Boolean hidden) {
+	private void setHidden(final Boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -105,7 +105,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return site;
 	}
 
-	private void setSite(Character site) {
+	private void setSite(final Character site) {
 		this.site = site != null ? site : '*';
 	}
 
@@ -113,7 +113,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return term;
 	}
 
-	private void setTerm(Terminus term) {
+	private void setTerm(final Terminus term) {
 		this.term = term;
 	}
 
@@ -121,7 +121,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return proteinOnly;
 	}
 
-	private void setProteinOnly(Boolean proteinOnly) {
+	private void setProteinOnly(final Boolean proteinOnly) {
 		this.proteinOnly = proteinOnly;
 	}
 
@@ -129,7 +129,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return classification;
 	}
 
-	private void setClassification(String classification) {
+	private void setClassification(final String classification) {
 		this.classification = classification;
 	}
 
@@ -137,7 +137,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return specificityGroup;
 	}
 
-	private void setSpecificityGroup(Integer specificityGroup) {
+	private void setSpecificityGroup(final Integer specificityGroup) {
 		this.specificityGroup = specificityGroup;
 	}
 
@@ -153,10 +153,10 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 			return null;
 		}
 
-		StringBuilder place = new StringBuilder();
+		final StringBuilder place = new StringBuilder();
 
 		if (getSpecificityGroup() != null) {
-			for (ModSpecificity modSpecificity : groupSpecificities()) {
+			for (final ModSpecificity modSpecificity : groupSpecificities()) {
 				addLocation(place, modSpecificity);
 			}
 		} else {
@@ -172,7 +172,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 	public List<ModSpecificity> groupSpecificities() {
 		final List<ModSpecificity> groupModSpecificities = new ArrayList<ModSpecificity>(4);
 		final Set<ModSpecificity> modModSpecificitySet = modification.getModSpecificities();
-		for (ModSpecificity modSpecificity : modModSpecificitySet) {
+		for (final ModSpecificity modSpecificity : modModSpecificitySet) {
 			if (getSpecificityGroup().equals(modSpecificity.getSpecificityGroup())) {
 				groupModSpecificities.add(modSpecificity);
 			}
@@ -190,13 +190,13 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		if (modification.getTitle() == null) {
 			return "";
 		}
-		StringBuilder place = new StringBuilder();
+		final StringBuilder place = new StringBuilder();
 		addLocation(place, this);
 		return modification.getTitle() + " (" + place + ")";
 	}
 
-	private static void addLocation(StringBuilder place, ModSpecificity modSpecificity) {
-		StringBuilder text = new StringBuilder();
+	private static void addLocation(final StringBuilder place, final ModSpecificity modSpecificity) {
+		final StringBuilder text = new StringBuilder();
 		if (modSpecificity.isPositionProteinSpecific()) {
 			text.append(" Protein");
 		}
@@ -226,7 +226,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 	 * Two mods are considered equal, if they have everything the same, including unimportant properties like comments.
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -234,7 +234,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 			return false;
 		}
 
-		ModSpecificity other = (ModSpecificity) obj;
+		final ModSpecificity other = (ModSpecificity) obj;
 
 		if (getClassification() != null ? !getClassification().equals(other.getClassification()) : other.getClassification() != null) {
 			return false;
@@ -261,7 +261,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 
 	}
 
-	public int compareTo(ModSpecificity o) {
+	public int compareTo(final ModSpecificity o) {
 		if (o == null) {
 			return -1;
 		}
@@ -281,7 +281,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 		return comments;
 	}
 
-	private void setComments(String comments) {
+	private void setComments(final String comments) {
 		this.comments = comments;
 	}
 
@@ -353,7 +353,7 @@ public class ModSpecificity extends PersistableBase implements Comparable<ModSpe
 	 * @param proteinEnd Is the terminus on protein end only?
 	 * @return True if this specificity matches the requested parameters.
 	 */
-	public boolean matches(String acids, Terminus terminus, boolean proteinEnd) {
+	public boolean matches(final String acids, final Terminus terminus, final boolean proteinEnd) {
 		if (term != terminus) {
 			return false;
 		}

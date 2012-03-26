@@ -42,13 +42,13 @@ public final class ServiceFactory {
 	 * @return Service running at the given URI.
 	 * @throws MprcException Service could not be created.
 	 */
-	public Service createService(URI serviceUri) {
+	public Service createService(final URI serviceUri) {
 		// TODO: This is hardcoded right now. Eventually would allow registering of new URI handlers.
 		if (null == serviceUri) {
 			throw new MprcException("URI must not be null");
 		}
 
-		String uriString = serviceUri.toString();
+		final String uriString = serviceUri.toString();
 		if (uriString.startsWith(JMS_PREFIX)) {
 			return createJmsQueue(serviceUri);
 		}
@@ -56,10 +56,10 @@ public final class ServiceFactory {
 		throw new MprcException("Unsupported URI " + serviceUri.toString());
 	}
 
-	static String extractJmsQueueName(URI serviceUri) {
+	static String extractJmsQueueName(final URI serviceUri) {
 		// Parse the query part into queue name
-		String uriString = serviceUri.toString();
-		Matcher matcher = URI_SIMPLE_QUEUE_PART.matcher(uriString);
+		final String uriString = serviceUri.toString();
+		final Matcher matcher = URI_SIMPLE_QUEUE_PART.matcher(uriString);
 		if (matcher.find()) {
 			return matcher.group(1);
 		} else {
@@ -67,7 +67,7 @@ public final class ServiceFactory {
 		}
 	}
 
-	static UserInfo extractJmsUserinfo(URI serviceURI) {
+	static UserInfo extractJmsUserinfo(final URI serviceURI) {
 		return new UserInfo(serviceURI);
 	}
 
@@ -80,15 +80,15 @@ public final class ServiceFactory {
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	public static URI extractJmsBrokerUri(URI serviceUri) {
+	public static URI extractJmsBrokerUri(final URI serviceUri) {
 		if (serviceUri == null) {
 			throw new MprcException("The service uri must not be null.");
 		}
 		// We split the original URI. We extract the original JMS-specific part. The rest is removed.
 
-		String uriString = serviceUri.toString();
+		final String uriString = serviceUri.toString();
 
-		Matcher matcher = URI_BROKER_PART.matcher(uriString);
+		final Matcher matcher = URI_BROKER_PART.matcher(uriString);
 		if (matcher.matches()) {
 			final String uriPart = matcher.group(1);
 			try {
@@ -108,10 +108,10 @@ public final class ServiceFactory {
 	 * @return Service based on a simple queue that can be used for both sending and receiving of messages.
 	 * @throws edu.mayo.mprc.MprcException SimpleQueue could not be created.
 	 */
-	public static Service createJmsQueue(URI serviceUri) {
-		URI broker = extractJmsBrokerUri(serviceUri);
-		String name = extractJmsQueueName(serviceUri);
-		UserInfo info = extractJmsUserinfo(serviceUri);
+	public static Service createJmsQueue(final URI serviceUri) {
+		final URI broker = extractJmsBrokerUri(serviceUri);
+		final String name = extractJmsQueueName(serviceUri);
+		final UserInfo info = extractJmsUserinfo(serviceUri);
 
 		return new SimpleQueueService(broker, name, info.getUserName(), info.getPassword());
 	}

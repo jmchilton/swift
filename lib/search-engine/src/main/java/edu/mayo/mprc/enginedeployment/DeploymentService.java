@@ -32,7 +32,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param workPacket       - deployment request to process
 	 * @param progressReporter - to report progress
 	 */
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		progressReporter.reportStart();
 		DeploymentRequest request = null;
 		try {
@@ -46,7 +46,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 			}
 
 			synchronized (getCoDeployments()) {
-				List<ProgressReporter> list = getProgressReporters(request);
+				final List<ProgressReporter> list = getProgressReporters(request);
 				if (list != null) {
 					// We are already working on the particular request. Add the reporter to the list.
 					LOGGER.debug("We are already working on " + (request.isUndeployment() ? "undeployment" : "deployment") + " of " + request.getShortName());
@@ -95,7 +95,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param request
 	 * @return co-deployment key for table of co-deployments.
 	 */
-	private String getUniqueCoDeploymentKey(DeploymentRequest request) {
+	private String getUniqueCoDeploymentKey(final DeploymentRequest request) {
 		return request.isUndeployment() ? "Undeployment " + request.getShortName() : "Deployment " + request.getShortName();
 	}
 
@@ -107,7 +107,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	/**
 	 * Return all reporters waiting for a given request to be finished.
 	 */
-	private List<ProgressReporter> getProgressReporters(DeploymentRequest request) {
+	private List<ProgressReporter> getProgressReporters(final DeploymentRequest request) {
 		return getCoDeployments().get(getUniqueCoDeploymentKey(request));
 	}
 
@@ -117,26 +117,26 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param request  Request
 	 * @param reporter Reporter to set up of the request.
 	 */
-	private void addProgressReporter(DeploymentRequest request, ProgressReporter reporter) {
-		List<ProgressReporter> list = new ArrayList<ProgressReporter>();
+	private void addProgressReporter(final DeploymentRequest request, final ProgressReporter reporter) {
+		final List<ProgressReporter> list = new ArrayList<ProgressReporter>();
 		list.add(reporter);
 		getCoDeployments().put(getUniqueCoDeploymentKey(request), list);
 	}
 
-	private void removeProgressReporters(DeploymentRequest request) {
+	private void removeProgressReporters(final DeploymentRequest request) {
 		LOGGER.debug("Removing deployment from queue: " + request.getShortName());
 		getCoDeployments().remove(getUniqueCoDeploymentKey(request));
 	}
 
-	private void reportCoDeploymentFailure(DeploymentRequest request, Throwable t) {
+	private void reportCoDeploymentFailure(final DeploymentRequest request, final Throwable t) {
 		synchronized (getCoDeployments()) {
 			try {
-				List<ProgressReporter> reporters = getProgressReporters(request);
+				final List<ProgressReporter> reporters = getProgressReporters(request);
 				if (reporters == null) {
 					LOGGER.warn("No reporter list associated with " + request.getShortName() + ", could not report failure", t);
 					return;
 				}
-				for (ProgressReporter r : reporters) {
+				for (final ProgressReporter r : reporters) {
 					r.reportFailure(t);
 				}
 			} finally {
@@ -145,15 +145,15 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 		}
 	}
 
-	private void reportCoDeploymentSuccess(DeploymentRequest request, T result) {
+	private void reportCoDeploymentSuccess(final DeploymentRequest request, final T result) {
 		synchronized (getCoDeployments()) {
 			try {
-				List<ProgressReporter> reporters = getProgressReporters(request);
+				final List<ProgressReporter> reporters = getProgressReporters(request);
 				if (reporters == null) {
 					LOGGER.warn("No reporters associated with " + request.getShortName());
 					return;
 				}
-				for (ProgressReporter r : reporters) {
+				for (final ProgressReporter r : reporters) {
 					r.reportProgress(result);
 					r.reportSuccess();
 				}
@@ -170,12 +170,12 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param request the request that has the information we need for deployment including curation file path
 	 * @return the File that should be deployed.
 	 */
-	protected File getCurationFile(DeploymentRequest request) {
+	protected File getCurationFile(final DeploymentRequest request) {
 		if (request.getCurationFile() == null) {
 			throw new MprcException("Could not find a curation with this shortname or uniquename that has been run.");
 		}
 
-		File file = request.getCurationFile();
+		final File file = request.getCurationFile();
 		if (file == null) {
 			throw new MprcException("The curation specified hasn't been run for some reason.");//shouldn't happen
 		}
@@ -193,7 +193,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @return the File object represening the folder where we should deploy files from.
 	 */
 	protected File getConfigDeploymentFolder() {
-		File engineDeploymentFolder = this.deployableDbFolder;
+		final File engineDeploymentFolder = this.deployableDbFolder;
 
 		//if the folders are the same meaning they were explicity pointed to the same location
 		if (engineDeploymentFolder.exists()) {
@@ -209,7 +209,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param deployedFile
 	 * @param reportResult
 	 */
-	protected void cleanUpDeployedFiles(File deployedFile, DeploymentResult reportResult) {
+	protected void cleanUpDeployedFiles(final File deployedFile, final DeploymentResult reportResult) {
 		if (deployedFile.exists()) {
 			LOGGER.info("Deleting deployment files related to file: " + deployedFile.getAbsolutePath());
 			deleteDeployedFiles(deployedFile, reportResult);
@@ -225,12 +225,12 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param deployedFastaFile
 	 * @param reportResult
 	 */
-	protected void deleteDeployedFiles(File deployedFastaFile, DeploymentResult reportResult) {
+	protected void deleteDeployedFiles(final File deployedFastaFile, final DeploymentResult reportResult) {
 		if (deployedFastaFile.exists()) {
-			File deploymentFolder = deployedFastaFile.getParentFile();
+			final File deploymentFolder = deployedFastaFile.getParentFile();
 
-			List<File> notDeletedFiles = new LinkedList<File>();
-			List<File> deletedFiles = new LinkedList<File>();
+			final List<File> notDeletedFiles = new LinkedList<File>();
+			final List<File> deletedFiles = new LinkedList<File>();
 
 			validateAndDeleteDeploymentRelatedFiles(deployedFastaFile, deploymentFolder, deletedFiles, notDeletedFiles);
 
@@ -247,7 +247,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param deletedFiles
 	 * @param notDeletedFiles
 	 */
-	protected void validateAndDeleteDeploymentRelatedFiles(File deployedFastaFile, File deploymentFolder, List<File> deletedFiles, List<File> notDeletedFiles) {
+	protected void validateAndDeleteDeploymentRelatedFiles(final File deployedFastaFile, final File deploymentFolder, final List<File> deletedFiles, final List<File> notDeletedFiles) {
 		FileUtilities.deleteNow(deployedFastaFile);
 		deletedFiles.add(deployedFastaFile);
 	}
@@ -259,18 +259,18 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 	 * @param deletedFiles
 	 * @param notDeletedFiles
 	 */
-	protected void validateUndeploymentResults(DeploymentResult reportResult, List<File> deletedFiles, List<File> notDeletedFiles, File deploymentFolder) {
+	protected void validateUndeploymentResults(final DeploymentResult reportResult, final List<File> deletedFiles, final List<File> notDeletedFiles, final File deploymentFolder) {
 
-		StringBuilder notDeleted = new StringBuilder();
-		StringBuilder deleted = new StringBuilder("Deleted files:\n");
+		final StringBuilder notDeleted = new StringBuilder();
+		final StringBuilder deleted = new StringBuilder("Deleted files:\n");
 
-		for (File file : deletedFiles) {
+		for (final File file : deletedFiles) {
 			deleted.append("\t").append((file.isDirectory() ? "Directory: " : "File: "))
 					.append(file.getName())
 					.append("\n");
 		}
 
-		for (File file : notDeletedFiles) {
+		for (final File file : notDeletedFiles) {
 			notDeleted.append("\t").append((file.isDirectory() ? "Directory: " : "File: "))
 					.append(file.getName())
 					.append("\n");
@@ -292,7 +292,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 		return engineVersion;
 	}
 
-	public void setEngineVersion(String engineVersion) {
+	public void setEngineVersion(final String engineVersion) {
 		this.engineVersion = engineVersion;
 	}
 
@@ -300,7 +300,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 		return engineRootFolder;
 	}
 
-	public void setEngineRootFolder(File engineRootFolder) {
+	public void setEngineRootFolder(final File engineRootFolder) {
 		this.engineRootFolder = engineRootFolder;
 	}
 
@@ -308,7 +308,7 @@ public abstract class DeploymentService<T extends DeploymentResult> implements W
 		return deployableDbFolder;
 	}
 
-	public void setDeployableDbFolder(File deployableDbFolder) {
+	public void setDeployableDbFolder(final File deployableDbFolder) {
 		this.deployableDbFolder = deployableDbFolder;
 	}
 

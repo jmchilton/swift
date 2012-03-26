@@ -51,14 +51,14 @@ final class MgfToDtaFileParser {
 	private String outfilePrefix;
 
 
-	public MgfToDtaFileParser(SequestSubmitterInterface s, IonsModellerInterface i, String tempBase) {
+	public MgfToDtaFileParser(final SequestSubmitterInterface s, final IonsModellerInterface i, final String tempBase) {
 		this.sequestSubmitter = s;
 		this.ionsModeller = i;
 		this.tempWorkingDir = tempBase;
 	}
 
 
-	public void setMgfFileName(String fileName) {
+	public void setMgfFileName(final String fileName) {
 		this.mgfFileName = fileName;
 		this.outfilePrefix = new File(this.mgfFileName).getName();
 		this.outfilePrefix = FileUtilities.stripExtension(outfilePrefix);
@@ -76,7 +76,7 @@ final class MgfToDtaFileParser {
 	/**
 	 * parse the mgf file #mgfFileName for the dta files to pass to sequest
 	 */
-	public void getDTAsFromFile(BufferedReader br) {
+	public void getDTAsFromFile(final BufferedReader br) {
 
 
 		ionsModeller.setSequestSubmitter(this.sequestSubmitter);
@@ -112,7 +112,7 @@ final class MgfToDtaFileParser {
 
 	private char[] buffer = new char[8192 + 256];
 
-	public void getDTAsFromFileWithBlockReads(BufferedReader br) {
+	public void getDTAsFromFileWithBlockReads(final BufferedReader br) {
 
 
 		ionsModeller.setSequestSubmitter(this.sequestSubmitter);

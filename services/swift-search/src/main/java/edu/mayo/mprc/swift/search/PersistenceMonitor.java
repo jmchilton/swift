@@ -19,12 +19,12 @@ public final class PersistenceMonitor implements SearchMonitor {
 	private int searchRunId;
 	private SwiftDao swiftDao;
 
-	public PersistenceMonitor(int searchRunId, SwiftDao swiftDao) {
+	public PersistenceMonitor(final int searchRunId, final SwiftDao swiftDao) {
 		this.swiftDao = swiftDao;
 		this.searchRunId = searchRunId;
 	}
 
-	public void updateStatistics(ProgressReport report) {
+	public void updateStatistics(final ProgressReport report) {
 		swiftDao.begin();
 		try {
 			swiftDao.reportSearchRunProgress(searchRunId, report);
@@ -35,7 +35,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 		}
 	}
 
-	public void taskChange(TaskBase task) {
+	public void taskChange(final TaskBase task) {
 		// We do not report tasks failing internally
 		if (task.getState() == TaskState.INIT_FAILED || task.getState() == TaskState.UNINITIALIZED) {
 			return;
@@ -50,7 +50,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 		}
 	}
 
-	public void error(TaskBase task, Throwable t) {
+	public void error(final TaskBase task, final Throwable t) {
 		swiftDao.begin();
 		try {
 			syncTaskBase(task, TaskState.RUN_FAILED);
@@ -62,7 +62,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 		}
 	}
 
-	public void error(Throwable t) {
+	public void error(final Throwable t) {
 		// TODO: Ideally this would store the exception in a separate table that SearchRun table links to
 		LOGGER.error("Workflow engine error (logged here as it currently cannot be fully stored in the database):", t);
 		String message = MprcException.getDetailedMessage(t);
@@ -83,11 +83,11 @@ public final class PersistenceMonitor implements SearchMonitor {
 	/**
 	 * Task progress information arrived. This is called after the task has a chance to process the progress info.
 	 */
-	public void taskProgress(TaskBase task, Object progressInfo) {
+	public void taskProgress(final TaskBase task, final Object progressInfo) {
 		if (task instanceof AsyncTaskBase) {
 			if (progressInfo instanceof AssignedTaskData) {
 				swiftDao.begin();
-				TaskData data = syncTaskBase(task, task.getState());
+				final TaskData data = syncTaskBase(task, task.getState());
 				try {
 					swiftDao.storeAssignedTaskData(data, (AssignedTaskData) progressInfo);
 					swiftDao.commit();
@@ -100,7 +100,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 				// No matter what happened, we just update the task
 				swiftDao.begin();
 				try {
-					TaskData data = syncTaskBase(task, task.getState());
+					final TaskData data = syncTaskBase(task, task.getState());
 					// We got PercentDone message, let's store that
 					if (progressInfo instanceof PercentDone) {
 						final PercentDone done = (PercentDone) progressInfo;
@@ -116,7 +116,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 		}
 	}
 
-	private TaskData syncTaskBase(TaskBase task, TaskState state) {
+	private TaskData syncTaskBase(final TaskBase task, final TaskState state) {
 		final Integer id = task.getTaskDataId();
 		final TaskData data;
 		if (id == null) {
@@ -134,7 +134,7 @@ public final class PersistenceMonitor implements SearchMonitor {
 		data.setTaskName(task.getName());
 		data.setDescriptionLong(task.getDescription());
 		if (task instanceof AsyncTaskBase) {
-			AsyncTaskBase asyncTask = (AsyncTaskBase) task;
+			final AsyncTaskBase asyncTask = (AsyncTaskBase) task;
 			data.setQueueTimestamp(asyncTask.getTaskEnqueued());
 			data.setStartTimestamp(asyncTask.getTaskProcessingStarted());
 		} else {

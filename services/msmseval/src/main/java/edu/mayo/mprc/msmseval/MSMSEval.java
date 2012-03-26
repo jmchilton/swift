@@ -49,7 +49,7 @@ public final class MSMSEval {
 	 * @param msmsEvalExecutable msmsEval executable file. Can be either absolute or relative file - if the path does not denote an executable, exception is thrown.
 	 * @see MSMSEval More information about cutoff probability.
 	 */
-	public MSMSEval(File sourceMzXML, File msmsEvalParameter, File msmsEvalExecutable) {
+	public MSMSEval(final File sourceMzXML, final File msmsEvalParameter, final File msmsEvalExecutable) {
 		if (msmsEvalExecutable == null) {
 			throw new MprcException("The msmsEval executable path was not set");
 		}
@@ -58,7 +58,7 @@ public final class MSMSEval {
 		}
 		this.sourceMzXML = sourceMzXML;
 
-		List<String> parameters = new LinkedList<String>();
+		final List<String> parameters = new LinkedList<String>();
 
 		parameters.add(msmsEvalExecutable.getPath());
 		parameters.add(SOURCE_MZXML_FILE_FLAG);
@@ -77,7 +77,7 @@ public final class MSMSEval {
 	 * @param writeMSMSEvalOutputToLogger
 	 * @return int value which represents the exit value of the command, By convention, a return value of 0 means command run successfully.
 	 */
-	public void execute(boolean writeMSMSEvalOutputToLogger) {
+	public void execute(final boolean writeMSMSEvalOutputToLogger) {
 		if (processBuilder != null) {
 
 			ProcessCaller processCaller = null;

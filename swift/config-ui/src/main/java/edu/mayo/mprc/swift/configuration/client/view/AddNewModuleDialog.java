@@ -18,19 +18,19 @@ public final class AddNewModuleDialog extends DialogBox {
 	private final Button cancelButton = new Button("Cancel");
 	private final Context errorDisplay;
 
-	public AddNewModuleDialog(ApplicationModel model, List<String> types, final NewModuleCreatedCallback callback, Context errorDisplay) {
+	public AddNewModuleDialog(final ApplicationModel model, final List<String> types, final NewModuleCreatedCallback callback, final Context errorDisplay) {
 		super(false, true);
 		this.errorDisplay = errorDisplay;
 		this.setTitle("Add new module");
 
-		Panel radioPanel = new HorizontalPanel();
+		final Panel radioPanel = new HorizontalPanel();
 
 		{
-			Panel daemonPanel;
+			final Panel daemonPanel;
 			daemonPanel = new VerticalPanel();
 			boolean wasChecked = false;
-			for (DaemonModel daemonModel : model.getDaemons()) {
-				RadioButton radio = new RadioButton("daemonRadioGroup", "Add to " + daemonModel.getName() + " daemon.");
+			for (final DaemonModel daemonModel : model.getDaemons()) {
+				final RadioButton radio = new RadioButton("daemonRadioGroup", "Add to " + daemonModel.getName() + " daemon.");
 				if (!wasChecked) {
 					radio.setChecked(true);
 					wasChecked = true;
@@ -45,11 +45,11 @@ public final class AddNewModuleDialog extends DialogBox {
 		}
 
 		{
-			Panel typePanel = new VerticalPanel();
+			final Panel typePanel = new VerticalPanel();
 			boolean wasChecked = false;
-			for (String type : types) {
+			for (final String type : types) {
 				if (!UiBuilderClient.NONE_TYPE.equals(type)) {
-					RadioButton radio = new RadioButton("typeRadioGroup", "Create " + type + " module.");
+					final RadioButton radio = new RadioButton("typeRadioGroup", "Create " + type + " module.");
 					if (!wasChecked) {
 						radio.setChecked(true);
 						wasChecked = true;
@@ -70,23 +70,23 @@ public final class AddNewModuleDialog extends DialogBox {
 			return;
 		}
 
-		Panel buttonPanel = new HorizontalPanel();
+		final Panel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
 
 		okButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				okClicked(callback);
 			}
 		});
 
 		cancelButton.addClickListener(new ClickListener() {
-			public void onClick(Widget widget) {
+			public void onClick(final Widget widget) {
 				AddNewModuleDialog.this.hide();
 			}
 		});
 
-		Panel allPanel = new VerticalPanel();
+		final Panel allPanel = new VerticalPanel();
 		allPanel.add(radioPanel);
 		allPanel.add(buttonPanel);
 		this.add(allPanel);
@@ -99,9 +99,9 @@ public final class AddNewModuleDialog extends DialogBox {
 		return typeRadios.size() <= 1 && daemonRadios.size() <= 1;
 	}
 
-	private void okClicked(NewModuleCreatedCallback callback) {
+	private void okClicked(final NewModuleCreatedCallback callback) {
 		DaemonModel modelToAddTo = null;
-		for (Map.Entry<DaemonModel, RadioButton> entry : daemonRadios.entrySet()) {
+		for (final Map.Entry<DaemonModel, RadioButton> entry : daemonRadios.entrySet()) {
 			if (entry.getValue().isChecked()) {
 				modelToAddTo = entry.getKey();
 				break;
@@ -110,7 +110,7 @@ public final class AddNewModuleDialog extends DialogBox {
 		assert modelToAddTo != null;
 
 		String type = null;
-		for (Map.Entry<String, RadioButton> entry : typeRadios.entrySet()) {
+		for (final Map.Entry<String, RadioButton> entry : typeRadios.entrySet()) {
 			if (entry.getValue().isChecked()) {
 				type = entry.getKey();
 				break;

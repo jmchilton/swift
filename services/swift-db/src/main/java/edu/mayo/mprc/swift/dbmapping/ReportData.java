@@ -22,7 +22,7 @@ public class ReportData {
 	public ReportData() {
 	}
 
-	public ReportData(File file, DateTime dateCreated, SearchRun searchRun) {
+	public ReportData(final File file, final DateTime dateCreated, final SearchRun searchRun) {
 		this.reportFile = file;
 		this.dateCreated = dateCreated;
 		this.searchRun = searchRun;
@@ -32,7 +32,7 @@ public class ReportData {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
@@ -40,7 +40,7 @@ public class ReportData {
 		return reportFile;
 	}
 
-	public void setReportFile(File reportFile) {
+	public void setReportFile(final File reportFile) {
 		this.reportFile = reportFile;
 	}
 
@@ -48,7 +48,7 @@ public class ReportData {
 		return dateCreated;
 	}
 
-	public void setDateCreated(DateTime dateCreated) {
+	public void setDateCreated(final DateTime dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
@@ -56,7 +56,7 @@ public class ReportData {
 		return searchRun;
 	}
 
-	public void setSearchRun(SearchRun searchRun) {
+	public void setSearchRun(final SearchRun searchRun) {
 		this.searchRun = searchRun;
 	}
 
@@ -68,7 +68,7 @@ public class ReportData {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -76,7 +76,7 @@ public class ReportData {
 			return false;
 		}
 
-		ReportData that = (ReportData) o;
+		final ReportData that = (ReportData) o;
 
 		if (getDateCreated() != null ? !getDateCreated().equals(that.getDateCreated()) : that.getDateCreated() != null) {
 			return false;

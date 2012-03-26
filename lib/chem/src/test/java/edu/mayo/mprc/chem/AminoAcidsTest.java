@@ -17,7 +17,7 @@ public final class AminoAcidsTest {
 	public void testAminoAcidMasses() {
 		Assert.assertEquals(89.047679, set.getMonoisotopicMass("A"), "The mass of the amino acid does not match");
 		final AminoAcid gly = set.getForSingleLetterCode("G");
-		Chemical glycine = new Chemical(gly.getFormula() + " H2 O1", PeriodicTableFactory.getTestPeriodicTable());
+		final Chemical glycine = new Chemical(gly.getFormula() + " H2 O1", PeriodicTableFactory.getTestPeriodicTable());
 		Assert.assertEquals("Gly", gly.getCode3());
 		Assert.assertEquals(set.getMonoisotopicMass(String.valueOf(gly.getCode())), 75.032029);
 		// When we calculate the mass from the equation, we get better results

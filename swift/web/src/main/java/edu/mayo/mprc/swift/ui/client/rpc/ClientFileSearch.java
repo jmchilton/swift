@@ -36,7 +36,7 @@ public final class ClientFileSearch implements Serializable {
 	 * @param experiment         Name of the experiment.
 	 * @param enabledEngineCodes List of engine codes enabled for this file search
 	 */
-	public ClientFileSearch(String inputFilePath, String biologicalSample, String categoryName, String experiment, List<String> enabledEngineCodes, Long fileSize) {
+	public ClientFileSearch(final String inputFilePath, final String biologicalSample, final String categoryName, final String experiment, final List<String> enabledEngineCodes, final Long fileSize) {
 		path = inputFilePath;
 		this.biologicalSample = biologicalSample;
 		this.categoryName = categoryName;

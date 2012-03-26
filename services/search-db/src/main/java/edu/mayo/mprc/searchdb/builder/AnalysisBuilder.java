@@ -81,7 +81,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	 */
 	private Map<IdentifiedPeptide, IdentifiedPeptide> identifiedPeptides = new HashMap<IdentifiedPeptide, IdentifiedPeptide>(1000);
 
-	public AnalysisBuilder(ScaffoldModificationFormat format, ProteinSequenceTranslator translator, MassSpecDataExtractor massSpecDataExtractor) {
+	public AnalysisBuilder(final ScaffoldModificationFormat format, final ProteinSequenceTranslator translator, final MassSpecDataExtractor massSpecDataExtractor) {
 		this.format = format;
 		this.translator = translator;
 		this.massSpecDataExtractor = massSpecDataExtractor;
@@ -92,7 +92,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 		return new Analysis(reportData, scaffoldVersion, analysisDate, biologicalSamples.build());
 	}
 
-	ProteinSequence getProteinSequence(String accessionNumber, String databaseSources) {
+	ProteinSequence getProteinSequence(final String accessionNumber, final String databaseSources) {
 		final ProteinSequence proteinSequence = proteinSequences.get(accessionNumber);
 		if (proteinSequence == null) {
 			final ProteinSequence newProteinSequence = translator.getProteinSequence(accessionNumber, databaseSources);
@@ -106,7 +106,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	 * @param peptideSequence Peptide sequence to cache and translate.
 	 * @return The corresponding PeptideSequence object. The sequence is canonicalized to uppercase.
 	 */
-	PeptideSequence getPeptideSequence(String peptideSequence) {
+	PeptideSequence getPeptideSequence(final String peptideSequence) {
 		final String upperCaseSequence = peptideSequence.toUpperCase(Locale.US);
 		final PeptideSequence sequence = peptideSequences.get(upperCaseSequence);
 		if (sequence == null) {
@@ -126,9 +126,9 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	 * @return Unique identified peptide entry.
 	 */
 	IdentifiedPeptide getIdentifiedPeptide(
-			PeptideSequence peptideSequence,
-			String fixedModifications,
-			String variableModifications) {
+			final PeptideSequence peptideSequence,
+			final String fixedModifications,
+			final String variableModifications) {
 		final Collection<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
 		final LocalizedModList mappedMods = new LocalizedModList(Lists.transform(Lists.newArrayList(mods), mapLocalizedModification));
 
@@ -146,7 +146,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	 */
 	private final Function<LocalizedModification, LocalizedModification> mapLocalizedModification = new Function<LocalizedModification, LocalizedModification>() {
 		@Override
-		public LocalizedModification apply(@Nullable LocalizedModification from) {
+		public LocalizedModification apply(@Nullable final LocalizedModification from) {
 			final LocalizedModification result = localizedModifications.get(from);
 			if (result != null) {
 				return result;
@@ -160,7 +160,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 		return reportData;
 	}
 
-	public void setReportData(ReportData reportData) {
+	public void setReportData(final ReportData reportData) {
 		this.reportData = reportData;
 	}
 
@@ -168,7 +168,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 		return scaffoldVersion;
 	}
 
-	public void setScaffoldVersion(String scaffoldVersion) {
+	public void setScaffoldVersion(final String scaffoldVersion) {
 		this.scaffoldVersion = scaffoldVersion;
 	}
 
@@ -176,7 +176,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 		return analysisDate;
 	}
 
-	public void setAnalysisDate(DateTime analysisDate) {
+	public void setAnalysisDate(final DateTime analysisDate) {
 		this.analysisDate = analysisDate;
 	}
 
@@ -193,7 +193,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -201,7 +201,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 			return false;
 		}
 
-		AnalysisBuilder that = (AnalysisBuilder) o;
+		final AnalysisBuilder that = (AnalysisBuilder) o;
 
 		if (analysisDate != null ? !analysisDate.equals(that.analysisDate) : that.analysisDate != null) {
 			return false;

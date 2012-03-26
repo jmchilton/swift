@@ -25,7 +25,7 @@ public final class StreamRegExMatcher {
 	 * @throws java.io.FileNotFoundException if the file was not found
 	 * @throws java.io.IOException           if there was a problem reading the file or the file is over 500kB.
 	 */
-	public StreamRegExMatcher(Pattern toLookFor, File toMatchIn) throws IOException {
+	public StreamRegExMatcher(final Pattern toLookFor, final File toMatchIn) throws IOException {
 		if (!toMatchIn.exists()) {
 			throw new FileNotFoundException("The file given could not be found " + toMatchIn.getAbsolutePath());
 		}
@@ -34,12 +34,12 @@ public final class StreamRegExMatcher {
 		this.contents = new StringBuilder(Files.toString(file, Charsets.UTF_8));
 	}
 
-	public StreamRegExMatcher(File toMatchIn) throws IOException {
+	public StreamRegExMatcher(final File toMatchIn) throws IOException {
 		this(null, toMatchIn);
 	}
 
-	public void replaceAll(Map<Pattern, String> patternToReplacementMap) {
-		for (Map.Entry<Pattern, String> p : patternToReplacementMap.entrySet()) {
+	public void replaceAll(final Map<Pattern, String> patternToReplacementMap) {
+		for (final Map.Entry<Pattern, String> p : patternToReplacementMap.entrySet()) {
 			this.setPattern(p.getKey());
 			this.replaceAll(p.getValue());
 		}
@@ -50,7 +50,7 @@ public final class StreamRegExMatcher {
 	 *
 	 * @param newPattern the pattern you will now be using for matches.
 	 */
-	public synchronized void setPattern(Pattern newPattern) {
+	public synchronized void setPattern(final Pattern newPattern) {
 		this.pattern = newPattern;
 	}
 
@@ -62,7 +62,7 @@ public final class StreamRegExMatcher {
 	 * @return the string with all of the replacements made
 	 * @see java.util.regex.Matcher#replaceAll(String)
 	 */
-	public synchronized void replaceAll(String replacement) {
+	public synchronized void replaceAll(final String replacement) {
 		this.contents = new StringBuilder(pattern.matcher(contents).replaceAll(replacement));
 	}
 
@@ -83,8 +83,8 @@ public final class StreamRegExMatcher {
 	 * @throws java.io.IOException if there was a problem writing the file or if toWriteTo already existed
 	 * @see java.util.regex.Matcher#replaceAll(String)
 	 */
-	public synchronized void writeContentsToFile(File toWriteTo) throws IOException {
-		boolean overwriteSameFile = this.file != null && toWriteTo.equals(this.file);
+	public synchronized void writeContentsToFile(final File toWriteTo) throws IOException {
+		final boolean overwriteSameFile = this.file != null && toWriteTo.equals(this.file);
 		writeContentsToFile(toWriteTo, overwriteSameFile);
 	}
 
@@ -96,7 +96,7 @@ public final class StreamRegExMatcher {
 	 * @throws java.io.IOException if there was a problem writing the file or if toWriteTo already existed
 	 * @see java.util.regex.Matcher#replaceAll(String)
 	 */
-	public synchronized void writeContentsToFile(File toWriteTo, boolean overwrite) throws IOException {
+	public synchronized void writeContentsToFile(final File toWriteTo, final boolean overwrite) throws IOException {
 		FileUtilities.writeStringToFile(toWriteTo, this.contents.toString(), overwrite);
 	}
 

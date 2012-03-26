@@ -78,7 +78,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 	public PeptideSpectrumMatch() {
 	}
 
-	public PeptideSpectrumMatch(IdentifiedPeptide peptide, char previousAminoAcid, char nextAminoAcid, double bestPeptideIdentificationProbability, SearchEngineScores bestSearchEngineScores, SpectrumIdentificationCounts spectrumIdentificationCounts, int numberOfEnzymaticTerminii) {
+	public PeptideSpectrumMatch(final IdentifiedPeptide peptide, final char previousAminoAcid, final char nextAminoAcid, final double bestPeptideIdentificationProbability, final SearchEngineScores bestSearchEngineScores, final SpectrumIdentificationCounts spectrumIdentificationCounts, final int numberOfEnzymaticTerminii) {
 		this.peptide = peptide;
 		this.previousAminoAcid = previousAminoAcid;
 		this.nextAminoAcid = nextAminoAcid;
@@ -92,7 +92,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return peptide;
 	}
 
-	public void setPeptide(IdentifiedPeptide peptide) {
+	public void setPeptide(final IdentifiedPeptide peptide) {
 		this.peptide = peptide;
 	}
 
@@ -100,7 +100,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return previousAminoAcid;
 	}
 
-	public void setPreviousAminoAcid(char previousAminoAcid) {
+	public void setPreviousAminoAcid(final char previousAminoAcid) {
 		this.previousAminoAcid = previousAminoAcid;
 	}
 
@@ -108,7 +108,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return nextAminoAcid;
 	}
 
-	public void setNextAminoAcid(char nextAminoAcid) {
+	public void setNextAminoAcid(final char nextAminoAcid) {
 		this.nextAminoAcid = nextAminoAcid;
 	}
 
@@ -116,7 +116,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return numberOfEnzymaticTerminii;
 	}
 
-	public void setNumberOfEnzymaticTerminii(int numberOfEnzymaticTerminii) {
+	public void setNumberOfEnzymaticTerminii(final int numberOfEnzymaticTerminii) {
 		this.numberOfEnzymaticTerminii = numberOfEnzymaticTerminii;
 	}
 
@@ -124,7 +124,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return bestPeptideIdentificationProbability;
 	}
 
-	public void setBestPeptideIdentificationProbability(double bestPeptideIdentificationProbability) {
+	public void setBestPeptideIdentificationProbability(final double bestPeptideIdentificationProbability) {
 		this.bestPeptideIdentificationProbability = bestPeptideIdentificationProbability;
 	}
 
@@ -132,7 +132,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return bestSearchEngineScores;
 	}
 
-	public void setBestSearchEngineScores(SearchEngineScores bestSearchEngineScores) {
+	public void setBestSearchEngineScores(final SearchEngineScores bestSearchEngineScores) {
 		this.bestSearchEngineScores = bestSearchEngineScores;
 	}
 
@@ -140,12 +140,12 @@ public class PeptideSpectrumMatch extends PersistableBase {
 		return spectrumIdentificationCounts;
 	}
 
-	public void setSpectrumIdentificationCounts(SpectrumIdentificationCounts spectrumIdentificationCounts) {
+	public void setSpectrumIdentificationCounts(final SpectrumIdentificationCounts spectrumIdentificationCounts) {
 		this.spectrumIdentificationCounts = spectrumIdentificationCounts;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -153,7 +153,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 			return false;
 		}
 
-		PeptideSpectrumMatch that = (PeptideSpectrumMatch) o;
+		final PeptideSpectrumMatch that = (PeptideSpectrumMatch) o;
 
 		if (!MprcDoubles.within(that.getBestPeptideIdentificationProbability(), getBestPeptideIdentificationProbability(), PERCENT_TOLERANCE)) {
 			return false;
@@ -183,7 +183,7 @@ public class PeptideSpectrumMatch extends PersistableBase {
 	@Override
 	public int hashCode() {
 		int result;
-		long temp;
+		final long temp;
 		result = getPeptide() != null ? getPeptide().hashCode() : 0;
 		result = 31 * result + (int) getPreviousAminoAcid();
 		result = 31 * result + (int) getNextAminoAcid();

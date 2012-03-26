@@ -45,10 +45,10 @@ public class IndexedModSet implements Set<Mod> {
 	 *
 	 * @param m the Modification you want to have added to indices.
 	 */
-	private void index(Mod m) {
+	private void index(final Mod m) {
 		titleIndex.put(m.getTitle(), m);
 		if (m.getAltNames() != null) {
-			for (String altName : m.getAltNames()) {
+			for (final String altName : m.getAltNames()) {
 				titleIndex.put(altName, m);
 			}
 		}
@@ -67,7 +67,7 @@ public class IndexedModSet implements Set<Mod> {
 	 * @param title the title that you want ta Modification of
 	 * @return the Modification that matches the given title
 	 */
-	public Mod getByTitle(String title) {
+	public Mod getByTitle(final String title) {
 		return titleIndex.get(title);
 	}
 
@@ -77,8 +77,8 @@ public class IndexedModSet implements Set<Mod> {
 	 * @param recordId ID of the mod.
 	 * @return Mod of a given id, or null if none found.
 	 */
-	public Mod getByRecordId(int recordId) {
-		for (Mod mod : modifications) {
+	public Mod getByRecordId(final int recordId) {
+		for (final Mod mod : modifications) {
 			if (recordId == mod.getRecordID()) {
 				return mod;
 			}
@@ -96,7 +96,7 @@ public class IndexedModSet implements Set<Mod> {
 		 */
 		public static final Pattern MASCOT_SPECIFICITY = Pattern.compile("\\s*(.+?)\\s*\\(\\s*((?:Protein)?)\\s*((?:[NC]-term)?)\\s*([^)]*)?\\)");
 
-		public MascotNameParts(String title, String protein, String term, String acids) {
+		public MascotNameParts(final String title, final String protein, final String term, final String acids) {
 			this.title = title;
 			this.protein = protein;
 			this.term = term;
@@ -119,7 +119,7 @@ public class IndexedModSet implements Set<Mod> {
 			return acids;
 		}
 
-		public static MascotNameParts parseMascotName(String mascotName) {
+		public static MascotNameParts parseMascotName(final String mascotName) {
 			final Matcher matcher = MASCOT_SPECIFICITY.matcher(mascotName);
 			if (matcher.matches()) {
 				return new MascotNameParts(
@@ -143,15 +143,15 @@ public class IndexedModSet implements Set<Mod> {
 	 * <li>Title (C-term)</li>
 	 * </ul>
 	 */
-	public List<ModSpecificity> getSpecificitiesByMascotName(String mascotName) {
+	public List<ModSpecificity> getSpecificitiesByMascotName(final String mascotName) {
 		final MascotNameParts nameParts = MascotNameParts.parseMascotName(mascotName);
 		if (nameParts != null) {
 			final Mod modification = getByTitle(nameParts.getTitle());
 			if (modification == null) {
 				throw new MprcException("Cannot find modification named " + nameParts.getTitle());
 			}
-			boolean proteinEnd = "Protein".equalsIgnoreCase(nameParts.getProtein());
-			Terminus terminus;
+			final boolean proteinEnd = "Protein".equalsIgnoreCase(nameParts.getProtein());
+			final Terminus terminus;
 			if ("N-term".equalsIgnoreCase(nameParts.getTerm())) {
 				terminus = Terminus.Nterm;
 			} else if ("C-term".equalsIgnoreCase(nameParts.getTerm())) {
@@ -160,8 +160,8 @@ public class IndexedModSet implements Set<Mod> {
 				terminus = Terminus.Anywhere;
 			}
 
-			List<ModSpecificity> modSpecificities = new ArrayList<ModSpecificity>();
-			for (ModSpecificity modSpecificity : modification.getModSpecificities()) {
+			final List<ModSpecificity> modSpecificities = new ArrayList<ModSpecificity>();
+			for (final ModSpecificity modSpecificity : modification.getModSpecificities()) {
 				if (modSpecificity.matches(nameParts.getAcids(), terminus, proteinEnd)) {
 					modSpecificities.add(modSpecificity);
 				}
@@ -178,9 +178,9 @@ public class IndexedModSet implements Set<Mod> {
 	 * @param title the name you want to find aliases for
 	 * @return all of the aliases for the given name or null if name is not found, if there is not alternative names then empty list is returned.
 	 */
-	public Set<String> getAlternativeNames(String title) {
-		Set<String> retSet = new HashSet<String>();
-		Mod mod = getByTitle(title);
+	public Set<String> getAlternativeNames(final String title) {
+		final Set<String> retSet = new HashSet<String>();
+		final Mod mod = getByTitle(title);
 		if (mod == null) {
 			return null;
 		}
@@ -212,7 +212,7 @@ public class IndexedModSet implements Set<Mod> {
 	 * @param hidden      whether the modification is hidden or not
 	 * @return a list of admissible modifications, ordered by the quality of the match
 	 */
-	public List<ModSpecificity> findMatchingModSpecificities(Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
+	public List<ModSpecificity> findMatchingModSpecificities(final Double mass, final Double maxDelta, final Character site, final Terminus terminus, final Boolean proteinOnly, final Boolean hidden) {
 		Collection<List<Mod>> inRange = null;
 		if (mass != null && maxDelta != null) {
 			inRange = deltaMonoMassIndex.subMap(mass - maxDelta, mass + maxDelta).values();
@@ -220,10 +220,10 @@ public class IndexedModSet implements Set<Mod> {
 			inRange = deltaMonoMassIndex.values();
 		}
 
-		Collection<ModSpecificity> modsInMassRange = collectModSpecificities(inRange);
+		final Collection<ModSpecificity> modsInMassRange = collectModSpecificities(inRange);
 
-		ArrayList<ModSpecificityMatch> matchingModSpecificities = new ArrayList<ModSpecificityMatch>();
-		for (ModSpecificity sp : modsInMassRange) {
+		final ArrayList<ModSpecificityMatch> matchingModSpecificities = new ArrayList<ModSpecificityMatch>();
+		for (final ModSpecificity sp : modsInMassRange) {
 			final ModSpecificityMatch match = ModSpecificityMatch.match(sp, mass, maxDelta, site, terminus, proteinOnly, hidden);
 			if (match != null) {
 				matchingModSpecificities.add(match);
@@ -246,7 +246,7 @@ public class IndexedModSet implements Set<Mod> {
 		private final int hiddenMatch;
 		private final double massMatch;
 
-		private ModSpecificityMatch(ModSpecificity matchingModSpecificity, int siteMatch, int terminusMatch, int proteinOnlyMatch, int hiddenMatch, double massMatch) {
+		private ModSpecificityMatch(final ModSpecificity matchingModSpecificity, final int siteMatch, final int terminusMatch, final int proteinOnlyMatch, final int hiddenMatch, final double massMatch) {
 			this.matchingModSpecificity = matchingModSpecificity;
 			this.siteMatch = siteMatch;
 			this.terminusMatch = terminusMatch;
@@ -257,12 +257,12 @@ public class IndexedModSet implements Set<Mod> {
 
 		public static final Function<ModSpecificityMatch, ModSpecificity> GET_MOD_SPECIFICITY = new Function<ModSpecificityMatch, ModSpecificity>() {
 			@Override
-			public ModSpecificity apply(ModSpecificityMatch from) {
+			public ModSpecificity apply(final ModSpecificityMatch from) {
 				return from.getMatchingModSpecificity();
 			}
 		};
 
-		public static ModSpecificityMatch match(ModSpecificity sp, Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
+		public static ModSpecificityMatch match(final ModSpecificity sp, final Double mass, final Double maxDelta, final Character site, final Terminus terminus, final Boolean proteinOnly, final Boolean hidden) {
 			final int siteMatch = siteMatches(site, sp);
 			if (siteMatch == 0) {
 				return null;
@@ -295,7 +295,7 @@ public class IndexedModSet implements Set<Mod> {
 		 * @param sp       Specificity to match.
 		 * @return 0 - no match, 10 - perfect match
 		 */
-		private static int terminusMatches(Terminus terminus, ModSpecificity sp) {
+		private static int terminusMatches(final Terminus terminus, final ModSpecificity sp) {
 			if (terminus == null) {
 				return 1;
 			}
@@ -315,7 +315,7 @@ public class IndexedModSet implements Set<Mod> {
 		 * @param sp           Specificity to match the site against.
 		 * @return 0 - no match, 10 - perfect match
 		 */
-		private static int siteMatches(Character expectedSite, ModSpecificity sp) {
+		private static int siteMatches(final Character expectedSite, final ModSpecificity sp) {
 			if (expectedSite == null) {
 				return 1;
 			}
@@ -337,7 +337,7 @@ public class IndexedModSet implements Set<Mod> {
 		 * If everything is the same, the modification record id is used.
 		 */
 		@Override
-		public int compareTo(ModSpecificityMatch o) {
+		public int compareTo(final ModSpecificityMatch o) {
 			return ComparisonChain.start()
 					.compare(o.siteMatch, siteMatch)
 					.compare(o.terminusMatch, terminusMatch)
@@ -349,7 +349,7 @@ public class IndexedModSet implements Set<Mod> {
 		}
 
 		@Override
-		public boolean equals(Object o) {
+		public boolean equals(final Object o) {
 			if (this == o) {
 				return true;
 			}
@@ -362,7 +362,7 @@ public class IndexedModSet implements Set<Mod> {
 		@Override
 		public int hashCode() {
 			int result;
-			long temp;
+			final long temp;
 			result = siteMatch;
 			result = 31 * result + terminusMatch;
 			result = 31 * result + proteinOnlyMatch;
@@ -373,11 +373,11 @@ public class IndexedModSet implements Set<Mod> {
 		}
 	}
 
-	private static Set<ModSpecificity> collectModSpecificities(Collection<List<Mod>> inRange) {
-		Set<ModSpecificity> modsInMassRange = new HashSet<ModSpecificity>();
-		for (List<Mod> l : inRange) {
-			for (Mod m : l) {
-				for (ModSpecificity ms : m.getModSpecificities()) {
+	private static Set<ModSpecificity> collectModSpecificities(final Collection<List<Mod>> inRange) {
+		final Set<ModSpecificity> modsInMassRange = new HashSet<ModSpecificity>();
+		for (final List<Mod> l : inRange) {
+			for (final Mod m : l) {
+				for (final ModSpecificity ms : m.getModSpecificities()) {
 					modsInMassRange.add(ms);
 				}
 			}
@@ -391,8 +391,8 @@ public class IndexedModSet implements Set<Mod> {
 	 * <p/>
 	 * Currently this only takes into account the 'hidden' property so that ones that are not hidden are chosen over those that are
 	 */
-	public ModSpecificity findSingleMatchingModificationSet(Double mass, Double maxDelta, Character site, Terminus terminus, Boolean proteinOnly, Boolean hidden) {
-		List<ModSpecificity> allMatches = new ArrayList<ModSpecificity>(findMatchingModSpecificities(mass, maxDelta, site, terminus, proteinOnly, hidden));
+	public ModSpecificity findSingleMatchingModificationSet(final Double mass, final Double maxDelta, final Character site, final Terminus terminus, final Boolean proteinOnly, final Boolean hidden) {
+		final List<ModSpecificity> allMatches = new ArrayList<ModSpecificity>(findMatchingModSpecificities(mass, maxDelta, site, terminus, proteinOnly, hidden));
 
 		if (allMatches.isEmpty()) {
 			return null;
@@ -404,7 +404,7 @@ public class IndexedModSet implements Set<Mod> {
 
 				//favor non-hidden over hidden specificities.
 
-				public int compare(ModSpecificity o1, ModSpecificity o2) {
+				public int compare(final ModSpecificity o1, final ModSpecificity o2) {
 					//want hidden ones to be higher in the list
 					return Boolean.valueOf(o1.getHidden()).compareTo(o2.getHidden());
 				}
@@ -420,8 +420,8 @@ public class IndexedModSet implements Set<Mod> {
 	 * @return a list of all titles
 	 */
 	public Set<String> getAllTitles() {
-		Set<String> titleSet = new HashSet<String>();
-		for (Mod m : modifications) {
+		final Set<String> titleSet = new HashSet<String>();
+		for (final Mod m : modifications) {
 			titleSet.add(m.getTitle());
 		}
 		return titleSet;
@@ -431,10 +431,10 @@ public class IndexedModSet implements Set<Mod> {
 		return Collections.unmodifiableSet(modifications);
 	}
 
-	public Set<ModSpecificity> getAllSpecificities(boolean includeHidden) {
-		Set<ModSpecificity> modspecset = new TreeSet<ModSpecificity>();
-		for (Mod modification : modifications) {
-			for (ModSpecificity modspec : modification.getModSpecificities()) {
+	public Set<ModSpecificity> getAllSpecificities(final boolean includeHidden) {
+		final Set<ModSpecificity> modspecset = new TreeSet<ModSpecificity>();
+		for (final Mod modification : modifications) {
+			for (final ModSpecificity modspec : modification.getModSpecificities()) {
 				if (includeHidden || !modspec.getHidden()) {
 					modspecset.add(modspec);
 				}
@@ -447,8 +447,8 @@ public class IndexedModSet implements Set<Mod> {
 	 * @return A map from full_name to the monoisotopic mass.
 	 */
 	public Map<String, Double> getFullNameToMonoisotopicMassMap() {
-		Map<String, Double> map = new HashMap<String, Double>(modifications.size());
-		for (Mod mod : modifications) {
+		final Map<String, Double> map = new HashMap<String, Double>(modifications.size());
+		for (final Mod mod : modifications) {
 			map.put(mod.getFullName(), mod.getMassMono());
 			map.put(mod.getTitle(), mod.getMassMono());
 		}
@@ -459,7 +459,7 @@ public class IndexedModSet implements Set<Mod> {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -474,7 +474,7 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(final Object o) {
 		return modifications.contains((Mod) o);
 	}
 
@@ -489,12 +489,12 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <T> T[] toArray(final T[] a) {
 		return modifications.toArray(a);
 	}
 
 	@Override
-	public boolean add(Mod toAdd) {
+	public boolean add(final Mod toAdd) {
 		final boolean added = this.modifications.add(toAdd);
 		if (added) {
 			this.index(toAdd);
@@ -503,20 +503,20 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(final Object o) {
 		throw new MprcException("A modification set does not support removing its elements");
 	}
 
 	@Override
-	public boolean containsAll(Collection<?> c) {
+	public boolean containsAll(final Collection<?> c) {
 		return modifications.containsAll(c);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Mod> c) {
+	public boolean addAll(final Collection<? extends Mod> c) {
 		final boolean added = modifications.addAll(c);
 		if (added) {
-			for (Mod mod : c) {
+			for (final Mod mod : c) {
 				this.index(mod);
 			}
 		}
@@ -524,12 +524,12 @@ public class IndexedModSet implements Set<Mod> {
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> c) {
+	public boolean retainAll(final Collection<?> c) {
 		throw new MprcException("A modification set does not support retainAll");
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
+	public boolean removeAll(final Collection<?> c) {
 		throw new MprcException("A modification set does not support removeAll");
 	}
 
@@ -538,11 +538,11 @@ public class IndexedModSet implements Set<Mod> {
 		throw new MprcException("A modification set does not support clearing");
 	}
 
-	public int compareTo(Object t) {
+	public int compareTo(final Object t) {
 		if (!(t instanceof IndexedModSet)) {
 			return 1;
 		}
-		IndexedModSet tt = (IndexedModSet) t;
+		final IndexedModSet tt = (IndexedModSet) t;
 		ComparisonChain chain = ComparisonChain.start().nullsFirst();
 		chain = chain
 				.compare(this.name, tt.name)
@@ -566,12 +566,12 @@ public class IndexedModSet implements Set<Mod> {
 	 * @return HTML table describing in detail all the peculiarities of modifications defined in this set.
 	 */
 	public String report() {
-		StringBuilder result = new StringBuilder(modifications.size() * REPORT_ENTRY_SIZE);
+		final StringBuilder result = new StringBuilder(modifications.size() * REPORT_ENTRY_SIZE);
 		result.append("<table>\n<tr><th>Record Id</th><th>Title</th><th>Full Name</th><th>Mono Mass</th><th>Average Mass</th><th>Composition</th><th>Alt Names</th><th>" +
 				"Specificity Site</th><th>Specificity Terminus</th><th>Specificity Protein Only</th><th>Specificity Group</th><th>Hidden</th><th>Comments</th></tr>\n");
-		for (Mod mod : modifications) {
-			TreeSet<ModSpecificity> orderedModSpecificities = new TreeSet<ModSpecificity>(mod.getModSpecificities());
-			for (ModSpecificity specificity : orderedModSpecificities) {
+		for (final Mod mod : modifications) {
+			final TreeSet<ModSpecificity> orderedModSpecificities = new TreeSet<ModSpecificity>(mod.getModSpecificities());
+			for (final ModSpecificity specificity : orderedModSpecificities) {
 				result.append("<tr><td>").append(mod.getRecordID())
 						.append("</td><td>").append(mod.getTitle())
 						.append("</td><td>").append(mod.getFullName())
@@ -592,18 +592,18 @@ public class IndexedModSet implements Set<Mod> {
 		return result.toString();
 	}
 
-	static String cleanWhitespace(String text) {
+	static String cleanWhitespace(final String text) {
 		if (text == null) {
 			return "";
 		}
 		return CLEAN_COMMENTS.matcher(text).replaceAll(" ");
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof IndexedModSet)) {
 			return false;
 		}
-		IndexedModSet tt = (IndexedModSet) obj;
+		final IndexedModSet tt = (IndexedModSet) obj;
 		return Objects.equal(this.name, tt.name) &&
 				Objects.equal(this.modifications, tt.modifications);
 	}

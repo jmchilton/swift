@@ -31,10 +31,10 @@ public final class SearchTypeList extends ListBox implements SourcesChangeEvents
 			searchTypeEntries[i].index = i;
 		}
 
-		String searchTypeCookie = Cookies.getCookie(SEARCH_TYPE_COOKIE);
+		final String searchTypeCookie = Cookies.getCookie(SEARCH_TYPE_COOKIE);
 		SearchTypeEntry selectedSearchType = searchTypeEntries[0];
 		if (searchTypeCookie != null) {
-			for (SearchTypeEntry searchTypeEntry : searchTypeEntries) {
+			for (final SearchTypeEntry searchTypeEntry : searchTypeEntries) {
 				if (searchTypeEntry.getCookie().equalsIgnoreCase(searchTypeCookie)) {
 					selectedSearchType = searchTypeEntry;
 					break;
@@ -51,10 +51,10 @@ public final class SearchTypeList extends ListBox implements SourcesChangeEvents
 	 * Given a file setup, guess which search type it corresponds to.
 	 */
 	public static SearchType getSearchTypeFromSetup(
-			String searchTitle,
-			String fileNameWithoutExtension,
-			String experimentName,
-			String biologicalSampleName) {
+			final String searchTitle,
+			final String fileNameWithoutExtension,
+			final String experimentName,
+			final String biologicalSampleName) {
 		if (experimentName.equals(searchTitle)) {
 			// Likely there is one .SFD file for the entire experiment
 			if (biologicalSampleName.equals(fileNameWithoutExtension)) {
@@ -78,7 +78,7 @@ public final class SearchTypeList extends ListBox implements SourcesChangeEvents
 		return SearchType.fromType(Integer.parseInt(this.getValue(this.getSelectedIndex())));
 	}
 
-	public void setSelectedSearchType(SearchType type, boolean storeUserPreference) {
+	public void setSelectedSearchType(final SearchType type, final boolean storeUserPreference) {
 		for (int i = 0; i < this.getItemCount(); i++) {
 			if (this.getValue(i).equals(String.valueOf(type.getType()))) {
 				this.setSelectedIndex(i);
@@ -102,19 +102,19 @@ public final class SearchTypeList extends ListBox implements SourcesChangeEvents
 		storeSelectionInCookie();
 	}
 
-	public void addSelectionChangeListener(ChangeListener changeListener) {
+	public void addSelectionChangeListener(final ChangeListener changeListener) {
 		listeners.add(changeListener);
 	}
 
-	public void removeSelectionChangeListener(ChangeListener changeListener) {
+	public void removeSelectionChangeListener(final ChangeListener changeListener) {
 		listeners.remove(changeListener);
 	}
 
-	public void onClick(Widget widget) {
+	public void onClick(final Widget widget) {
 		fireSelectionChanged();
 	}
 
-	public void onChange(Widget widget) {
+	public void onChange(final Widget widget) {
 		fireSelectionChanged();
 	}
 
@@ -124,7 +124,7 @@ public final class SearchTypeList extends ListBox implements SourcesChangeEvents
 		private String cookie;
 		private int index;
 
-		private SearchTypeEntry(SearchType type, String label, String cookie) {
+		private SearchTypeEntry(final SearchType type, final String label, final String cookie) {
 			this.type = type;
 			this.label = label;
 			this.cookie = cookie;

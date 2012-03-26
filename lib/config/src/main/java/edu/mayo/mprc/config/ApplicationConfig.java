@@ -29,8 +29,8 @@ public final class ApplicationConfig implements ResourceConfig {
 	// List of daemons
 	private List<DaemonConfig> daemons = new ArrayList<DaemonConfig>(1);
 
-	public DaemonConfig getDaemonConfig(String daemonId) {
-		for (DaemonConfig config : daemons) {
+	public DaemonConfig getDaemonConfig(final String daemonId) {
+		for (final DaemonConfig config : daemons) {
 			if (daemonId.equals(config.getName())) {
 				return config;
 			}
@@ -38,13 +38,13 @@ public final class ApplicationConfig implements ResourceConfig {
 		throw new MprcException("No daemon of id " + daemonId + " is defined in " + toString());
 	}
 
-	public ApplicationConfig addDaemon(DaemonConfig daemon) {
+	public ApplicationConfig addDaemon(final DaemonConfig daemon) {
 		daemons.add(daemon);
 		daemon.setApplicationConfig(this);
 		return this;
 	}
 
-	public void removeDaemon(DaemonConfig daemon) {
+	public void removeDaemon(final DaemonConfig daemon) {
 		daemons.remove(daemon);
 		daemon.setApplicationConfig(null);
 	}
@@ -53,8 +53,8 @@ public final class ApplicationConfig implements ResourceConfig {
 		return daemons;
 	}
 
-	private static XStream createXStream(MultiFactory table) {
-		XStream xStream = new XStream(new DomDriver());
+	private static XStream createXStream(final MultiFactory table) {
+		final XStream xStream = new XStream(new DomDriver());
 		xStream.setMode(XStream.ID_REFERENCES);
 
 		xStream.processAnnotations(new Class[]{
@@ -62,17 +62,17 @@ public final class ApplicationConfig implements ResourceConfig {
 		});
 
 		/** Add all the module aliases */
-		for (Map.Entry<String, Class<? extends ResourceConfig>> entry : table.getConfigClasses().entrySet()) {
+		for (final Map.Entry<String, Class<? extends ResourceConfig>> entry : table.getConfigClasses().entrySet()) {
 			xStream.alias(entry.getKey(), entry.getValue());
 		}
 
 		return xStream;
 	}
 
-	public void save(File configFile, MultiFactory table) {
+	public void save(final File configFile, final MultiFactory table) {
 		BufferedWriter bufferedWriter = null;
 		try {
-			XStream xStream = createXStream(table);
+			final XStream xStream = createXStream(table);
 			bufferedWriter = new BufferedWriter(new FileWriter(configFile.getAbsoluteFile()));
 			bufferedWriter.write(xStream.toXML(this));
 		} catch (Exception t) {
@@ -82,14 +82,14 @@ public final class ApplicationConfig implements ResourceConfig {
 		}
 	}
 
-	public static ApplicationConfig load(File configFile, MultiFactory table) {
+	public static ApplicationConfig load(final File configFile, final MultiFactory table) {
 		BufferedReader bufferedReader = null;
 		try {
-			XStream xStream = createXStream(table);
+			final XStream xStream = createXStream(table);
 			bufferedReader = new BufferedReader(new FileReader(configFile));
 			final ApplicationConfig applicationConfig = (ApplicationConfig) xStream.fromXML(bufferedReader);
 			// Restore link to the parent from all daemons
-			for (DaemonConfig daemonConfig : applicationConfig.getDaemons()) {
+			for (final DaemonConfig daemonConfig : applicationConfig.getDaemons()) {
 				daemonConfig.setApplicationConfig(applicationConfig);
 			}
 			return applicationConfig;
@@ -100,15 +100,15 @@ public final class ApplicationConfig implements ResourceConfig {
 		}
 	}
 
-	public List<ResourceConfig> getModulesOfConfigType(Class<? extends ResourceConfig> type) {
-		List<ResourceConfig> list = new ArrayList<ResourceConfig>();
-		for (DaemonConfig daemonConfig : daemons) {
-			for (ResourceConfig resourceConfig : daemonConfig.getResources()) {
+	public List<ResourceConfig> getModulesOfConfigType(final Class<? extends ResourceConfig> type) {
+		final List<ResourceConfig> list = new ArrayList<ResourceConfig>();
+		for (final DaemonConfig daemonConfig : daemons) {
+			for (final ResourceConfig resourceConfig : daemonConfig.getResources()) {
 				if (type.equals(resourceConfig.getClass())) {
 					list.add(resourceConfig);
 				}
 			}
-			for (ServiceConfig serviceConfig : daemonConfig.getServices()) {
+			for (final ServiceConfig serviceConfig : daemonConfig.getServices()) {
 				if (type.equals(serviceConfig.getRunner().getWorkerConfiguration().getClass())) {
 					list.add(serviceConfig.getRunner().getWorkerConfiguration());
 				}
@@ -117,14 +117,14 @@ public final class ApplicationConfig implements ResourceConfig {
 		return list;
 	}
 
-	public DaemonConfig getDaemonForResource(ResourceConfig resource) {
-		for (DaemonConfig daemonConfig : daemons) {
-			for (ResourceConfig resourceConfig : daemonConfig.getResources()) {
+	public DaemonConfig getDaemonForResource(final ResourceConfig resource) {
+		for (final DaemonConfig daemonConfig : daemons) {
+			for (final ResourceConfig resourceConfig : daemonConfig.getResources()) {
 				if (resource.equals(resourceConfig)) {
 					return daemonConfig;
 				}
 			}
-			for (ServiceConfig serviceConfig : daemonConfig.getServices()) {
+			for (final ServiceConfig serviceConfig : daemonConfig.getServices()) {
 				if (resource.equals(serviceConfig.getRunner().getWorkerConfiguration())) {
 					return daemonConfig;
 				}
@@ -134,12 +134,12 @@ public final class ApplicationConfig implements ResourceConfig {
 	}
 
 	@Override
-	public Map<String, String> save(DependencyResolver resolver) {
+	public Map<String, String> save(final DependencyResolver resolver) {
 		return new HashMap<String, String>(1);
 	}
 
 	@Override
-	public void load(Map<String, String> values, DependencyResolver resolver) {
+	public void load(final Map<String, String> values, final DependencyResolver resolver) {
 		// App has no properties
 	}
 
@@ -153,21 +153,21 @@ public final class ApplicationConfig implements ResourceConfig {
 	 *
 	 * @param resourceConfig Resource or Daemon to be removed
 	 */
-	public void remove(ResourceConfig resourceConfig) {
+	public void remove(final ResourceConfig resourceConfig) {
 		if (resourceConfig instanceof DaemonConfig) {
 			removeDaemon((DaemonConfig) resourceConfig);
 			return;
 		}
 
-		for (DaemonConfig daemonConfig : getDaemons()) {
-			for (ResourceConfig resource : daemonConfig.getResources()) {
+		for (final DaemonConfig daemonConfig : getDaemons()) {
+			for (final ResourceConfig resource : daemonConfig.getResources()) {
 				if (resource.equals(resourceConfig)) {
 					daemonConfig.removeResource(resource);
 					return;
 				}
 			}
 
-			for (ServiceConfig service : daemonConfig.getServices()) {
+			for (final ServiceConfig service : daemonConfig.getServices()) {
 				if (service.getRunner().getWorkerConfiguration().equals(resourceConfig)) {
 					daemonConfig.removeService(service);
 					return;

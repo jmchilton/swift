@@ -51,7 +51,7 @@ public class TestRawToMgf {
 		runRawToMgf(10);
 	}
 
-	private void runRawToMgf(int spectrumBatchSize) {
+	private void runRawToMgf(final int spectrumBatchSize) {
 		File raw2MgfTemp = null;
 
 		final File mgfFile = new File(tempRootDir, "result.mgf");
@@ -60,7 +60,7 @@ public class TestRawToMgf {
 
 			FileUtilities.ensureFolderExists(raw2MgfTemp);
 
-			File rawFile = new File(rawFolder, "test.RAW");
+			final File rawFile = new File(rawFolder, "test.RAW");
 			FileUtilities.ensureFileExists(rawFile);
 			LOGGER.info("Raw file created. Raw file [" + rawFile.getAbsolutePath() + "]");
 
@@ -73,13 +73,13 @@ public class TestRawToMgf {
 				raw2mgfConfig.setWrapperScript(null);
 				raw2mgfConfig.setXvfbWrapperScript("");
 			}
-			ResourceFactory<RawToMgfWorker.Config, Worker> factory = new RawToMgfWorker.Factory();
-			RawToMgfWorker simpleDaemonWorker = (RawToMgfWorker) factory.create(raw2mgfConfig, null);
+			final ResourceFactory<RawToMgfWorker.Config, Worker> factory = new RawToMgfWorker.Factory();
+			final RawToMgfWorker simpleDaemonWorker = (RawToMgfWorker) factory.create(raw2mgfConfig, null);
 			simpleDaemonWorker.setSpectrumBatchSize(spectrumBatchSize);
 
-			String params = "-Z -V -MP100.00 -F1 -L20000 -EA100 -S1 -I10 -G1";
+			final String params = "-Z -V -MP100.00 -F1 -L20000 -EA100 -S1 -I10 -G1";
 
-			RawToMgfWorkPacket workPacket = new RawToMgfWorkPacket(params, mgfFile, false, rawFile, "0", false, false);
+			final RawToMgfWorkPacket workPacket = new RawToMgfWorkPacket(params, mgfFile, false, rawFile, "0", false, false);
 			WorkPacketBase.simulateTransfer(workPacket);
 
 			simpleDaemonWorker.processRequest(workPacket, new ProgressReporter() {
@@ -88,7 +88,7 @@ public class TestRawToMgf {
 					LOGGER.info("Started processing");
 				}
 
-				public void reportProgress(ProgressInfo progressInfo) {
+				public void reportProgress(final ProgressInfo progressInfo) {
 					LOGGER.info(progressInfo);
 				}
 
@@ -97,7 +97,7 @@ public class TestRawToMgf {
 					Assert.assertTrue(mgfFile.length() > 0, "MGF file was created, but it is empty.");
 				}
 
-				public void reportFailure(Throwable t) {
+				public void reportFailure(final Throwable t) {
 					throw new MprcException("Raw2Mgf worker failed to process work packet.", t);
 				}
 			});

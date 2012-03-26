@@ -35,13 +35,13 @@ public final class ModificationsLabel extends Composite implements Validatable {
 	public static final List<ClientModSpecificity> NO_SPECIFICITIES = new ArrayList<ClientModSpecificity>(0);
 
 
-	public ModificationsLabel(String param, String buttonName) {
+	public ModificationsLabel(final String param, final String buttonName) {
 		this.setParam(param);
 		this.setType(getType(param));
 		this.setButtonName(buttonName);
 	}
 
-	public void setEditor(ModificationSelectionEditor editor) {
+	public void setEditor(final ModificationSelectionEditor editor) {
 		this.editor = editor;
 		this.createModificationsLabel();
 	}
@@ -85,20 +85,20 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		selectedValues.clear();
 	}
 
-	public void addModifications(List<ClientModSpecificity> specs) {
+	public void addModifications(final List<ClientModSpecificity> specs) {
 		selectedValues.clear();
 		selectedValues.addAll(specs);
 		resetText();
 	}
 
 	private void resetText() {
-		StringBuilder text = new StringBuilder();
+		final StringBuilder text = new StringBuilder();
 		if (selectedValues.size() == 0) {
 			text.append("(none)");
 		} else {
-			Iterator<ClientModSpecificity> it = selectedValues.iterator();
+			final Iterator<ClientModSpecificity> it = selectedValues.iterator();
 			while (true) {
-				ClientModSpecificity mod = it.next();
+				final ClientModSpecificity mod = it.next();
 				text.append(mod.toString());
 				if (it.hasNext()) {
 					text.append("; ");
@@ -110,7 +110,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		this.getModsText().setText(text.toString());
 	}
 
-	private static String getType(String param) /* throws GWTServiceException */ {
+	private static String getType(final String param) /* throws GWTServiceException */ {
 		if (param.equals(ModificationSelectionEditor.FIXED_PARAM_NAME)) {
 			return ModificationSelectionEditor.FIXED_MOD_TYPE;
 		} else if (param.equals(ModificationSelectionEditor.VARIABLE_PARAM_NAME)) {
@@ -128,7 +128,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 	}
 
 	public ClientValue getClientValue() {
-		List<ClientValue> items = new ArrayList<ClientValue>(selectedValues);
+		final List<ClientValue> items = new ArrayList<ClientValue>(selectedValues);
 		return bundle(items);
 	}
 
@@ -137,10 +137,10 @@ public final class ModificationsLabel extends Composite implements Validatable {
 	 *
 	 * @param value
 	 */
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		if (value != null) {
-			List<? extends ClientValue> selected = unbundle(value);
-			for (ClientValue sel : selected) {
+			final List<? extends ClientValue> selected = unbundle(value);
+			for (final ClientValue sel : selected) {
 				selectedValues.add((ClientModSpecificity) sel);
 			}
 
@@ -152,7 +152,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		}
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		ValidationController.setValidationSeverity(validationSeverity, this.getEditCmd());
 	}
 
@@ -161,7 +161,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 	 *
 	 * @param values Allowed values.
 	 */
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		allowedValues = values;
 		if (values != null && values.size() > 0) {
 			getEditCmd().setEnabled(true);
@@ -172,7 +172,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return allowedValues;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 	}
 
@@ -182,23 +182,23 @@ public final class ModificationsLabel extends Composite implements Validatable {
 
 /* end PROXY interface  */
 
-	public static List<ClientModSpecificity> getValues(ClientValue value) {
+	public static List<ClientModSpecificity> getValues(final ClientValue value) {
 		if (value == null) {
 			return NO_SPECIFICITIES;
 		}
 		return ClientModSpecificitySet.cast(value).getModSpecificities();
 	}
 
-	public static ClientValue bundle(List<? extends ClientValue> selected) {
-		List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(selected.size());
-		ClientModSpecificitySet cmss = new ClientModSpecificitySet(specs);
-		for (ClientValue value : selected) {
+	public static ClientValue bundle(final List<? extends ClientValue> selected) {
+		final List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(selected.size());
+		final ClientModSpecificitySet cmss = new ClientModSpecificitySet(specs);
+		for (final ClientValue value : selected) {
 			specs.add(ClientModSpecificity.cast(value));
 		}
 		return cmss;
 	}
 
-	public static List<? extends ClientValue> unbundle(ClientValue value) {
+	public static List<? extends ClientValue> unbundle(final ClientValue value) {
 		return ClientModSpecificitySet.cast(value).getModSpecificities();
 	}
 
@@ -209,11 +209,11 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return null;
 	}
 
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		listeners.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		listeners.remove(changeListener);
 	}
 
@@ -230,7 +230,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return param;
 	}
 
-	public void setParam(String param) {
+	public void setParam(final String param) {
 		this.param = param;
 	}
 
@@ -241,7 +241,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -258,7 +258,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return modsText;
 	}
 
-	public void setModsText(Label modsText) {
+	public void setModsText(final Label modsText) {
 		this.modsText = modsText;
 	}
 
@@ -266,7 +266,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return editCmd;
 	}
 
-	public void setEditCmd(PushButton editCmd) {
+	public void setEditCmd(final PushButton editCmd) {
 		this.editCmd = editCmd;
 	}
 
@@ -277,7 +277,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return container;
 	}
 
-	public void setContainer(Panel container) {
+	public void setContainer(final Panel container) {
 		this.container = container;
 	}
 
@@ -295,7 +295,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return buttonName;
 	}
 
-	public void setButtonName(String buttonName) {
+	public void setButtonName(final String buttonName) {
 		this.buttonName = buttonName;
 	}
 
@@ -303,7 +303,7 @@ public final class ModificationsLabel extends Composite implements Validatable {
 		return popupLauncher;
 	}
 
-	public void setPopupLauncher(ModificationsLabelRunClick popupLauncher) {
+	public void setPopupLauncher(final ModificationsLabelRunClick popupLauncher) {
 		this.popupLauncher = popupLauncher;
 	}
 }

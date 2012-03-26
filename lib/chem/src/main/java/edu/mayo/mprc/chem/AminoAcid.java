@@ -14,7 +14,7 @@ public final class AminoAcid {
 
 	public static final GetCode GET_CODE = new GetCode();
 
-	public AminoAcid(char code, String code3, String formula, double monoisotopicMass, double averageMass) {
+	public AminoAcid(final char code, final String code3, final String formula, final double monoisotopicMass, final double averageMass) {
 		this.code = code;
 		this.code3 = code3;
 		this.formula = formula;
@@ -44,7 +44,7 @@ public final class AminoAcid {
 
 	public static class GetCode implements Function<AminoAcid, Character> {
 		@Override
-		public Character apply(AminoAcid from) {
+		public Character apply(final AminoAcid from) {
 			return from.getCode();
 		}
 	}

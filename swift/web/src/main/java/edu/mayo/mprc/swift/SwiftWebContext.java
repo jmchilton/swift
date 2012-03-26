@@ -30,7 +30,7 @@ public final class SwiftWebContext {
 	private SwiftWebContext() {
 	}
 
-	public static void initialize(File installPropertyFile, String daemonId) {
+	public static void initialize(final File installPropertyFile, final String daemonId) {
 		synchronized (SwiftWebContext.class) {
 			if (!initializationRan) {
 				initializationRan = true;
@@ -54,7 +54,7 @@ public final class SwiftWebContext {
 						daemonConfig = swiftConfig.getDaemons().get(0);
 
 					} else {
-						for (DaemonConfig cfg : swiftConfig.getDaemons()) {
+						for (final DaemonConfig cfg : swiftConfig.getDaemons()) {
 							if (cfg.getName().equals(daemonId)) {
 								daemonConfig = cfg;
 								break;
@@ -68,9 +68,9 @@ public final class SwiftWebContext {
 						}
 					}
 
-					Daemon daemon = daemonFactory.createDaemon(daemonConfig);
+					final Daemon daemon = daemonFactory.createDaemon(daemonConfig);
 
-					for (Object obj : daemon.getResources()) {
+					for (final Object obj : daemon.getResources()) {
 						if (obj instanceof WebUi) {
 							webUi = (WebUi) obj;
 							break;
@@ -104,7 +104,7 @@ public final class SwiftWebContext {
 		}
 	}
 
-	public static boolean isInitialized(String daemonId) {
+	public static boolean isInitialized(final String daemonId) {
 		synchronized (SwiftWebContext.class) {
 			if (initializedDaemon != null) {
 				return initializedDaemon.equals(daemonId);
@@ -114,11 +114,11 @@ public final class SwiftWebContext {
 		return false;
 	}
 
-	private static String getDaemonNameList(List<DaemonConfig> daemonConfigList) {
-		StringBuilder stringBuilder = new StringBuilder();
+	private static String getDaemonNameList(final List<DaemonConfig> daemonConfigList) {
+		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("\n");
 
-		for (DaemonConfig daemonConfig : daemonConfigList) {
+		for (final DaemonConfig daemonConfig : daemonConfigList) {
 			stringBuilder.append(daemonConfig.getName()).append("\n");
 		}
 
@@ -150,7 +150,7 @@ public final class SwiftWebContext {
 		synchronized (SwiftWebContext.class) {
 			final WebUi.Config config = new WebUi.Config();
 			final DependencyResolver dependencies = new DependencyResolver(null);
-			Map<String, String> map = new HashMap<String, String>(1);
+			final Map<String, String> map = new HashMap<String, String>(1);
 			map.put(WebUi.BROWSE_ROOT, "/");
 			config.load(map, dependencies);
 			webUi = (WebUi) MainFactoryContext.getResourceTable().createSingleton(config, dependencies);

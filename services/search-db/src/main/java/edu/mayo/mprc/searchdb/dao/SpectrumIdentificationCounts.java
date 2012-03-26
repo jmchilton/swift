@@ -34,7 +34,7 @@ public final class SpectrumIdentificationCounts {
 	public SpectrumIdentificationCounts() {
 	}
 
-	public SpectrumIdentificationCounts(int numberOfIdentifiedSpectra, int numberOfIdentified1HSpectra, int numberOfIdentified2HSpectra, int numberOfIdentified3HSpectra, int numberOfIdentified4HSpectra) {
+	public SpectrumIdentificationCounts(final int numberOfIdentifiedSpectra, final int numberOfIdentified1HSpectra, final int numberOfIdentified2HSpectra, final int numberOfIdentified3HSpectra, final int numberOfIdentified4HSpectra) {
 		this.numberOfIdentifiedSpectra = numberOfIdentifiedSpectra;
 		this.numberOfIdentified1HSpectra = numberOfIdentified1HSpectra;
 		this.numberOfIdentified2HSpectra = numberOfIdentified2HSpectra;
@@ -46,7 +46,7 @@ public final class SpectrumIdentificationCounts {
 		return numberOfIdentifiedSpectra;
 	}
 
-	public void setNumberOfIdentifiedSpectra(int numberOfIdentifiedSpectra) {
+	public void setNumberOfIdentifiedSpectra(final int numberOfIdentifiedSpectra) {
 		this.numberOfIdentifiedSpectra = numberOfIdentifiedSpectra;
 	}
 
@@ -54,7 +54,7 @@ public final class SpectrumIdentificationCounts {
 		return numberOfIdentified1HSpectra;
 	}
 
-	public void setNumberOfIdentified1HSpectra(int numberOfIdentified1HSpectra) {
+	public void setNumberOfIdentified1HSpectra(final int numberOfIdentified1HSpectra) {
 		this.numberOfIdentified1HSpectra = numberOfIdentified1HSpectra;
 	}
 
@@ -62,7 +62,7 @@ public final class SpectrumIdentificationCounts {
 		return numberOfIdentified2HSpectra;
 	}
 
-	public void setNumberOfIdentified2HSpectra(int numberOfIdentified2HSpectra) {
+	public void setNumberOfIdentified2HSpectra(final int numberOfIdentified2HSpectra) {
 		this.numberOfIdentified2HSpectra = numberOfIdentified2HSpectra;
 	}
 
@@ -70,7 +70,7 @@ public final class SpectrumIdentificationCounts {
 		return numberOfIdentified3HSpectra;
 	}
 
-	public void setNumberOfIdentified3HSpectra(int numberOfIdentified3HSpectra) {
+	public void setNumberOfIdentified3HSpectra(final int numberOfIdentified3HSpectra) {
 		this.numberOfIdentified3HSpectra = numberOfIdentified3HSpectra;
 	}
 
@@ -78,12 +78,12 @@ public final class SpectrumIdentificationCounts {
 		return numberOfIdentified4HSpectra;
 	}
 
-	public void setNumberOfIdentified4HSpectra(int numberOfIdentified4HSpectra) {
+	public void setNumberOfIdentified4HSpectra(final int numberOfIdentified4HSpectra) {
 		this.numberOfIdentified4HSpectra = numberOfIdentified4HSpectra;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -91,7 +91,7 @@ public final class SpectrumIdentificationCounts {
 			return false;
 		}
 
-		SpectrumIdentificationCounts that = (SpectrumIdentificationCounts) o;
+		final SpectrumIdentificationCounts that = (SpectrumIdentificationCounts) o;
 
 		if (getNumberOfIdentified1HSpectra() != that.getNumberOfIdentified1HSpectra()) {
 			return false;

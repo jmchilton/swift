@@ -114,7 +114,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 *
 	 * @param flag True or False value depending if the Label is to be editable or not
 	 */
-	public void setEditable(boolean flag) {
+	public void setEditable(final boolean flag) {
 		isEditable = flag;
 	}
 
@@ -230,17 +230,17 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param okButtonText     The text diplayed in the OK button.
 	 * @param cancelButtonText The text displayed in the Cancel button.
 	 */
-	private void createEditableLabel(String labelText, ChangeListener onUpdate,
-	                                 String okButtonText, String cancelButtonText) {
+	private void createEditableLabel(final String labelText, final ChangeListener onUpdate,
+	                                 final String okButtonText, final String cancelButtonText) {
 		// Put everything in a VerticalPanel
-		FlowPanel instance = new FlowPanel();
+		final FlowPanel instance = new FlowPanel();
 
 		// Create the Label element and add a ClickListener to call out Change method when clicked
 		text = new Label(labelText);
 		text.setStyleName("editableLabel-label");
 
 		text.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				changeTextLabel();
 			}
 		});
@@ -251,7 +251,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 		changeText.setStyleName("editableLabel-textBox");
 
 		changeText.addKeyboardListener(new KeyboardListenerAdapter() {
-			public void onKeyPress(Widget sender, char keyCode, int modifiers) {
+			public void onKeyPress(final Widget sender, final char keyCode, final int modifiers) {
 				// If return then save, if Esc cancel the change, otherwise do nothing
 				switch (keyCode) {
 					case 13:
@@ -271,7 +271,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 		changeTextArea.setStyleName("editableLabel-textArea");
 
 		changeTextArea.addKeyboardListener(new KeyboardListenerAdapter() {
-			public void onKeyPress(Widget sender, char keyCode, int modifiers) {
+			public void onKeyPress(final Widget sender, final char keyCode, final int modifiers) {
 				// If Esc then cancel the change, otherwise do nothing
 				switch (keyCode) {
 					case 27:
@@ -290,7 +290,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 		}
 
 		((SourcesClickEvents) confirmChange).addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				setTextLabel();
 			}
 		});
@@ -302,13 +302,13 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 		}
 
 		((SourcesClickEvents) cancelChange).addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				cancelLabelChange();
 			}
 		});
 
 		// Put the buttons in a panel
-		FlowPanel buttonPanel = new FlowPanel();
+		final FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.setStyleName("editableLabel-buttonPanel");
 		buttonPanel.add(confirmChange);
 		buttonPanel.add(cancelChange);
@@ -341,8 +341,8 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	/**
 	 * @param cancelButtonText
 	 */
-	protected Widget createCancelButton(String cancelButtonText) {
-		Button result = new Button();
+	protected Widget createCancelButton(final String cancelButtonText) {
+		final Button result = new Button();
 		result.setStyleName("editableLabel-buttons");
 		result.addStyleName("editableLabel-cancel");
 		result.setText(cancelButtonText);
@@ -352,8 +352,8 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	/**
 	 * @param okButtonText
 	 */
-	protected Widget createConfirmButton(String okButtonText) {
-		Button result = new Button();
+	protected Widget createConfirmButton(final String okButtonText) {
+		final Button result = new Button();
 		result.setStyleName("editableLabel-buttons");
 		result.addStyleName("editableLabel-confirm");
 		result.setText(okButtonText);
@@ -367,7 +367,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 *
 	 * @param b Boolean value, true means Label is word wrapped, false means it is not.
 	 */
-	public void setWordWrap(boolean b) {
+	public void setWordWrap(final boolean b) {
 		text.setWordWrap(b);
 	}
 
@@ -388,7 +388,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	/**
 	 * Set the text value of the Label
 	 */
-	public void setText(String newText) {
+	public void setText(final String newText) {
 		text.setText(newText);
 	}
 
@@ -399,7 +399,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param number Number of visible lines.
 	 * @throws RuntimeException if the editable label is not word-wrapped.
 	 */
-	public void setVisibleLines(int number) {
+	public void setVisibleLines(final int number) {
 		if (text.getWordWrap()) {
 			changeTextArea.setVisibleLines(number);
 		} else {
@@ -426,7 +426,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 *
 	 * @param length Length of editable area.
 	 */
-	public void setMaxLength(int length) {
+	public void setMaxLength(final int length) {
 		if (text.getWordWrap()) {
 			changeTextArea.setCharacterWidth(length);
 		} else {
@@ -452,7 +452,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 *
 	 * @throws RuntimeExcpetion If editable label is word wrapped.
 	 */
-	public void setVisibleLength(int length) {
+	public void setVisibleLength(final int length) {
 		if (text.getWordWrap()) {
 			throw new RuntimeException("Cannnot set visible length for a word-wrapped Editable Label");
 		} else {
@@ -483,8 +483,8 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param cancelText Text for use in overiding the default CANCEL button text.
 	 * @param wordWrap   Boolean representing if the label should be word wrapped or not
 	 */
-	public EditableLabel(String labelText, ChangeListener onUpdate, String okText,
-	                     String cancelText, boolean wordWrap) {
+	public EditableLabel(final String labelText, final ChangeListener onUpdate, final String okText,
+	                     final String cancelText, final boolean wordWrap) {
 		createEditableLabel(labelText, onUpdate, okText, cancelText);
 		text.setWordWrap(wordWrap);
 	}
@@ -496,7 +496,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param onUpdate  Handler object for performing actions once label is updated.
 	 * @param wordWrap  Boolean representing if the label should be word wrapped or not
 	 */
-	public EditableLabel(String labelText, ChangeListener onUpdate, boolean wordWrap) {
+	public EditableLabel(final String labelText, final ChangeListener onUpdate, final boolean wordWrap) {
 		createEditableLabel(labelText, onUpdate, defaultOkButtonText, defaultCancelButtonText);
 		text.setWordWrap(wordWrap);
 	}
@@ -510,8 +510,8 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param okText     Text for use in overiding the default OK button text.
 	 * @param cancelText Text for use in overiding the default CANCEL button text.
 	 */
-	public EditableLabel(String labelText, ChangeListener onUpdate, String okText,
-	                     String cancelText) {
+	public EditableLabel(final String labelText, final ChangeListener onUpdate, final String okText,
+	                     final String cancelText) {
 		createEditableLabel(labelText, onUpdate, okText, cancelText);
 	}
 
@@ -521,7 +521,7 @@ public class EditableLabel extends Composite implements HasWordWrap, HasText {
 	 * @param labelText The initial text of the label.
 	 * @param onUpdate  Handler object for performing actions once label is updated.
 	 */
-	public EditableLabel(String labelText, ChangeListener onUpdate) {
+	public EditableLabel(final String labelText, final ChangeListener onUpdate) {
 		createEditableLabel(labelText, onUpdate, defaultOkButtonText, defaultCancelButtonText);
 	}
 }

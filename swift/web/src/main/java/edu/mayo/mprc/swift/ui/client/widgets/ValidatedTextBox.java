@@ -41,7 +41,7 @@ public abstract class ValidatedTextBox extends TextBox {
 		 *
 		 * @param err The error message or null
 		 */
-		public void setLastError(String err) {
+		public void setLastError(final String err) {
 			lastError = err;
 		}
 
@@ -62,7 +62,7 @@ public abstract class ValidatedTextBox extends TextBox {
 		private PopupPanel p = new PopupPanel();
 
 		@Override
-		public void onLostFocus(Widget sender) {
+		public void onLostFocus(final Widget sender) {
 			final ValidatedTextBox vTxtBox = (ValidatedTextBox) sender;
 			if (!vTxtBox.isValueValid()) {
 				vTxtBox.setInvalid(true);
@@ -91,7 +91,7 @@ public abstract class ValidatedTextBox extends TextBox {
 	 *
 	 * @param v The validator to be used for this widget instance
 	 */
-	public ValidatedTextBox(TextBoxValidator v) {
+	public ValidatedTextBox(final TextBoxValidator v) {
 		validator = v;
 		super.addFocusListener(focusListener);
 	}
@@ -101,7 +101,7 @@ public abstract class ValidatedTextBox extends TextBox {
 	 *
 	 * @param b True to set the widget invalid or false to remove invalid state
 	 */
-	public final void setInvalid(boolean b) {
+	public final void setInvalid(final boolean b) {
 		if (b && !isInvalid()) {
 			this.addStyleDependentName("invalid");
 		} else if (!b && isInvalid()) {
@@ -138,7 +138,7 @@ public abstract class ValidatedTextBox extends TextBox {
 	}
 
 	@Override
-	public final void addFocusListener(FocusListener listener) {
+	public final void addFocusListener(final FocusListener listener) {
 		return;
 	}
 }

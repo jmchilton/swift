@@ -14,7 +14,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 	// Scaffold version
 	private final String scaffoldVersion;
 
-	QaTaskExperiment(String name, File spectraFile, String scaffoldVersion) {
+	QaTaskExperiment(final String name, final File spectraFile, final String scaffoldVersion) {
 		this.name = name;
 		this.spectraFile = spectraFile;
 		this.scaffoldVersion = scaffoldVersion;
@@ -28,7 +28,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 		return mgfToQaMap;
 	}
 
-	public void addMgfToRawEntry(MgfOutput mgfFile, File rawFile, RAWDumpTask rawDumpTask) {
+	public void addMgfToRawEntry(final MgfOutput mgfFile, final File rawFile, final RAWDumpTask rawDumpTask) {
 		synchronized (mgfToQaMap) {
 
 			QaTaskInputFiles qaInputFiles = null;
@@ -43,7 +43,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 		}
 	}
 
-	public void addMgfToMsmsEvalEntry(MgfOutput mgfFile, SpectrumQaTask spectrumQaTask) {
+	public void addMgfToMsmsEvalEntry(final MgfOutput mgfFile, final SpectrumQaTask spectrumQaTask) {
 		synchronized (mgfToQaMap) {
 
 			QaTaskInputFiles qaInputFiles = null;
@@ -57,7 +57,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 		}
 	}
 
-	public void addAdditionalSearchEntry(MgfOutput mgfFile, EngineSearchTask engineSearchTask) {
+	public void addAdditionalSearchEntry(final MgfOutput mgfFile, final EngineSearchTask engineSearchTask) {
 		synchronized (mgfToQaMap) {
 
 			QaTaskInputFiles qaInputFiles = null;
@@ -80,7 +80,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -88,7 +88,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 			return false;
 		}
 
-		QaTaskExperiment that = (QaTaskExperiment) o;
+		final QaTaskExperiment that = (QaTaskExperiment) o;
 
 		if (name != null ? !name.equals(that.name) : that.name != null) {
 			return false;
@@ -112,7 +112,7 @@ class QaTaskExperiment implements Comparable<QaTaskExperiment> {
 	}
 
 	@Override
-	public int compareTo(QaTaskExperiment o) {
+	public int compareTo(final QaTaskExperiment o) {
 		return ComparisonChain.start()
 				.compare(this.name, o.name)
 				.compare(this.spectraFile, o.spectraFile)

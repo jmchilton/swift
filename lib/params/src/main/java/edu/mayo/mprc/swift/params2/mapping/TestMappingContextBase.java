@@ -10,7 +10,7 @@ public class TestMappingContextBase implements MappingContext {
 	/**
 	 * Null Constructor
 	 */
-	public TestMappingContextBase(ParamsInfo paramsInfo) {
+	public TestMappingContextBase(final ParamsInfo paramsInfo) {
 		this.paramsInfo = paramsInfo;
 	}
 
@@ -20,22 +20,22 @@ public class TestMappingContextBase implements MappingContext {
 	}
 
 	@Override
-	public void startMapping(ParamName paramName) {
+	public void startMapping(final ParamName paramName) {
 		// Do nothing
 	}
 
 	@Override
-	public void reportError(String message, Throwable t) {
+	public void reportError(final String message, final Throwable t) {
 		throw new MprcException(message, t);
 	}
 
 	@Override
-	public void reportWarning(String message) {
+	public void reportWarning(final String message) {
 		throw new MprcException(message);
 	}
 
 	@Override
-	public void reportInfo(String message) {
+	public void reportInfo(final String message) {
 		throw new MprcException(message);
 	}
 
@@ -45,7 +45,7 @@ public class TestMappingContextBase implements MappingContext {
 	}
 
 	@Override
-	public Curation addLegacyCuration(String legacyName) {
+	public Curation addLegacyCuration(final String legacyName) {
 		return null;
 	}
 }

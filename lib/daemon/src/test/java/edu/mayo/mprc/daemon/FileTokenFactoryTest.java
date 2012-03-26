@@ -14,8 +14,8 @@ public final class FileTokenFactoryTest {
 
 	@Test
 	public void shouldSupportToString() {
-		FileToken token = FileTokenFactory.createAnonymousFileToken(new File("/file.txt"));
-		String tokenString = token.toString();
+		final FileToken token = FileTokenFactory.createAnonymousFileToken(new File("/file.txt"));
+		final String tokenString = token.toString();
 		Assert.assertTrue(tokenString.contains("/file.txt"), "The toString should mention the file path");
 		// (no null pointer exception)
 	}
@@ -89,20 +89,20 @@ public final class FileTokenFactoryTest {
 		transfer("fromdir", null, "todir", null);
 	}
 
-	private FileTokenFactory makeDaemonTokenFactory(String daemonSharedFolder, String daemonName) {
+	private FileTokenFactory makeDaemonTokenFactory(final String daemonSharedFolder, final String daemonName) {
 		final DaemonConfigInfo mainDaemon = new DaemonConfigInfo(daemonName, daemonSharedFolder);
-		FileTokenFactory factory = new FileTokenFactory(mainDaemon);
+		final FileTokenFactory factory = new FileTokenFactory(mainDaemon);
 		factory.setDatabaseDaemonConfigInfo(mainDaemon);
 		return factory;
 	}
 
-	private void roundtrip(String daemonSharedFolder, String daemonSharedFile, String expectedToken) {
-		String daemomName = "main";
-		FileTokenFactory factory = makeDaemonTokenFactory(daemonSharedFolder, daemomName);
-		File input = daemonSharedFile == null ? null : new File(daemonSharedFile);
-		String token = factory.fileToDatabaseToken(input);
+	private void roundtrip(final String daemonSharedFolder, final String daemonSharedFile, final String expectedToken) {
+		final String daemomName = "main";
+		final FileTokenFactory factory = makeDaemonTokenFactory(daemonSharedFolder, daemomName);
+		final File input = daemonSharedFile == null ? null : new File(daemonSharedFile);
+		final String token = factory.fileToDatabaseToken(input);
 		Assert.assertEquals(token, expectedToken, "The tokens stored and retrieved from the database do not match");
-		File output = factory.databaseTokenToFile(token);
+		final File output = factory.databaseTokenToFile(token);
 		Assert.assertEquals(output == null ? null : output.getAbsoluteFile(), input == null ? null : input.getAbsoluteFile(), "The file translations should round trip through database without changing the file");
 	}
 
@@ -117,13 +117,13 @@ public final class FileTokenFactoryTest {
 		transfer("C:", "C:\\hello\\test.txt", "D:\\", "D:\\hello\\test.txt");
 	}
 
-	private void transfer(String homeDaemon1, String sourceFile, String homeDaemon2, String destFile) {
+	private void transfer(final String homeDaemon1, final String sourceFile, final String homeDaemon2, final String destFile) {
 		final FileTokenFactory factory1 = makeDaemonTokenFactory(homeDaemon1, "daemon1");
 		final File input = sourceFile == null ? null : new File(sourceFile);
 		final FileToken token = FileTokenFactory.createAnonymousFileToken(input);
 		final FileToken beforeSendToken = factory1.translateBeforeTransfer(token);
 
-		ReceiverTokenTranslator receiveTranslator = makeDaemonTokenFactory(homeDaemon2, "daemon2");
+		final ReceiverTokenTranslator receiveTranslator = makeDaemonTokenFactory(homeDaemon2, "daemon2");
 		final File output = receiveTranslator.getFile(beforeSendToken);
 		final File expectedOutput = destFile == null ? null : new File(destFile);
 

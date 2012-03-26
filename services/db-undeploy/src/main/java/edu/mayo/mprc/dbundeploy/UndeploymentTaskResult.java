@@ -17,7 +17,7 @@ public final class UndeploymentTaskResult implements Serializable {
 	private String outputLogFilePath;
 	private LinkedList<String> messages;
 
-	public UndeploymentTaskResult(boolean wasSuccessful, String outputLogFilePath, String errorLogFilePath) {
+	public UndeploymentTaskResult(final boolean wasSuccessful, final String outputLogFilePath, final String errorLogFilePath) {
 		this.wasSuccessful = wasSuccessful;
 		this.errorLogFilePath = errorLogFilePath;
 		this.outputLogFilePath = outputLogFilePath;
@@ -25,13 +25,13 @@ public final class UndeploymentTaskResult implements Serializable {
 		messages = new LinkedList<String>();
 	}
 
-	public void addMessage(String message) {
+	public void addMessage(final String message) {
 		if (message != null) {
 			messages.add(message);
 		}
 	}
 
-	public void addAllMessage(Collection<String> messages) {
+	public void addAllMessage(final Collection<String> messages) {
 		if (messages != null) {
 			this.messages.addAll(messages);
 		}
@@ -41,7 +41,7 @@ public final class UndeploymentTaskResult implements Serializable {
 		return messages;
 	}
 
-	public void setExecutionError(Throwable executionError) {
+	public void setExecutionError(final Throwable executionError) {
 		this.executionError = executionError;
 	}
 
@@ -53,7 +53,7 @@ public final class UndeploymentTaskResult implements Serializable {
 		return wasSuccessful;
 	}
 
-	public void setErrorLogFilePath(String errorLogFilePath) {
+	public void setErrorLogFilePath(final String errorLogFilePath) {
 		this.errorLogFilePath = errorLogFilePath;
 	}
 
@@ -61,7 +61,7 @@ public final class UndeploymentTaskResult implements Serializable {
 		return errorLogFilePath;
 	}
 
-	public void setOutputLogFilePath(String outputLogFilePath) {
+	public void setOutputLogFilePath(final String outputLogFilePath) {
 		this.outputLogFilePath = outputLogFilePath;
 	}
 
@@ -70,9 +70,9 @@ public final class UndeploymentTaskResult implements Serializable {
 	}
 
 	public String toString() {
-		StringBuilder builder = new StringBuilder("Messages:");
+		final StringBuilder builder = new StringBuilder("Messages:");
 
-		for (String str : messages) {
+		for (final String str : messages) {
 			builder.append("\n").append(str);
 		}
 

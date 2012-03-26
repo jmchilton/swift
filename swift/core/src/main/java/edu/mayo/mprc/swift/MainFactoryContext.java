@@ -44,7 +44,7 @@ public final class MainFactoryContext {
 	 * @param beanId Bean id we want.
 	 * @return The bean for <code>beanId</code>.
 	 */
-	private static Object getBean(String beanId) {
+	private static Object getBean(final String beanId) {
 		return getContext().getBean(beanId);
 	}
 

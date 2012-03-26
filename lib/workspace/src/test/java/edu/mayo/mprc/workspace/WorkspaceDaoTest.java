@@ -16,7 +16,7 @@ public final class WorkspaceDaoTest extends DaoTest {
 
 	@BeforeClass
 	public void setup() {
-		WorkspaceDaoHibernate workspaceDaoHibernate = new WorkspaceDaoHibernate();
+		final WorkspaceDaoHibernate workspaceDaoHibernate = new WorkspaceDaoHibernate();
 		workspaceDao = workspaceDaoHibernate;
 
 		initializeDatabase(Arrays.asList(workspaceDaoHibernate));
@@ -31,7 +31,7 @@ public final class WorkspaceDaoTest extends DaoTest {
 	public void getUserNamesTest() throws Throwable {
 		workspaceDao.begin();
 		try {
-			List<User> users = workspaceDao.getUsers();
+			final List<User> users = workspaceDao.getUsers();
 			workspaceDao.commit();
 			Assert.assertTrue((users != null && users.size() == 0), "no user names should be found");
 		} catch (Exception t) {
@@ -44,7 +44,7 @@ public final class WorkspaceDaoTest extends DaoTest {
 	public void listUsersTest() throws Throwable {
 		workspaceDao.begin();
 		try {
-			Change change = new Change("Test user added", new DateTime());
+			final Change change = new Change("Test user added", new DateTime());
 			workspaceDao.addNewUser("Roman", "Zenka", "zenka.roman@mayo.edu", change);
 			final List<User> list = workspaceDao.getUsers();
 			workspaceDao.commit();

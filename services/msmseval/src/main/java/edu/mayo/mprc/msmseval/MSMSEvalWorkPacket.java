@@ -26,11 +26,11 @@ public final class MSMSEvalWorkPacket extends WorkPacketBase implements Cachable
 	 * @param outputDirectory
 	 * @param taskId
 	 */
-	public MSMSEvalWorkPacket(File sourceMGFFile, File msmsEvalParamFile, File outputDirectory, String taskId) {
+	public MSMSEvalWorkPacket(final File sourceMGFFile, final File msmsEvalParamFile, final File outputDirectory, final String taskId) {
 		this(sourceMGFFile, msmsEvalParamFile, outputDirectory, taskId, false);
 	}
 
-	public MSMSEvalWorkPacket(File sourceMGFFile, File msmsEvalParamFile, File outputDirectory, String taskId, boolean fromScratch) {
+	public MSMSEvalWorkPacket(final File sourceMGFFile, final File msmsEvalParamFile, final File outputDirectory, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		this.sourceMGFFile = sourceMGFFile;
@@ -69,7 +69,7 @@ public final class MSMSEvalWorkPacket extends WorkPacketBase implements Cachable
 
 	@Override
 	public String getStringDescriptionOfTask() {
-		StringBuilder description = new StringBuilder();
+		final StringBuilder description = new StringBuilder();
 		description
 				.append("Input:")
 				.append(getSourceMGFFile().getAbsolutePath())
@@ -81,7 +81,7 @@ public final class MSMSEvalWorkPacket extends WorkPacketBase implements Cachable
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new MSMSEvalWorkPacket(
 				getSourceMGFFile(),
 				getMsmsEvalParamFile(),
@@ -99,14 +99,14 @@ public final class MSMSEvalWorkPacket extends WorkPacketBase implements Cachable
 	}
 
 	@Override
-	public boolean cacheIsStale(File subFolder, List<String> outputFiles) {
+	public boolean cacheIsStale(final File subFolder, final List<String> outputFiles) {
 		final long inputFileModified = getSourceMGFFile().lastModified();
 		return inputFileModified > new File(subFolder, outputFiles.get(0)).lastModified() ||
 				inputFileModified > new File(subFolder, outputFiles.get(1)).lastModified();
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 		final File outputFile = new File(targetFolder, outputFiles.get(0));
 		final File emFile = new File(targetFolder, outputFiles.get(1));
 		reporter.reportProgress(

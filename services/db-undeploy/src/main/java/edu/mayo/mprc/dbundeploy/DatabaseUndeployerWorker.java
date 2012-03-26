@@ -50,7 +50,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 	private static final String SCAFFOLD3_DEPLOYER = "scaffoldDeployer";
 	private static final String PEAKS_DEPLOYER = "peaksDeployer";
 
-	public DatabaseUndeployerWorker(FileTokenFactory fileTokenFactory, CurationDao curationDao) {
+	public DatabaseUndeployerWorker(final FileTokenFactory fileTokenFactory, final CurationDao curationDao) {
 		this.fileTokenFactory = fileTokenFactory;
 		this.curationDao = curationDao;
 	}
@@ -59,7 +59,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return mascotDeployerDaemon;
 	}
 
-	public void setMascotDeployerDaemon(DaemonConnection mascotDeployerDaemon) {
+	public void setMascotDeployerDaemon(final DaemonConnection mascotDeployerDaemon) {
 		this.mascotDeployerDaemon = mascotDeployerDaemon;
 	}
 
@@ -67,7 +67,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return omssaDeployerDaemon;
 	}
 
-	public void setOmssaDeployerDaemon(DaemonConnection omssaDeployerDaemon) {
+	public void setOmssaDeployerDaemon(final DaemonConnection omssaDeployerDaemon) {
 		this.omssaDeployerDaemon = omssaDeployerDaemon;
 	}
 
@@ -75,7 +75,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return tandemDeployerDaemon;
 	}
 
-	public void setTandemDeployerDaemon(DaemonConnection tandemDeployerDaemon) {
+	public void setTandemDeployerDaemon(final DaemonConnection tandemDeployerDaemon) {
 		this.tandemDeployerDaemon = tandemDeployerDaemon;
 	}
 
@@ -83,7 +83,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return sequestDeployerDaemon;
 	}
 
-	public void setSequestDeployerDaemon(DaemonConnection sequestDeployerDaemon) {
+	public void setSequestDeployerDaemon(final DaemonConnection sequestDeployerDaemon) {
 		this.sequestDeployerDaemon = sequestDeployerDaemon;
 	}
 
@@ -91,7 +91,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return scaffoldDeployerDaemon;
 	}
 
-	public void setScaffoldDeployerDaemon(DaemonConnection scaffoldDeployerDaemon) {
+	public void setScaffoldDeployerDaemon(final DaemonConnection scaffoldDeployerDaemon) {
 		this.scaffoldDeployerDaemon = scaffoldDeployerDaemon;
 	}
 
@@ -99,7 +99,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return peaksDeployerDaemon;
 	}
 
-	public void setPeaksDeployerDaemon(DaemonConnection peaksDeployerDaemon) {
+	public void setPeaksDeployerDaemon(final DaemonConnection peaksDeployerDaemon) {
 		this.peaksDeployerDaemon = peaksDeployerDaemon;
 	}
 
@@ -107,12 +107,12 @@ public final class DatabaseUndeployerWorker implements Worker {
 		return scaffold3DeployerDaemon;
 	}
 
-	public void setScaffold3DeployerDaemon(DaemonConnection scaffold3DeployerDaemon) {
+	public void setScaffold3DeployerDaemon(final DaemonConnection scaffold3DeployerDaemon) {
 		this.scaffold3DeployerDaemon = scaffold3DeployerDaemon;
 	}
 
 	@Override
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -123,21 +123,21 @@ public final class DatabaseUndeployerWorker implements Worker {
 		}
 	}
 
-	protected void process(WorkPacket workPacket, ProgressReporter progressReporter) {
-		DatabaseUndeployerWorkPacket undeployerWorkPacket = (DatabaseUndeployerWorkPacket) workPacket;
+	protected void process(final WorkPacket workPacket, final ProgressReporter progressReporter) {
+		final DatabaseUndeployerWorkPacket undeployerWorkPacket = (DatabaseUndeployerWorkPacket) workPacket;
 
-		DatabaseUndeployerRunner undeployerRunner = new DatabaseUndeployerRunner(undeployerWorkPacket
+		final DatabaseUndeployerRunner undeployerRunner = new DatabaseUndeployerRunner(undeployerWorkPacket
 				, getMascotDeployerDaemon(), getOmssaDeployerDaemon()
 				, getTandemDeployerDaemon(), getSequestDeployerDaemon(), getScaffoldDeployerDaemon()
 				, getPeaksDeployerDaemon(), fileTokenFactory);
 
 		undeployerRunner.run();
 
-		DatabaseUndeployerResult undeployerResult = undeployerRunner.getDatabaseUndeployerResult();
+		final DatabaseUndeployerResult undeployerResult = undeployerRunner.getDatabaseUndeployerResult();
 
 		boolean success = true;
 
-		for (UndeploymentTaskResult undeploymentResult : undeployerResult.getDatabaseUndeployerResults().values()) {
+		for (final UndeploymentTaskResult undeploymentResult : undeployerResult.getDatabaseUndeployerResults().values()) {
 			success = success && undeploymentResult.wasSuccessful();
 		}
 
@@ -165,8 +165,8 @@ public final class DatabaseUndeployerWorker implements Worker {
 		private CurationDao curationDao;
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			DatabaseUndeployerWorker worker = new DatabaseUndeployerWorker(fileTokenFactory, curationDao);
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final DatabaseUndeployerWorker worker = new DatabaseUndeployerWorker(fileTokenFactory, curationDao);
 
 			if (config.mascotDeployer != null) {
 				worker.setMascotDeployerDaemon((DaemonConnection) dependencies.createSingleton(config.mascotDeployer));
@@ -197,7 +197,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return fileTokenFactory;
 		}
 
-		public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+		public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 			this.fileTokenFactory = fileTokenFactory;
 		}
 
@@ -205,7 +205,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return curationDao;
 		}
 
-		public void setCurationDao(CurationDao curationDao) {
+		public void setCurationDao(final CurationDao curationDao) {
 			this.curationDao = curationDao;
 		}
 	}
@@ -225,7 +225,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(ServiceConfig scaffoldDeployer, ServiceConfig scaffold3Deployer, ServiceConfig omssaDeployer, ServiceConfig sequestDeployer, ServiceConfig tandemDeployer, ServiceConfig mascotDeployer, ServiceConfig peaksDeployer) {
+		public Config(final ServiceConfig scaffoldDeployer, final ServiceConfig scaffold3Deployer, final ServiceConfig omssaDeployer, final ServiceConfig sequestDeployer, final ServiceConfig tandemDeployer, final ServiceConfig mascotDeployer, final ServiceConfig peaksDeployer) {
 			this.scaffoldDeployer = scaffoldDeployer;
 			this.scaffold3Deployer = scaffold3Deployer;
 			this.omssaDeployer = omssaDeployer;
@@ -239,7 +239,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return scaffoldDeployer;
 		}
 
-		public void setScaffoldDeployer(ServiceConfig scaffoldDeployer) {
+		public void setScaffoldDeployer(final ServiceConfig scaffoldDeployer) {
 			this.scaffoldDeployer = scaffoldDeployer;
 		}
 
@@ -247,7 +247,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return scaffold3Deployer;
 		}
 
-		public void setScaffold3Deployer(ServiceConfig scaffold3Deployer) {
+		public void setScaffold3Deployer(final ServiceConfig scaffold3Deployer) {
 			this.scaffold3Deployer = scaffold3Deployer;
 		}
 
@@ -255,7 +255,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return omssaDeployer;
 		}
 
-		public void setOmssaDeployer(ServiceConfig omssaDeployer) {
+		public void setOmssaDeployer(final ServiceConfig omssaDeployer) {
 			this.omssaDeployer = omssaDeployer;
 		}
 
@@ -263,7 +263,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return sequestDeployer;
 		}
 
-		public void setSequestDeployer(ServiceConfig sequestDeployer) {
+		public void setSequestDeployer(final ServiceConfig sequestDeployer) {
 			this.sequestDeployer = sequestDeployer;
 		}
 
@@ -271,7 +271,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return tandemDeployer;
 		}
 
-		public void setTandemDeployer(ServiceConfig tandemDeployer) {
+		public void setTandemDeployer(final ServiceConfig tandemDeployer) {
 			this.tandemDeployer = tandemDeployer;
 		}
 
@@ -279,7 +279,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return mascotDeployer;
 		}
 
-		public void setMascotDeployer(ServiceConfig mascotDeployer) {
+		public void setMascotDeployer(final ServiceConfig mascotDeployer) {
 			this.mascotDeployer = mascotDeployer;
 		}
 
@@ -287,13 +287,13 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return peaksDeployer;
 		}
 
-		public void setPeaksDeployer(ServiceConfig peaksDeployer) {
+		public void setPeaksDeployer(final ServiceConfig peaksDeployer) {
 			this.peaksDeployer = peaksDeployer;
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(MASCOT_DEPLOYER, resolver.getIdFromConfig(mascotDeployer));
 			map.put(TANDEM_DEPLOYER, resolver.getIdFromConfig(tandemDeployer));
 			map.put(SEQUEST_DEPLOYER, resolver.getIdFromConfig(sequestDeployer));
@@ -304,7 +304,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			mascotDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(MASCOT_DEPLOYER));
 			tandemDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(TANDEM_DEPLOYER));
 			sequestDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(SEQUEST_DEPLOYER));
@@ -322,7 +322,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 
 	public static final class Ui implements ServiceUiFactory {
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(SEQUEST_DEPLOYER, "Sequest Database Deployer", "Database deployer must provide database undeployment functionality.")
 					.reference("sequestDeployer", UiBuilder.NONE_TYPE)
 

@@ -8,10 +8,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public final class ModuleWrapper extends SimplePanel {
 	private final ModuleView module;
 
-	public ModuleWrapper(String moduleName, ModuleView module, String description) {
+	public ModuleWrapper(final String moduleName, final ModuleView module, final String description) {
 		this.module = module;
 		this.addStyleName("module-wrapper");
-		FlowPanel panel = new FlowPanel();
+		final FlowPanel panel = new FlowPanel();
 		panel.addStyleName("module");
 		final Label label = new Label(moduleName);
 		label.addStyleName("module-label");

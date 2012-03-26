@@ -24,26 +24,26 @@ public final class SwiftSearcherCaller {
 	 * @param dispatcherDaemonConnection Daemon connection to the dispatcher.
 	 * @param listener                   Progress listener for this submission.
 	 */
-	public static void resubmitSearchRun(SearchRun td, DaemonConnection dispatcherDaemonConnection, ProgressListener listener) {
+	public static void resubmitSearchRun(final SearchRun td, final DaemonConnection dispatcherDaemonConnection, final ProgressListener listener) {
 		try {
-			String sBatchName = td.getTitle();
+			final String sBatchName = td.getTitle();
 			sendCallToDispatcher(dispatcherDaemonConnection, td.getSwiftSearch(), sBatchName, false, td.getId(), listener);
 		} catch (Exception t) {
 			throw new MprcException("resubmitSearchRun : failure sending call to dispatcher, " + t.getMessage(), t);
 		}
 	}
 
-	public static SearchProgressListener startSearch(int swiftSearchId, String batchName, boolean fromScratch, int previousSearchId, DaemonConnection dispatcherDaemonConnection) {
+	public static SearchProgressListener startSearch(final int swiftSearchId, final String batchName, final boolean fromScratch, final int previousSearchId, final DaemonConnection dispatcherDaemonConnection) {
 		final SearchProgressListener listener = new SearchProgressListener();
 		sendNewSearchToDispatcher(swiftSearchId, batchName, fromScratch, previousSearchId, dispatcherDaemonConnection, listener);
 		return listener;
 	}
 
-	public static void sendNewSearchToDispatcher(int swiftSearchId, String batchName, boolean fromScratch, int previousSearchId, DaemonConnection dispatcherDaemonConnection, ProgressListener listener) {
+	public static void sendNewSearchToDispatcher(final int swiftSearchId, final String batchName, final boolean fromScratch, final int previousSearchId, final DaemonConnection dispatcherDaemonConnection, final ProgressListener listener) {
 		sendCallToDispatcher(dispatcherDaemonConnection, swiftSearchId, batchName, fromScratch, previousSearchId, listener);
 	}
 
-	private static void sendCallToDispatcher(DaemonConnection connection, Integer swiftSearchId, String sBatchName, boolean fromScratch, int previousSearchId, ProgressListener listener) {
+	private static void sendCallToDispatcher(final DaemonConnection connection, final Integer swiftSearchId, final String sBatchName, final boolean fromScratch, final int previousSearchId, final ProgressListener listener) {
 		// Send work. We are not interested in progress at all, but we must specify progress listener
 		connection.sendWork(new SwiftSearchWorkPacket(swiftSearchId, sBatchName, fromScratch, previousSearchId), listener);
 	}
@@ -90,7 +90,7 @@ public final class SwiftSearcherCaller {
 			}
 		}
 
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 			LOGGER.debug("Request enqueued " + hostString);
 		}
 
@@ -98,7 +98,7 @@ public final class SwiftSearcherCaller {
 			LOGGER.debug("Request processing started");
 		}
 
-		public void waitForSearchReady(long timeout) throws InterruptedException {
+		public void waitForSearchReady(final long timeout) throws InterruptedException {
 			synchronized (monitor) {
 				while (!ready) {
 					monitor.wait(timeout);
@@ -115,7 +115,7 @@ public final class SwiftSearcherCaller {
 			}
 		}
 
-		public void requestTerminated(Exception e) {
+		public void requestTerminated(final Exception e) {
 			LOGGER.debug("Request terminated with error", e);
 			synchronized (monitor) {
 				ready = true;
@@ -125,7 +125,7 @@ public final class SwiftSearcherCaller {
 			}
 		}
 
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			synchronized (monitor) {
 				if (progressInfo instanceof AssignedSearchRunId) {
 					searchId = ((AssignedSearchRunId) progressInfo).getSearchRunId();

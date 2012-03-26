@@ -24,7 +24,7 @@ public final class HeaderFilterStepStub extends CurationStepStub {
 	public String criteria = "";
 
 	public AbstractStepPanel getStepPanel() {
-		HeaderFilterStepPanel panel = new HeaderFilterStepPanel();
+		final HeaderFilterStepPanel panel = new HeaderFilterStepPanel();
 		panel.setContainedStep(this);
 		return panel;
 	}

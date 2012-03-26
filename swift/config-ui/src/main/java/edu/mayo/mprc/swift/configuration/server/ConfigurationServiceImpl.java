@@ -43,7 +43,7 @@ public final class ConfigurationServiceImpl extends RemoteServiceServlet impleme
 
 	public ApplicationModel loadConfiguration() throws GWTServiceException {
 		MainFactoryContext.initialize();
-		File configFile = new File(Swift.CONFIG_FILE_NAME).getAbsoluteFile();
+		final File configFile = new File(Swift.CONFIG_FILE_NAME).getAbsoluteFile();
 		try {
 			if (configFile.exists()) {
 				getData().setConfig(ApplicationConfig.load(configFile, MainFactoryContext.getResourceTable()));
@@ -57,19 +57,19 @@ public final class ConfigurationServiceImpl extends RemoteServiceServlet impleme
 	}
 
 	@Override
-	public ResourceModel createChild(String parentId, String type) throws GWTServiceException {
+	public ResourceModel createChild(final String parentId, final String type) throws GWTServiceException {
 		return getData().createChild(parentId, type);
 	}
 
 	@Override
-	public void removeChild(String childId) throws GWTServiceException {
+	public void removeChild(final String childId) throws GWTServiceException {
 		getData().removeChild(childId);
 	}
 
 	@Override
-	public void changeRunner(String serviceId, String newRunnerType) throws GWTServiceException {
+	public void changeRunner(final String serviceId, final String newRunnerType) throws GWTServiceException {
 		final ServiceConfig serviceConfig = (ServiceConfig) getData().getResourceConfig(serviceId);
-		RunnerConfig runner=null;
+		RunnerConfig runner = null;
 		if ("localRunner".equals(newRunnerType)) {
 			runner = new SimpleRunner.Config(serviceConfig.getRunner().getWorkerConfiguration());
 		} else {
@@ -79,13 +79,13 @@ public final class ConfigurationServiceImpl extends RemoteServiceServlet impleme
 	}
 
 	@Override
-	public UiChangesReplayer propertyChanged(String modelId, String propertyName, String newValue, boolean onDemand) throws GWTServiceException {
+	public UiChangesReplayer propertyChanged(final String modelId, final String propertyName, final String newValue, final boolean onDemand) throws GWTServiceException {
 		final ResourceConfig resourceConfig = getData().getResourceConfig(modelId);
 		return getData().setProperty(resourceConfig, propertyName, newValue, onDemand);
 	}
 
 	@Override
-	public void fix(String moduleId, String propertyName, String action) throws GWTServiceException {
+	public void fix(final String moduleId, final String propertyName, final String action) throws GWTServiceException {
 		final ResourceConfig resourceConfig = getData().getResourceConfig(moduleId);
 		getData().fix(resourceConfig, propertyName, action);
 	}

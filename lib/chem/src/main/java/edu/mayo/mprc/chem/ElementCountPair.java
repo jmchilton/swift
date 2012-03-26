@@ -4,16 +4,16 @@ public final class ElementCountPair {
 	private Element element;
 	private double count;
 
-	public ElementCountPair(Element element, double count) {
+	public ElementCountPair(final Element element, final double count) {
 		this.element = element;
 		this.count = count;
 	}
 
-	public void setElement(Element element) {
+	public void setElement(final Element element) {
 		this.element = element;
 	}
 
-	public void setCount(double count) {
+	public void setCount(final double count) {
 		this.count = count;
 	}
 

@@ -15,57 +15,57 @@ import java.io.File;
 
 @Test(sequential = true)
 public final class NewDatabaseInclusionTest extends CurationDaoTestBase {
-    @DataProvider(name = "urlProvider")
-    public Object[][] urlProvider() {
-        return new Object[][]{
-                {"testDataSource", "classpath:/edu/mayo/mprc/dbcurator/ShortTest.fasta.gz"},
-                {"abrfContaminants", "classpath:/edu/mayo/mprc/dbcurator/abrf_contam_2007.fasta.gz"}
-        };
+	@DataProvider(name = "urlProvider")
+	public Object[][] urlProvider() {
+		return new Object[][]{
+				{"testDataSource", "classpath:/edu/mayo/mprc/dbcurator/ShortTest.fasta.gz"},
+				{"abrfContaminants", "classpath:/edu/mayo/mprc/dbcurator/abrf_contam_2007.fasta.gz"}
+		};
 
-    }
+	}
 
-    // TODO: re-enable this test
-    @Test(dataProvider = "urlProvider", timeOut = 10000L)
-    public void performStep_testIPI(String name, String testURL) throws InterruptedException {
+	// TODO: re-enable this test
+	@Test(dataProvider = "urlProvider", timeOut = 10000L)
+	public void performStep_testIPI(final String name, final String testURL) throws InterruptedException {
 
-        File curationFolder = FileUtilities.createTempFolder();
-        File localTempFolder = FileUtilities.createTempFolder();
-        File curatorArchiveFolder = FileUtilities.createTempFolder();
+		final File curationFolder = FileUtilities.createTempFolder();
+		final File localTempFolder = FileUtilities.createTempFolder();
+		final File curatorArchiveFolder = FileUtilities.createTempFolder();
 
-        if (testURL == null) {
-            return;
-        }
+		if (testURL == null) {
+			return;
+		}
 
-        NewDatabaseInclusion step = new NewDatabaseInclusion();
-        step.setUrl(testURL);
+		final NewDatabaseInclusion step = new NewDatabaseInclusion();
+		step.setUrl(testURL);
 
-        Curation curation = new Curation().addStep(step, -1);
-        CurationExecutor executor = new CurationExecutor(curation, false, curationDao, curationFolder, localTempFolder, curatorArchiveFolder);
-        CurationStatus status = executor.execute();
+		final Curation curation = new Curation().addStep(step, -1);
+		final CurationExecutor executor = new CurationExecutor(curation, false, curationDao, curationFolder, localTempFolder, curatorArchiveFolder);
+		final CurationStatus status = executor.execute();
 
-        while (status.isInProgress()) {
-            Thread.sleep(500);
-        }
+		while (status.isInProgress()) {
+			Thread.sleep(500);
+		}
 
-        for (String msg : status.getMessages()) {
-            LOGGER.debug(msg);
-        }
+		for (final String msg : status.getMessages()) {
+			LOGGER.debug(msg);
+		}
 
-        if (status.getFailedStepValidations() != null && status.getFailedStepValidations().size() > 0) {
-            Assert.fail("The IPI test failed:\n" +
-                    CurationExecutor.failedValidationsToString(status.getFailedStepValidations()));
-        }
+		if (status.getFailedStepValidations() != null && status.getFailedStepValidations().size() > 0) {
+			Assert.fail("The IPI test failed:\n" +
+					CurationExecutor.failedValidationsToString(status.getFailedStepValidations()));
+		}
 
-        StepValidation validation = status.getCompletedStepValidations().get(0);
+		final StepValidation validation = status.getCompletedStepValidations().get(0);
 
-        Assert.assertNotNull(validation, "The validation for the step was null for some reason");
-        Assert.assertEquals(validation.getWrappedExceptions().size(), 0, "There was an exception while executing the step");
+		Assert.assertNotNull(validation, "The validation for the step was null for some reason");
+		Assert.assertEquals(validation.getWrappedExceptions().size(), 0, "There was an exception while executing the step");
 
-        FileUtilities.cleanupTempFile(curationFolder);
-        FileUtilities.cleanupTempFile(localTempFolder);
-        FileUtilities.cleanupTempFile(curatorArchiveFolder);
-    }
+		FileUtilities.cleanupTempFile(curationFolder);
+		FileUtilities.cleanupTempFile(localTempFolder);
+		FileUtilities.cleanupTempFile(curatorArchiveFolder);
+	}
 
-    private static final Logger LOGGER = Logger.getLogger(NewDatabaseInclusionTest.class);
+	private static final Logger LOGGER = Logger.getLogger(NewDatabaseInclusionTest.class);
 
 }

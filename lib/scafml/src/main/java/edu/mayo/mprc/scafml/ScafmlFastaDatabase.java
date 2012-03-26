@@ -12,11 +12,11 @@ public final class ScafmlFastaDatabase extends FileHolder {
 	private File database;
 	private DatabaseAnnotation annotation;
 
-	public ScafmlFastaDatabase(DatabaseAnnotation annotation) {
+	public ScafmlFastaDatabase(final DatabaseAnnotation annotation) {
 		this.annotation = annotation;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -28,11 +28,11 @@ public final class ScafmlFastaDatabase extends FileHolder {
 		return database;
 	}
 
-	public void setDatabase(File database) {
+	public void setDatabase(final File database) {
 		this.database = database;
 	}
 
-	public void appendToDocument(StringBuilder result, String indent, boolean reportDecoyHits) {
+	public void appendToDocument(final StringBuilder result, final String indent, final boolean reportDecoyHits) {
 		result.append(indent)
 				.append("<" + "FastaDatabase")
 				.append(" id=\"")

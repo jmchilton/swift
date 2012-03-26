@@ -11,13 +11,13 @@ public abstract class ValidatableTextBox extends TextBox implements Validatable 
 	private ChangeListenerCollection listeners;
 	private String param;
 
-	public ValidatableTextBox(String param) {
+	public ValidatableTextBox(final String param) {
 		super();
 		this.param = param;
 		listeners = new ChangeListenerCollection();
 		this.addKeyboardListener(
 				new KeyboardListenerAdapter() {
-					public void onKeyUp(Widget widget, char c, int i) {
+					public void onKeyUp(final Widget widget, final char c, final int i) {
 						if (c == KEY_ENTER) {
 							listeners.fireChange(widget);
 						}
@@ -25,16 +25,16 @@ public abstract class ValidatableTextBox extends TextBox implements Validatable 
 				}
 		);
 		super.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
+			public void onChange(final Widget widget) {
 				listeners.fireChange(widget);
 			}
 		});
 		addFocusListener(new FocusListener() {
-			public void onFocus(Widget widget) {
+			public void onFocus(final Widget widget) {
 
 			}
 
-			public void onLostFocus(Widget widget) {
+			public void onLostFocus(final Widget widget) {
 				GWT.log(getParam() + " lost focus", null);
 			}
 		});
@@ -50,7 +50,7 @@ public abstract class ValidatableTextBox extends TextBox implements Validatable 
 
 	protected abstract ClientValue getValueFromString(String value);
 
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		if (value == null) {
 			return;
 		}
@@ -63,15 +63,15 @@ public abstract class ValidatableTextBox extends TextBox implements Validatable 
 		setFocus(true);
 	}
 
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		listeners.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		listeners.remove(changeListener);
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		ValidationController.setValidationSeverity(validationSeverity, this);
 	}
 }

@@ -12,7 +12,7 @@ public final class ScafmlInputFile extends FileHolder {
 	public ScafmlInputFile() {
 	}
 
-	public void setID(String iD) {
+	public void setID(final String iD) {
 		this._sID = iD;
 	}
 
@@ -24,11 +24,11 @@ public final class ScafmlInputFile extends FileHolder {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(final File file) {
 		this.file = file;
 	}
 
-	public void appendToDocument(StringBuilder result, String indent) {
+	public void appendToDocument(final StringBuilder result, final String indent) {
 		/**
 		 * this needs to be done for each search tool involved
 		 * right now assuming sequest, mascot, xtandem

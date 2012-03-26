@@ -30,7 +30,7 @@ public final class RAWDumpCache extends WorkCache<RAWDumpWorkPacket> {
 		}
 
 		@Override
-		public WorkCache createCache(Config config, DependencyResolver dependencies) {
+		public WorkCache createCache(final Config config, final DependencyResolver dependencies) {
 			return cache = new RAWDumpCache();
 		}
 	}
@@ -38,7 +38,7 @@ public final class RAWDumpCache extends WorkCache<RAWDumpWorkPacket> {
 	public static final class Ui implements ServiceUiFactory {
 		private static final String DEFAULT_CACHE = "var/cache/rawdump";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(CacheConfig.CACHE_FOLDER, "RAW dump cache folder", "When a .RAW file gets processed by RAW Dump, the result is stored in this folder. Subsequent attempts to dump information from the same file will use the cached results."
 					+ "<p>Ideally, this folder would be on a fast, potentially less reliable storage.</p>")
 					.required()

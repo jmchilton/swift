@@ -8,10 +8,10 @@ public final class ChargeUnitTest {
 
 	@Test
 	public void shouldCalculateCorrectMass() {
-		PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
-		ChargeUnit cu = ChargeUnit.getProtonChargeUnit(pt);
+		final PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
+		final ChargeUnit cu = ChargeUnit.getProtonChargeUnit(pt);
 		Assert.assertEquals(cu.neutralToCharged(0, 1), pt.getProtonMass(), PRECISION, "The charge must add mass of one proton (with " + PRECISION + " Da precision)");
-		Element carbon = pt.getElementBySymbol("C");
+		final Element carbon = pt.getElementBySymbol("C");
 		Assert.assertEquals(cu.chargedToNeutral(
 				(carbon.getMonoisotopicMass() + pt.getProtonMass() * 3) / 3, 3),
 				carbon.getMonoisotopicMass(), PRECISION, "Triply charged carbon mass should convert to proper neutral mass (with " + PRECISION + " Da precision)");
@@ -19,8 +19,8 @@ public final class ChargeUnitTest {
 
 	@Test
 	public void shouldSupportToString() {
-		PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
-		ChargeUnit cu = ChargeUnit.getProtonChargeUnit(pt);
+		final PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
+		final ChargeUnit cu = ChargeUnit.getProtonChargeUnit(pt);
 
 		Assert.assertEquals(cu.toString(1), "[M+1H+]1+", "toString failure");
 		Assert.assertEquals(cu.toString(-1), "[M-1H+]1-", "toString failure");
@@ -34,9 +34,9 @@ public final class ChargeUnitTest {
 
 	@Test
 	public void shouldSupportDifferentCarriers() {
-		PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
-		Element e = pt.getElementBySymbol("He");
-		ChargeUnit cu = ChargeUnit.getChargeUnit(e, pt);
+		final PeriodicTable pt = PeriodicTableFactory.getTestPeriodicTable();
+		final Element e = pt.getElementBySymbol("He");
+		final ChargeUnit cu = ChargeUnit.getChargeUnit(e, pt);
 
 		Assert.assertEquals(cu.toShortString(1), "[M 1He+]", "toShortString failure");
 		Assert.assertEquals(cu.toShortString(-51), "[M 51He-]", "toShortString failure");

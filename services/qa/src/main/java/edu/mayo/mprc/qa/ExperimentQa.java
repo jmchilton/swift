@@ -23,7 +23,7 @@ public class ExperimentQa extends FileHolder {
 	 * @param scaffoldVersion     A string denoting the version of Scaffold (e.g. "2" versus "3"). In case the same file is searched by two Scaffolds,
 	 *                            the version is used to separate the data files.
 	 */
-	public ExperimentQa(String experimentName, File scaffoldSpectraFile, List<MgfQaFiles> mgfQaFiles, String scaffoldVersion) {
+	public ExperimentQa(final String experimentName, final File scaffoldSpectraFile, final List<MgfQaFiles> mgfQaFiles, final String scaffoldVersion) {
 		this.experimentName = experimentName;
 		this.scaffoldSpectraFile = scaffoldSpectraFile;
 		this.mgfQaFiles = mgfQaFiles;

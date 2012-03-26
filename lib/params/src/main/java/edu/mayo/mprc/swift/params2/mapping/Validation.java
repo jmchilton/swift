@@ -17,7 +17,7 @@ public final class Validation {
 			and a series of setters.
 		  */
 
-	public Validation(String message, ValidationSeverity severity, ParamName param, Object value, Throwable thbl) {
+	public Validation(final String message, final ValidationSeverity severity, final ParamName param, final Object value, final Throwable thbl) {
 		this.message = message;
 		this.severity = severity;
 		this.param = param;
@@ -37,11 +37,11 @@ public final class Validation {
 		return param;
 	}
 
-	public void setParam(ParamName param) {
+	public void setParam(final ParamName param) {
 		this.param = param;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(final Object value) {
 		this.value = value;
 	}
 

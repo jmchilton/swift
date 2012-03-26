@@ -53,9 +53,9 @@ public final class MascotMappings implements Mappings {
 	private Map<String, String> nativeParams = new HashMap<String, String>();
 	private static final Pattern COMMA_SPLIT = Pattern.compile(",");
 
-	public MascotMappings(ParamsInfo info) {
+	public MascotMappings(final ParamsInfo info) {
 		// params name : mascot name
-		Map<String, String> enzymeNames = new ImmutableMap.Builder<String, String>()
+		final Map<String, String> enzymeNames = new ImmutableMap.Builder<String, String>()
 				.put("Trypsin (restrict P)", "Trypsin")
 				.put("Arg-C", "Arg-C")
 				.put("Asp-N", "Asp-N")
@@ -75,9 +75,9 @@ public final class MascotMappings implements Mappings {
 				.put("Non-Specific", "None")
 				.build();
 
-		Map<String, Protease> allowedH = new HashMap<String, Protease>();
+		final Map<String, Protease> allowedH = new HashMap<String, Protease>();
 
-		for (Protease protease : info.getEnzymeAllowedValues()) {
+		for (final Protease protease : info.getEnzymeAllowedValues()) {
 			allowedH.put(protease.getName(), protease);
 		}
 		enzymesByMascotName = getEnzymesByName(allowedH, enzymeNames);
@@ -93,13 +93,13 @@ public final class MascotMappings implements Mappings {
 		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.mascot.params", this.getClass());
 	}
 
-	public void read(Reader isr) {
+	public void read(final Reader isr) {
 		nativeParams = new HashMap<String, String>();
 		LineNumberReader br = null;
 		try {
 			br = new LineNumberReader(isr);
 			while (true) {
-				String it = br.readLine();
+				final String it = br.readLine();
 				if (it == null) {
 					break;
 				}
@@ -108,13 +108,13 @@ public final class MascotMappings implements Mappings {
 				}
 
 				if (PARAM.matcher(it).matches()) {
-					Matcher matcher = KEY_VALUE_COMMENT.matcher(it);
+					final Matcher matcher = KEY_VALUE_COMMENT.matcher(it);
 					if (!matcher.matches()) {
 						throw new MprcException("Can't understand '" + it + "'");
 					}
 
-					String id = matcher.group(1);
-					String value = matcher.group(2);
+					final String id = matcher.group(1);
+					final String value = matcher.group(2);
 
 					if (PARSED_PARAMS.contains(id)) {
 						nativeParams.put(id, value);
@@ -136,13 +136,13 @@ public final class MascotMappings implements Mappings {
 		// Comments are ignored, do nothing
 	}
 
-	public void write(Reader oldParams, Writer out) {
+	public void write(final Reader oldParams, final Writer out) {
 		Writer writer = null;
 		try {
 			writer = out;
-			LineNumberReader br = new LineNumberReader(oldParams);
+			final LineNumberReader br = new LineNumberReader(oldParams);
 			while (true) {
-				String it = br.readLine();
+				final String it = br.readLine();
 				if (it == null) {
 					break;
 				}
@@ -165,17 +165,17 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	private void writeParam(Writer writer, String it) throws IOException {
-		Matcher matcher = KEY_VALUE_COMMENT.matcher(it);
+	private void writeParam(final Writer writer, final String it) throws IOException {
+		final Matcher matcher = KEY_VALUE_COMMENT.matcher(it);
 		if (!matcher.matches()) {
 			throw new MprcException("Can't understand '" + it + "'");
 		}
 
-		String id = matcher.group(1);
-		String value = matcher.group(2);
+		final String id = matcher.group(1);
+		final String value = matcher.group(2);
 
 		if (nativeParams.keySet().contains(id)) {
-			String newValue = nativeParams.get(id);
+			final String newValue = nativeParams.get(id);
 			if (!newValue.equals(value)) {
 				writer.write(id + "=" + newValue);
 				if (matcher.group(3) != null) {
@@ -192,19 +192,19 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(final MappingContext context, final Tolerance peptideTolerance) {
 		mapToleranceToNative(context, peptideTolerance, PEP_TOL_VALUE, PEP_TOL_UNIT);
 	}
 
-	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final MappingContext context, final Tolerance fragmentTolerance) {
 		mapToleranceToNative(context, fragmentTolerance, FRAG_TOL_VALUE, FRAG_TOL_UNIT);
 	}
 
-	public void setVariableMods(MappingContext context, ModSet variableMods) {
-		TreeSet<String> mods = new TreeSet<String>();
+	public void setVariableMods(final MappingContext context, final ModSet variableMods) {
+		final TreeSet<String> mods = new TreeSet<String>();
 		int i = 0;
-		StringBuilder droppedMods = new StringBuilder();
-		for (ModSpecificity ms : variableMods.getModifications()) {
+		final StringBuilder droppedMods = new StringBuilder();
+		for (final ModSpecificity ms : variableMods.getModifications()) {
 			if (i >= MAX_VARIABLE_MODS) {
 				droppedMods.append(ms.toString());
 				droppedMods.append(", ");
@@ -223,13 +223,13 @@ public final class MascotMappings implements Mappings {
 		setNativeMods(context, VAR_MODS, mods);
 	}
 
-	public void setFixedMods(MappingContext context, ModSet fixedMods) {
-		TreeSet<String> mods = new TreeSet<String>();
+	public void setFixedMods(final MappingContext context, final ModSet fixedMods) {
+		final TreeSet<String> mods = new TreeSet<String>();
 
 		// we first loop through the mods and stuff their string reps into a hashset;
 		// this eliminates duplicates wrt spec_group
 		try {
-			for (ModSpecificity ms : fixedMods.getModifications()) {
+			for (final ModSpecificity ms : fixedMods.getModifications()) {
 				warnMascotMultipleSites(context, ms, fixedMods.getModifications());
 				mods.add(ms.toMascotString());
 			}
@@ -240,23 +240,23 @@ public final class MascotMappings implements Mappings {
 		setNativeMods(context, FIXED_MODS, mods);
 	}
 
-	public String getNativeParam(String name) {
+	public String getNativeParam(final String name) {
 		return nativeParams.get(name);
 	}
 
-	public void setNativeParam(String name, String value) {
+	public void setNativeParam(final String name, final String value) {
 		nativeParams.put(name, value);
 	}
 
 	/**
 	 * The short db name matches directly the db name in Mascot.
 	 */
-	public void setSequenceDatabase(MappingContext context, String shortName) {
+	public void setSequenceDatabase(final MappingContext context, final String shortName) {
 		setNativeParam(DATABASE, shortName);
 	}
 
-	public void setProtease(MappingContext context, Protease protease) {
-		String cle;
+	public void setProtease(final MappingContext context, final Protease protease) {
+		final String cle;
 		if (!mascotNamesByEnzyme.containsKey(protease)) {
 			cle = "Trypsin/P";
 			context.reportWarning("Mascot doesn't support " + (protease == null ? "null enzyme" : protease.getName()) + ", using Trypsin (allow P)");
@@ -267,21 +267,21 @@ public final class MascotMappings implements Mappings {
 		setNativeParam(ENZYME, cle);
 	}
 
-	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(final MappingContext context, final Integer missedCleavages) {
 		if (missedCleavages != null) {
 			setNativeParam(MISSED_CLEAVAGES, String.valueOf(missedCleavages));
 		}
 	}
 
-	public void setInstrument(MappingContext context, Instrument instrument) {
-		String instName = instrument.getMascotName();
+	public void setInstrument(final MappingContext context, final Instrument instrument) {
+		final String instName = instrument.getMascotName();
 		setNativeParam(INSTRUMENT, instName);
 	}
 
-	private void setNativeMods(MappingContext context, String nativeParamName, Set<String> mods) {
-		StringBuilder sb = new StringBuilder();
+	private void setNativeMods(final MappingContext context, final String nativeParamName, final Set<String> mods) {
+		final StringBuilder sb = new StringBuilder();
 
-		for (String mod : mods) {
+		for (final String mod : mods) {
 			if (sb.length() != 0) {
 				sb.append(",");
 			}
@@ -297,19 +297,19 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	private void checkForSameFixAndVariableMods(MappingContext context) {
-		String fixedMods = getNativeParam(FIXED_MODS);
-		String variableMods = getNativeParam(VAR_MODS);
+	private void checkForSameFixAndVariableMods(final MappingContext context) {
+		final String fixedMods = getNativeParam(FIXED_MODS);
+		final String variableMods = getNativeParam(VAR_MODS);
 
 		if (fixedMods != null && fixedMods.length() > 0 && variableMods != null && variableMods.length() > 0) {
-			String[] fixedModsArr = COMMA_SPLIT.split(fixedMods);
-			String[] variableModsArr = COMMA_SPLIT.split(variableMods);
+			final String[] fixedModsArr = COMMA_SPLIT.split(fixedMods);
+			final String[] variableModsArr = COMMA_SPLIT.split(variableMods);
 
 			StringBuilder repeatMods = null;
 
 			int numRepeatMods = 0;
-			for (String fixedMod : fixedModsArr) {
-				for (String variableMod : variableModsArr) {
+			for (final String fixedMod : fixedModsArr) {
+				for (final String variableMod : variableModsArr) {
 					if (fixedMod.trim().equals(variableMod.trim())) {
 						numRepeatMods++;
 						if (repeatMods == null) {
@@ -327,10 +327,10 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	private void warnMascotMultipleSites(MappingContext context, ModSpecificity ms, Set<ModSpecificity> allSets) {
+	private void warnMascotMultipleSites(final MappingContext context, final ModSpecificity ms, final Set<ModSpecificity> allSets) {
 		if (ms.getSpecificityGroup() != null && ms.groupSpecificities().size() > 1) {
-			StringBuilder specificities = new StringBuilder();
-			for (ModSpecificity modSpecificity : ms.groupSpecificities()) {
+			final StringBuilder specificities = new StringBuilder();
+			for (final ModSpecificity modSpecificity : ms.groupSpecificities()) {
 				if (!allSets.contains(modSpecificity)) {
 					specificities.append(modSpecificity.getSite());
 				}
@@ -341,7 +341,7 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	private void mapToleranceToNative(MappingContext context, Tolerance unit, String tolName, String tolUnitName) {
+	private void mapToleranceToNative(final MappingContext context, final Tolerance unit, final String tolName, final String tolUnitName) {
 		if (!Arrays.asList("ppm", "Da", "mmu").contains(unit.getUnit().getCode())) {
 			setNativeParam(tolName, "1");
 			setNativeParam(tolUnitName, "Da");
@@ -352,17 +352,17 @@ public final class MascotMappings implements Mappings {
 		}
 	}
 
-	private Map<String, Protease> getEnzymesByName(Map<String, Protease> allowedHash, Map<String, String> namesHash) {
-		Map<String, Protease> hash = new HashMap<String, Protease>();
-		for (Map.Entry<String, String> e : namesHash.entrySet()) {
+	private Map<String, Protease> getEnzymesByName(final Map<String, Protease> allowedHash, final Map<String, String> namesHash) {
+		final Map<String, Protease> hash = new HashMap<String, Protease>();
+		for (final Map.Entry<String, String> e : namesHash.entrySet()) {
 			hash.put(e.getValue(), allowedHash.get(e.getKey()));
 		}
 		return hash;
 	}
 
-	private Map<Protease, String> getNamesByEnzyme(Map<String, Protease> allowedHash, Map<String, String> namesHash) {
-		Map<Protease, String> hash = new HashMap<Protease, String>();
-		for (Map.Entry<String, String> e : namesHash.entrySet()) {
+	private Map<Protease, String> getNamesByEnzyme(final Map<String, Protease> allowedHash, final Map<String, String> namesHash) {
+		final Map<Protease, String> hash = new HashMap<Protease, String>();
+		for (final Map.Entry<String, String> e : namesHash.entrySet()) {
 			hash.put(allowedHash.get(e.getKey()), e.getValue());
 		}
 		return hash;

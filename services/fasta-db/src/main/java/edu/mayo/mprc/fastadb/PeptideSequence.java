@@ -4,10 +4,10 @@ package edu.mayo.mprc.fastadb;
  * A peptide sequence. Immutable, stored in the database only once with unique ID.
  */
 public final class PeptideSequence extends Sequence {
-    PeptideSequence() {
-    }
+	PeptideSequence() {
+	}
 
-    public PeptideSequence(String sequence) {
-        super(sequence);
-    }
+	public PeptideSequence(final String sequence) {
+		super(sequence);
+	}
 }

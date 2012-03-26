@@ -95,7 +95,7 @@ public final class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
 	 * @param database Database to load data for.
 	 */
 	@Override
-	public void addFastaDatabase(Curation database, @Nullable ProgressReporter progressReporter) {
+	public void addFastaDatabase(final Curation database, @Nullable final ProgressReporter progressReporter) {
 		final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
 		final Query entryCount = session.createQuery("select count(*) from ProteinDatabaseEntry p where p.database=:database").setEntity("database", database);
 		if (0L != ((Long) entryCount.uniqueResult()).longValue()) {

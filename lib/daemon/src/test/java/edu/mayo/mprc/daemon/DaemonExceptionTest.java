@@ -9,11 +9,11 @@ public final class DaemonExceptionTest {
 
 	@Test
 	public void shouldRemoveWithDifferentExceptions() {
-		DaemonException base = new DaemonException("Base");
-		MprcException wrap1 = new MprcException("Wrap", base);
-		MprcException wrap2 = new MprcException("Wrap", wrap1);
-		DaemonException wrap3 = new DaemonException("Wrap3", wrap2);
-		MprcException wrap4 = new MprcException(wrap3);
+		final DaemonException base = new DaemonException("Base");
+		final MprcException wrap1 = new MprcException("Wrap", base);
+		final MprcException wrap2 = new MprcException("Wrap", wrap1);
+		final DaemonException wrap3 = new DaemonException("Wrap3", wrap2);
+		final MprcException wrap4 = new MprcException(wrap3);
 		Assert.assertEquals(MprcException.getDetailedMessage(wrap3), "Wrap3 - Wrap - Base");
 	}
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public final class ExecutableValidator implements PropertyChangeListener {
 	private List<String> commandLineParams;
 
-	public ExecutableValidator(List<String> commandLineParams) {
+	public ExecutableValidator(final List<String> commandLineParams) {
 		if (commandLineParams == null) {
 			this.commandLineParams = new ArrayList<String>(0);
 		} else {
@@ -23,15 +23,15 @@ public final class ExecutableValidator implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+	public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 		if (validationRequested) {
-			ProcessBuilder builder = new ProcessBuilder();
-			File executable = FileUtilities.getAbsoluteFileForExecutables(new File(newValue));
-			List<String> command = new ArrayList<String>(commandLineParams.size() + 1);
+			final ProcessBuilder builder = new ProcessBuilder();
+			final File executable = FileUtilities.getAbsoluteFileForExecutables(new File(newValue));
+			final List<String> command = new ArrayList<String>(commandLineParams.size() + 1);
 			command.add(executable.getPath());
 			command.addAll(commandLineParams);
 			builder.command(command);
-			ProcessCaller caller = new ProcessCaller(builder);
+			final ProcessCaller caller = new ProcessCaller(builder);
 			try {
 				caller.run();
 			} catch (Exception t) {
@@ -48,7 +48,7 @@ public final class ExecutableValidator implements PropertyChangeListener {
 	}
 
 	@Override
-	public void fixError(ResourceConfig config, String propertyName, String action) {
+	public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 		// No way of fixing this
 	}
 }

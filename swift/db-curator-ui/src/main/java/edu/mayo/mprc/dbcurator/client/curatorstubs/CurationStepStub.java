@@ -51,7 +51,7 @@ public abstract class CurationStepStub implements Serializable {
 	 *
 	 * @param completionCount
 	 */
-	public void setCompletionCount(Integer completionCount) {
+	public void setCompletionCount(final Integer completionCount) {
 		this.completionCount = completionCount;
 	}
 
@@ -66,7 +66,7 @@ public abstract class CurationStepStub implements Serializable {
 	/**
 	 * Sets the id of the step this should only be changed on creation time
 	 */
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -80,7 +80,7 @@ public abstract class CurationStepStub implements Serializable {
 	/**
 	 * set the progress of the step if it is executing else null
 	 */
-	public void setProgress(Integer progress) {
+	public void setProgress(final Integer progress) {
 		this.progress = progress;
 	}
 
@@ -91,7 +91,7 @@ public abstract class CurationStepStub implements Serializable {
 	 *
 	 * @param msg
 	 */
-	public void addMessage(String msg) {
+	public void addMessage(final String msg) {
 		this.messages.add(msg);
 	}
 
@@ -112,7 +112,7 @@ public abstract class CurationStepStub implements Serializable {
 		return editable;
 	}
 
-	public void setEditable(boolean editable) {
+	public void setEditable(final boolean editable) {
 		this.editable = editable;
 	}
 }

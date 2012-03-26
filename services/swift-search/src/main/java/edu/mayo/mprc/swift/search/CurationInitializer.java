@@ -33,12 +33,12 @@ public final class CurationInitializer implements RuntimeInitializer {
 		return curationDao;
 	}
 
-	public void setCurationDao(CurationDao curationDao) {
+	public void setCurationDao(final CurationDao curationDao) {
 		this.curationDao = curationDao;
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		if (curationDao.countAll(Curation.class) == 0) {
 			return "There needs to be at least one FASTA database defined";
 		}
@@ -49,9 +49,9 @@ public final class CurationInitializer implements RuntimeInitializer {
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
-		File fastaFolder = new File(params.get(FASTA_FOLDER));
-		File fastaArchiveFolder = new File(params.get(FASTA_ARCHIVE_FOLDER));
+	public void initialize(final Map<String, String> params) {
+		final File fastaFolder = new File(params.get(FASTA_FOLDER));
+		final File fastaArchiveFolder = new File(params.get(FASTA_ARCHIVE_FOLDER));
 
 		HeaderTransform sprotTrans = null;
 		HeaderTransform ipiTrans = null;
@@ -111,23 +111,23 @@ public final class CurationInitializer implements RuntimeInitializer {
 		curationDao.flush();
 
 		if (curationDao.countAll(Curation.class) == 0) {
-			Set<Curation> toExecute = new HashSet<Curation>();
+			final Set<Curation> toExecute = new HashSet<Curation>();
 
 			if (testURL != null) {
 				//if the database doesn't have a Sprot database then lets create one.
 				if (curationDao.getCurationsByShortname("ShortTest").isEmpty()) {
 					LOGGER.debug("Creating Curation 'ShortTest' from " + testURL);
-					Curation shortTest = new Curation();
+					final Curation shortTest = new Curation();
 					shortTest.setShortName("ShortTest");
 
 					shortTest.setTitle("Built-in");
 
-					NewDatabaseInclusion step1 = new NewDatabaseInclusion();
+					final NewDatabaseInclusion step1 = new NewDatabaseInclusion();
 					step1.setUrl(testURL);
 
 					shortTest.addStep(step1, /*position*/-1);
 
-					MakeDecoyStep step3 = new MakeDecoyStep();
+					final MakeDecoyStep step3 = new MakeDecoyStep();
 					step3.setManipulatorType(MakeDecoyStep.REVERSAL_MANIPULATOR);
 					step3.setOverwriteMode(/*overwrite?*/false);
 					shortTest.addStep(step3, /*position*/-1);
@@ -145,7 +145,7 @@ public final class CurationInitializer implements RuntimeInitializer {
 				//if the database doesn't have a Sprot database then lets create one.
 				if (curationDao.getCurationsByShortname("SprotRev").isEmpty()) {
 
-					Curation sprotRev = new Curation();
+					final Curation sprotRev = new Curation();
 					sprotRev.setShortName("SprotRev");
 					sprotRev.setTitle("Built-in");
 
@@ -153,13 +153,13 @@ public final class CurationInitializer implements RuntimeInitializer {
 						LOGGER.debug("Creating Curation 'SprotRev' from " + testURL);
 
 						toExecute.add(sprotRev);
-						NewDatabaseInclusion sprotDownload = new NewDatabaseInclusion();
+						final NewDatabaseInclusion sprotDownload = new NewDatabaseInclusion();
 						sprotDownload.setUrl(testURL);
 						//the following step is a hack allowing use to specify a header transform before those entries are in the database.
 						sprotDownload.setHeaderTransform(new HeaderTransform().setName("SwissProt General").setGroupString("^>([^|]*)\\|(.*)$").setSubstitutionPattern(">$2 ($1)").setCommon(true));
 						sprotRev.addStep(sprotDownload, /*position*/-1);
 
-						MakeDecoyStep decoyStep = new MakeDecoyStep();
+						final MakeDecoyStep decoyStep = new MakeDecoyStep();
 						decoyStep.setManipulatorType(MakeDecoyStep.REVERSAL_MANIPULATOR);
 						decoyStep.setOverwriteMode(/*overwrite?*/false);
 						sprotRev.addStep(decoyStep, /*position*/-1);
@@ -168,11 +168,11 @@ public final class CurationInitializer implements RuntimeInitializer {
 						LOGGER.debug("Creating Curation 'SprotRev' from " + defaultURL);
 
 						toExecute.add(sprotRev);
-						NewDatabaseInclusion step1 = new NewDatabaseInclusion();
+						final NewDatabaseInclusion step1 = new NewDatabaseInclusion();
 						step1.setUrl(defaultURL);
 						sprotRev.addStep(step1, /*position*/-1);
 
-						MakeDecoyStep step3 = new MakeDecoyStep();
+						final MakeDecoyStep step3 = new MakeDecoyStep();
 						step3.setManipulatorType(MakeDecoyStep.REVERSAL_MANIPULATOR);
 						step3.setOverwriteMode(/*overwrite?*/false);
 						sprotRev.addStep(step3, /*position*/-1);
@@ -181,15 +181,15 @@ public final class CurationInitializer implements RuntimeInitializer {
 			}
 
 			//execute the ones we decided to execute
-			File localTempFolder = FileUtilities.createTempFolder();
-			for (Curation curation : toExecute) {
+			final File localTempFolder = FileUtilities.createTempFolder();
+			for (final Curation curation : toExecute) {
 				LOGGER.info("Executing curation: " + curation.getShortName());
-				CurationExecutor executor = new CurationExecutor(curation, true, curationDao, fastaFolder, localTempFolder, fastaArchiveFolder);
+				final CurationExecutor executor = new CurationExecutor(curation, true, curationDao, fastaFolder, localTempFolder, fastaArchiveFolder);
 				// Execute the curation within our thread
 				executor.executeCuration();
 				final CurationStatus status = executor.getStatusObject();
 
-				for (String message : status.getMessages()) {
+				for (final String message : status.getMessages()) {
 					LOGGER.debug(message);
 				}
 

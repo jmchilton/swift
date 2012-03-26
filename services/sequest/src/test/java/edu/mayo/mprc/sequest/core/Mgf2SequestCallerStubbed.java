@@ -21,21 +21,21 @@ class Mgf2SequestCallerStubbed implements Mgf2SequestInterface {
 	private File hostsFile;
 	private int maxCommandLineLength;
 
-	public void callSequest(File tarFile, File paramsFile, File mgfFile, long startTimeOut, long watchDogTimeOut, File hdrFile) {
+	public void callSequest(final File tarFile, final File paramsFile, final File mgfFile, final long startTimeOut, final long watchDogTimeOut, final File hdrFile) {
 
 		// validate that mgf file exists
-		boolean havemgf = mgfFile.isFile();
+		final boolean havemgf = mgfFile.isFile();
 		if (!havemgf) {
 			throw new MprcException(mgfFile.getAbsolutePath() + " not found");
 		}
 
 		// validate that the params file exists
-		boolean haveparams = paramsFile.isFile();
+		final boolean haveparams = paramsFile.isFile();
 		if (!haveparams) {
 			throw new MprcException(paramsFile.getAbsolutePath() + " not found");
 		}
 
-		File outputDir = tarFile.getParentFile();
+		final File outputDir = tarFile.getParentFile();
 
 		if (!outputDir.isDirectory()) {
 			throw new MprcException("Output directory " + outputDir + " not found");
@@ -43,17 +43,17 @@ class Mgf2SequestCallerStubbed implements Mgf2SequestInterface {
 
 		// create a temporary folder for the dta files
 		// and .out files
-		File tempfolder = FileUtilities.createTempFolder();
-		String tempFolderName = tempfolder.getAbsolutePath();
+		final File tempfolder = FileUtilities.createTempFolder();
+		final String tempFolderName = tempfolder.getAbsolutePath();
 
 		int maxCommandLength = this.maxCommandLineLength;
 		if (maxCommandLength == 0) {
 			maxCommandLength = 100;
 		}
 
-		SequestSubmitterInterface s = new SequestSubmit(100, paramsFile, outputDir, new File(outputDir, "mytar.tar"), hostsFile);
+		final SequestSubmitterInterface s = new SequestSubmit(100, paramsFile, outputDir, new File(outputDir, "mytar.tar"), hostsFile);
 
-		SequestRunnerStub sc = new SequestRunnerStub(tempfolder, null, new ArrayList<String>(), hostsFile);
+		final SequestRunnerStub sc = new SequestRunnerStub(tempfolder, null, new ArrayList<String>(), hostsFile);
 
 		sc.setSequestExe(this.sequestExe);
 
@@ -62,17 +62,17 @@ class Mgf2SequestCallerStubbed implements Mgf2SequestInterface {
 		sc.setStartTimeOut(startTimeOut);
 
 
-		IonsModellerInterface i = new MgfIonsModeller();
+		final IonsModellerInterface i = new MgfIonsModeller();
 		i.setWorkingDir(tempFolderName);
 
 
-		MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, tempFolderName);
+		final MgfToDtaFileParser parser = new MgfToDtaFileParser(s, i, tempFolderName);
 
 		parser.setMgfFileName(mgfFile.getAbsolutePath());
 
 		//InputStream is = new InputStream(r)
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(mgfFile));
+			final BufferedReader br = new BufferedReader(new FileReader(mgfFile));
 			LOGGER.debug("starting to process mgf");
 			parser.getDTAsFromFile(br);
 			FileUtilities.closeQuietly(br);
@@ -84,15 +84,15 @@ class Mgf2SequestCallerStubbed implements Mgf2SequestInterface {
 
 	}
 
-	public void setSequestExe(String sequestexe) {
+	public void setSequestExe(final String sequestexe) {
 		this.sequestExe = sequestexe;
 	}
 
-	public void setHostsFile(File hostsFile) {
+	public void setHostsFile(final File hostsFile) {
 		this.hostsFile = hostsFile;
 	}
 
-	public void setMaxCommandLineLength(int commandlinelength) {
+	public void setMaxCommandLineLength(final int commandlinelength) {
 		this.maxCommandLineLength = commandlinelength;
 	}
 

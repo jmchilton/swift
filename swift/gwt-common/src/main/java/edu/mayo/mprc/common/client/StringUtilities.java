@@ -19,11 +19,11 @@ public final class StringUtilities {
 	 * @param delimiter - delimiter to use between strings
 	 * @return List of values delimeted by delimiter.
 	 */
-	public static String join(String[] values, String delimiter) {
+	public static String join(final String[] values, final String delimiter) {
 		if (values == null) {
 			return "";
 		}
-		StringBuilder result = new StringBuilder(values.length * AVERAGE_STRING_LENGTH);
+		final StringBuilder result = new StringBuilder(values.length * AVERAGE_STRING_LENGTH);
 		for (int i = 0; i < values.length; i++) {
 			result.append(values[i]);
 			if (i < values.length - 1) {
@@ -40,11 +40,11 @@ public final class StringUtilities {
 	 * @param delimiter - delimiter to use between strings
 	 * @return List of values delimited by delimiter.
 	 */
-	public static String join(List<String> values, String delimiter) {
+	public static String join(final List<String> values, final String delimiter) {
 		if (values == null) {
 			return "";
 		}
-		StringBuilder result = new StringBuilder(values.size() * AVERAGE_STRING_LENGTH);
+		final StringBuilder result = new StringBuilder(values.size() * AVERAGE_STRING_LENGTH);
 		for (int i = 0; i < values.size(); i++) {
 			result.append(values.get(i));
 			if (i < values.size() - 1) {
@@ -58,7 +58,7 @@ public final class StringUtilities {
 	 * GWT 1.5.3 does not support Locale in String toLowerCase. This method is used
 	 * so all calls to toLowerCase can be replaced with properly localized version.
 	 */
-	public static String toLowerCase(String s) {
+	public static String toLowerCase(final String s) {
 		return s.toLowerCase();
 	}
 
@@ -66,7 +66,7 @@ public final class StringUtilities {
 	 * GWT 1.5.3 does not support Locale in String toUpperCase. This method is used
 	 * so all calls to toUpperCase can be replaced with properly localized version.
 	 */
-	public static String toUpperCase(String s) {
+	public static String toUpperCase(final String s) {
 		return s.toLowerCase();
 	}
 }

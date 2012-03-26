@@ -14,14 +14,14 @@ public class UiChangesReplayer implements Serializable {
 	public UiChangesReplayer() {
 	}
 
-	public UiChangesReplayer(ArrayList<String> commands) {
+	public UiChangesReplayer(final ArrayList<String> commands) {
 		this.commands = commands;
 	}
 
-	public void replay(UiChanges uiChanges) {
+	public void replay(final UiChanges uiChanges) {
 		final Iterator<String> iterator = commands.iterator();
 		while (iterator.hasNext()) {
-			String command = iterator.next();
+			final String command = iterator.next();
 			if (SET_PROPERTY.equals(command)) {
 				uiChanges.setProperty(iterator.next(), iterator.next(), iterator.next());
 			} else if (DISPLAY_PROPERTY_ERROR.equals(command)) {

@@ -12,10 +12,10 @@ import java.util.List;
  * result post processing (tarring); can be tested without sequest
  */
 public final class SequestRunnerStub extends SequestRunner {
-	public SequestRunnerStub(File workingDir, File paramsFile, List<String> sequestDtaFiles, File hostsFile) {
+	public SequestRunnerStub(final File workingDir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
 		super(workingDir, paramsFile, sequestDtaFiles, hostsFile);
 		setCommand("echo");
-		List<String> someArgs = new ArrayList<String>();
+		final List<String> someArgs = new ArrayList<String>();
 		someArgs.add("hi");
 		setArgs(someArgs);
 	}
@@ -37,7 +37,7 @@ public final class SequestRunnerStub extends SequestRunner {
 		return super.getSearchResultsFolder();
 	}
 
-	public void setSearchResultsFolder(String folder) {
+	public void setSearchResultsFolder(final String folder) {
 		super.setSearchResultsFolder(folder);
 	}
 

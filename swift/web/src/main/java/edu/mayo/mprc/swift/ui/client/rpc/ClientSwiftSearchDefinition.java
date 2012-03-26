@@ -46,10 +46,10 @@ public final class ClientSwiftSearchDefinition implements Serializable {
 	 * @param publicSearchFiles True if the intermediate search results are to be published.
 	 * @param publicSearchFiles
 	 */
-	public ClientSwiftSearchDefinition(String searchTitle, ClientUser user, String outputFolder,
-	                                   ClientParamSet paramSet, List<ClientFileSearch> inputFiles,
-	                                   ClientSpectrumQa spectrumQa, ClientPeptideReport peptideReport,
-	                                   boolean publicMgfFiles, boolean publicSearchFiles, int previousSearchRunId) {
+	public ClientSwiftSearchDefinition(final String searchTitle, final ClientUser user, final String outputFolder,
+	                                   final ClientParamSet paramSet, final List<ClientFileSearch> inputFiles,
+	                                   final ClientSpectrumQa spectrumQa, final ClientPeptideReport peptideReport,
+	                                   final boolean publicMgfFiles, final boolean publicSearchFiles, final int previousSearchRunId) {
 		this.searchTitle = searchTitle;
 		this.user = user;
 		this.outputFolder = outputFolder;
@@ -107,7 +107,7 @@ public final class ClientSwiftSearchDefinition implements Serializable {
 		return fromScratch;
 	}
 
-	public void setFromScratch(boolean fromScratch) {
+	public void setFromScratch(final boolean fromScratch) {
 		this.fromScratch = fromScratch;
 	}
 }

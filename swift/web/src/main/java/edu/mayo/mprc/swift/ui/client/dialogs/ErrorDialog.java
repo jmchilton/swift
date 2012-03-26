@@ -14,7 +14,7 @@ public final class ErrorDialog extends DialogBox {
 	private VerticalPanel verticalPanel;
 	private Widget widget;
 
-	private ErrorDialog(Throwable t) {
+	private ErrorDialog(final Throwable t) {
 		super(true);
 		if (t instanceof GWTServiceException) {
 			init(ClientValidation.SEVERITY_ERROR, t.getMessage(), ((GWTServiceException) t).getStackTraceAsString());
@@ -24,7 +24,7 @@ public final class ErrorDialog extends DialogBox {
 		show();
 	}
 
-	private ErrorDialog(ClientValidation cv, Widget validationWidget) {
+	private ErrorDialog(final ClientValidation cv, final Widget validationWidget) {
 		super(true);
 		init(cv.getSeverity(), cv.getMessage(), cv.getThrowableMessage());
 		widget = validationWidget;
@@ -33,36 +33,36 @@ public final class ErrorDialog extends DialogBox {
 		setPopupPositionAndShow(new MyPositionCallback());
 	}
 
-	public static void show(ClientValidation cv, Widget validationWidget) {
+	public static void show(final ClientValidation cv, final Widget validationWidget) {
 		final ErrorDialog dialog = new ErrorDialog(cv, validationWidget);
 		dialog.show();
 	}
 
-	public static void show(Throwable t) {
+	public static void show(final Throwable t) {
 		final ErrorDialog dialog = new ErrorDialog(t);
 		dialog.show();
 	}
 
-	private void init(int severity, String shortMessage, String detailedMessage) {
+	private void init(final int severity, final String shortMessage, final String detailedMessage) {
 		setText(ValidationPanel.getSeverityName(severity));
 		setStyleName("errorDialog");
 		verticalPanel = new VerticalPanel();
-		HorizontalPanel hp = new HorizontalPanel();
+		final HorizontalPanel hp = new HorizontalPanel();
 		hp.add(ValidationPanel.getImageForSeverity(severity));
 		hp.add(new Label(shortMessage));
 		verticalPanel.add(hp);
-		ScrollPanel pane = new ScrollPanel();
+		final ScrollPanel pane = new ScrollPanel();
 		pane.setSize("700px", "300px");
 		pane.setStyleName("errorPane");
-		HTML html = new HTML("<br/><pre>" + detailedMessage + "</pre>");
+		final HTML html = new HTML("<br/><pre>" + detailedMessage + "</pre>");
 		pane.add(html);
 		verticalPanel.add(pane);
 		setWidget(verticalPanel);
 	}
 
 	class MyPositionCallback implements PositionCallback {
-		public void setPosition(int width, int height) {
-			int clientHeight = Window.getClientHeight();
+		public void setPosition(final int width, final int height) {
+			final int clientHeight = Window.getClientHeight();
 
 			ErrorDialog.this.setPopupPosition(widget.getAbsoluteLeft(), widget.getAbsoluteTop() + widget.getOffsetHeight());
 			if (height > clientHeight) {

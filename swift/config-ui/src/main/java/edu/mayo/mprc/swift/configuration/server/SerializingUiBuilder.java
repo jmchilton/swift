@@ -24,7 +24,7 @@ public class SerializingUiBuilder implements UiBuilder, Serializable {
 	private String previousProperty;
 	private DependencyResolver resolver;
 
-	public SerializingUiBuilder(ListenerMapBuilder recorder, DependencyResolver resolver) {
+	public SerializingUiBuilder(final ListenerMapBuilder recorder, final DependencyResolver resolver) {
 		this.recorder = recorder;
 		this.resolver = resolver;
 	}
@@ -36,13 +36,13 @@ public class SerializingUiBuilder implements UiBuilder, Serializable {
 		return new UiBuilderReplayer(commands);
 	}
 
-	public UiBuilder nativeInterface(String className) {
+	public UiBuilder nativeInterface(final String className) {
 		commands.add(UiBuilderReplayer.NATIVE_INTERFACE);
 		commands.add(className);
 		return this;
 	}
 
-	public UiBuilder property(String name, String displayName, String description) {
+	public UiBuilder property(final String name, final String displayName, final String description) {
 		previousProperty = name;
 		commands.add(UiBuilderReplayer.PROPERTY);
 		commands.add(name);
@@ -56,28 +56,28 @@ public class SerializingUiBuilder implements UiBuilder, Serializable {
 		return this;
 	}
 
-	public UiBuilder defaultValue(String value) {
+	public UiBuilder defaultValue(final String value) {
 		commands.add(UiBuilderReplayer.DEFAULT_VALUE);
 		commands.add(value);
 		return this;
 	}
 
 	@Override
-	public UiBuilder defaultValue(ResourceConfig value) {
+	public UiBuilder defaultValue(final ResourceConfig value) {
 		return defaultValue(resolver.getIdFromConfig(value));
 	}
 
-	public UiBuilder addChangeListener(PropertyChangeListener listener) {
+	public UiBuilder addChangeListener(final PropertyChangeListener listener) {
 		recorder.setListener(previousProperty, listener);
 		return this;
 	}
 
-	public UiBuilder addDaemonChangeListener(PropertyChangeListener listener) {
+	public UiBuilder addDaemonChangeListener(final PropertyChangeListener listener) {
 		recorder.setDaemonListener(listener);
 		return this;
 	}
 
-	public UiBuilder validateOnDemand(PropertyChangeListener listener) {
+	public UiBuilder validateOnDemand(final PropertyChangeListener listener) {
 		commands.add(UiBuilderReplayer.VALIDATE_ON_DEMAND);
 		recorder.setListener(previousProperty, listener);
 		return this;
@@ -98,27 +98,27 @@ public class SerializingUiBuilder implements UiBuilder, Serializable {
 		return this;
 	}
 
-	public UiBuilder integerValue(Integer minimum, Integer maximum) {
+	public UiBuilder integerValue(final Integer minimum, final Integer maximum) {
 		commands.add(UiBuilderReplayer.INTEGER_VALUE);
 		commands.add(minimum == null ? null : String.valueOf(minimum));
 		commands.add(maximum == null ? null : String.valueOf(maximum));
 		return this;
 	}
 
-	public UiBuilder executable(List<String> commandLineParams) {
+	public UiBuilder executable(final List<String> commandLineParams) {
 		commands.add(UiBuilderReplayer.VALIDATE_ON_DEMAND);
 		recorder.setListener(previousProperty, new ExecutableValidator(commandLineParams));
 		return this;
 	}
 
-	public UiBuilder reference(String... type) {
+	public UiBuilder reference(final String... type) {
 		commands.add(UiBuilderReplayer.REFERENCE);
 		commands.add(String.valueOf(type.length));
 		commands.addAll(Arrays.asList(type));
 		return this;
 	}
 
-	public UiBuilder enable(String propertyName, boolean synchronous) {
+	public UiBuilder enable(final String propertyName, final boolean synchronous) {
 		commands.add(UiBuilderReplayer.ENABLE);
 		commands.add(propertyName);
 		commands.add(Boolean.toString(synchronous));

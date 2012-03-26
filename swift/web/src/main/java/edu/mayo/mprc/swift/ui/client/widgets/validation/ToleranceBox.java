@@ -10,12 +10,12 @@ import java.util.List;
  */
 public final class ToleranceBox extends ValidatableTextBox {
 
-	public ToleranceBox(String param) {
+	public ToleranceBox(final String param) {
 		super(param);
 		setVisibleLength(8);
 	}
 
-	protected ClientValue getValueFromString(String value) {
+	protected ClientValue getValueFromString(final String value) {
 		if ((value == null) || (value.length() == 0)) {
 			return null;
 		}
@@ -23,8 +23,8 @@ public final class ToleranceBox extends ValidatableTextBox {
 
 	}
 
-	protected String setValueAsString(ClientValue object) {
-		ClientTolerance du = (ClientTolerance) object;
+	protected String setValueAsString(final ClientValue object) {
+		final ClientTolerance du = (ClientTolerance) object;
 		return du.getValue();
 	}
 
@@ -32,7 +32,7 @@ public final class ToleranceBox extends ValidatableTextBox {
 		// ignore.
 	}
 
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		// ignore.
 	}
 

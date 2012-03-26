@@ -14,30 +14,30 @@ import java.util.Map;
 public final class ModOverrideList {
 	private final Map<String, Double> overrideMap;
 
-	public ModOverrideList(List<ModOverride> overrideList) {
+	public ModOverrideList(final List<ModOverride> overrideList) {
 		overrideMap = new HashMap<String, Double>();
-		for (ModOverride o : overrideList) {
+		for (final ModOverride o : overrideList) {
 			overrideMap.put(o.getModName(), o.getModMassShift());
 		}
 	}
 
-	public boolean isOverriden(String modName) {
+	public boolean isOverriden(final String modName) {
 		return overrideMap.containsKey(modName);
 	}
 
-	public double getMassShift(String modName) {
+	public double getMassShift(final String modName) {
 		return overrideMap.get(modName);
 	}
 
-	public static ModOverrideList parse(String list) {
+	public static ModOverrideList parse(final String list) {
 		final String[] parts = list.split(";");
 		final List<ModOverride> overrides = new ArrayList<ModOverride>();
-		for (String part : parts) {
+		for (final String part : parts) {
 			final String[] mod = part.split("=", 2);
 			if (mod.length != 2) {
 				throw new MprcException("Incorrect modification override: " + part);
 			}
-			double massShift;
+			final double massShift;
 			try {
 				massShift = Double.parseDouble(mod[1]);
 			} catch (Exception t) {
@@ -50,8 +50,8 @@ public final class ModOverrideList {
 
 	@Override
 	public String toString() {
-		StringBuilder out = new StringBuilder();
-		for (Map.Entry<String, Double> entry : overrideMap.entrySet()) {
+		final StringBuilder out = new StringBuilder();
+		for (final Map.Entry<String, Double> entry : overrideMap.entrySet()) {
 			out.append(entry.getKey())
 					.append("=")
 					.append(entry.getValue())
@@ -64,7 +64,7 @@ public final class ModOverrideList {
 		private final String modName;
 		private final double modMassShift;
 
-		public ModOverride(String modName, double modMassShift) {
+		public ModOverride(final String modName, final double modMassShift) {
 			this.modName = modName;
 			this.modMassShift = modMassShift;
 		}

@@ -25,7 +25,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 	public SwiftSearchDefinition() {
 	}
 
-	public SwiftSearchDefinition(String title, User user, File outputFolder, SpectrumQa qa, PeptideReport peptideReport, SearchEngineParameters searchParameters, List<FileSearch> inputFiles, boolean publicMgfFiles, boolean publicSearchFiles) {
+	public SwiftSearchDefinition(final String title, final User user, final File outputFolder, final SpectrumQa qa, final PeptideReport peptideReport, final SearchEngineParameters searchParameters, final List<FileSearch> inputFiles, final boolean publicMgfFiles, final boolean publicSearchFiles) {
 		this.title = title;
 		this.user = user;
 		this.outputFolder = outputFolder;
@@ -41,7 +41,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -49,7 +49,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 
@@ -57,7 +57,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return outputFolder;
 	}
 
-	public void setOutputFolder(File outputFolder) {
+	public void setOutputFolder(final File outputFolder) {
 		this.outputFolder = outputFolder;
 	}
 
@@ -65,7 +65,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return qa;
 	}
 
-	public void setQa(SpectrumQa qa) {
+	public void setQa(final SpectrumQa qa) {
 		this.qa = qa;
 	}
 
@@ -73,7 +73,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return peptideReport;
 	}
 
-	public void setPeptideReport(PeptideReport peptideReport) {
+	public void setPeptideReport(final PeptideReport peptideReport) {
 		this.peptideReport = peptideReport;
 	}
 
@@ -81,7 +81,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return searchParameters;
 	}
 
-	public void setSearchParameters(SearchEngineParameters searchParameters) {
+	public void setSearchParameters(final SearchEngineParameters searchParameters) {
 		this.searchParameters = searchParameters;
 	}
 
@@ -89,7 +89,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return inputFiles;
 	}
 
-	public void setInputFiles(List<FileSearch> inputFiles) {
+	public void setInputFiles(final List<FileSearch> inputFiles) {
 		this.inputFiles = inputFiles;
 	}
 
@@ -97,7 +97,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return publicMgfFiles;
 	}
 
-	public void setPublicMgfFiles(Boolean publicMgfFiles) {
+	public void setPublicMgfFiles(final Boolean publicMgfFiles) {
 		this.publicMgfFiles = publicMgfFiles;
 	}
 
@@ -105,12 +105,12 @@ public class SwiftSearchDefinition extends PersistableBase {
 		return publicSearchFiles == null ? false : publicSearchFiles;
 	}
 
-	public void setPublicSearchFiles(Boolean publicSearchFiles) {
+	public void setPublicSearchFiles(final Boolean publicSearchFiles) {
 		this.publicSearchFiles = publicSearchFiles;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -118,7 +118,7 @@ public class SwiftSearchDefinition extends PersistableBase {
 			return false;
 		}
 
-		SwiftSearchDefinition that = (SwiftSearchDefinition) o;
+		final SwiftSearchDefinition that = (SwiftSearchDefinition) o;
 
 		if (getInputFiles() != null ? !getInputFiles().equals(that.getInputFiles()) : that.getInputFiles() != null) {
 			return false;

@@ -21,7 +21,7 @@ public final class DatabaseUndeployerWorkPacket extends WorkPacketBase {
 	 * @param dbToUndeploy
 	 * @param taskId
 	 */
-	public DatabaseUndeployerWorkPacket(Curation dbToUndeploy, String taskId) {
+	public DatabaseUndeployerWorkPacket(final Curation dbToUndeploy, final String taskId) {
 		super(taskId, true);
 
 		this.dbToUndeploy = dbToUndeploy;

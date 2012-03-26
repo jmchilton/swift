@@ -20,67 +20,67 @@ import java.sql.Types;
  */
 public class NullNanDoubleType implements UserType {
 
-    @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.DOUBLE};
-    }
+	@Override
+	public int[] sqlTypes() {
+		return new int[]{Types.DOUBLE};
+	}
 
-    @Override
-    public Class returnedClass() {
-        return Float.class;
-    }
+	@Override
+	public Class returnedClass() {
+		return Float.class;
+	}
 
-    @Override
-    public boolean equals(Object x, Object y) throws HibernateException {
-        return (x == y) || (x != null && x.equals(y));
-    }
+	@Override
+	public boolean equals(final Object x, final Object y) throws HibernateException {
+		return (x == y) || (x != null && x.equals(y));
+	}
 
-    @Override
-    public int hashCode(Object x) throws HibernateException {
-        return x.hashCode();
-    }
+	@Override
+	public int hashCode(final Object x) throws HibernateException {
+		return x.hashCode();
+	}
 
-    @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        double value = rs.getDouble(names[0]);
-        if (rs.wasNull()) {
-            value = Double.NaN;
-        }
-        return value;
-    }
+	@Override
+	public Object nullSafeGet(final ResultSet rs, final String[] names, final Object owner) throws HibernateException, SQLException {
+		double value = rs.getDouble(names[0]);
+		if (rs.wasNull()) {
+			value = Double.NaN;
+		}
+		return value;
+	}
 
-    @Override
-    public void nullSafeSet(PreparedStatement ps, Object value, int index) throws HibernateException, SQLException {
-        if (value == null || Double.isNaN((Double) value)) {
-            ps.setNull(index, Types.DOUBLE);
-        } else {
-            ps.setDouble(index, (Double) value);
-        }
-    }
+	@Override
+	public void nullSafeSet(final PreparedStatement ps, final Object value, final int index) throws HibernateException, SQLException {
+		if (value == null || Double.isNaN((Double) value)) {
+			ps.setNull(index, Types.DOUBLE);
+		} else {
+			ps.setDouble(index, (Double) value);
+		}
+	}
 
-    @Override
-    public Object deepCopy(Object value) throws HibernateException {
-        //returning value should be OK since doubles are immutable
-        return value;
-    }
+	@Override
+	public Object deepCopy(final Object value) throws HibernateException {
+		//returning value should be OK since doubles are immutable
+		return value;
+	}
 
-    @Override
-    public boolean isMutable() {
-        return false;
-    }
+	@Override
+	public boolean isMutable() {
+		return false;
+	}
 
-    @Override
-    public Serializable disassemble(Object value) throws HibernateException {
-        return (Serializable) value;
-    }
+	@Override
+	public Serializable disassemble(final Object value) throws HibernateException {
+		return (Serializable) value;
+	}
 
-    @Override
-    public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return cached;
-    }
+	@Override
+	public Object assemble(final Serializable cached, final Object owner) throws HibernateException {
+		return cached;
+	}
 
-    @Override
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
-        return original;
-    }
+	@Override
+	public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
+		return original;
+	}
 }

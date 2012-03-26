@@ -45,7 +45,7 @@ public final class JsonCommunicationTest {
 	@BeforeMethod
 	public void init() {
 		this.outputStream = new ByteArrayOutputStream();
-		PrintWriter out = new PrintWriter(outputStream);
+		final PrintWriter out = new PrintWriter(outputStream);
 		this.out = new JsonWriter(out);
 
 		setUpSearchRun();
@@ -71,16 +71,16 @@ public final class JsonCommunicationTest {
 	private void setUpSearchRun() {
 		searchRun = new SearchRun();
 
-		Date startTimestamp;
+		final Date startTimestamp;
 		{
-			Calendar start = Calendar.getInstance();
+			final Calendar start = Calendar.getInstance();
 			start.set(2005, 4, 6, 10, 22, 34);
 			startTimestamp = start.getTime();
 		}
 
-		Date endTimestamp;
+		final Date endTimestamp;
 		{
-			Calendar end = Calendar.getInstance();
+			final Calendar end = Calendar.getInstance();
 			end.set(2006, 5, 7, 23, 33, 45);
 			endTimestamp = end.getTime();
 		}
@@ -92,7 +92,7 @@ public final class JsonCommunicationTest {
 
 		searchRun.setStartTimestamp(startTimestamp);
 
-		User user = new User();
+		final User user = new User();
 		user.setFirstName("Roman");
 		user.setLastName("Zenka");
 		user.setUserName("Zenka.Roman@mayo.edu");
@@ -135,7 +135,7 @@ public final class JsonCommunicationTest {
 	}
 
 	private List<ReportInfo> getReportInfos() {
-		List<ReportInfo> reportInfos = new ArrayList<ReportInfo>(2);
+		final List<ReportInfo> reportInfos = new ArrayList<ReportInfo>(2);
 		reportInfos.add(new ReportInfo(34, "/test1.sf3", true));
 		reportInfos.add(new ReportInfo(35, "/test2.sf3", false));
 		return reportInfos;
@@ -164,7 +164,7 @@ public final class JsonCommunicationTest {
 
 	@Test(enabled = true, groups = {"fast", "unit"}, dependsOnMethods = {"testDoubleInsert"}, sequential = true)
 	public void testTaskData() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		JsonWriter.appendTaskDataJson(builder, 0, this.status);
 		Assert.assertEquals(builder.toString(), STATUS_JSON, "Task status");
 	}

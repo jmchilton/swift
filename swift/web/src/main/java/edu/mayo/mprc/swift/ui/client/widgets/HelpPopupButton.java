@@ -14,11 +14,11 @@ public final class HelpPopupButton extends Label implements ClickListener {
 		initialize(null);
 	}
 
-	public HelpPopupButton(String helpHtmlString) {
+	public HelpPopupButton(final String helpHtmlString) {
 		initialize(helpHtmlString);
 	}
 
-	private void initialize(String helpHtmlString) {
+	private void initialize(final String helpHtmlString) {
 		if (helpHtmlString == null) {
 			this.setVisible(false);
 			return;
@@ -31,8 +31,8 @@ public final class HelpPopupButton extends Label implements ClickListener {
 		this.addClickListener(this);
 	}
 
-	public void onClick(Widget widget) {
-		DialogBox dialogBox = new DialogBox(true, true);
+	public void onClick(final Widget widget) {
+		final DialogBox dialogBox = new DialogBox(true, true);
 		dialogBox.setWidget(helpHtml);
 		// Make sure we do not run out of the screen on the right side
 		int left = this.getAbsoluteLeft();

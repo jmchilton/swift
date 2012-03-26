@@ -18,10 +18,10 @@ public final class UnimodHandler extends DefaultHandler {
 		this.into = into;
 	}
 
-	public static Boolean getBooleanValue(Attributes attr, String attrName) {
+	public static Boolean getBooleanValue(final Attributes attr, final String attrName) {
 		Boolean value = null;
 		try {
-			String strValue = attr.getValue("", attrName);
+			final String strValue = attr.getValue("", attrName);
 			value = (!strValue.equals("0"));
 		} catch (Exception ignore) {
 			//SWALLOWED: allow null return;
@@ -29,7 +29,7 @@ public final class UnimodHandler extends DefaultHandler {
 		return value;
 	}
 
-	public static Double getDoubleValue(Attributes attr, String attrName) {
+	public static Double getDoubleValue(final Attributes attr, final String attrName) {
 		Double value = null;
 		try {
 			value = new Double(attr.getValue("", attrName));
@@ -39,10 +39,10 @@ public final class UnimodHandler extends DefaultHandler {
 		return value;
 	}
 
-	public static Integer getIntegerValue(Attributes attr, String attrName) {
+	public static Integer getIntegerValue(final Attributes attr, final String attrName) {
 		Integer value = null;
 		try {
-			String strValue = attr.getValue("", attrName);
+			final String strValue = attr.getValue("", attrName);
 			value = Integer.valueOf(strValue);
 		} catch (Exception ignore) {
 			// SWALLOWED: allow null return;
@@ -51,7 +51,7 @@ public final class UnimodHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attr) throws SAXException {
+	public void startElement(final String namespaceURI, final String localName, final String qualifiedName, final Attributes attr) throws SAXException {
 		if (actualHandler == null) {
 			if ("unimod".equals(localName)) {
 				into.setMajorVersion(attr.getValue("majorVersion"));
@@ -69,14 +69,14 @@ public final class UnimodHandler extends DefaultHandler {
 
 
 	@Override
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(final char[] ch, final int start, final int length) throws SAXException {
 		if (actualHandler != null) {
 			actualHandler.characters(ch, start, length);
 		}
 	}
 
 	@Override
-	public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
+	public void endElement(final String namespaceURI, final String localName, final String qualifiedName) throws SAXException {
 		if (actualHandler != null) {
 			actualHandler.endElement(namespaceURI, localName, qualifiedName);
 		}

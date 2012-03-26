@@ -48,7 +48,7 @@ public final class QaWorker implements Worker {
 	private static final String R_EXECUTABLE = "rExecutable";
 
 	@Override
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -59,18 +59,18 @@ public final class QaWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket, ProgressReporter progressReporter) {
-		QaWorkPacket qaWorkPacket = (QaWorkPacket) workPacket;
+	private void process(final WorkPacket workPacket, final ProgressReporter progressReporter) {
+		final QaWorkPacket qaWorkPacket = (QaWorkPacket) workPacket;
 
-		File reportFile = qaWorkPacket.getReportFile();
-		File qaReportFolder = qaWorkPacket.getQaReportFolder();
+		final File reportFile = qaWorkPacket.getReportFile();
+		final File qaReportFolder = qaWorkPacket.getQaReportFolder();
 		FileUtilities.ensureFolderExists(qaReportFolder);
 
-		File rScriptInputFile = new File(qaReportFolder, "rInputData.tsv");
+		final File rScriptInputFile = new File(qaReportFolder, "rInputData.tsv");
 
 		FileWriter fileWriter = null;
 
-		LinkedList<File> generatedFileList = new LinkedList<File>();
+		final LinkedList<File> generatedFileList = new LinkedList<File>();
 
 		boolean atLeastOneFileMissing = !reportFile.exists();
 		boolean writerIsClosed = false;
@@ -84,11 +84,11 @@ public final class QaWorker implements Worker {
 			final List<ExperimentQa> experimentQas = qaWorkPacket.getExperimentQas();
 
 			int numFilesDone = 0;
-			int numFilesTotal = countTotalFiles(experimentQas);
+			final int numFilesTotal = countTotalFiles(experimentQas);
 
-			for (ExperimentQa experimentQa : experimentQas) {
+			for (final ExperimentQa experimentQa : experimentQas) {
 				final List<MgfQaFiles> entries = experimentQa.getMgfQaFiles();
-				for (MgfQaFiles me : entries) {
+				for (final MgfQaFiles me : entries) {
 					atLeastOneFileMissing = addRScriptInputLine(fileWriter, qaReportFolder, experimentQa, generatedFileList, me, atLeastOneFileMissing);
 					numFilesDone++;
 					reportProgress(numFilesDone * PERCENT_GENERATING_FILES / numFilesTotal, progressReporter);
@@ -103,7 +103,7 @@ public final class QaWorker implements Worker {
 				runRScript(rScriptInputFile, reportFile);
 			}
 
-			for (File file : generatedFileList) {
+			for (final File file : generatedFileList) {
 				if (!file.exists()) {
 					throw new MprcException("Some of the output files for the QA have not been created, example: [" + file.getAbsolutePath() + "]");
 				}
@@ -119,27 +119,27 @@ public final class QaWorker implements Worker {
 		}
 	}
 
-	private boolean addRScriptInputLine(FileWriter fileWriter, File qaReportFolder, ExperimentQa experimentQa, LinkedList<File> generatedFiles, MgfQaFiles qaFiles, boolean atLeastOneFileMissing) throws IOException {
-		String uniqueMgfAnalysisName;
+	private boolean addRScriptInputLine(final FileWriter fileWriter, final File qaReportFolder, final ExperimentQa experimentQa, final LinkedList<File> generatedFiles, final MgfQaFiles qaFiles, boolean atLeastOneFileMissing) throws IOException {
+		final String uniqueMgfAnalysisName;
 		boolean generate;
-		File msmsEvalDiscriminantFile;
-		File ticFile;
-		File mgfFile = qaFiles.getMgfFile();
+		final File msmsEvalDiscriminantFile;
+		final File ticFile;
+		final File mgfFile = qaFiles.getMgfFile();
 
 		// The name of the analysis output file is the original .mgf name combined with scaffold version to make it unique
 		uniqueMgfAnalysisName = FileUtilities.getFileNameWithoutExtension(mgfFile) + "." +
 				(experimentQa.getScaffoldVersion().startsWith("2") ? "sfd" : "sf3");
 
 		generate = false;
-		List<File> rScriptOutputFilesSet = new ArrayList<File>(INITIAL_OUTPUT_FILES);
+		final List<File> rScriptOutputFilesSet = new ArrayList<File>(INITIAL_OUTPUT_FILES);
 
-		File outputFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".sfs");
+		final File outputFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".sfs");
 
-		File massCalibrationRtFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".calRt.png");
-		File massCalibrationMzFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".calMz.png");
-		File mzRtFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".mzRt.png");
-		File sourceCurrentFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".current.png");
-		File pepTolFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".pepTol.png");
+		final File massCalibrationRtFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".calRt.png");
+		final File massCalibrationMzFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".calMz.png");
+		final File mzRtFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".mzRt.png");
+		final File sourceCurrentFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".current.png");
+		final File pepTolFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".pepTol.png");
 
 		rScriptOutputFilesSet.add(massCalibrationRtFile);
 		rScriptOutputFilesSet.add(massCalibrationMzFile);
@@ -153,16 +153,16 @@ public final class QaWorker implements Worker {
 		// Do not add anything that depends on RawDump unless we are sure we can provide the data
 		ticFile = new File(qaReportFolder, uniqueMgfAnalysisName + ".tic.png");
 
-		MyrimatchPepXmlReader myrimatchReader = getMyrimatchReader(qaFiles.getAdditionalSearchResults());
+		final MyrimatchPepXmlReader myrimatchReader = getMyrimatchReader(qaFiles.getAdditionalSearchResults());
 
 		if (!outputFile.exists() || outputFile.length() == 0) {
 
 			LOGGER.info("Generating output file [" + outputFile.getAbsolutePath() + "]");
 
-			ScaffoldQaSpectraReader scaffoldParser = new ScaffoldQaSpectraReader();
+			final ScaffoldQaSpectraReader scaffoldParser = new ScaffoldQaSpectraReader();
 			scaffoldParser.load(experimentQa.getScaffoldSpectraFile(), experimentQa.getScaffoldVersion(), null);
-			RawDumpReader rawDumpReader = new RawDumpReader(qaFiles.getRawSpectraFile());
-			MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(qaFiles.getMsmsEvalOutputFile());
+			final RawDumpReader rawDumpReader = new RawDumpReader(qaFiles.getRawSpectraFile());
+			final MSMSEvalOutputReader msmsEvalReader = new MSMSEvalOutputReader(qaFiles.getMsmsEvalOutputFile());
 			final String rawInputFile = qaFiles.getRawInputFile() != null ? qaFiles.getRawInputFile().getAbsolutePath() : null;
 			generate = SpectrumInfoJoiner.joinSpectrumData(
 					mgfFile,
@@ -186,7 +186,7 @@ public final class QaWorker implements Worker {
 			}
 
 			if (!generate) {
-				for (File file : rScriptOutputFilesSet) {
+				for (final File file : rScriptOutputFilesSet) {
 					if (file.exists() || file.length() == 0) {
 						atLeastOneFileMissing = true;
 						generate = true;
@@ -218,8 +218,8 @@ public final class QaWorker implements Worker {
 	/**
 	 * Find a myrimatch search engine results in the list and create a reader from them.
 	 */
-	private MyrimatchPepXmlReader getMyrimatchReader(HashMap<String, File> additionalSearchResults) {
-		for (Map.Entry<String, File> entry : additionalSearchResults.entrySet()) {
+	private MyrimatchPepXmlReader getMyrimatchReader(final HashMap<String, File> additionalSearchResults) {
+		for (final Map.Entry<String, File> entry : additionalSearchResults.entrySet()) {
 			final String searchEngineCode = entry.getKey();
 			if ("MYRIMATCH".equals(searchEngineCode)) {
 				final MyrimatchPepXmlReader reader = new MyrimatchPepXmlReader();
@@ -231,7 +231,7 @@ public final class QaWorker implements Worker {
 		return null;
 	}
 
-	private void writeInputLine(FileWriter fileWriter, File outputFile, File idVsPpmFile, File mzVsPpmFile, File idVsMzFile, File sourceCurrentFile, File msmsEvalDiscriminantFile, boolean generate, MgfQaFiles qaFiles, File pepTolFile, File ticFile, File chromatogramFile) throws IOException {
+	private void writeInputLine(final FileWriter fileWriter, final File outputFile, final File idVsPpmFile, final File mzVsPpmFile, final File idVsMzFile, final File sourceCurrentFile, final File msmsEvalDiscriminantFile, final boolean generate, final MgfQaFiles qaFiles, final File pepTolFile, final File ticFile, final File chromatogramFile) throws IOException {
 		fileWriter.write(outputFile.getAbsolutePath());
 		fileWriter.write("\t");
 		fileWriter.write(idVsPpmFile.getAbsolutePath());
@@ -262,15 +262,15 @@ public final class QaWorker implements Worker {
 		fileWriter.write("\n");
 	}
 
-	private int countTotalFiles(List<ExperimentQa> experimentQas) {
+	private int countTotalFiles(final List<ExperimentQa> experimentQas) {
 		int numFilesTotal = 0;
-		for (ExperimentQa experimentQa : experimentQas) {
+		for (final ExperimentQa experimentQa : experimentQas) {
 			numFilesTotal += experimentQa.getMgfQaFiles().size();
 		}
 		return numFilesTotal;
 	}
 
-	private void reportProgress(float percentDone, ProgressReporter progressReporter) {
+	private void reportProgress(final float percentDone, final ProgressReporter progressReporter) {
 		progressReporter.reportProgress(new PercentDone(percentDone));
 	}
 
@@ -278,13 +278,13 @@ public final class QaWorker implements Worker {
 	 * @param file
 	 * @return true if file exists and is not empty.
 	 */
-	private boolean isDataFileValid(File file) {
+	private boolean isDataFileValid(final File file) {
 		return file != null && file.exists() && file.length() > 0;
 	}
 
-	private void runRScript(File inputFile, File reportFile) {
+	private void runRScript(final File inputFile, final File reportFile) {
 
-		List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
 
 		if (getXvfbWrapperScript() != null && FileUtilities.isLinuxPlatform()) {
 			result.add(getXvfbWrapperScript().getAbsolutePath());
@@ -295,9 +295,9 @@ public final class QaWorker implements Worker {
 		result.add(inputFile.getAbsolutePath());
 		result.add(reportFile.getAbsolutePath());
 
-		ProcessBuilder builder = new ProcessBuilder(result.toArray(new String[result.size()]));
+		final ProcessBuilder builder = new ProcessBuilder(result.toArray(new String[result.size()]));
 
-		ProcessCaller caller = new ProcessCaller(builder);
+		final ProcessCaller caller = new ProcessCaller(builder);
 
 		try {
 			caller.run();
@@ -316,7 +316,7 @@ public final class QaWorker implements Worker {
 		return rExecutable;
 	}
 
-	public void setRExecutable(String rExecutable) {
+	public void setRExecutable(final String rExecutable) {
 		this.rExecutable = rExecutable;
 	}
 
@@ -324,7 +324,7 @@ public final class QaWorker implements Worker {
 		return rScript;
 	}
 
-	public void setRScript(File rScript) {
+	public void setRScript(final File rScript) {
 		this.rScript = rScript;
 	}
 
@@ -332,7 +332,7 @@ public final class QaWorker implements Worker {
 		return xvfbWrapperScript;
 	}
 
-	public void setXvfbWrapperScript(File xvfbWrapperScript) {
+	public void setXvfbWrapperScript(final File xvfbWrapperScript) {
 		this.xvfbWrapperScript = xvfbWrapperScript;
 	}
 
@@ -341,8 +341,8 @@ public final class QaWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			QaWorker qaWorker = new QaWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final QaWorker qaWorker = new QaWorker();
 			qaWorker.setRExecutable(config.getRExecutable());
 			qaWorker.setRScript(new File(config.getRScript()));
 			qaWorker.setXvfbWrapperScript(config.getXvfbWrapperScript() != null && config.getXvfbWrapperScript().length() > 0 ? new File(config.getXvfbWrapperScript()) : null);
@@ -362,7 +362,7 @@ public final class QaWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String xvfbWrapperScript, String rScript) {
+		public Config(final String xvfbWrapperScript, final String rScript) {
 			this.xvfbWrapperScript = xvfbWrapperScript;
 			this.rScript = rScript;
 		}
@@ -371,7 +371,7 @@ public final class QaWorker implements Worker {
 			return xvfbWrapperScript;
 		}
 
-		public void setXvfbWrapperScript(String xvfbWrapperScript) {
+		public void setXvfbWrapperScript(final String xvfbWrapperScript) {
 			this.xvfbWrapperScript = xvfbWrapperScript;
 		}
 
@@ -379,7 +379,7 @@ public final class QaWorker implements Worker {
 			return rScript;
 		}
 
-		public void setRScript(String rScript) {
+		public void setRScript(final String rScript) {
 			this.rScript = rScript;
 		}
 
@@ -387,19 +387,19 @@ public final class QaWorker implements Worker {
 			return rExecutable;
 		}
 
-		public void setRExecutable(String rExecutable) {
+		public void setRExecutable(final String rExecutable) {
 			this.rExecutable = rExecutable;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(XVFB_WRAPPER_SCRIPT, xvfbWrapperScript);
 			map.put(R_SCRIPT, rScript);
 			map.put(R_EXECUTABLE, rExecutable);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			xvfbWrapperScript = values.get(XVFB_WRAPPER_SCRIPT);
 			rScript = values.get(R_SCRIPT);
 			rExecutable = values.get(R_EXECUTABLE);
@@ -415,7 +415,7 @@ public final class QaWorker implements Worker {
 		private static final String PROVIDED_R_SCRIPT = "bin/util/rPpmPlot.r";
 		private static final String R_EXECUTABLE_DEFAULT = "Rscript";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(R_EXECUTABLE, "<tt>R executable</tt>", "R script executable or interpreter that runs the given R script below. R must be installed in the system. " +
 							"R installation packages can be found at <a href=\"http://www.r-project.org\"/>http://www.r-project.org</a>")

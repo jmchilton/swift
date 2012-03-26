@@ -11,11 +11,11 @@ public final class JmsFileTransferHandlerFactory {
 	public JmsFileTransferHandlerFactory() {
 	}
 
-	public JmsFileTransferHandlerFactory(URI brokerUri) {
+	public JmsFileTransferHandlerFactory(final URI brokerUri) {
 		this.brokerUri = brokerUri;
 	}
 
-	public JmsFileTransferHandlerFactory(URI brokerUri, String userName, String password) {
+	public JmsFileTransferHandlerFactory(final URI brokerUri, final String userName, final String password) {
 		this.brokerUri = brokerUri;
 		this.userName = userName;
 		this.password = password;
@@ -25,7 +25,7 @@ public final class JmsFileTransferHandlerFactory {
 		return brokerUri;
 	}
 
-	public void setBrokerUri(URI brokerUri) {
+	public void setBrokerUri(final URI brokerUri) {
 		this.brokerUri = brokerUri;
 	}
 
@@ -33,7 +33,7 @@ public final class JmsFileTransferHandlerFactory {
 		return userName;
 	}
 
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
@@ -41,11 +41,11 @@ public final class JmsFileTransferHandlerFactory {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 
-	public JmsFileTransferHandler createFileSharing(String sourceId) {
+	public JmsFileTransferHandler createFileSharing(final String sourceId) {
 		return new JmsFileTransferHandler(brokerUri, sourceId, userName, password);
 	}
 }

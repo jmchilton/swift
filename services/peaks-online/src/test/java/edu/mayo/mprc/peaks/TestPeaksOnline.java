@@ -39,13 +39,13 @@ public final class TestPeaksOnline {
 	@Test(enabled = false, dependsOnMethods = {"TestInstanciatePeaksOnlineClient"})
 	public void waitForPeaksOnlineSearchCompletion() throws IOException, InterruptedException {
 		synchronized (monitor) {
-			String searchId = "7879555498205498641";
+			final String searchId = "7879555498205498641";
 
 			final PeaksSearchMonitor peaksOnlineSearchMonitor = new PeaksSearchMonitor(searchId, peaksOnline.getPeaksOnlineResult(0));
 
 			peaksOnlineSearchMonitor.addPeaksOnlineMonitorListener(new PeaksMonitorListener() {
 
-				public void searchCompleted(PeaksSearchStatusEvent event) {
+				public void searchCompleted(final PeaksSearchStatusEvent event) {
 					synchronized (monitor) {
 						TestPeaksOnline.this.event = event;
 						peaksOnlineSearchMonitor.stop();
@@ -53,15 +53,15 @@ public final class TestPeaksOnline {
 					}
 				}
 
-				public void searchRunning(PeaksSearchStatusEvent event) {
+				public void searchRunning(final PeaksSearchStatusEvent event) {
 					TestPeaksOnline.this.event = event;
 				}
 
-				public void searchWaiting(PeaksSearchStatusEvent event) {
+				public void searchWaiting(final PeaksSearchStatusEvent event) {
 					TestPeaksOnline.this.event = event;
 				}
 
-				public void searchNotFound(PeaksSearchStatusEvent event) {
+				public void searchNotFound(final PeaksSearchStatusEvent event) {
 					synchronized (monitor) {
 						TestPeaksOnline.this.event = event;
 
@@ -83,14 +83,14 @@ public final class TestPeaksOnline {
 	@Test(enabled = false, dependsOnMethods = {"TestInstanciatePeaksOnlineClient"})
 	public void addDatabaseToPeaksOnline() throws IOException, InterruptedException {
 
-		PeaksAdmin peaksOnlineAdmin = peaksOnline.getPeaksOnlineAdmin();
+		final PeaksAdmin peaksOnlineAdmin = peaksOnline.getPeaksOnlineAdmin();
 
-		String databaseName = Long.toString(System.currentTimeMillis());
+		final String databaseName = Long.toString(System.currentTimeMillis());
 		peaksOnlineAdmin.addDatabase(databaseName, "/mnt/raid1/test/yeast17080912A.fasta", PeaksAdmin.SWISSPROT_DB_FORMAT, true);
 
 		databaseId = null;
 
-		for (PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
+		for (final PeaksDatabase peaksOnlineDatabase : peaksOnlineAdmin.getAllDatabases()) {
 			if (peaksOnlineDatabase.getDatabaseName().equals(databaseName)) {
 				databaseId = peaksOnlineDatabase.getDatabaseId();
 			}
@@ -102,7 +102,7 @@ public final class TestPeaksOnline {
 	@Test(enabled = false, dependsOnMethods = {"addDatabaseToPeaksOnline"})
 	public void removeDatabaseFromPeaksOnline() throws IOException, InterruptedException {
 
-		PeaksAdmin peaksOnlineAdmin = peaksOnline.getPeaksOnlineAdmin();
+		final PeaksAdmin peaksOnlineAdmin = peaksOnline.getPeaksOnlineAdmin();
 
 		Assert.assertTrue(peaksOnlineAdmin.removeDatabase(databaseId), "Database could not be deleted.");
 	}

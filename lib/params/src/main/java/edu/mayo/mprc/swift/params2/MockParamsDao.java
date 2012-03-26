@@ -24,18 +24,18 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public void addIonSeries(IonSeries ionSeries, Change creation) {
+	public void addIonSeries(final IonSeries ionSeries, final Change creation) {
 		notModifiable();
 	}
 
 	@Override
-	public IonSeries updateIonSeries(IonSeries ionSeries, Change creation) {
+	public IonSeries updateIonSeries(final IonSeries ionSeries, final Change creation) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public void deleteIonSeries(IonSeries ionSeries, Change deletion) {
+	public void deleteIonSeries(final IonSeries ionSeries, final Change deletion) {
 		notModifiable();
 	}
 
@@ -45,8 +45,8 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public Instrument getInstrumentByName(String name) {
-		for (Instrument instrument : Instrument.getInitial()) {
+	public Instrument getInstrumentByName(final String name) {
+		for (final Instrument instrument : Instrument.getInitial()) {
 			if (instrument.getName().equals(name)) {
 				return instrument;
 			}
@@ -55,19 +55,19 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public Instrument addInstrument(Instrument instrument, Change change) {
+	public Instrument addInstrument(final Instrument instrument, final Change change) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public Instrument updateInstrument(Instrument instrument, Change change) {
+	public Instrument updateInstrument(final Instrument instrument, final Change change) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public void deleteInstrument(Instrument instrument, Change change) {
+	public void deleteInstrument(final Instrument instrument, final Change change) {
 		notModifiable();
 	}
 
@@ -77,8 +77,8 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public Protease getProteaseByName(String name) {
-		for (Protease protease : Protease.getInitial()) {
+	public Protease getProteaseByName(final String name) {
+		for (final Protease protease : Protease.getInitial()) {
 			if (protease.getName().equals(name)) {
 				return protease;
 			}
@@ -87,53 +87,53 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public void addProtease(Protease protease, Change change) {
+	public void addProtease(final Protease protease, final Change change) {
 		notModifiable();
 	}
 
 	@Override
-	public Protease updateProtease(Protease protease, Change change) {
-		notModifiable();
-		return null;
-	}
-
-	@Override
-	public void deleteProtease(Protease protease, Change change) {
-		notModifiable();
-	}
-
-	@Override
-	public StarredProteins addStarredProteins(StarredProteins starredProteins) {
+	public Protease updateProtease(final Protease protease, final Change change) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public ExtractMsnSettings addExtractMsnSettings(ExtractMsnSettings extractMsnSettings) {
+	public void deleteProtease(final Protease protease, final Change change) {
+		notModifiable();
+	}
+
+	@Override
+	public StarredProteins addStarredProteins(final StarredProteins starredProteins) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public ScaffoldSettings addScaffoldSettings(ScaffoldSettings scaffoldSettings) {
+	public ExtractMsnSettings addExtractMsnSettings(final ExtractMsnSettings extractMsnSettings) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public ModSet updateModSet(ModSet modSet) {
+	public ScaffoldSettings addScaffoldSettings(final ScaffoldSettings scaffoldSettings) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public SearchEngineParameters addSearchEngineParameters(SearchEngineParameters parameters) {
+	public ModSet updateModSet(final ModSet modSet) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public SearchEngineParameters getSearchEngineParameters(int key) {
+	public SearchEngineParameters addSearchEngineParameters(final SearchEngineParameters parameters) {
+		notModifiable();
+		return null;
+	}
+
+	@Override
+	public SearchEngineParameters getSearchEngineParameters(final int key) {
 		return null;
 	}
 
@@ -143,33 +143,33 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public SavedSearchEngineParameters getSavedSearchEngineParameters(int key) {
+	public SavedSearchEngineParameters getSavedSearchEngineParameters(final int key) {
 		return null;
 	}
 
 	@Override
-	public SavedSearchEngineParameters findSavedSearchEngineParameters(String name) {
+	public SavedSearchEngineParameters findSavedSearchEngineParameters(final String name) {
 		return null;
 	}
 
 	@Override
-	public SavedSearchEngineParameters addSavedSearchEngineParameters(SavedSearchEngineParameters params, Change change) {
+	public SavedSearchEngineParameters addSavedSearchEngineParameters(final SavedSearchEngineParameters params, final Change change) {
 		notModifiable();
 		return null;
 	}
 
 	@Override
-	public void deleteSavedSearchEngineParameters(SavedSearchEngineParameters params, Change change) {
+	public void deleteSavedSearchEngineParameters(final SavedSearchEngineParameters params, final Change change) {
 		notModifiable();
 	}
 
 	@Override
-	public SavedSearchEngineParameters findBestSavedSearchEngineParameters(SearchEngineParameters parameters, User user) {
+	public SavedSearchEngineParameters findBestSavedSearchEngineParameters(final SearchEngineParameters parameters, final User user) {
 		return null;
 	}
 
 	@Override
-	public SearchEngineParameters mergeParameterSet(SearchEngineParameters ps) {
+	public SearchEngineParameters mergeParameterSet(final SearchEngineParameters ps) {
 		return null;
 	}
 
@@ -186,11 +186,11 @@ public final class MockParamsDao implements ParamsDao {
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		return null;
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 	}
 }

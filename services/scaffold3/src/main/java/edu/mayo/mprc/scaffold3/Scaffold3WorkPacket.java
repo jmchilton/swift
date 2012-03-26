@@ -11,11 +11,11 @@ public final class Scaffold3WorkPacket extends WorkPacketBase {
 	private String experimentName;
 	private ScafmlScaffold scafmlFile;
 
-	public Scaffold3WorkPacket(String taskId, boolean fromScratch) {
+	public Scaffold3WorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public Scaffold3WorkPacket(File outputFolder, ScafmlScaffold scafmlFile, String experimentName, String taskId, boolean fromScratch) {
+	public Scaffold3WorkPacket(final File outputFolder, final ScafmlScaffold scafmlFile, final String experimentName, final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		assert outputFolder != null : "Scaffold request cannot be created: Work folder was null";

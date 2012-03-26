@@ -16,18 +16,18 @@ public final class SpectrumNumberExtractor {
 			"We expect the TITLE to end in ([filename].[spectrum_from].[spectrum_to].[charge].dta)\n" +
 			"The spectrum title was:\n\t";
 
-	public int extractSpectrumNumber(MascotGenericFormatPeakList peakList) {
-		String title = peakList.getTitle();
+	public int extractSpectrumNumber(final MascotGenericFormatPeakList peakList) {
+		final String title = peakList.getTitle();
 		return extractSpectrumNumberFromTitle(title);
 	}
 
-	public int extractSpectrumNumberFromTitle(String title) {
-		Matcher m = TITLE_SPECTRUM_NUMBER.matcher(title);
+	public int extractSpectrumNumberFromTitle(final String title) {
+		final Matcher m = TITLE_SPECTRUM_NUMBER.matcher(title);
 		if (!m.find()) {
 			throw new MprcException(WRONG_TITLE_MSG + title);
 		}
 
-		String spectrum = m.group(1);
+		final String spectrum = m.group(1);
 		int spectrumNumber = 0;
 		try {
 			spectrumNumber = Integer.parseInt(spectrum);

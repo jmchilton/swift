@@ -76,44 +76,44 @@ public abstract class ComparisonChain {
 	private static final class InactiveComparisonChain extends ComparisonChain {
 		final int result;
 
-		InactiveComparisonChain(int result) {
+		InactiveComparisonChain(final int result) {
 			this.result = result;
 		}
 
 		@Override
 		public ComparisonChain compare(
-				@Nullable Comparable left, @Nullable Comparable right) {
+				@Nullable final Comparable left, @Nullable final Comparable right) {
 			return this;
 		}
 
 		@Override
-		public <T> ComparisonChain compare(@Nullable T left,
-		                                   @Nullable T right, @Nullable Comparator<T> comparator) {
+		public <T> ComparisonChain compare(@Nullable final T left,
+		                                   @Nullable final T right, @Nullable final Comparator<T> comparator) {
 			return this;
 		}
 
 		@Override
-		public ComparisonChain compare(int left, int right) {
+		public ComparisonChain compare(final int left, final int right) {
 			return this;
 		}
 
 		@Override
-		public ComparisonChain compare(long left, long right) {
+		public ComparisonChain compare(final long left, final long right) {
 			return this;
 		}
 
 		@Override
-		public ComparisonChain compare(float left, float right) {
+		public ComparisonChain compare(final float left, final float right) {
 			return this;
 		}
 
 		@Override
-		public ComparisonChain compare(double left, double right) {
+		public ComparisonChain compare(final double left, final double right) {
 			return this;
 		}
 
 		@Override
-		public ComparisonChain compare(boolean left, boolean right) {
+		public ComparisonChain compare(final boolean left, final boolean right) {
 			return this;
 		}
 
@@ -193,42 +193,42 @@ public abstract class ComparisonChain {
 	private static class ActiveComparisonChain extends ComparisonChain {
 		@Override
 		public ComparisonChain compare(
-				Comparable left, Comparable right) {
+				final Comparable left, final Comparable right) {
 			return classify(left.compareTo(right));
 		}
 
 		@Override
 		public <T> ComparisonChain compare(
-				@Nullable T left, @Nullable T right, Comparator<T> comparator) {
+				@Nullable final T left, @Nullable final T right, final Comparator<T> comparator) {
 			return classify(comparator.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(int left, int right) {
+		public final ComparisonChain compare(final int left, final int right) {
 			return classify(Ints.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(long left, long right) {
+		public final ComparisonChain compare(final long left, final long right) {
 			return classify(Longs.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(float left, float right) {
+		public final ComparisonChain compare(final float left, final float right) {
 			return classify(Float.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(double left, double right) {
+		public final ComparisonChain compare(final double left, final double right) {
 			return classify(Double.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(boolean left, boolean right) {
+		public final ComparisonChain compare(final boolean left, final boolean right) {
 			return classify(Booleans.compare(left, right));
 		}
 
-		final ComparisonChain classify(int result) {
+		final ComparisonChain classify(final int result) {
 			return (result < 0) ? LESS : (result > 0) ? GREATER : ACTIVE;
 		}
 
@@ -246,9 +246,9 @@ public abstract class ComparisonChain {
 	private static final class ActiveNullsFirstComparisonChain extends ComparisonChain {
 		@Override
 		public ComparisonChain compare(
-				Comparable left, Comparable right) {
+				final Comparable left, final Comparable right) {
 
-			int result;
+			final int result;
 			if (left == null) {
 				if (right == null) {
 					result = 0;
@@ -265,8 +265,8 @@ public abstract class ComparisonChain {
 
 		@Override
 		public <T> ComparisonChain compare(
-				@Nullable T left, @Nullable T right, Comparator<T> comparator) {
-			int result;
+				@Nullable final T left, @Nullable final T right, final Comparator<T> comparator) {
+			final int result;
 			if (left == null) {
 				if (right == null) {
 					result = 0;
@@ -282,27 +282,27 @@ public abstract class ComparisonChain {
 		}
 
 		@Override
-		public final ComparisonChain compare(int left, int right) {
+		public final ComparisonChain compare(final int left, final int right) {
 			return classify(Ints.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(long left, long right) {
+		public final ComparisonChain compare(final long left, final long right) {
 			return classify(Longs.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(float left, float right) {
+		public final ComparisonChain compare(final float left, final float right) {
 			return classify(Float.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(double left, double right) {
+		public final ComparisonChain compare(final double left, final double right) {
 			return classify(Double.compare(left, right));
 		}
 
 		@Override
-		public final ComparisonChain compare(boolean left, boolean right) {
+		public final ComparisonChain compare(final boolean left, final boolean right) {
 			return classify(Booleans.compare(left, right));
 		}
 
@@ -316,7 +316,7 @@ public abstract class ComparisonChain {
 			return this;
 		}
 
-		final ComparisonChain classify(int result) {
+		final ComparisonChain classify(final int result) {
 			return (result < 0) ? LESS : (result > 0) ? GREATER : ACTIVE_NULLS_FIRST;
 		}
 	}

@@ -13,7 +13,7 @@ public final class DatabaseUploadStepStub extends CurationStepStub {
 	public String serverFilePath;
 
 	public AbstractStepPanel getStepPanel() {
-		DatabaseUploadPanel panel = new DatabaseUploadPanel();
+		final DatabaseUploadPanel panel = new DatabaseUploadPanel();
 		panel.setContainedStep(this);
 		return panel;
 	}

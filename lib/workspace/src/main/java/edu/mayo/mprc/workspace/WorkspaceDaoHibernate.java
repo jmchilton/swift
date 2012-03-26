@@ -18,7 +18,7 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 	public WorkspaceDaoHibernate() {
 	}
 
-	public WorkspaceDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+	public WorkspaceDaoHibernate(final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 	}
 
@@ -50,7 +50,7 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 	}
 
 	@Override
-	public User getUserByEmail(String email) {
+	public User getUserByEmail(final String email) {
 		try {
 			return get(User.class, Restrictions.eq("userName", email).ignoreCase());
 		} catch (Exception t) {
@@ -70,12 +70,12 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 		}
 	}
 
-	private Criterion getUserEqualityCriteria(User user) {
+	private Criterion getUserEqualityCriteria(final User user) {
 		return Restrictions.eq("userName", user.getUserName());
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		if (countAll(User.class) == 0) {
 			return "At least one user has to be defined";
 		}
@@ -89,9 +89,9 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 		if (countAll(User.class) == 0) {
-			User user = new User("Mprc", "Test", "mprctest@localhost", "mt", "database");
+			final User user = new User("Mprc", "Test", "mprctest@localhost", "mt", "database");
 			save(user, new Change("Creating a test user - no users were defined", new DateTime()), getUserEqualityCriteria(user), true);
 		}
 
@@ -100,10 +100,10 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 	}
 
 	private void updateUserRights() {
-		List<User> users = this.getUsersWithRights();
+		final List<User> users = this.getUsersWithRights();
 		if (users.size() > 0) {
 			LOGGER.info("Updating user rights");
-			for (User user : users) {
+			for (final User user : users) {
 				user.setParameterEditorEnabled(user.isParameterEditorEnabled());
 				user.setOutputPathChangeEnabled(user.isOutputPathChangeEnabled());
 				LOGGER.info("User " + user.getUserName() + ": "
@@ -116,12 +116,12 @@ public final class WorkspaceDaoHibernate extends DaoBase implements WorkspaceDao
 
 	private void addUserInitials() {
 		// Update initials
-		List<User> users = getUsersNoInitials();
+		final List<User> users = getUsersNoInitials();
 		if (users.size() > 0) {
 			LOGGER.info("Updating user initials");
 			int count = 0;
 
-			for (User user : users) {
+			for (final User user : users) {
 				user.setInitials((user.getFirstName().charAt(0) + "" + user.getLastName().charAt(0)).toLowerCase(Locale.ENGLISH));
 				LOGGER.info("User " + (++count) + " updated. User initials: " + user.getInitials());
 			}

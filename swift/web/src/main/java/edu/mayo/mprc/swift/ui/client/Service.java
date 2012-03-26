@@ -137,7 +137,7 @@ public interface Service extends RemoteService {
 		public Token() {
 		}
 
-		public Token(boolean ignore) {  // TODO this is a hack to prevent this from being used as the no-arg constructor server-side.
+		public Token(final boolean ignore) {  // TODO this is a hack to prevent this from being used as the no-arg constructor server-side.
 			token = Cookies.getCookie(COOKIE_NAME);
 		}
 	}

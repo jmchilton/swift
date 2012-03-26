@@ -14,13 +14,13 @@ public final class DirectoryEntry extends Entry {
 	public DirectoryEntry() {
 	}
 
-	public DirectoryEntry(String name) {
+	public DirectoryEntry(final String name) {
 		super(name);
 	}
 
 	public TreeItem createTreeItem() {
-		TreeCheckBox checkBox = new TreeCheckBox(getName(), false);
-		TreeItem newItem = new TreeItem(checkBox);
+		final TreeCheckBox checkBox = new TreeCheckBox(getName(), false);
+		final TreeItem newItem = new TreeItem(checkBox);
 		checkBox.setTreeItem(newItem);
 		newItem.setUserObject(this);
 		if (this.getChildrenList().isEmpty()) {

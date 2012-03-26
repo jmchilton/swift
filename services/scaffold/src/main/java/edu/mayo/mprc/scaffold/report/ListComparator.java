@@ -20,7 +20,7 @@ final class ListComparator implements Comparator<List<String>>, Serializable {
 	 * @param indices    Indices of list items to be compared to each other.
 	 * @param directions Direction of the comparison, 'a' stands for ascending, 'd' stands for descending.
 	 */
-	public ListComparator(int[] indices, String[] directions) {
+	public ListComparator(final int[] indices, final String[] directions) {
 		if (indices.length != directions.length) {
 			throw new MprcException("The list comparator is not set up correctly.");
 		}
@@ -29,10 +29,10 @@ final class ListComparator implements Comparator<List<String>>, Serializable {
 		this.directions = directions.clone();
 	}
 
-	public int compare(List<String> o1, List<String> o2) {
+	public int compare(final List<String> o1, final List<String> o2) {
 		for (int i = 0; i < indices.length; i++) {
 			final int index = indices[i];
-			int comparison;
+			final int comparison;
 			if (directions[i].endsWith(INTEGER)) {
 				// Numeric
 				comparison = Integer.valueOf(o1.get(index)).compareTo(Integer.valueOf(o2.get(index)));

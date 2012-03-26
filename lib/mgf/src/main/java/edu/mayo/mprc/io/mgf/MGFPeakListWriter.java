@@ -28,7 +28,7 @@ public final class MGFPeakListWriter implements Closeable {
 	 * @param outputFileName mgf file name.
 	 * @throws IOException
 	 */
-	public MGFPeakListWriter(String outputFileName) {
+	public MGFPeakListWriter(final String outputFileName) {
 		this(new File(outputFileName));
 	}
 
@@ -38,7 +38,7 @@ public final class MGFPeakListWriter implements Closeable {
 	 * @param outputFile mgf file name.
 	 * @throws IOException
 	 */
-	public MGFPeakListWriter(File outputFile) {
+	public MGFPeakListWriter(final File outputFile) {
 		this.outputFile = outputFile;
 		FileUtilities.ensureFolderExists(outputFile.getParentFile());
 		bufferedWriter = new BufferedWriter(FileUtilities.getWriter(outputFile));
@@ -51,7 +51,7 @@ public final class MGFPeakListWriter implements Closeable {
 	 * @param peaklist
 	 * @throws IOException
 	 */
-	public void writePeakList(MascotGenericFormatPeakList peaklist) {
+	public void writePeakList(final MascotGenericFormatPeakList peaklist) {
 
 		if (peaklist == null) {
 			throw new IllegalArgumentException("MascotGenericFormatPeakList peaklist can not be null.");
@@ -81,8 +81,8 @@ public final class MGFPeakListWriter implements Closeable {
 			}
 
 			// write out the peaks
-			Peak[] peaks = peaklist.getPeaks();
-			for (Peak peak : peaks) {
+			final Peak[] peaks = peaklist.getPeaks();
+			for (final Peak peak : peaks) {
 				bufferedWriter.write(peak.getMassOverCharge() + "\t" + peak.getIntensity());
 				bufferedWriter.newLine();
 			}

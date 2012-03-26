@@ -12,7 +12,7 @@ public class FastaDbWorkPacket extends WorkPacketBase {
 	private static final long serialVersionUID = -6506219790252689864L;
 	private int curationId;
 
-	public FastaDbWorkPacket(String taskId, boolean fromScratch) {
+	public FastaDbWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
@@ -20,7 +20,7 @@ public class FastaDbWorkPacket extends WorkPacketBase {
 	 * @param taskId     ID of this task.
 	 * @param curationId ID of the curation to deploy.
 	 */
-	public FastaDbWorkPacket(String taskId, int curationId) {
+	public FastaDbWorkPacket(final String taskId, final int curationId) {
 		super(taskId, false);
 		this.curationId = curationId;
 	}
@@ -29,7 +29,7 @@ public class FastaDbWorkPacket extends WorkPacketBase {
 		return curationId;
 	}
 
-	public void setCurationId(int curationId) {
+	public void setCurationId(final int curationId) {
 		this.curationId = curationId;
 	}
 }

@@ -36,7 +36,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 	public LocalizedModification() {
 	}
 
-	public LocalizedModification(ModSpecificity modSpecificity, int position, char residue) {
+	public LocalizedModification(final ModSpecificity modSpecificity, final int position, final char residue) {
 		this.modSpecificity = modSpecificity;
 		this.position = position;
 		this.residue = residue;
@@ -46,7 +46,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		return modSpecificity;
 	}
 
-	public void setModSpecificity(ModSpecificity modSpecificity) {
+	public void setModSpecificity(final ModSpecificity modSpecificity) {
 		this.modSpecificity = modSpecificity;
 	}
 
@@ -54,7 +54,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(final int position) {
 		this.position = position;
 	}
 
@@ -62,12 +62,12 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		return residue;
 	}
 
-	public void setResidue(char residue) {
+	public void setResidue(final char residue) {
 		this.residue = residue;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -75,7 +75,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 			return false;
 		}
 
-		LocalizedModification that = (LocalizedModification) o;
+		final LocalizedModification that = (LocalizedModification) o;
 
 		if (getPosition() != that.getPosition()) {
 			return false;
@@ -115,7 +115,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 	 * @return compareTo result (-1=less than, 0=identical, 1=greater than the other mod)
 	 */
 	@Override
-	public int compareTo(LocalizedModification o) {
+	public int compareTo(final LocalizedModification o) {
 		return ComparisonChain
 				.start()
 				.compare(getPosition(), o.getPosition())

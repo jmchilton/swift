@@ -7,7 +7,7 @@ public final class Tuple<S extends Comparable<S> & Serializable, T extends Compa
 	private final S first;
 	private final T second;
 
-	public Tuple(S first, T second) {
+	public Tuple(final S first, final T second) {
 		this.first = first;
 		this.second = second;
 	}
@@ -20,7 +20,7 @@ public final class Tuple<S extends Comparable<S> & Serializable, T extends Compa
 		return second;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -28,7 +28,7 @@ public final class Tuple<S extends Comparable<S> & Serializable, T extends Compa
 			return false;
 		}
 
-		Tuple tuple = (Tuple) o;
+		final Tuple tuple = (Tuple) o;
 
 		if (first != null ? !first.equals(tuple.first) : tuple.first != null) {
 			return false;
@@ -47,7 +47,7 @@ public final class Tuple<S extends Comparable<S> & Serializable, T extends Compa
 	/**
 	 * Compare two objects, handle nulls correctly.
 	 */
-	public int compareWithNulls(Comparable o1, Object o2) {
+	public int compareWithNulls(final Comparable o1, final Object o2) {
 		if (o1 == null) {
 			if (o2 == null) {
 				return 0;
@@ -62,8 +62,8 @@ public final class Tuple<S extends Comparable<S> & Serializable, T extends Compa
 		return o1.compareTo(o2);
 	}
 
-	public int compareTo(Tuple<S, T> o) {
-		int c1 = compareWithNulls(this.first, o.first);
+	public int compareTo(final Tuple<S, T> o) {
+		final int c1 = compareWithNulls(this.first, o.first);
 		if (c1 == 0) {
 			return compareWithNulls(this.second, o.second);
 		}

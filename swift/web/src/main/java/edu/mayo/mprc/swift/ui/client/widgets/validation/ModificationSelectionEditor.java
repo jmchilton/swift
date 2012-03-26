@@ -52,7 +52,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	 * @param param - the modifications parameter
 	 * @param type  - the type of modification (variable or fixed)
 	 */
-	public ModificationSelectionEditor(String param, String type) {
+	public ModificationSelectionEditor(final String param, final String type) {
 		this.param = param;
 		if (type.equals(VARIABLE_MOD_TYPE)) {
 			this.title = VARIABLE_MODS_TITLE;
@@ -79,20 +79,20 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		private boolean first;
 		private ModificationSearch searcher;
 
-		public SearchKeyboardListener(ModificationListBox available, ModificationListBox selected, HTML description) {
+		public SearchKeyboardListener(final ModificationListBox available, final ModificationListBox selected, final HTML description) {
 			this.available = available;
 			this.selected = selected;
 			this.description = description;
 			this.first = true;
 		}
 
-		private void doSearch(Widget widget) {
+		private void doSearch(final Widget widget) {
 			// do a search for words or whatever
 			if (first || searcher == null) {
 				first = false;
-				List<? extends ClientValue> modSpecs = available.getAllValues();
-				List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(modSpecs.size());
-				for (ClientValue modSpec : modSpecs) {
+				final List<? extends ClientValue> modSpecs = available.getAllValues();
+				final List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(modSpecs.size());
+				for (final ClientValue modSpec : modSpecs) {
 					specs.add((ClientModSpecificity) modSpec);
 				}
 				searcher = ModificationSearch.createInstance(specs);
@@ -106,15 +106,15 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 			updateModsDescriptionText(this.available, this.selected, this.description);
 		}
 
-		public void onKeyDown(Widget widget, char c, int i) {
+		public void onKeyDown(final Widget widget, final char c, final int i) {
 
 		}
 
-		public void onKeyPress(Widget widget, char c, int i) {
+		public void onKeyPress(final Widget widget, final char c, final int i) {
 
 		}
 
-		public void onKeyUp(Widget widget, char c, int i) {
+		public void onKeyUp(final Widget widget, final char c, final int i) {
 			// want the enter Key
 			//if (c == (char) KEY_ENTER) {
 			doSearch(widget);
@@ -125,7 +125,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	private static final class SearchDefinitionClickListener implements ClickListener {
 		private boolean first = true;
 
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 
 			sender.setStyleName("mods-search-definition-enter");
 			if (first) {
@@ -136,8 +136,8 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	}
 
 	private Panel createSearchArea() {
-		HorizontalPanel searchArea = new HorizontalPanel();
-		Label _modsTitle = new Label(title);
+		final HorizontalPanel searchArea = new HorizontalPanel();
+		final Label _modsTitle = new Label(title);
 		_modsTitle.setStyleName("mods-label-title");
 		_modsTitle.setWordWrap(false);
 
@@ -152,7 +152,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		ToolTip += "Record Search use <record id>, ex 125";
 		modsSearchDefinition.setTitle(ToolTip);
 		searchArea.add(_modsTitle);
-		Panel pad = new HorizontalPanel();
+		final Panel pad = new HorizontalPanel();
 		pad.setWidth("5em");
 		searchArea.add(pad);
 		searchArea.add(modsSearchDefinition);
@@ -161,10 +161,10 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 
 	private Panel createCombinedTitlesModsSelectionArea() {
 		// 3 vertical panels inside a Horizontal Panel
-		Panel container = new HorizontalPanel();
+		final Panel container = new HorizontalPanel();
 
-		VerticalPanel col_1 = new VerticalPanel();
-		Label _modsAvailableTitle = new Label(AVAILABLE_TITLE);
+		final VerticalPanel col_1 = new VerticalPanel();
+		final Label _modsAvailableTitle = new Label(AVAILABLE_TITLE);
 		_modsAvailableTitle.setStyleName("mods-label");
 
 		this.modsAvailable = new ModificationListBox(param, true);
@@ -181,18 +181,18 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		this.modsSelected.addChangeListener(new ModificationsChange(this.modsAvailable, this.modsSelected, this.modsDescription));
 		this.modsAvailable.addChangeListener(new ModificationsChange(this.modsAvailable, this.modsSelected, this.modsDescription));
 
-		VerticalPanel col_2 = new VerticalPanel();
+		final VerticalPanel col_2 = new VerticalPanel();
 
-		HorizontalPanel spacer = new HorizontalPanel();
+		final HorizontalPanel spacer = new HorizontalPanel();
 		spacer.setWidth("25px");
 
 		col_2.add(spacer);
-		Panel commandPanel = createCommandPanel();
+		final Panel commandPanel = createCommandPanel();
 		col_2.add(commandPanel);
 
 
-		VerticalPanel col_3 = new VerticalPanel();
-		Label _modsSelectedTitle = new Label(SELECTED_TITLE);
+		final VerticalPanel col_3 = new VerticalPanel();
+		final Label _modsSelectedTitle = new Label(SELECTED_TITLE);
 		_modsSelectedTitle.setStyleName("mods-label");
 		_modsSelectedTitle.setWordWrap(false);
 		col_3.add(_modsSelectedTitle);
@@ -213,15 +213,15 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	 * @return the allowed values as a @ClientModSpecificitySet
 	 */
 	public ClientValue getClientValue() {
-		List<? extends ClientValue> selected = this.modsSelected.getAllValues();
+		final List<? extends ClientValue> selected = this.modsSelected.getAllValues();
 		int length = 0;
 		if (selected != null) {
 			length = selected.size();
 		}
-		List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(length);
+		final List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(length);
 
 		if (selected != null) {
-			for (ClientValue value : selected) {
+			for (final ClientValue value : selected) {
 				specs.add(ClientModSpecificity.cast(value));
 			}
 		}
@@ -237,14 +237,14 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		private ModificationListBox available;
 		private ModificationListBox selected;
 
-		public AddOnClick(ModificationListBox available, ModificationListBox selected) {
+		public AddOnClick(final ModificationListBox available, final ModificationListBox selected) {
 			this.available = available;
 			this.selected = selected;
 		}
 
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 			// copy contents of the availabe list to the selected list
-			ClientValue items = available.getClientValue();
+			final ClientValue items = available.getClientValue();
 			// each item is a ClientModSpecificity
 			selected.addValue(items, new CompareClientModSpecificity());
 		}
@@ -259,15 +259,15 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		private ModificationListBox selected;
 		private HTML description;
 
-		public RemoveOnClick(ModificationListBox available, ModificationListBox selected, HTML description) {
+		public RemoveOnClick(final ModificationListBox available, final ModificationListBox selected, final HTML description) {
 			this.available = available;
 			this.selected = selected;
 			this.description = description;
 		}
 
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 			// remove the selected items in the selected list from the selected list
-			ClientValue items = selected.getClientValue();
+			final ClientValue items = selected.getClientValue();
 			if (items != null) {
 				selected.removeValue(items, new CompareClientModSpecificity());
 
@@ -322,18 +322,18 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		private ModificationListBox selected;
 		private HTML description;
 
-		public ModificationsChange(ModificationListBox available, ModificationListBox selected, HTML description) {
+		public ModificationsChange(final ModificationListBox available, final ModificationListBox selected, final HTML description) {
 			this.available = available;
 			this.selected = selected;
 			this.description = description;
 		}
 
-		public void onChange(Widget widget) {
+		public void onChange(final Widget widget) {
 			updateModsDescriptionText(this.available, this.selected, this.description);
 		}
 	}
 
-	public void updateModsDescriptionText(ModificationListBox available, ModificationListBox selected, HTML description) {
+	public void updateModsDescriptionText(final ModificationListBox available, final ModificationListBox selected, final HTML description) {
 
 		// find all the selected items and see if they are different than allSelected
 		// if so then change the content of the text area
@@ -346,27 +346,27 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 			selectedValues = selected.unbundle(selected.getClientValue());
 		}
 		// add them to a hashset to enure uniqueness then move them to the array
-		HashSet<ClientValue> h = new HashSet<ClientValue>();
+		final HashSet<ClientValue> h = new HashSet<ClientValue>();
 		if (availableValues != null) {
-			for (ClientValue availableValue : availableValues) {
+			for (final ClientValue availableValue : availableValues) {
 				if (!h.contains(availableValue)) {
 					h.add(availableValue);
 				}
 			}
 		}
 		if (selectedValues != null) {
-			for (ClientValue selectedValue : selectedValues) {
+			for (final ClientValue selectedValue : selectedValues) {
 				if (!h.contains(selectedValue)) {
 					h.add(selectedValue);
 				}
 			}
 		}
-		List<ClientValue> clientValues = Arrays.asList(h.toArray(new ClientValue[h.size()]));
+		final List<ClientValue> clientValues = Arrays.asList(h.toArray(new ClientValue[h.size()]));
 		Collections.sort(clientValues, new CompareClientModSpecificity());
-		ClientValue[] c = clientValues.toArray(new ClientValue[h.size()]);
+		final ClientValue[] c = clientValues.toArray(new ClientValue[h.size()]);
 
 		boolean notfound = false;
-		for (ClientValue item : c) {
+		for (final ClientValue item : c) {
 			notfound = !allSelected.contains(item);
 			if (notfound) {
 				// clear allSelected
@@ -396,9 +396,9 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	 *
 	 * @param values - list of items making up the content
 	 */
-	private void resetContent(ClientValue[] values) {
+	private void resetContent(final ClientValue[] values) {
 		if (values != null && values.length == 1) {
-			ClientModSpecificity spec = (ClientModSpecificity) values[0];
+			final ClientModSpecificity spec = (ClientModSpecificity) values[0];
 			// change the title to the name
 			this.modsDescriptionTitle.setText(spec.getName());
 			this.resetContentDescriptionPanel(spec);
@@ -408,7 +408,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 				length = values.length;
 			}
 			// get the names
-			String[] names = new String[length];
+			final String[] names = new String[length];
 			for (int i = 0; i < length; i++) {
 				names[i] = ((ClientModSpecificity) values[i]).getName();
 			}
@@ -421,9 +421,9 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 
 	private Panel createCommandPanel() {
 
-		VerticalPanel newPanel = new VerticalPanel();
+		final VerticalPanel newPanel = new VerticalPanel();
 
-		Hyperlink _cmdAdd = new Hyperlink("Add-->", "Add");
+		final Hyperlink _cmdAdd = new Hyperlink("Add-->", "Add");
 		_cmdAdd.setTitle("To create a new empty curation for you editing.");
 		_cmdAdd.setStyleName("command-link");
 		_cmdAdd.setWidth("7em");
@@ -431,12 +431,12 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 
 
 		_cmdAdd.addStyleName("spaceAfter");
-		Panel spacer = new HorizontalPanel();
+		final Panel spacer = new HorizontalPanel();
 		spacer.setHeight("1em");
 		newPanel.add(spacer);
 		newPanel.add(_cmdAdd);
 
-		Hyperlink _cmdRemove = new Hyperlink("<--Remove", "Remove");
+		final Hyperlink _cmdRemove = new Hyperlink("<--Remove", "Remove");
 		_cmdRemove.setTitle("To make a copy of the currently displayed curation for you own editing.");
 		_cmdRemove.setStyleName("command-link");
 		_cmdRemove.addClickListener(new RemoveOnClick(this.modsAvailable, this.modsSelected, this.modsDescription));
@@ -449,7 +449,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 
 	private Panel createDescriptionArea() {
 		// has a text area and a title
-		VerticalPanel newPanel = new VerticalPanel();
+		final VerticalPanel newPanel = new VerticalPanel();
 		this.modsDescriptionTitle = new Label("Description");
 		this.modsDescriptionTitle.setStyleName("mods-label-description");
 		this.modsDescription = this.createDescriptionPanel();
@@ -463,7 +463,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	private static final String UNIMOD_PATH = "http://www.unimod.org";
 	private static final String UNIMOD_RECORD_PATH = UNIMOD_PATH + "/modifications_view.php?editid1=";
 
-	private String getUnimodLinkContent(int recordId) {
+	private String getUnimodLinkContent(final int recordId) {
 		if (recordId < 0) {
 			return "";
 		} else {
@@ -474,21 +474,21 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	private void createContainer() {
 		this.container = new VerticalPanel();
 		this.container.add(this.createSearchArea());
-		Panel description = createDescriptionArea();
+		final Panel description = createDescriptionArea();
 		this.container.add(createCombinedTitlesModsSelectionArea());
 		this.container.add(description);
 
 		modsSearchDefinition.addKeyboardListener(new SearchKeyboardListener(this.modsAvailable, this.modsSelected, this.modsDescription));
 	}
 
-	public void addChangeListener(ChangeListener listener) {
+	public void addChangeListener(final ChangeListener listener) {
 		if (this.changeListeners == null) {
 			changeListeners = new ChangeListenerCollection();
 		}
 		changeListeners.add(listener);
 	}
 
-	public void removeChangeListener(ChangeListener listener) {
+	public void removeChangeListener(final ChangeListener listener) {
 		if (this.changeListeners == null) {
 			return;
 		}
@@ -511,7 +511,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	 *
 	 * @param value - the value(s) that want to be selected
 	 */
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		this.modsSelected.addValueWithoutSelecting(value, new CompareClientModSpecificity());
 		// need to update the description area also
 		this.updateModsDescriptionText(this.modsAvailable, this.modsSelected, this.modsDescription);
@@ -521,7 +521,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		this.modsAvailable.focus();
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		this.modsAvailable.setValidationSeverity(validationSeverity);
 	}
 
@@ -529,11 +529,11 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		return "all";
 	}
 
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		this.modsAvailable.setAllowedValues(values);
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		// enable each of the controls
 		this.modsAvailable.setEnabled(enabled);
 		this.modsSelected.setEnabled(enabled);
@@ -570,7 +570,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 	private HTML createDescriptionPanel() {
 
 
-		String html =
+		final String html =
 				"<div id='" + FULL_SPEC_DESCRIPTION + "'>" +
 						"<table> " +
 						"<tr><td><div id='" + DESC_ALT_NAMES + "'></div></td><td><div id='" + DESC_ALT_NAMES_VALUE + "'></div></td>" +
@@ -586,20 +586,20 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 
 	}
 
-	private void resetContentDescriptionPanel(ClientModSpecificity spec) {
-		String altNames = StringUtilities.join(spec.getAltNames(), ",");
+	private void resetContentDescriptionPanel(final ClientModSpecificity spec) {
+		final String altNames = StringUtilities.join(spec.getAltNames(), ",");
 		String comments = spec.getComments();
 		if (comments == null) {
 			comments = "";
 		}
 		// some comments start with 'null;', strip it  TODO find the root cause
 		comments = comments.replaceAll("null;", "");
-		String html = this.getDescriptionPanelContent(altNames, spec.getComposition() + "; Monoisotopic: " + spec.getMonoisotopic(), spec.getSite() + " " + "(" + spec.getTerm() + ")" + "; " + spec.getClassification(), comments, spec.getRecordID());
+		final String html = this.getDescriptionPanelContent(altNames, spec.getComposition() + "; Monoisotopic: " + spec.getMonoisotopic(), spec.getSite() + " " + "(" + spec.getTerm() + ")" + "; " + spec.getClassification(), comments, spec.getRecordID());
 		this.modsDescription.setHTML(html);
 	}
 
-	private String getDescriptionPanelContent(String altNames, String composition, String specificity, String comments, int recordId) {
-		String html =
+	private String getDescriptionPanelContent(final String altNames, final String composition, final String specificity, final String comments, final int recordId) {
+		final String html =
 				"<div id='" + FULL_SPEC_DESCRIPTION + "'>" +
 						"<table> " +
 						"<tr><td><div id='" + DESC_ALT_NAMES + "'>" + ALT_NAMES_TITLE + "</div></td><td><div id='" + DESC_ALT_NAMES_VALUE + "'>" + altNames + "</div></td>" +
@@ -611,10 +611,10 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		return html + this.getUnimodLinkContent(recordId);
 	}
 
-	private static String getDescriptionPanelContent(String[] names) {
-		StringBuilder html = new StringBuilder("<div id='" + LIST_SPEC_DESCRIPTION + "'>");
+	private static String getDescriptionPanelContent(final String[] names) {
+		final StringBuilder html = new StringBuilder("<div id='" + LIST_SPEC_DESCRIPTION + "'>");
 		if (names != null) {
-			for (String name : names) {
+			for (final String name : names) {
 				html.append("<br>").append(name);
 			}
 		}
@@ -622,7 +622,7 @@ public final class ModificationSelectionEditor extends Composite implements Sour
 		return html.toString();
 	}
 
-	private void resetDescriptionList(String[] names) {
+	private void resetDescriptionList(final String[] names) {
 		this.modsDescription.setHTML(getDescriptionPanelContent(names));
 	}
 }

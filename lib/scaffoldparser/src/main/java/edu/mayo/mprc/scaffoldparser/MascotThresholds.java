@@ -17,7 +17,7 @@ public final class MascotThresholds implements AbstractProgramSpecificThreshold 
 	@XStreamAsAttribute()
 	private String ionScores;
 
-	public MascotThresholds(float peptideProbability, float ionMinusIdentityScore, String ionScores) {
+	public MascotThresholds(final float peptideProbability, final float ionMinusIdentityScore, final String ionScores) {
 		this.peptideProbability = peptideProbability;
 		this.ionMinusIdentityScore = ionMinusIdentityScore;
 		this.ionScores = ionScores;
@@ -31,7 +31,7 @@ public final class MascotThresholds implements AbstractProgramSpecificThreshold 
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -39,7 +39,7 @@ public final class MascotThresholds implements AbstractProgramSpecificThreshold 
 		return ionMinusIdentityScore;
 	}
 
-	public void setIonMinusIdentityScore(double ionMinusIdentityScore) {
+	public void setIonMinusIdentityScore(final double ionMinusIdentityScore) {
 		this.ionMinusIdentityScore = ionMinusIdentityScore;
 	}
 
@@ -47,7 +47,7 @@ public final class MascotThresholds implements AbstractProgramSpecificThreshold 
 		return ionScores;
 	}
 
-	public void setIonScores(String ionScores) {
+	public void setIonScores(final String ionScores) {
 		this.ionScores = ionScores;
 	}
 }

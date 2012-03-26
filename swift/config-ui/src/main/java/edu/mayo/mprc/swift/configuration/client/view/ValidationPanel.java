@@ -34,13 +34,13 @@ public final class ValidationPanel extends FlowPanel {
 		validationReset();
 	}
 
-	public void addMessage(String message, FixTagActionListener listener) {
+	public void addMessage(final String message, final FixTagActionListener listener) {
 		fillPanel(this, message, listener);
 		setVisible(true);
 		validationReset();
 	}
 
-	public void addMessage(String message) {
+	public void addMessage(final String message) {
 		addMessage(message, null);
 	}
 
@@ -49,24 +49,24 @@ public final class ValidationPanel extends FlowPanel {
 	 * @param listener     listener for actions on the returned Widget.
 	 * @return A widget that allows users to click on the fix tags defined in the specified string.
 	 */
-	public void fillPanel(Panel panel, String errorMessage, final FixTagActionListener listener) {
+	public void fillPanel(final Panel panel, final String errorMessage, final FixTagActionListener listener) {
 		if (errorMessage != null && errorMessage.trim().length() > 0) {
 			String fixTag = null;
-			int indexOfBeginningTag = errorMessage.indexOf(BEGINNINGTAG);
-			int indexOfEndTag = errorMessage.indexOf(ENDTAG);
+			final int indexOfBeginningTag = errorMessage.indexOf(BEGINNINGTAG);
+			final int indexOfEndTag = errorMessage.indexOf(ENDTAG);
 
 			if (indexOfBeginningTag != -1 && indexOfEndTag != -1) {
 				fixTag = errorMessage.substring(indexOfBeginningTag, indexOfEndTag);
-				int indexOfActionAttrib = fixTag.indexOf(ACTIONATTRIB);
+				final int indexOfActionAttrib = fixTag.indexOf(ACTIONATTRIB);
 
 				if (indexOfActionAttrib != -1) {
 					final String action = fixTag.substring(indexOfActionAttrib + ACTIONATTRIB.length(), fixTag.indexOf("\">"));
 
 					panel.add(new HTML(errorMessage.substring(0, errorMessage.indexOf(fixTag))));
 
-					Hyperlink link = new Hyperlink(fixTag, true, null);
+					final Hyperlink link = new Hyperlink(fixTag, true, null);
 					link.addClickListener(new ClickListener() {
-						public void onClick(Widget sender) {
+						public void onClick(final Widget sender) {
 							empty();
 							validationStarted();
 							listener.onFix(action, ValidationPanel.this);
@@ -81,7 +81,7 @@ public final class ValidationPanel extends FlowPanel {
 		}
 	}
 
-	public void validationFailed(Throwable caught) {
+	public void validationFailed(final Throwable caught) {
 		addMessage("The test failed: " + caught.getMessage(), null);
 		validationReset();
 	}
@@ -119,7 +119,7 @@ public final class ValidationPanel extends FlowPanel {
 		return testButton;
 	}
 
-	public void setTestButton(FocusWidget testButton) {
+	public void setTestButton(final FocusWidget testButton) {
 		this.testButton = testButton;
 	}
 
@@ -127,7 +127,7 @@ public final class ValidationPanel extends FlowPanel {
 		return testProgress;
 	}
 
-	public void setTestProgress(Widget testProgress) {
+	public void setTestProgress(final Widget testProgress) {
 		this.testProgress = testProgress;
 	}
 
@@ -135,7 +135,7 @@ public final class ValidationPanel extends FlowPanel {
 		return successIndicator;
 	}
 
-	public void setSuccessIndicator(Widget successIndicator) {
+	public void setSuccessIndicator(final Widget successIndicator) {
 		this.successIndicator = successIndicator;
 	}
 }

@@ -92,7 +92,7 @@ final class ScaffoldReportBuilder {
 	 * @param outputPeptideReport Output .xls file for peptide-level list (actually tab-separated).
 	 * @param outputProteinReport Output .xls file for protein-level list (actually tab-separated) - differs from peptide-level by omitting the peptide sequence.
 	 */
-	public static void buildReport(List<File> inputReports, File outputPeptideReport, File outputProteinReport) throws IOException {
+	public static void buildReport(final List<File> inputReports, final File outputPeptideReport, final File outputProteinReport) throws IOException {
 
 		BufferedWriter peptideWriter = null;
 		BufferedWriter proteinWriter = null;
@@ -101,7 +101,7 @@ final class ScaffoldReportBuilder {
 			peptideWriter = new BufferedWriter(new FileWriter(outputPeptideReport));
 			proteinWriter = new BufferedWriter(new FileWriter(outputProteinReport));
 			boolean first = true;
-			for (File inputReport : inputReports) {
+			for (final File inputReport : inputReports) {
 				//Leave a empty line between tables.
 				if (!first) {
 					peptideWriter.newLine();
@@ -124,8 +124,8 @@ final class ScaffoldReportBuilder {
 		}
 	}
 
-	private static String getPeptideList(File inputReport, boolean includeHeaders) throws IOException {
-		ScaffoldOutputReader scaffoldOutputReader = new ScaffoldOutputReader(inputReport);
+	private static String getPeptideList(final File inputReport, final boolean includeHeaders) throws IOException {
+		final ScaffoldOutputReader scaffoldOutputReader = new ScaffoldOutputReader(inputReport);
 		try {
 			return scaffoldOutputReader.getRowSortedDataTableContent(includeHeaders, PEPTIDE_COLUMNS, PEPTIDE_GROUP_BY, PEPTIDE_COMPARATOR);
 		} finally {
@@ -133,8 +133,8 @@ final class ScaffoldReportBuilder {
 		}
 	}
 
-	private static String getProteinList(File inputReport, boolean includeHeaders) throws IOException {
-		ScaffoldOutputReader scaffoldOutputReader = new ScaffoldOutputReader(inputReport);
+	private static String getProteinList(final File inputReport, final boolean includeHeaders) throws IOException {
+		final ScaffoldOutputReader scaffoldOutputReader = new ScaffoldOutputReader(inputReport);
 		try {
 			return scaffoldOutputReader.getRowSortedDataTableContent(includeHeaders, PROTEIN_COLUMNS, PROTEIN_GROUP_BY, PROTEIN_COMPARATOR);
 		} finally {

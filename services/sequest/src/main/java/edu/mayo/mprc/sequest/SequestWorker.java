@@ -32,7 +32,7 @@ public final class SequestWorker implements Worker {
 	private static final String PVM_HOSTS = "pvmHosts";
 	private static final String SEQUEST_COMMAND = "sequestCommand";
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket);
@@ -43,7 +43,7 @@ public final class SequestWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket) {
+	private void process(final WorkPacket workPacket) {
 		SequestMGFWorkPacket sequestWorkPacket = null;
 		if (workPacket instanceof SequestMGFWorkPacket) {
 			sequestWorkPacket = (SequestMGFWorkPacket) workPacket;
@@ -67,7 +67,7 @@ public final class SequestWorker implements Worker {
 
 		FileUtilities.ensureFolderExists(sequestWorkPacket.getOutputFile().getParentFile());
 
-		Mgf2SequestCaller m = new Mgf2SequestCaller();
+		final Mgf2SequestCaller m = new Mgf2SequestCaller();
 
 		m.setHostsFile(pvmHosts);
 		m.setSequestExe(sequestCommand);
@@ -90,7 +90,7 @@ public final class SequestWorker implements Worker {
 		return pvmHosts;
 	}
 
-	public void setPvmHosts(File pvmHosts) {
+	public void setPvmHosts(final File pvmHosts) {
 		this.pvmHosts = pvmHosts;
 	}
 
@@ -98,7 +98,7 @@ public final class SequestWorker implements Worker {
 		return sequestCommand;
 	}
 
-	public void setSequestCommand(String sequestCommand) {
+	public void setSequestCommand(final String sequestCommand) {
 		this.sequestCommand = sequestCommand;
 	}
 
@@ -112,8 +112,8 @@ public final class SequestWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			SequestWorker worker = new SequestWorker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final SequestWorker worker = new SequestWorker();
 			worker.setPvmHosts(new File(config.getPvmHosts()).getAbsoluteFile());
 			worker.setSequestCommand(config.getSequestCommand());
 			return worker;
@@ -130,7 +130,7 @@ public final class SequestWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String sequestCommand, String pvmHosts) {
+		public Config(final String sequestCommand, final String pvmHosts) {
 			this.pvmHosts = pvmHosts;
 			this.sequestCommand = sequestCommand;
 		}
@@ -139,7 +139,7 @@ public final class SequestWorker implements Worker {
 			return sequestCommand;
 		}
 
-		public void setSequestCommand(String sequestCommand) {
+		public void setSequestCommand(final String sequestCommand) {
 			this.sequestCommand = sequestCommand;
 		}
 
@@ -147,18 +147,18 @@ public final class SequestWorker implements Worker {
 			return pvmHosts;
 		}
 
-		public void setPvmHosts(String pvmHosts) {
+		public void setPvmHosts(final String pvmHosts) {
 			this.pvmHosts = pvmHosts;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(PVM_HOSTS, pvmHosts);
 			map.put(SEQUEST_COMMAND, sequestCommand);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			pvmHosts = values.get(PVM_HOSTS);
 			sequestCommand = values.get(SEQUEST_COMMAND);
 		}
@@ -170,7 +170,7 @@ public final class SequestWorker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(SEQUEST_COMMAND, "Sequest Command", "Sequest command line executable.")
 					.required()
 					.executable(Arrays.asList("-v"))

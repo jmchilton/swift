@@ -14,13 +14,13 @@ public final class MgfSpectrum {
 	private long spectrumNumber;
 	private LinkedList<String> scaffoldInfos;
 
-	public MgfSpectrum(String spectrumName) {
+	public MgfSpectrum(final String spectrumName) {
 		this.spectrumName = spectrumName;
 
 		scaffoldInfos = new LinkedList<String>();
 	}
 
-	public MgfSpectrum(String spectrumName, double mgfMz, int mgfCharge, long scanId, String mgfFileName, long spectrumNumber) {
+	public MgfSpectrum(final String spectrumName, final double mgfMz, final int mgfCharge, final long scanId, final String mgfFileName, final long spectrumNumber) {
 		this(spectrumName);
 		this.mgfMz = mgfMz;
 		this.mgfCharge = mgfCharge;
@@ -33,7 +33,7 @@ public final class MgfSpectrum {
 		return mgfFileName;
 	}
 
-	public void setMgfFileName(String mgfFileName) {
+	public void setMgfFileName(final String mgfFileName) {
 		this.mgfFileName = mgfFileName;
 	}
 
@@ -44,7 +44,7 @@ public final class MgfSpectrum {
 		return spectrumNumber;
 	}
 
-	public void setSpectrumNumber(long spectrumNumber) {
+	public void setSpectrumNumber(final long spectrumNumber) {
 		this.spectrumNumber = spectrumNumber;
 	}
 
@@ -52,11 +52,11 @@ public final class MgfSpectrum {
 		return scanId;
 	}
 
-	public void setScanId(long scanId) {
+	public void setScanId(final long scanId) {
 		this.scanId = scanId;
 	}
 
-	public void addScaffoldInfo(String scaffoldInfo) {
+	public void addScaffoldInfo(final String scaffoldInfo) {
 		scaffoldInfos.add(scaffoldInfo);
 	}
 
@@ -72,7 +72,7 @@ public final class MgfSpectrum {
 		return mgfMz;
 	}
 
-	public void setMgfMz(double mgfMz) {
+	public void setMgfMz(final double mgfMz) {
 		this.mgfMz = mgfMz;
 	}
 
@@ -80,7 +80,7 @@ public final class MgfSpectrum {
 		return mgfCharge;
 	}
 
-	public void setMgfCharge(int mgfCharge) {
+	public void setMgfCharge(final int mgfCharge) {
 		this.mgfCharge = mgfCharge;
 	}
 }

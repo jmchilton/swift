@@ -10,15 +10,15 @@ public final class TreeCheckBox extends CheckBox {
 	public TreeCheckBox() {
 	}
 
-	public TreeCheckBox(String s) {
+	public TreeCheckBox(final String s) {
 		super(s);
 	}
 
-	public TreeCheckBox(String s, boolean b) {
+	public TreeCheckBox(final String s, final boolean b) {
 		super(s, b);
 	}
 
-	public TreeCheckBox(Element element) {
+	public TreeCheckBox(final Element element) {
 		super(element);
 	}
 
@@ -26,7 +26,7 @@ public final class TreeCheckBox extends CheckBox {
 		return treeItem;
 	}
 
-	public void setTreeItem(TreeItem treeItem) {
+	public void setTreeItem(final TreeItem treeItem) {
 		this.treeItem = treeItem;
 	}
 }

@@ -24,7 +24,7 @@ public final class PeaksSearch {
 	 * @param uri        Search request URI.
 	 * @param httpClient PeaksOnline http client.
 	 */
-	protected PeaksSearch(URI uri, HttpClient httpClient) {
+	protected PeaksSearch(final URI uri, final HttpClient httpClient) {
 		this.uri = uri;
 		this.httpClient = httpClient;
 	}
@@ -36,21 +36,21 @@ public final class PeaksSearch {
 	 * @return returns search unique id.
 	 * @throws IOException
 	 */
-	public String submitSearch(PeaksSearchParameters peaksOnlineSearchParameters) throws IOException {
+	public String submitSearch(final PeaksSearchParameters peaksOnlineSearchParameters) throws IOException {
 
 		PostMethod method = null;
 
 		try {
 			method = new PostMethod(uri.toString());
 
-			Part[] parts = new Part[peaksOnlineSearchParameters.getNumberOfParameters()];
+			final Part[] parts = new Part[peaksOnlineSearchParameters.getNumberOfParameters()];
 			int index = 0;
 
-			for (PeaksParameter peaksOnlineParameter : peaksOnlineSearchParameters.getParameters().values()) {
+			for (final PeaksParameter peaksOnlineParameter : peaksOnlineSearchParameters.getParameters().values()) {
 				parts[index++] = peaksOnlineParameter.getHttpHeaderPart();
 			}
 
-			MultipartRequestEntity multipartRequestEntity = new MultipartRequestEntity(parts, method.getParams());
+			final MultipartRequestEntity multipartRequestEntity = new MultipartRequestEntity(parts, method.getParams());
 			method.setRequestEntity(multipartRequestEntity);
 
 			HttpClientUtility.executeMethod(httpClient, method);

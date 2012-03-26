@@ -26,7 +26,7 @@ public final class AsyncFileWriter implements Runnable, Future<File> {
 
 	private AsyncFileWriter(final URL source, final File toWriteTo) throws IOException {
 		this.source = source;
-		URLConnection connection = source.openConnection();
+		final URLConnection connection = source.openConnection();
 		connection.connect();
 		sourceSize = connection.getContentLength();
 		this.outFile = toWriteTo;
@@ -35,7 +35,7 @@ public final class AsyncFileWriter implements Runnable, Future<File> {
 	public void run() {
 		InputStream istream = null;
 		try {
-			URLConnection connection = source.openConnection();
+			final URLConnection connection = source.openConnection();
 			istream = connection.getInputStream();
 			FileUtilities.writeStreamToFile(istream, outFile);
 			synchronized (this) {
@@ -55,9 +55,9 @@ public final class AsyncFileWriter implements Runnable, Future<File> {
 	 *
 	 * @param progressMessage Message prepended to % of progress.
 	 */
-	public static AsyncFileWriter writeURLToFile(final URL source, final File file, String progressMessage) throws IOException {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		AsyncFileWriter writer = new AsyncFileWriter(source, file);
+	public static AsyncFileWriter writeURLToFile(final URL source, final File file, final String progressMessage) throws IOException {
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		final AsyncFileWriter writer = new AsyncFileWriter(source, file);
 		executor.execute(writer);
 		LOGGER.debug("Downloading " + source + " to " + file.getAbsolutePath()
 				+ ".  The size is " + (writer.getDownloadTotalSize() == -1 ? "undetermined" : writer.getDownloadTotalSize()));
@@ -75,7 +75,7 @@ public final class AsyncFileWriter implements Runnable, Future<File> {
 		return sourceSize;
 	}
 
-	public synchronized boolean cancel(boolean mayInterruptIfRunning) {
+	public synchronized boolean cancel(final boolean mayInterruptIfRunning) {
 		if (isDone() || mayInterruptIfRunning) {
 			this.cancelled.set(true);
 			notifyAll();
@@ -96,11 +96,11 @@ public final class AsyncFileWriter implements Runnable, Future<File> {
 		return results.take();
 	}
 
-	public synchronized File get(long timeout, TimeUnit unit) throws InterruptedException {
+	public synchronized File get(final long timeout, final TimeUnit unit) throws InterruptedException {
 		return results.poll(timeout, unit);
 	}
 
-	private void monitorProgress(String progressMessage) {
+	private void monitorProgress(final String progressMessage) {
 		new Thread(this).start();
 		while (!this.isDone() && !this.isCancelled()) {
 			if (sourceSize < 0) {

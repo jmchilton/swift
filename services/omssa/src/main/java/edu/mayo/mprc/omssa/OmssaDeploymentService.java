@@ -45,7 +45,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	public static final String FORMAT_DB_EXE = "formatDbExe";
 	public static final String DEPLOYABLE_DB_FOLDER = "deployableDbFolder";
 
-	public OmssaDeploymentService(File formatDbExe) {
+	public OmssaDeploymentService(final File formatDbExe) {
 		this.formatDbExe = formatDbExe;
 	}
 
@@ -53,7 +53,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		return formatDbExe;
 	}
 
-	public void setFormatDbExe(File formatDbExe) {
+	public void setFormatDbExe(final File formatDbExe) {
 		this.formatDbExe = formatDbExe;
 	}
 
@@ -66,8 +66,8 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	 * @param curationFile the file we want to make a deployable file from.
 	 * @return the file that can be used for indexing or may have already been indexed.
 	 */
-	private File getDeployableFile(File curationFile) {
-		File toDeploy = getDeployedFastaFile(curationFile);
+	private File getDeployableFile(final File curationFile) {
+		final File toDeploy = getDeployedFastaFile(curationFile);
 
 		FileUtilities.ensureFolderExists(toDeploy.getParentFile());
 
@@ -84,8 +84,8 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	 * @param curationFile Input .fasta file that was/is to be deployed.
 	 * @return Where should the fasta be deployed to
 	 */
-	private File getDeployedFastaFile(File curationFile) {
-		File deploymentFolder = new File(
+	private File getDeployedFastaFile(final File curationFile) {
+		final File deploymentFolder = new File(
 				getConfigDeploymentFolder(),
 				FileUtilities.stripExtension(curationFile.getName()));
 
@@ -114,12 +114,12 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		}
 
 		try {
-			File[] blastIndexFiles = deployableFile.getParentFile().listFiles(new FilenameFilter() {
-				public boolean accept(File dir, String name) {
+			final File[] blastIndexFiles = deployableFile.getParentFile().listFiles(new FilenameFilter() {
+				public boolean accept(final File dir, final String name) {
 					if (!name.startsWith(deployableFile.getName())) {
 						return false;
 					}
-					for (String s : OmssaDeploymentService.this.indexExtensions) {
+					for (final String s : OmssaDeploymentService.this.indexExtensions) {
 						if (name.endsWith(s)) {
 							return true;
 						}
@@ -135,7 +135,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 				LOGGER.debug("OMSSA database " + deployableFile + " needs to be redeployed (" + blastIndexFiles.length +
 						" of " + indexExtensions.size() + " files are present).");
 				//delete all if any were missing since hte index is not valid
-				for (File file : blastIndexFiles) {
+				for (final File file : blastIndexFiles) {
 					FileUtilities.quietDelete(file);
 				}
 
@@ -148,9 +148,9 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		}
 	}
 
-	public DeploymentResult performDeployment(DeploymentRequest request) {
+	public DeploymentResult performDeployment(final DeploymentRequest request) {
 		LOGGER.info("Deploying OMSSA database " + request.getShortName());
-		DeploymentResult reportInto = new DeploymentResult();
+		final DeploymentResult reportInto = new DeploymentResult();
 		File curationFile = null;
 		File lockFile = null;
 		try {
@@ -162,7 +162,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 				throw new FileNotFoundException("Could not find a fasta file at " + curationFile.getAbsolutePath());
 			}
 
-			File toDeploy = getDeployableFile(curationFile);
+			final File toDeploy = getDeployableFile(curationFile);
 
 			reportInto.setDeployedFile(toDeploy);
 
@@ -175,7 +175,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 				return reportInto;
 			}
 
-			ProcessCaller caller = getFormatDBCaller(toDeploy);
+			final ProcessCaller caller = getFormatDBCaller(toDeploy);
 
 			caller.run(); //this will block until complete but that is OK since this daemon is a thread.
 
@@ -200,19 +200,19 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
-		DeploymentResult reportResult = new DeploymentResult();
-		File deployedFile = getDeployedFastaFile(request.getCurationFile());
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
+		final DeploymentResult reportResult = new DeploymentResult();
+		final File deployedFile = getDeployedFastaFile(request.getCurationFile());
 
 		this.cleanUpDeployedFiles(deployedFile, reportResult);
 
 		return reportResult;
 	}
 
-	protected void validateAndDeleteDeploymentRelatedFiles(File deployedFastaFile, File deploymentFolder, List<File> deletedFiles, List<File> notDeletedFiles) {
-		File[] deploymentFiles = deploymentFolder.listFiles();
+	protected void validateAndDeleteDeploymentRelatedFiles(final File deployedFastaFile, final File deploymentFolder, final List<File> deletedFiles, final List<File> notDeletedFiles) {
+		final File[] deploymentFiles = deploymentFolder.listFiles();
 
-		for (File deploymentFile : deploymentFiles) {
+		for (final File deploymentFile : deploymentFiles) {
 			if ((!deploymentFile.isDirectory()
 					&& FileUtilities.getFileNameWithoutExtension(deploymentFile).equals(deployedFastaFile.getName())
 					&& indexExtensions.contains("." + FileUtilities.getExtension(deploymentFile.getName())))
@@ -229,8 +229,8 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		}
 	}
 
-	protected ProcessCaller getFormatDBCaller(File fastaFile) {
-		List<String> commandStrings = new ArrayList<String>(4);
+	protected ProcessCaller getFormatDBCaller(final File fastaFile) {
+		final List<String> commandStrings = new ArrayList<String>(4);
 		commandStrings.add(formatDbExe.getAbsolutePath());
 		commandStrings.add("-i");
 		commandStrings.add(fastaFile.getAbsolutePath());
@@ -256,7 +256,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 		public Config() {
 		}
 
-		public Config(String formatDbExe, String deployableDbFolder) {
+		public Config(final String formatDbExe, final String deployableDbFolder) {
 			this.formatDbExe = formatDbExe;
 			this.deployableDbFolder = deployableDbFolder;
 		}
@@ -265,7 +265,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 			return deployableDbFolder;
 		}
 
-		public void setDeployableDbFolder(String deployableDbFolder) {
+		public void setDeployableDbFolder(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
@@ -273,18 +273,18 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 			return formatDbExe;
 		}
 
-		public void setFormatDbExe(String formatDbExe) {
+		public void setFormatDbExe(final String formatDbExe) {
 			this.formatDbExe = formatDbExe;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(FORMAT_DB_EXE, formatDbExe);
 			map.put(DEPLOYABLE_DB_FOLDER, deployableDbFolder);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			formatDbExe = values.get(FORMAT_DB_EXE);
 			deployableDbFolder = values.get(DEPLOYABLE_DB_FOLDER);
 		}
@@ -300,7 +300,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			OmssaDeploymentService worker = null;
 			try {
 				worker = new OmssaDeploymentService(new File(config.getFormatDbExe()));
@@ -320,7 +320,7 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 
 		private static final String DEFAULT_DEPLOYMENT_FOLDER = "var/omssa_index";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(FORMAT_DB_EXE, "Database Format Executable", "Omssa deployer database format executable." +
 					"<p>Swift install contains following executables for your convenience:</p>"
 					+ "<table>"

@@ -10,13 +10,13 @@ public final class FileInfo implements Serializable {
 	private long length;
 	private long lastModified;
 
-	public FileInfo(String filePath, long length, long lastModified) {
+	public FileInfo(final String filePath, final long length, final long lastModified) {
 		this.filePath = filePath;
 		this.length = length;
 		this.lastModified = lastModified;
 	}
 
-	public FileInfo(String filePath) {
+	public FileInfo(final String filePath) {
 		this.filePath = filePath;
 	}
 
@@ -24,7 +24,7 @@ public final class FileInfo implements Serializable {
 		return length;
 	}
 
-	public void setLength(long length) {
+	public void setLength(final long length) {
 		this.length = length;
 	}
 
@@ -32,7 +32,7 @@ public final class FileInfo implements Serializable {
 		return lastModified;
 	}
 
-	public void setLastModified(long lastModified) {
+	public void setLastModified(final long lastModified) {
 		this.lastModified = lastModified;
 	}
 
@@ -40,7 +40,7 @@ public final class FileInfo implements Serializable {
 		return filePath;
 	}
 
-	public void setFilePath(String filePath) {
+	public void setFilePath(final String filePath) {
 		this.filePath = filePath;
 	}
 

@@ -161,7 +161,7 @@ public class Installer {
 	 * @param files         List of files to install. The files prefixed with exclamation mark need to have executable flag set.
 	 * @return Folder where the list of files was installed.
 	 */
-	private static File installList(File folder, String defaultFolder, Collection<String> files) {
+	private static File installList(File folder, final String defaultFolder, final Collection<String> files) {
 		folder = folderOrDefault(folder, defaultFolder);
 
 		for (String file : files) {
@@ -184,16 +184,16 @@ public class Installer {
 		return folder;
 	}
 
-	private static File folderOrDefault(File folder, String defaultFolder) {
+	private static File folderOrDefault(File folder, final String defaultFolder) {
 		if (folder == null) {
 			folder = FileUtilities.createTempFolder(null, defaultFolder, true);
 		}
 		return folder;
 	}
 
-	private static void uninstallList(File folder, Collection<String> files) {
-		for (String file : files) {
-			String name = new File(file).getName();
+	private static void uninstallList(final File folder, final Collection<String> files) {
+		for (final String file : files) {
+			final String name = new File(file).getName();
 			FileUtilities.cleanupTempFile(new File(folder, name));
 		}
 		FileUtilities.quietDelete(folder);
@@ -202,7 +202,7 @@ public class Installer {
 		}
 	}
 
-	private static File processList(File folder, String defaultFolder, Collection<String> files, Action action) {
+	private static File processList(final File folder, final String defaultFolder, final Collection<String> files, final Action action) {
 		switch (action) {
 			case INSTALL:
 				return installList(folder, defaultFolder, files);
@@ -221,19 +221,19 @@ public class Installer {
 	 * @param action {@link Action#INSTALL} to install or {@link Action#UNINSTALL} to uninstall
 	 * @return Folder where extract_msn got installed.
 	 */
-	public static File extractMsn(File folder, Action action) {
+	public static File extractMsn(final File folder, final Action action) {
 		return processList(folder, "extract_msn", EXTRACT_MSN_FILES, action);
 	}
 
-	public static File omssa(File folder, Action action) {
+	public static File omssa(final File folder, final Action action) {
 		return processList(folder, "omssa", FileUtilities.isWindowsPlatform() ? OMSSA_WINDOWS : OMSSA_LINUX, action);
 	}
 
-	public static File tandem(File folder, Action action) {
+	public static File tandem(final File folder, final Action action) {
 		return processList(folder, "tandem", getTandemFiles(), action);
 	}
 
-	public static File myrimatch(File folder, Action action) {
+	public static File myrimatch(final File folder, final Action action) {
 		final boolean win = FileUtilities.isWindowsPlatform();
 		return processSingleFile(folder, "myrimatch",
 				win ? MYRIMATCH_WINDOWS : MYRIMATCH_LINUX,
@@ -241,31 +241,31 @@ public class Installer {
 				action);
 	}
 
-	public static File msmsEval(File folder, Action action) {
+	public static File msmsEval(final File folder, final Action action) {
 		return processList(folder, "msmsEval", FileUtilities.isWindowsPlatform() ? MSMSEVAL_WINDOWS : MSMSEVAL_LINUX, action);
 	}
 
-	public static File formatDb(File folder, Action action) {
+	public static File formatDb(final File folder, final Action action) {
 		return processList(folder, "formatdb", FileUtilities.isWindowsPlatform() ? FORMATDB_WINDOWS : FORMATDB_LINUX, action);
 	}
 
-	public static File xvfbWrapper(File folder, Action action) {
+	public static File xvfbWrapper(final File folder, final Action action) {
 		return processSingleFile(folder, "util", UNIX_XVFB_WRAPPER, WRAPPER_SCRIPT, action);
 	}
 
-	public static File testFastaFiles(File folder, Action action) {
+	public static File testFastaFiles(final File folder, final Action action) {
 		return processList(folder, "fasta", FASTA_TEST, action);
 	}
 
-	public static File yeastFastaFiles(File folder, Action action) {
+	public static File yeastFastaFiles(final File folder, final Action action) {
 		return processList(folder, "fasta", FASTA_YEAST, action);
 	}
 
-	public static File mgfFiles(File folder, Action action) {
+	public static File mgfFiles(final File folder, final Action action) {
 		return processList(folder, "mgf", MGF_TEST, action);
 	}
 
-	public static File rawFiles(File folder, Action action) {
+	public static File rawFiles(final File folder, final Action action) {
 		return processList(folder, "raw", RAW_FILES, action);
 	}
 
@@ -276,10 +276,10 @@ public class Installer {
 		return FileUtilities.isWindowsPlatform() ? TANDEM_WINDOWS : TANDEM_LINUX;
 	}
 
-	private static File processSingleFile(File folder, String defaultFolder, List<String> files, String mainFile, Action action) {
+	private static File processSingleFile(final File folder, final String defaultFolder, final List<String> files, final String mainFile, final Action action) {
 		switch (action) {
 			case INSTALL:
-				File output = processList(folder, defaultFolder, files, action);
+				final File output = processList(folder, defaultFolder, files, action);
 				return new File(output, mainFile);
 			case UNINSTALL:
 				processList(folder.getParentFile(), defaultFolder, files, action);

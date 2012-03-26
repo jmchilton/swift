@@ -22,20 +22,20 @@ public class ResourceModel implements Serializable {
 	public ResourceModel() {
 	}
 
-	public ResourceModel(String name, String type) {
+	public ResourceModel(final String name, final String type) {
 		this.properties.put(NAME, name);
 		this.properties.put(TYPE, type);
 		count++;
 		this.id = type + count;
 	}
 
-	public ResourceModel(String id, String name, String type) {
+	public ResourceModel(final String id, final String name, final String type) {
 		this.id = id;
 		this.properties.put(NAME, name);
 		this.properties.put(TYPE, type);
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class ResourceModel implements Serializable {
 		return getProperty(NAME);
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		setProperty(NAME, name);
 		fireNameChanged();
 	}
@@ -56,7 +56,7 @@ public class ResourceModel implements Serializable {
 		return getProperty(TYPE);
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		setProperty(TYPE, type);
 	}
 
@@ -64,11 +64,11 @@ public class ResourceModel implements Serializable {
 		return properties;
 	}
 
-	public void addListener(ResourceModelListener listener) {
+	public void addListener(final ResourceModelListener listener) {
 		modelListeners.add(listener);
 	}
 
-	public void removeListener(ResourceModelListener listener) {
+	public void removeListener(final ResourceModelListener listener) {
 		modelListeners.remove(listener);
 	}
 
@@ -77,7 +77,7 @@ public class ResourceModel implements Serializable {
 	 *
 	 * @param properties New set of properties.
 	 */
-	public void setProperties(HashMap<String, String> properties) {
+	public void setProperties(final HashMap<String, String> properties) {
 		final String name = getName();
 		final String type = getType();
 		this.properties = properties;
@@ -86,12 +86,12 @@ public class ResourceModel implements Serializable {
 		fireInitialized();
 	}
 
-	public String getProperty(String name) {
+	public String getProperty(final String name) {
 		return this.properties.get(name);
 	}
 
-	public void setProperty(String name, String value) {
-		String oldValue = this.properties.get(name);
+	public void setProperty(final String name, final String value) {
+		final String oldValue = this.properties.get(name);
 		this.properties.put(name, value);
 
 		if (!valuesEqual(value, oldValue)) {
@@ -99,7 +99,7 @@ public class ResourceModel implements Serializable {
 		}
 	}
 
-	private static boolean valuesEqual(String value, String oldValue) {
+	private static boolean valuesEqual(final String value, final String oldValue) {
 		return oldValue == value || (oldValue != null && oldValue.equals(value));
 	}
 
@@ -107,7 +107,7 @@ public class ResourceModel implements Serializable {
 		return replayer;
 	}
 
-	public void setReplayer(UiBuilderReplayer replayer) {
+	public void setReplayer(final UiBuilderReplayer replayer) {
 		this.replayer = replayer;
 	}
 
@@ -115,7 +115,7 @@ public class ResourceModel implements Serializable {
 		return parent;
 	}
 
-	public void setParent(ResourceModel parent) {
+	public void setParent(final ResourceModel parent) {
 		this.parent = parent;
 	}
 
@@ -123,46 +123,46 @@ public class ResourceModel implements Serializable {
 		return children;
 	}
 
-	public void setChildren(ArrayList<ResourceModel> children) {
+	public void setChildren(final ArrayList<ResourceModel> children) {
 		this.children = children;
 	}
 
-	public void addChild(ResourceModel resourceModel) {
+	public void addChild(final ResourceModel resourceModel) {
 		resourceModel.setParent(this);
 		children.add(resourceModel);
 		fireChildAdded(resourceModel);
 	}
 
-	public void removeChild(ResourceModel resourceModel) {
+	public void removeChild(final ResourceModel resourceModel) {
 		children.remove(resourceModel);
 		resourceModel.setParent(null);
 		fireChildRemoved(resourceModel);
 	}
 
 	public void fireInitialized() {
-		ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
-		for (ResourceModelListener listener : modelListenersCopy) {
+		final ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
+		for (final ResourceModelListener listener : modelListenersCopy) {
 			listener.initialized(this);
 		}
 	}
 
 	public void fireNameChanged() {
-		ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
-		for (ResourceModelListener listener : modelListenersCopy) {
+		final ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
+		for (final ResourceModelListener listener : modelListenersCopy) {
 			listener.nameChanged(this);
 		}
 	}
 
-	public void fireChildAdded(ResourceModel model) {
-		ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
-		for (ResourceModelListener listener : modelListenersCopy) {
+	public void fireChildAdded(final ResourceModel model) {
+		final ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
+		for (final ResourceModelListener listener : modelListenersCopy) {
 			listener.childAdded(model, this);
 		}
 	}
 
-	public void fireChildRemoved(ResourceModel model) {
-		ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
-		for (ResourceModelListener listener : modelListenersCopy) {
+	public void fireChildRemoved(final ResourceModel model) {
+		final ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
+		for (final ResourceModelListener listener : modelListenersCopy) {
 			try {
 				listener.childRemoved(model, this);
 			} catch (Exception ignore) {
@@ -171,9 +171,9 @@ public class ResourceModel implements Serializable {
 		}
 	}
 
-	public void firePropertyChange(String propertyName, String newValue) {
-		ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
-		for (ResourceModelListener listener : modelListenersCopy) {
+	public void firePropertyChange(final String propertyName, final String newValue) {
+		final ArrayList<ResourceModelListener> modelListenersCopy = new ArrayList<ResourceModelListener>(modelListeners);
+		for (final ResourceModelListener listener : modelListenersCopy) {
 			listener.propertyChanged(this, propertyName, newValue);
 		}
 	}

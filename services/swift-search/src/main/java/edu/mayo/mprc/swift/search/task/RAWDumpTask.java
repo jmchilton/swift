@@ -31,7 +31,7 @@ final class RAWDumpTask extends AsyncTaskBase {
 	public static final String SAMPLE_INFORMATION_FILE_SUFFIX = ".sample.tsv";
 	public static final String ERROR_LOG_FILE_SUFFIX = ".error.tsv";
 
-	public RAWDumpTask(File rawFile, File outputFolder, DaemonConnection daemonConnection, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public RAWDumpTask(final File rawFile, final File outputFolder, final DaemonConnection daemonConnection, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(daemonConnection, fileTokenFactory, fromScratch);
 
 		this.rawFile = rawFile;
@@ -131,7 +131,7 @@ final class RAWDumpTask extends AsyncTaskBase {
 	}
 
 	@Override
-	public void onProgress(ProgressInfo progressInfo) {
+	public void onProgress(final ProgressInfo progressInfo) {
 		if (progressInfo instanceof RAWDumpResult) {
 			final RAWDumpResult dumpResult = (RAWDumpResult) progressInfo;
 			rawInfoFile = dumpResult.getRawInfoFile();

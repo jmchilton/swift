@@ -16,7 +16,7 @@ public final class TarReader {
 	 *
 	 * @param tarFile - the tar file
 	 */
-	public TarReader(File tarFile) {
+	public TarReader(final File tarFile) {
 		this.tarFile = tarFile;
 		if (!this.tarFile.exists()) {
 			throw new MprcException("tar file=" + this.tarFile.getAbsolutePath() + " does not exist");
@@ -29,8 +29,8 @@ public final class TarReader {
 	 * @param tarFile - the name of the tar file
 	 * @return
 	 */
-	public static int readNumberHeaders(File tarFile) {
-		TarReader t = new TarReader(tarFile);
+	public static int readNumberHeaders(final File tarFile) {
+		final TarReader t = new TarReader(tarFile);
 		return t.readNumberHeaders();
 	}
 

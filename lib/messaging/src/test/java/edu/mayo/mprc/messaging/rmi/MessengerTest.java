@@ -27,9 +27,9 @@ public final class MessengerTest {
 
 		boolean found = false;
 
-		String[] remoteObjectNames = remoteObjectHandler.listlocalRemoteObjectName();
+		final String[] remoteObjectNames = remoteObjectHandler.listlocalRemoteObjectName();
 
-		for (String remoteObjectName : remoteObjectNames) {
+		for (final String remoteObjectName : remoteObjectNames) {
 			if (remoteObjectName.equals(boundMessenger.getMessengerInfo().getMessengerRemoteName())) {
 				found = true;
 				break;
@@ -51,7 +51,7 @@ public final class MessengerTest {
 			boundMessenger.getMessenger().addMessageListener(new MessageListener() {
 				private static final long serialVersionUID = 20101221L;
 
-				public void messageReceived(Object message) {
+				public void messageReceived(final Object message) {
 					if (message.equals(testMessage)) {
 						messageReceived = true;
 					}
@@ -79,12 +79,12 @@ public final class MessengerTest {
 
 			semaphore.acquire();
 
-			SimpleOneWayMessenger callbackMessenger = new SimpleOneWayMessenger();
+			final SimpleOneWayMessenger callbackMessenger = new SimpleOneWayMessenger();
 
 			callbackMessenger.addMessageListener(new MessageListener() {
 				private static final long serialVersionUID = 20101221L;
 
-				public void messageReceived(Object message) {
+				public void messageReceived(final Object message) {
 					if (message.equals(testMessage)) {
 						messageReceived = true;
 					}
@@ -109,9 +109,9 @@ public final class MessengerTest {
 
 		boolean found = false;
 
-		String[] remoteObjectNames = remoteObjectHandler.listlocalRemoteObjectName();
+		final String[] remoteObjectNames = remoteObjectHandler.listlocalRemoteObjectName();
 
-		for (String remoteObjectName : remoteObjectNames) {
+		for (final String remoteObjectName : remoteObjectNames) {
 			if (remoteObjectName.equals(boundOneWayMessenger.getMessengerInfo().getMessengerRemoteName())) {
 				found = true;
 				break;
@@ -133,7 +133,7 @@ public final class MessengerTest {
 			boundOneWayMessenger.getMessenger().addMessageListener(new MessageListener() {
 				private static final long serialVersionUID = 20101221L;
 
-				public void messageReceived(Object message) {
+				public void messageReceived(final Object message) {
 					if (message.equals(testMessage)) {
 						messageReceived = true;
 					}

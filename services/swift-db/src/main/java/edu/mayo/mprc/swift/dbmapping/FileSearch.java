@@ -35,7 +35,7 @@ public class FileSearch extends PersistableBase {
 	public FileSearch() {
 	}
 
-	public FileSearch(File inputFile, String biologicalSample, String categoryName, String experiment, EnabledEngines enabledEngines) {
+	public FileSearch(final File inputFile, final String biologicalSample, final String categoryName, final String experiment, final EnabledEngines enabledEngines) {
 		this.inputFile = inputFile;
 		this.biologicalSample = biologicalSample;
 		this.categoryName = categoryName;
@@ -47,7 +47,7 @@ public class FileSearch extends PersistableBase {
 		return inputFile;
 	}
 
-	public void setInputFile(File inputFile) {
+	public void setInputFile(final File inputFile) {
 		this.inputFile = inputFile;
 	}
 
@@ -55,7 +55,7 @@ public class FileSearch extends PersistableBase {
 		return biologicalSample;
 	}
 
-	void setBiologicalSample(String biologicalSample) {
+	void setBiologicalSample(final String biologicalSample) {
 		this.biologicalSample = biologicalSample;
 	}
 
@@ -63,7 +63,7 @@ public class FileSearch extends PersistableBase {
 		return categoryName;
 	}
 
-	void setCategoryName(String categoryName) {
+	void setCategoryName(final String categoryName) {
 		this.categoryName = categoryName;
 	}
 
@@ -71,7 +71,7 @@ public class FileSearch extends PersistableBase {
 		return experiment;
 	}
 
-	void setExperiment(String experiment) {
+	void setExperiment(final String experiment) {
 		this.experiment = experiment;
 	}
 
@@ -79,7 +79,7 @@ public class FileSearch extends PersistableBase {
 		return enabledEngines;
 	}
 
-	public void setEnabledEngines(EnabledEngines enabledEngines) {
+	public void setEnabledEngines(final EnabledEngines enabledEngines) {
 		this.enabledEngines = enabledEngines;
 	}
 
@@ -87,12 +87,12 @@ public class FileSearch extends PersistableBase {
 		return swiftSearchDefinitionId;
 	}
 
-	public void setSwiftSearchDefinitionId(Integer id) {
+	public void setSwiftSearchDefinitionId(final Integer id) {
 		this.swiftSearchDefinitionId = id;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -100,7 +100,7 @@ public class FileSearch extends PersistableBase {
 			return false;
 		}
 
-		FileSearch that = (FileSearch) o;
+		final FileSearch that = (FileSearch) o;
 
 		if (getBiologicalSample() != null ? !getBiologicalSample().equals(that.getBiologicalSample()) : that.getBiologicalSample() != null) {
 			return false;
@@ -135,7 +135,7 @@ public class FileSearch extends PersistableBase {
 		return result;
 	}
 
-	public boolean isSearch(String searchEngineCode) {
+	public boolean isSearch(final String searchEngineCode) {
 		return enabledEngines != null && enabledEngines.isEnabled(searchEngineCode);
 	}
 }

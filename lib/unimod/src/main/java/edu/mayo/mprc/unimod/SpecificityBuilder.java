@@ -14,7 +14,7 @@ public final class SpecificityBuilder {
 	private Integer specificityGroup;
 	private StringBuilder comments = new StringBuilder();
 
-	public SpecificityBuilder(AminoAcid site, Terminus term, Boolean proteinOnly, Boolean hidden, String classification, Integer specificityGroup) {
+	public SpecificityBuilder(final AminoAcid site, final Terminus term, final Boolean proteinOnly, final Boolean hidden, final String classification, final Integer specificityGroup) {
 		this.site = site;
 		this.term = term;
 		this.proteinOnly = proteinOnly;
@@ -27,7 +27,7 @@ public final class SpecificityBuilder {
 		return hidden;
 	}
 
-	public void setHidden(Boolean hidden) {
+	public void setHidden(final Boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -35,7 +35,7 @@ public final class SpecificityBuilder {
 		return site;
 	}
 
-	public void setSite(AminoAcid site) {
+	public void setSite(final AminoAcid site) {
 		this.site = site;
 	}
 
@@ -43,7 +43,7 @@ public final class SpecificityBuilder {
 		return term;
 	}
 
-	public void setTerm(Terminus term) {
+	public void setTerm(final Terminus term) {
 		this.term = term;
 	}
 
@@ -51,7 +51,7 @@ public final class SpecificityBuilder {
 		return proteinOnly;
 	}
 
-	public void setProteinOnly(Boolean proteinOnly) {
+	public void setProteinOnly(final Boolean proteinOnly) {
 		this.proteinOnly = proteinOnly;
 	}
 
@@ -59,7 +59,7 @@ public final class SpecificityBuilder {
 		return classification;
 	}
 
-	public void setClassification(String classification) {
+	public void setClassification(final String classification) {
 		this.classification = classification;
 	}
 
@@ -67,7 +67,7 @@ public final class SpecificityBuilder {
 		return specificityGroup;
 	}
 
-	public void setSpecificityGroup(Integer specificityGroup) {
+	public void setSpecificityGroup(final Integer specificityGroup) {
 		this.specificityGroup = specificityGroup;
 	}
 
@@ -75,12 +75,12 @@ public final class SpecificityBuilder {
 		return comments.toString();
 	}
 
-	public void setComments(String comments) {
+	public void setComments(final String comments) {
 		this.comments.setLength(0);
 		this.comments.append(comments);
 	}
 
-	public void addComment(String comment) {
+	public void addComment(final String comment) {
 		if (this.comments.length() > 0) {
 			this.comments.append("; ").append(comment);
 		} else {
@@ -88,7 +88,7 @@ public final class SpecificityBuilder {
 		}
 	}
 
-	public ModSpecificity build(Mod parent) {
+	public ModSpecificity build(final Mod parent) {
 		return new ModSpecificity(parent, site == null ? null : site.getCode(), term, proteinOnly, hidden, classification, specificityGroup, getComments());
 	}
 }

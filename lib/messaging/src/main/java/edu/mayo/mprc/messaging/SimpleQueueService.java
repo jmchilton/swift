@@ -53,7 +53,7 @@ class SimpleQueueService implements Service {
 	 * @param name   Name of the queue.
 	 * @throws edu.mayo.mprc.MprcException JMS failures.
 	 */
-	SimpleQueueService(URI broker, String name, String userName, String password) {
+	SimpleQueueService(final URI broker, final String name, final String userName, final String password) {
 		this.queueName = name;
 
 		try {
@@ -61,7 +61,7 @@ class SimpleQueueService implements Service {
 
 			final TemporaryQueue queue = responseQueue();
 			final Session tempQueueSession = connection.createSession(/*transacted?*/false, /*acknowledgment*/Session.CLIENT_ACKNOWLEDGE);
-			MessageConsumer tempQueueConsumer = tempQueueSession.createConsumer(queue);
+			final MessageConsumer tempQueueConsumer = tempQueueSession.createConsumer(queue);
 			tempQueueConsumer.setMessageListener(new TempQueueMessageListener());
 
 			// start the connection and start listening for events
@@ -84,9 +84,9 @@ class SimpleQueueService implements Service {
 		return queueName;
 	}
 
-	public void sendRequest(Serializable request, int priority, ResponseListener listener) {
+	public void sendRequest(final Serializable request, final int priority, final ResponseListener listener) {
 		try {
-			ObjectMessage objectMessage = session().createObjectMessage(request);
+			final ObjectMessage objectMessage = session().createObjectMessage(request);
 
 			if (null != listener) {
 				// User wants response to the message.
@@ -124,7 +124,7 @@ class SimpleQueueService implements Service {
 	 * @param message Message to wrap
 	 * @return Wrapped message
 	 */
-	private JmsRequest wrapReceivedMessage(Message message) {
+	private JmsRequest wrapReceivedMessage(final Message message) {
 		return new JmsRequest((ObjectMessage) message, this);
 	}
 
@@ -135,11 +135,11 @@ class SimpleQueueService implements Service {
 	 * @param originalMessage Message this was response to.
 	 * @param isLast          True if the message is the last one.
 	 */
-	void sendResponse(Serializable response, ObjectMessage originalMessage, boolean isLast) {
+	void sendResponse(final Serializable response, final ObjectMessage originalMessage, final boolean isLast) {
 		try {
 			if (originalMessage.getJMSCorrelationID() != null) {
 				// Response was requested
-				ObjectMessage responseMessage = session().createObjectMessage(response);
+				final ObjectMessage responseMessage = session().createObjectMessage(response);
 				responseMessage.setBooleanProperty(SimpleQueueService.LAST_RESPONSE, isLast);
 				responseMessage.setJMSCorrelationID(originalMessage.getJMSCorrelationID());
 				messageProducer().send(originalMessage.getJMSReplyTo(), responseMessage);
@@ -151,9 +151,9 @@ class SimpleQueueService implements Service {
 		}
 	}
 
-	public Request receiveRequest(long timeout) {
+	public Request receiveRequest(final long timeout) {
 		try {
-			Message message = messageConsumer().receive(timeout);
+			final Message message = messageConsumer().receive(timeout);
 			if (message != null) {
 				LOGGER.info("Request received from queue: " + queueName);
 				return wrapReceivedMessage(message);
@@ -211,7 +211,7 @@ class SimpleQueueService implements Service {
 
 	private class TempQueueMessageListener implements MessageListener {
 		@Override
-		public void onMessage(Message message) {
+		public void onMessage(final Message message) {
 			try {
 				processMessage(message);
 			} finally {
@@ -222,7 +222,7 @@ class SimpleQueueService implements Service {
 		/**
 		 * Must never throw an exception.
 		 */
-		private void processMessage(Message message) {
+		private void processMessage(final Message message) {
 			boolean isLast = true;
 			ResponseListener listener = null;
 			try {
@@ -254,7 +254,7 @@ class SimpleQueueService implements Service {
 			}
 		}
 
-		private void acknowledgeMessage(Message message) {
+		private void acknowledgeMessage(final Message message) {
 			if (message == null) {
 				return;
 			}

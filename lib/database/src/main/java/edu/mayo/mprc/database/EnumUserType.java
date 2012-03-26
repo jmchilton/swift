@@ -22,8 +22,8 @@ public final class EnumUserType implements UserType, ParameterizedType {
 
 	private Class clazz = null;
 
-	public void setParameterValues(Properties params) {
-		String enumClassName = params.getProperty("enumClassName");
+	public void setParameterValues(final Properties params) {
+		final String enumClassName = params.getProperty("enumClassName");
 		if (enumClassName == null) {
 			throw new MappingException("enumClassName parameter not specified");
 		}
@@ -48,9 +48,9 @@ public final class EnumUserType implements UserType, ParameterizedType {
 		return clazz;
 	}
 
-	public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner)
+	public Object nullSafeGet(final ResultSet resultSet, final String[] names, final Object owner)
 			throws HibernateException, SQLException {
-		String name = resultSet.getString(names[0]);
+		final String name = resultSet.getString(names[0]);
 		Object result = null;
 		if (!resultSet.wasNull()) {
 			result = Enum.valueOf(clazz, name);
@@ -58,7 +58,7 @@ public final class EnumUserType implements UserType, ParameterizedType {
 		return result;
 	}
 
-	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index)
+	public void nullSafeSet(final PreparedStatement preparedStatement, final Object value, final int index)
 			throws HibernateException, SQLException {
 		if (null == value) {
 			preparedStatement.setNull(index, Types.VARCHAR);
@@ -67,7 +67,7 @@ public final class EnumUserType implements UserType, ParameterizedType {
 		}
 	}
 
-	public Object deepCopy(Object value) throws HibernateException {
+	public Object deepCopy(final Object value) throws HibernateException {
 		return value;
 	}
 
@@ -75,23 +75,23 @@ public final class EnumUserType implements UserType, ParameterizedType {
 		return false;
 	}
 
-	public Object assemble(Serializable cached, Object owner) throws HibernateException {
+	public Object assemble(final Serializable cached, final Object owner) throws HibernateException {
 		return cached;
 	}
 
-	public Serializable disassemble(Object value) throws HibernateException {
+	public Serializable disassemble(final Object value) throws HibernateException {
 		return (Serializable) value;
 	}
 
-	public Object replace(Object original, Object target, Object owner) throws HibernateException {
+	public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
 		return original;
 	}
 
-	public int hashCode(Object x) throws HibernateException {
+	public int hashCode(final Object x) throws HibernateException {
 		return x.hashCode();
 	}
 
-	public boolean equals(Object x, Object y) throws HibernateException {
+	public boolean equals(final Object x, final Object y) throws HibernateException {
 		if (x == y) {
 			return true;
 		}

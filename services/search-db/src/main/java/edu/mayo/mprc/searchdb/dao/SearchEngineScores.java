@@ -75,7 +75,7 @@ public final class SearchEngineScores {
 	public SearchEngineScores() {
 	}
 
-	public SearchEngineScores(double sequestXcorrScore, double sequestDcnScore, double sequestSpScore, double sequestSpRank, double sequestPeptidesMatched, double mascotIonScore, double mascotIdentityScore, double mascotHomologyScore, double mascotDeltaIonScore, double tandemHyperScore, double tandemLadderScore) {
+	public SearchEngineScores(final double sequestXcorrScore, final double sequestDcnScore, final double sequestSpScore, final double sequestSpRank, final double sequestPeptidesMatched, final double mascotIonScore, final double mascotIdentityScore, final double mascotHomologyScore, final double mascotDeltaIonScore, final double tandemHyperScore, final double tandemLadderScore) {
 		this.setSequestXcorrScore(sequestXcorrScore);
 		this.setSequestDcnScore(sequestDcnScore);
 		this.setSequestSpScore(sequestSpScore);
@@ -89,7 +89,7 @@ public final class SearchEngineScores {
 		this.setTandemLadderScore(tandemLadderScore);
 	}
 
-	private double maxNaN(double d1, double d2) {
+	private double maxNaN(final double d1, final double d2) {
 		if (Double.isNaN(d1)) {
 			return d2;
 		}
@@ -99,7 +99,7 @@ public final class SearchEngineScores {
 		return Math.max(d1, d2);
 	}
 
-	private double minNaN(double d1, double d2) {
+	private double minNaN(final double d1, final double d2) {
 		if (Double.isNaN(d1)) {
 			return d2;
 		}
@@ -115,7 +115,7 @@ public final class SearchEngineScores {
 	 *
 	 * @param newScores New scores to incorporate.
 	 */
-	public void setMax(SearchEngineScores newScores) {
+	public void setMax(final SearchEngineScores newScores) {
 		setSequestXcorrScore(maxNaN(getSequestXcorrScore(), newScores.getSequestXcorrScore()));
 		setSequestDcnScore(maxNaN(getSequestDcnScore(), newScores.getSequestDcnScore()));
 		setSequestSpScore(maxNaN(getSequestSpScore(), newScores.getSequestSpScore()));
@@ -133,7 +133,7 @@ public final class SearchEngineScores {
 		return sequestXcorrScore;
 	}
 
-	public void setSequestXcorrScore(double sequestXcorrScore) {
+	public void setSequestXcorrScore(final double sequestXcorrScore) {
 		this.sequestXcorrScore = sequestXcorrScore;
 	}
 
@@ -141,7 +141,7 @@ public final class SearchEngineScores {
 		return sequestDcnScore;
 	}
 
-	public void setSequestDcnScore(double sequestDcnScore) {
+	public void setSequestDcnScore(final double sequestDcnScore) {
 		this.sequestDcnScore = sequestDcnScore;
 	}
 
@@ -149,7 +149,7 @@ public final class SearchEngineScores {
 		return sequestSpScore;
 	}
 
-	public void setSequestSpScore(double sequestSpScore) {
+	public void setSequestSpScore(final double sequestSpScore) {
 		this.sequestSpScore = sequestSpScore;
 	}
 
@@ -157,7 +157,7 @@ public final class SearchEngineScores {
 		return sequestSpRank;
 	}
 
-	public void setSequestSpRank(double sequestSpRank) {
+	public void setSequestSpRank(final double sequestSpRank) {
 		this.sequestSpRank = sequestSpRank;
 	}
 
@@ -165,7 +165,7 @@ public final class SearchEngineScores {
 		return sequestPeptidesMatched;
 	}
 
-	public void setSequestPeptidesMatched(double sequestPeptidesMatched) {
+	public void setSequestPeptidesMatched(final double sequestPeptidesMatched) {
 		this.sequestPeptidesMatched = sequestPeptidesMatched;
 	}
 
@@ -173,7 +173,7 @@ public final class SearchEngineScores {
 		return mascotIonScore;
 	}
 
-	public void setMascotIonScore(double mascotIonScore) {
+	public void setMascotIonScore(final double mascotIonScore) {
 		this.mascotIonScore = mascotIonScore;
 	}
 
@@ -181,7 +181,7 @@ public final class SearchEngineScores {
 		return mascotIdentityScore;
 	}
 
-	public void setMascotIdentityScore(double mascotIdentityScore) {
+	public void setMascotIdentityScore(final double mascotIdentityScore) {
 		this.mascotIdentityScore = mascotIdentityScore;
 	}
 
@@ -189,7 +189,7 @@ public final class SearchEngineScores {
 		return mascotHomologyScore;
 	}
 
-	public void setMascotHomologyScore(double mascotHomologyScore) {
+	public void setMascotHomologyScore(final double mascotHomologyScore) {
 		this.mascotHomologyScore = mascotHomologyScore;
 	}
 
@@ -197,7 +197,7 @@ public final class SearchEngineScores {
 		return mascotDeltaIonScore;
 	}
 
-	public void setMascotDeltaIonScore(double mascotDeltaIonScore) {
+	public void setMascotDeltaIonScore(final double mascotDeltaIonScore) {
 		this.mascotDeltaIonScore = mascotDeltaIonScore;
 	}
 
@@ -205,7 +205,7 @@ public final class SearchEngineScores {
 		return tandemHyperScore;
 	}
 
-	public void setTandemHyperScore(double tandemHyperScore) {
+	public void setTandemHyperScore(final double tandemHyperScore) {
 		this.tandemHyperScore = tandemHyperScore;
 	}
 
@@ -213,12 +213,12 @@ public final class SearchEngineScores {
 		return tandemLadderScore;
 	}
 
-	public void setTandemLadderScore(double tandemLadderScore) {
+	public void setTandemLadderScore(final double tandemLadderScore) {
 		this.tandemLadderScore = tandemLadderScore;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -226,7 +226,7 @@ public final class SearchEngineScores {
 			return false;
 		}
 
-		SearchEngineScores that = (SearchEngineScores) o;
+		final SearchEngineScores that = (SearchEngineScores) o;
 
 		if (!MprcDoubles.within(that.getMascotDeltaIonScore(), getMascotDeltaIonScore(), DELTA) ||
 				!MprcDoubles.within(that.getMascotHomologyScore(), getMascotHomologyScore(), DELTA) ||

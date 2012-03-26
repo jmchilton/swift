@@ -11,7 +11,7 @@ public final class ClientParamFile implements ClientValue {
 	public ClientParamFile() {
 	}
 
-	public ClientParamFile(String name, String text) {
+	public ClientParamFile(final String name, final String text) {
 		this.name = name;
 		this.text = text;
 	}
@@ -20,7 +20,7 @@ public final class ClientParamFile implements ClientValue {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -28,7 +28,7 @@ public final class ClientParamFile implements ClientValue {
 		return text;
 	}
 
-	public void setText(String text) {
+	public void setText(final String text) {
 		this.text = text;
 	}
 }

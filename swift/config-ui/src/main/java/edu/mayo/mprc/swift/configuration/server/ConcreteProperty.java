@@ -11,7 +11,7 @@ class ConcreteProperty {
 	private ResourceConfig resourceConfig;
 	private String propertyName;
 
-	public ConcreteProperty(ResourceConfig resourceConfig, String propertyName) {
+	public ConcreteProperty(final ResourceConfig resourceConfig, final String propertyName) {
 		this.resourceConfig = resourceConfig;
 		this.propertyName = propertyName;
 	}
@@ -25,7 +25,7 @@ class ConcreteProperty {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -33,7 +33,7 @@ class ConcreteProperty {
 			return false;
 		}
 
-		ConcreteProperty that = (ConcreteProperty) o;
+		final ConcreteProperty that = (ConcreteProperty) o;
 		return Objects.equal(resourceConfig, that.resourceConfig) &&
 				Objects.equal(propertyName, that.propertyName);
 	}

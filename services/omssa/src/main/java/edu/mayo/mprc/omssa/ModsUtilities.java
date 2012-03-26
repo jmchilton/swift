@@ -63,12 +63,12 @@ final class ModsUtilities {
 	 * modcp	-  at the C terminus of a peptide
 	 * modcpaa	-  at the C terminus of a peptide at particular amino acids
 	 */
-	public static String findModType(ModSpecificity spec) {
+	public static String findModType(final ModSpecificity spec) {
 		if (spec.isPositionAnywhere()) {
 			return "modaa";
 		}
 
-		StringBuilder sb = new StringBuilder("mod");
+		final StringBuilder sb = new StringBuilder("mod");
 
 		if (spec.isPositionNTerminus()) {
 			sb.append("n");

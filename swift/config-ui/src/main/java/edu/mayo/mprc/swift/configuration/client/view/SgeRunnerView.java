@@ -20,8 +20,8 @@ public final class SgeRunnerView extends SimplePanel {
 	private static final String SHARED_LOG_FOLDER = "sharedLogFolder";
 	private static final String WRAPPER_SCRIPT = "wrapperScript";
 
-	public SgeRunnerView(Context context, ResourceModel model) {
-		GwtUiBuilder builder = new GwtUiBuilder(context, model);
+	public SgeRunnerView(final Context context, final ResourceModel model) {
+		final GwtUiBuilder builder = new GwtUiBuilder(context, model);
 
 		builder.start()
 				.property(QUEUE_NAME, "Queue Name", "SGE queue name.<p>There is usually a queue called <tt>all.q</tt> that sends requests to any queue available.").required().defaultValue("all.q")
@@ -41,12 +41,12 @@ public final class SgeRunnerView extends SimplePanel {
 	}
 
 	public ResourceModel getModel() {
-		HashMap<String, String> properties = propertyList.saveUI();
+		final HashMap<String, String> properties = propertyList.saveUI();
 		resourceModel.setProperties(properties);
 		return resourceModel;
 	}
 
-	public void setModel(ResourceModel model) {
+	public void setModel(final ResourceModel model) {
 		resourceModel = model;
 		if (resourceModel.getProperty(SHARED_LOG_FOLDER) == null || resourceModel.getProperty(SHARED_LOG_FOLDER).length() == 0) {
 			resourceModel.setProperty(SHARED_LOG_FOLDER, DEFAULT_SHARED_LOG_DIR);

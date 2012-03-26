@@ -49,7 +49,7 @@ public final class Analysis extends PersistableBase {
 	public Analysis() {
 	}
 
-	public Analysis(ReportData reportData, String scaffoldVersion, DateTime analysisDate, BiologicalSampleList biologicalSamples) {
+	public Analysis(final ReportData reportData, final String scaffoldVersion, final DateTime analysisDate, final BiologicalSampleList biologicalSamples) {
 		this.reportData = reportData;
 		this.scaffoldVersion = scaffoldVersion;
 		this.analysisDate = analysisDate;
@@ -60,7 +60,7 @@ public final class Analysis extends PersistableBase {
 		return reportData;
 	}
 
-	public void setReportData(ReportData reportData) {
+	public void setReportData(final ReportData reportData) {
 		this.reportData = reportData;
 	}
 
@@ -68,7 +68,7 @@ public final class Analysis extends PersistableBase {
 		return scaffoldVersion;
 	}
 
-	public void setScaffoldVersion(String scaffoldVersion) {
+	public void setScaffoldVersion(final String scaffoldVersion) {
 		this.scaffoldVersion = scaffoldVersion;
 	}
 
@@ -76,7 +76,7 @@ public final class Analysis extends PersistableBase {
 		return analysisDate;
 	}
 
-	public void setAnalysisDate(DateTime analysisDate) {
+	public void setAnalysisDate(final DateTime analysisDate) {
 		this.analysisDate = analysisDate;
 	}
 
@@ -84,7 +84,7 @@ public final class Analysis extends PersistableBase {
 		return biologicalSamples;
 	}
 
-	public void setBiologicalSamples(BiologicalSampleList biologicalSamples) {
+	public void setBiologicalSamples(final BiologicalSampleList biologicalSamples) {
 		this.biologicalSamples = biologicalSamples;
 	}
 
@@ -94,7 +94,7 @@ public final class Analysis extends PersistableBase {
 	 * @return String similar to Scaffold's peptide report. For testing mostly.
 	 */
 	public String peptideReport() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append(
 				"Experiment name\t" +
 						"Biological sample category\t" +
@@ -126,10 +126,10 @@ public final class Analysis extends PersistableBase {
 						"Number of identified +3H spectra\t" +
 						"Number of identified +4H spectra\t" +
 						"Number of enzymatic termini\n");
-		for (BiologicalSample sample : getBiologicalSamples()) {
-			for (SearchResult result : sample.getSearchResults()) {
-				for (ProteinGroup proteinGroup : result.getProteinGroups()) {
-					for (PeptideSpectrumMatch psm : proteinGroup.getPeptideSpectrumMatches()) {
+		for (final BiologicalSample sample : getBiologicalSamples()) {
+			for (final SearchResult result : sample.getSearchResults()) {
+				for (final ProteinGroup proteinGroup : result.getProteinGroups()) {
+					for (final PeptideSpectrumMatch psm : proteinGroup.getPeptideSpectrumMatches()) {
 						builder
 								.append("").append('\t')
 								.append(sample.getCategory()).append('\t')
@@ -168,12 +168,12 @@ public final class Analysis extends PersistableBase {
 		return builder.toString();
 	}
 
-	private String percent(double percent) {
+	private String percent(final double percent) {
 		return PERCENT_FORMAT.format(percent);
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -181,7 +181,7 @@ public final class Analysis extends PersistableBase {
 			return false;
 		}
 
-		Analysis analysis = (Analysis) o;
+		final Analysis analysis = (Analysis) o;
 
 		if (getAnalysisDate() != null ? !getAnalysisDate().equals(analysis.getAnalysisDate()) : analysis.getAnalysisDate() != null) {
 			return false;
@@ -211,7 +211,7 @@ public final class Analysis extends PersistableBase {
 	/**
 	 * Report information about entire analysis into a given writer in HTML format.
 	 */
-	public void htmlReport(Report r, SearchDbDao searchDbDao, String highlight) {
+	public void htmlReport(final Report r, final SearchDbDao searchDbDao, final String highlight) {
 		r
 				.startTable("Scaffold run")
 				.addKeyValueTable("Date", getAnalysisDate())
@@ -221,14 +221,14 @@ public final class Analysis extends PersistableBase {
 		r.startTable("Results") // -- Results
 				.cell("", 1);
 
-		TreeMap<Integer, ProteinSequenceList> allProteinGroups = new TreeMap<Integer, ProteinSequenceList>();
+		final TreeMap<Integer, ProteinSequenceList> allProteinGroups = new TreeMap<Integer, ProteinSequenceList>();
 
 		// List biological samples
-		for (BiologicalSample sample : getBiologicalSamples()) {
+		for (final BiologicalSample sample : getBiologicalSamples()) {
 			r.cell(sample.getSampleName(), sample.getSearchResults().size());
 
-			for (SearchResult result : sample.getSearchResults()) {
-				for (ProteinGroup group : result.getProteinGroups()) {
+			for (final SearchResult result : sample.getSearchResults()) {
+				for (final ProteinGroup group : result.getProteinGroups()) {
 					allProteinGroups.put(group.getProteinSequences().getId(), group.getProteinSequences());
 				}
 			}
@@ -238,18 +238,18 @@ public final class Analysis extends PersistableBase {
 		r.cell("");
 
 		// List all mass-spec samples within the biological samples
-		for (BiologicalSample sample : getBiologicalSamples()) {
-			for (SearchResult result : sample.getSearchResults()) {
+		for (final BiologicalSample sample : getBiologicalSamples()) {
+			for (final SearchResult result : sample.getSearchResults()) {
 				r.cell(result.getMassSpecSample() != null ? result.getMassSpecSample().getFile().getName() : "<null>");
 			}
 		}
 		r.nextRow(); // ---------------
 
-		StringBuilder accNums = new StringBuilder(50);
-		for (ProteinSequenceList proteinSequences : allProteinGroups.values()) {
-			List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinSequences);
+		final StringBuilder accNums = new StringBuilder(50);
+		for (final ProteinSequenceList proteinSequences : allProteinGroups.values()) {
+			final List<String> proteinAccessionNumbers = searchDbDao.getProteinAccessionNumbers(proteinSequences);
 			accNums.setLength(0);
-			for (String accNum : proteinAccessionNumbers) {
+			for (final String accNum : proteinAccessionNumbers) {
 				if (accNum.equalsIgnoreCase(highlight)) {
 					accNums.append("<span class=\"highlight\">" + r.esc(accNum) + "</span>, ");
 				} else {
@@ -259,10 +259,10 @@ public final class Analysis extends PersistableBase {
 			}
 			r.hCellRaw(accNums.substring(0, 2 <= accNums.length() ? accNums.length() - 2 : accNums.length()));
 
-			for (BiologicalSample sample : getBiologicalSamples()) {
-				for (SearchResult result : sample.getSearchResults()) {
+			for (final BiologicalSample sample : getBiologicalSamples()) {
+				for (final SearchResult result : sample.getSearchResults()) {
 					ProteinGroup matchingGroup = null;
-					for (ProteinGroup g : result.getProteinGroups()) {
+					for (final ProteinGroup g : result.getProteinGroups()) {
 						if (proteinSequences.getId().equals(g.getProteinSequences().getId())) {
 							matchingGroup = g;
 							break;

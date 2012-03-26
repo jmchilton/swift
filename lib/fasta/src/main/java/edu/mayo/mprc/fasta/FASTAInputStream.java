@@ -66,7 +66,7 @@ public final class FASTAInputStream implements DBInputStream {
 	 * @param file the file that you want to create an input stream of
 	 *             ¬
 	 */
-	public FASTAInputStream(File file) {
+	public FASTAInputStream(final File file) {
 		this.fastaFile = file;
 	}
 
@@ -112,7 +112,7 @@ public final class FASTAInputStream implements DBInputStream {
 		this.currentHeader = nextHeader;
 
 		//read in lines until we reach the next header
-		StringBuilder sequenceBuilder = new StringBuilder();
+		final StringBuilder sequenceBuilder = new StringBuilder();
 		String nextLine = null;
 		try {
 			nextLine = this.reader.readLine();
@@ -155,7 +155,7 @@ public final class FASTAInputStream implements DBInputStream {
 		return countingInputStream.getCount() / totalBytesToRead;
 	}
 
-	private String cleanupSequence(String nextLine) {
+	private String cleanupSequence(final String nextLine) {
 		return nextLine.trim().toUpperCase(Locale.US);
 	}
 
@@ -165,11 +165,11 @@ public final class FASTAInputStream implements DBInputStream {
 	 * @param potentialSequence the string that is suspected to be a header
 	 * @return true if the string is a header or if it is null (meaning end of file)
 	 */
-	private static boolean isSequence(String potentialSequence) {
+	private static boolean isSequence(final String potentialSequence) {
 		return !(potentialSequence == null || potentialSequence.length() == 0 || potentialSequence.charAt(0) == FASTA_HEADER);
 	}
 
-	private static boolean isHeader(String potentialHeader) {
+	private static boolean isHeader(final String potentialHeader) {
 		return !(potentialHeader == null || potentialHeader.length() == 0) && potentialHeader.charAt(0) == FASTA_HEADER;
 	}
 
@@ -205,7 +205,7 @@ public final class FASTAInputStream implements DBInputStream {
 	 * @param toCheck the file you want to see is a valid FASTA file
 	 * @return true if the file is a valid fasta file else false
 	 */
-	public static boolean isFASTAFileValid(File toCheck) {
+	public static boolean isFASTAFileValid(final File toCheck) {
 		DBInputStream in = null;
 		try {
 			in = new FASTAInputStream(toCheck);

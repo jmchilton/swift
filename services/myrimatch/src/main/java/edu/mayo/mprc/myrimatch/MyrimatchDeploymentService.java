@@ -51,8 +51,8 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 
 	}
 
-	public synchronized DeploymentResult performDeployment(DeploymentRequest request) {
-		MyrimatchDeploymentResult result = new MyrimatchDeploymentResult();
+	public synchronized DeploymentResult performDeployment(final DeploymentRequest request) {
+		final MyrimatchDeploymentResult result = new MyrimatchDeploymentResult();
 
 		if (!hasCachedDeployment(request, result)) {
 			deploy(request, result);
@@ -62,8 +62,8 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
-		File infoFile = getDeploymentInfoFile(request);
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
+		final File infoFile = getDeploymentInfoFile(request);
 
 		FileUtilities.quietDelete(infoFile);
 
@@ -71,22 +71,22 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		return new DeploymentResult();
 	}
 
-	private boolean hasCachedDeployment(DeploymentRequest request, MyrimatchDeploymentResult result) {
-		File curationFile = request.getCurationFile();
+	private boolean hasCachedDeployment(final DeploymentRequest request, final MyrimatchDeploymentResult result) {
+		final File curationFile = request.getCurationFile();
 
 		if (!curationFile.exists()) {
-			MprcException mprcException = new MprcException("The file passed in the curation didn't exist: " + curationFile.getAbsolutePath());
+			final MprcException mprcException = new MprcException("The file passed in the curation didn't exist: " + curationFile.getAbsolutePath());
 			LOGGER.error(mprcException.getMessage());
 			throw mprcException;
 		}
 
 		result.setDeployedFile(curationFile);
 
-		File infoFile = getDeploymentInfoFile(request);
-		Properties properties = loadInfoFile(infoFile);
+		final File infoFile = getDeploymentInfoFile(request);
+		final Properties properties = loadInfoFile(infoFile);
 
-		long numForwardEntries = Long.parseLong(properties.getProperty(NUM_FORWARD_ENTRIES, "-1"));
-		String decoySequencePrefix = properties.getProperty(DECOY_SEQUENCE_PREFIX, DEFAULT_SEQUENCE_PREFIX);
+		final long numForwardEntries = Long.parseLong(properties.getProperty(NUM_FORWARD_ENTRIES, "-1"));
+		final String decoySequencePrefix = properties.getProperty(DECOY_SEQUENCE_PREFIX, DEFAULT_SEQUENCE_PREFIX);
 		if (numForwardEntries >= 0) {
 			result.setNumForwardEntries(numForwardEntries);
 			result.setDecoySequencePrefix(decoySequencePrefix);
@@ -95,19 +95,19 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		return false;
 	}
 
-	private void deploy(DeploymentRequest request, MyrimatchDeploymentResult result) {
-		File curationFile = request.getCurationFile();
+	private void deploy(final DeploymentRequest request, final MyrimatchDeploymentResult result) {
+		final File curationFile = request.getCurationFile();
 		LOGGER.info("Myrimatch deployment services started. Deployment file [" + curationFile.getAbsolutePath() + "]");
 
-		File infoFile = getDeploymentInfoFile(request);
+		final File infoFile = getDeploymentInfoFile(request);
 		// Go through all database entries and see when they turn into reverse ones.
 		// Reverse sequences must have matching accession number
 		int numSequences = 0;
 		String reversePrefix = DEFAULT_SEQUENCE_PREFIX;
-		BufferedReader reader = FileUtilities.getReader(curationFile);
+		final BufferedReader reader = FileUtilities.getReader(curationFile);
 		try {
 			while (true) {
-				String line = reader.readLine();
+				final String line = reader.readLine();
 				if (line == null) {
 					break;
 				}
@@ -126,7 +126,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 			FileUtilities.closeQuietly(reader);
 		}
 
-		Properties properties = new Properties();
+		final Properties properties = new Properties();
 		properties.setProperty(NUM_FORWARD_ENTRIES, String.valueOf(numSequences));
 		properties.setProperty(DECOY_SEQUENCE_PREFIX, reversePrefix);
 
@@ -138,8 +138,8 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		LOGGER.info("Myrimatch deployment services completed. Deployment file [" + curationFile.getAbsolutePath() + "]");
 	}
 
-	private Properties loadInfoFile(File infoFile) {
-		Properties properties = new Properties();
+	private Properties loadInfoFile(final File infoFile) {
+		final Properties properties = new Properties();
 		if (infoFile.exists()) {
 			try {
 				properties.loadFromXML(FileUtilities.getInputStream(infoFile));
@@ -150,7 +150,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		return properties;
 	}
 
-	private void saveInfoFile(File infoFile, Properties properties) {
+	private void saveInfoFile(final File infoFile, final Properties properties) {
 		final FileOutputStream outputStream = FileUtilities.getOutputStream(infoFile);
 		try {
 			properties.storeToXML(outputStream, "Myrimatch database information");
@@ -161,7 +161,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		}
 	}
 
-	private File getDeploymentInfoFile(DeploymentRequest request) {
+	private File getDeploymentInfoFile(final DeploymentRequest request) {
 		return new File(getDeployableDbFolder(), request.getShortName() + ".info.xml");
 	}
 
@@ -180,7 +180,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 		public Config() {
 		}
 
-		public Config(String deployableDbFolder) {
+		public Config(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
@@ -188,17 +188,17 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 			return deployableDbFolder;
 		}
 
-		public void setDeployableDbFolder(String deployableDbFolder) {
+		public void setDeployableDbFolder(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			final TreeMap<String, String> map = new TreeMap<String, String>();
 			map.put(DEPLOYABLE_DB_FOLDER, deployableDbFolder);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			this.deployableDbFolder = values.get(DEPLOYABLE_DB_FOLDER);
 		}
 
@@ -213,7 +213,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			final MyrimatchDeploymentService worker = new MyrimatchDeploymentService();
 			worker.setDeployableDbFolder(new File(config.getDeployableDbFolder()).getAbsoluteFile());
 			return worker;
@@ -221,7 +221,7 @@ public final class MyrimatchDeploymentService extends DeploymentService<Deployme
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(DEPLOYABLE_DB_FOLDER, "Database Folder", "Information about .fasta files will be put here.<br/>" +
 							"Myrimatch needs to know the prefix for the decoy databases.")

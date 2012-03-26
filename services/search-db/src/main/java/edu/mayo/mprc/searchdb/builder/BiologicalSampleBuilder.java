@@ -23,7 +23,7 @@ public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
 	 */
 	private SearchResultListBuilder searchResults;
 
-	public BiologicalSampleBuilder(AnalysisBuilder analysis, String sampleName, String category) {
+	public BiologicalSampleBuilder(final AnalysisBuilder analysis, final String sampleName, final String category) {
 		this.analysis = analysis;
 		this.sampleName = sampleName;
 		this.category = category;
@@ -43,7 +43,7 @@ public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
 		return sampleName;
 	}
 
-	public void setSampleName(String sampleName) {
+	public void setSampleName(final String sampleName) {
 		this.sampleName = sampleName;
 	}
 
@@ -51,7 +51,7 @@ public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(final String category) {
 		this.category = category;
 	}
 
@@ -59,12 +59,12 @@ public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
 		return searchResults;
 	}
 
-	public void setSearchResults(SearchResultListBuilder searchResults) {
+	public void setSearchResults(final SearchResultListBuilder searchResults) {
 		this.searchResults = searchResults;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -72,7 +72,7 @@ public class BiologicalSampleBuilder implements Builder<BiologicalSample> {
 			return false;
 		}
 
-		BiologicalSampleBuilder that = (BiologicalSampleBuilder) o;
+		final BiologicalSampleBuilder that = (BiologicalSampleBuilder) o;
 
 		if (category != null ? !category.equals(that.category) : that.category != null) {
 			return false;

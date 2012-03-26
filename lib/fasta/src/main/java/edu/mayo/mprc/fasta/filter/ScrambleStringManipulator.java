@@ -16,7 +16,7 @@ public final class ScrambleStringManipulator implements StringManipulator {
 		return random;
 	}
 
-	public void setRandom(Random random) {
+	public void setRandom(final Random random) {
 		this.random = random;
 	}
 
@@ -26,14 +26,14 @@ public final class ScrambleStringManipulator implements StringManipulator {
 	 * @param toManipulate the String you want to create a manipulation of, will obviously be unchanged
 	 * @return the manipulated String
 	 */
-	public String manipulateString(String toManipulate) {
-		StringBuilder builder = new StringBuilder(toManipulate);
+	public String manipulateString(final String toManipulate) {
+		final StringBuilder builder = new StringBuilder(toManipulate);
 
 		for (int i = builder.length() - 1; i >= 0; i--) {
-			int randomIndex = getRandomInteger(0, builder.length() - 1);
+			final int randomIndex = getRandomInteger(0, builder.length() - 1);
 
-			char swapA = builder.charAt(i);
-			char swapB = builder.charAt(randomIndex);
+			final char swapA = builder.charAt(i);
+			final char swapB = builder.charAt(randomIndex);
 
 			builder.setCharAt(i, swapB);
 			builder.setCharAt(randomIndex, swapA);
@@ -58,7 +58,7 @@ public final class ScrambleStringManipulator implements StringManipulator {
 	 * @param max the maxiumum number to allow
 	 * @return a random integer between the two given integers
 	 */
-	private int getRandomInteger(int min, int max) {
+	private int getRandomInteger(final int min, final int max) {
 		return (int) Math.round(getRandom().nextDouble() * (max - min)) + min;
 	}
 

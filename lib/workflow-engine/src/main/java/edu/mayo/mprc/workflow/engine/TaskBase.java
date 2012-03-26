@@ -51,7 +51,7 @@ public abstract class TaskBase implements Task {
 		this.id = null;
 	}
 
-	public void setWorkflowEngine(WorkflowEngine engine) {
+	public void setWorkflowEngine(final WorkflowEngine engine) {
 		this.engine = engine;
 		synchronized (stateLock) {
 			if (this.id == null && this.name != null) {
@@ -70,7 +70,7 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		synchronized (stateLock) {
 			this.description = description;
 		}
@@ -79,7 +79,7 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		final WorkflowEngine engine = this.engine;
 		synchronized (stateLock) {
 			if (this.id == null && engine != null) {
@@ -122,7 +122,7 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void setTaskDataId(Integer taskDataId) {
+	public void setTaskDataId(final Integer taskDataId) {
 		synchronized (stateLock) {
 			this.taskDataId = taskDataId;
 		}
@@ -132,15 +132,15 @@ public abstract class TaskBase implements Task {
 		return executedOnHost;
 	}
 
-	public void setExecutedOnHost(String executedOnHost) {
+	public void setExecutedOnHost(final String executedOnHost) {
 		this.executedOnHost = executedOnHost;
 	}
 
-	void assertValidStateChange(TaskState oldState, TaskState newState) {
+	void assertValidStateChange(final TaskState oldState, final TaskState newState) {
 		if (oldState == newState) {
 			return;
 		}
-		String currentTransition =
+		final String currentTransition =
 				(oldState == null ? "null" : oldState.getText())
 						+ " -> "
 						+ (newState == null ? "null" : newState.getText()) + " prohibited: ";
@@ -172,7 +172,7 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void setState(TaskState newState) {
+	public void setState(final TaskState newState) {
 		assert engine != null : "Cannot change task state if the task is not associtated with an engine" + this.getName() + " " + this.getDescription();
 		TaskState oldState = null;
 		synchronized (stateLock) {
@@ -225,13 +225,13 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public boolean stateEquals(TaskState checkAgainst) {
+	public boolean stateEquals(final TaskState checkAgainst) {
 		synchronized (stateLock) {
 			return checkAgainst == state;
 		}
 	}
 
-	public void setError(Throwable error) {
+	public void setError(final Throwable error) {
 		synchronized (stateLock) {
 			this.lastError = error;
 			setState(TaskState.RUN_FAILED);
@@ -244,9 +244,9 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void completeWhenFilesAppear(File... files) {
+	public void completeWhenFilesAppear(final File... files) {
 		waitingForFileToAppear.set(true);
-		for (File file : files) {
+		for (final File file : files) {
 			// TODO: Do this in a separate thread
 			FileUtilities.waitForFile(file, 2 * 60 * 1000);
 			if (!file.exists()) {
@@ -257,14 +257,14 @@ public abstract class TaskBase implements Task {
 		setState(TaskState.COMPLETED_SUCCESFULLY);
 	}
 
-	public void addDependency(Task task) {
+	public void addDependency(final Task task) {
 		if (!task.getOutputs().contains(this)) {
 			inputs.add(task);
 			task.getOutputs().add(this);
 		}
 	}
 
-	public void inputDone(Task input) {
+	public void inputDone(final Task input) {
 		assert getState() == TaskState.UNINITIALIZED : "Only uninitialized tasks are interested in their inputs. This task is in state " + getState().getText();
 		// If the input failed, keep a note
 		if (input.getState() != TaskState.COMPLETED_SUCCESFULLY) {
@@ -280,7 +280,7 @@ public abstract class TaskBase implements Task {
 		}
 	}
 
-	public void afterProgressInformationReceived(Object progressInfo) {
+	public void afterProgressInformationReceived(final Object progressInfo) {
 		if (engine != null) {
 			engine.afterProgressInformationReceived(this, progressInfo);
 		}

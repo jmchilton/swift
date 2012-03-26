@@ -31,25 +31,25 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 	public Mod() {
 	}
 
-	public Mod(String title, String fullName, Integer recordID, Double massMono, Double massAverage, String composition, Set<String> altNames, Set<ModSpecificity> modSpecificities) {
+	public Mod(final String title, final String fullName, final Integer recordID, final Double massMono, final Double massAverage, final String composition, final Set<String> altNames, final Set<ModSpecificity> modSpecificities) {
 		super();
 		setVariables(title, fullName, recordID, massMono, massAverage, composition, altNames);
 		setModSpecificities(modSpecificities);
 	}
 
-	public Mod(String title, String fullName, Integer recordID, Double massMono, Double massAverage, String composition, Set<String> altNames, Set<SpecificityBuilder> specificityBuilders, boolean ignore) {
+	public Mod(final String title, final String fullName, final Integer recordID, final Double massMono, final Double massAverage, final String composition, final Set<String> altNames, final Set<SpecificityBuilder> specificityBuilders, final boolean ignore) {
 		super();
 		setVariables(title, fullName, recordID, massMono, massAverage, composition, altNames);
 		setModSpecificities(buildersToSpecificities(specificityBuilders));
 	}
 
-	public Mod(String title, String fullName, Integer recordID, Double massMono, Double massAverage, String composition, Set<String> altNames, SpecificityBuilder specificityBuilder) {
+	public Mod(final String title, final String fullName, final Integer recordID, final Double massMono, final Double massAverage, final String composition, final Set<String> altNames, final SpecificityBuilder specificityBuilder) {
 		super();
 		setVariables(title, fullName, recordID, massMono, massAverage, composition, altNames);
 		setModSpecificities(new ImmutableSet.Builder<ModSpecificity>().add(specificityBuilder.build(this)).build());
 	}
 
-	private void setVariables(String title, String fullName, Integer recordID, Double massMono, Double massAverage, String composition, Set<String> altNames) {
+	private void setVariables(final String title, final String fullName, final Integer recordID, final Double massMono, final Double massAverage, final String composition, final Set<String> altNames) {
 		setTitle(title);
 		setFullName(fullName);
 		setRecordID(recordID);
@@ -59,22 +59,22 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		setAltNames(altNames);
 	}
 
-	private HashSet<ModSpecificity> buildersToSpecificities(Set<SpecificityBuilder> specificityBuilders) {
-		HashSet<ModSpecificity> specificities = new HashSet<ModSpecificity>(specificityBuilders.size());
-		for (SpecificityBuilder builder : specificityBuilders) {
+	private HashSet<ModSpecificity> buildersToSpecificities(final Set<SpecificityBuilder> specificityBuilders) {
+		final HashSet<ModSpecificity> specificities = new HashSet<ModSpecificity>(specificityBuilders.size());
+		for (final SpecificityBuilder builder : specificityBuilders) {
 			specificities.add(builder.build(this));
 		}
 		return specificities;
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		sb.append("title=").append(title);
 		sb.append("; full name=").append(fullName);
 		sb.append("; recordID=").append(recordID);
 
-		for (ModSpecificity s : modSpecificities) {
+		for (final ModSpecificity s : modSpecificities) {
 			sb.append("Specificity: ").append(s.toString()).append("\n");
 		}
 		sb.append("Delta: ")
@@ -90,7 +90,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return this.altNames;
 	}
 
-	private void setAltNames(Set<String> altNames) {
+	private void setAltNames(final Set<String> altNames) {
 		this.altNames = altNames;
 	}
 
@@ -98,7 +98,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return title;
 	}
 
-	private void setTitle(String title) {
+	private void setTitle(final String title) {
 		if (title != null && title.length() > MAX_COMPOSITION_LENGTH) {
 			throw new MprcException("The modification title is too long, maximum length is 150: " + title);
 		}
@@ -109,7 +109,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return fullName;
 	}
 
-	private void setFullName(String fullName) {
+	private void setFullName(final String fullName) {
 		if (fullName != null && fullName.length() > MAX_COMPOSITION_LENGTH) {
 			throw new MprcException("The modification full name is too long, maximum length is 150: " + fullName);
 		}
@@ -120,7 +120,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return recordID;
 	}
 
-	private void setRecordID(Integer recordID) {
+	private void setRecordID(final Integer recordID) {
 		this.recordID = recordID;
 	}
 
@@ -128,7 +128,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return modSpecificities;
 	}
 
-	private void setModSpecificities(Set<ModSpecificity> modSpecificities) {
+	private void setModSpecificities(final Set<ModSpecificity> modSpecificities) {
 		this.modSpecificities = modSpecificities == null ? new TreeSet<ModSpecificity>() : modSpecificities;
 	}
 
@@ -136,7 +136,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return massMono;
 	}
 
-	private void setMassMono(Double massMono) {
+	private void setMassMono(final Double massMono) {
 		this.massMono = massMono;
 	}
 
@@ -144,7 +144,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return massAverage;
 	}
 
-	private void setMassAverage(Double massAverage) {
+	private void setMassAverage(final Double massAverage) {
 		this.massAverage = massAverage;
 	}
 
@@ -152,7 +152,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 		return composition;
 	}
 
-	private void setComposition(String composition) {
+	private void setComposition(final String composition) {
 		if (composition != null && composition.length() > MAX_COMPOSITION_LENGTH) {
 			throw new MprcException("The modification composition is too long, maximum length is " + MAX_COMPOSITION_LENGTH + ": " + composition);
 		}
@@ -165,7 +165,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -173,7 +173,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 			return false;
 		}
 
-		Mod mod = (Mod) obj;
+		final Mod mod = (Mod) obj;
 
 		if (getAltNames() != null ? !getAltNames().equals(mod.getAltNames()) : mod.getAltNames() != null) {
 			return false;
@@ -218,7 +218,7 @@ public class Mod extends EvolvableBase implements Comparable<Mod> {
 	/**
 	 * Sort by title, full name and record ID
 	 */
-	public int compareTo(Mod o) {
+	public int compareTo(final Mod o) {
 		return ComparisonChain.start().nullsFirst()
 				.compare(this.getTitle(), o.getTitle())
 				.compare(this.getFullName(), o.getFullName())

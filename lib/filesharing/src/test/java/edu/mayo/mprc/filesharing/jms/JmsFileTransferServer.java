@@ -18,7 +18,7 @@ public final class JmsFileTransferServer {
 	private JmsFileTransferServer() {
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		if (args.length > 0) {
 
 			brokerUri = args[0];
@@ -35,8 +35,8 @@ public final class JmsFileTransferServer {
 
 				(new Thread() {
 					public void run() {
-						JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(uri, null, null);
-						FileTransferHandler fileSharing = factory.createFileSharing("server");
+						final JmsFileTransferHandlerFactory factory = new JmsFileTransferHandlerFactory(uri, null, null);
+						final FileTransferHandler fileSharing = factory.createFileSharing("server");
 						fileSharing.startProcessingRequests();
 					}
 				}).start();

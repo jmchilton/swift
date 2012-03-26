@@ -32,7 +32,7 @@ public final class PeaksMappings implements Mappings {
 	private Map<String, String> ensymeMapping;
 	private Map<String, String> instrumentMapping;
 
-	public PeaksMappings(Map<String, String> ensymeMapping, Map<String, String> instrumentMapping) {
+	public PeaksMappings(final Map<String, String> ensymeMapping, final Map<String, String> instrumentMapping) {
 		parameters = new HashMap<String, String>();
 		this.ensymeMapping = ensymeMapping;
 		this.instrumentMapping = instrumentMapping;
@@ -43,7 +43,7 @@ public final class PeaksMappings implements Mappings {
 		return ResourceUtilities.getReader("classpath:edu/mayo/mprc/swift/params/base.peaks.params", this.getClass());
 	}
 
-	public void read(Reader isr) {
+	public void read(final Reader isr) {
 		BufferedReader bufferedReader = null;
 
 		try {
@@ -70,7 +70,7 @@ public final class PeaksMappings implements Mappings {
 		}
 	}
 
-	public void write(Reader oldParams, Writer out) {
+	public void write(final Reader oldParams, final Writer out) {
 		BufferedReader bufferedReader = null;
 		BufferedWriter bufferedWriter = null;
 
@@ -109,30 +109,30 @@ public final class PeaksMappings implements Mappings {
 		}
 	}
 
-	public Tolerance mapPeptideToleranceFromNative(MappingContext context) {
+	public Tolerance mapPeptideToleranceFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setPeptideTolerance(MappingContext context, Tolerance peptideTolerance) {
+	public void setPeptideTolerance(final MappingContext context, final Tolerance peptideTolerance) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_PARENTTOLERANCE, String.valueOf(peptideTolerance.getValue()));
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_PARENTTOLERANCEUNIT, peptideTolerance.getUnit().getCode());
 	}
 
-	public Tolerance mapFragmentToleranceFromNative(MappingContext context) {
+	public Tolerance mapFragmentToleranceFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setFragmentTolerance(MappingContext context, Tolerance fragmentTolerance) {
+	public void setFragmentTolerance(final MappingContext context, final Tolerance fragmentTolerance) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_FRAGMENTTOLERANCE,
 				fragmentTolerance.getUnit().equals(MassUnit.Ppm) ? String.valueOf(convertToDalton(context, fragmentTolerance)) : String.valueOf(fragmentTolerance.getValue()));
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_FRAGMENTTOLERANCEUNIT, "Da");
 	}
 
-	private double convertToDalton(MappingContext context, Tolerance tolerance) {
+	private double convertToDalton(final MappingContext context, final Tolerance tolerance) {
 		double value = tolerance.getValue();
 		if (tolerance.getUnit().equals(MassUnit.Ppm)) {
 			//convert ppm to Da assuming a average peptide mass of 1000 Da
-			double normMass = 1000d;
+			final double normMass = 1000d;
 			value = value * normMass / 1000000d;
 			context.reportWarning("Converted to " + value + " Da for Peaks.");
 		}
@@ -140,28 +140,28 @@ public final class PeaksMappings implements Mappings {
 		return value;
 	}
 
-	public ModSet mapVariableModsFromNative(MappingContext context) {
+	public ModSet mapVariableModsFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setVariableMods(MappingContext context, ModSet variableMods) {
+	public void setVariableMods(final MappingContext context, final ModSet variableMods) {
 		//If a fix modification is specific to a protein, the modification is changed to be variable and specific to a peptide. Therefore this
 		//value may be already set to those modifications.
-		String currentValue = parameters.get(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES);
+		final String currentValue = parameters.get(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES);
 
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES, getInputModifications(context, variableMods, currentValue));
 	}
 
-	public ModSet mapFixedModsFromNative(MappingContext context) {
+	public ModSet mapFixedModsFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setFixedMods(MappingContext context, ModSet fixedMods) {
+	public void setFixedMods(final MappingContext context, final ModSet fixedMods) {
 
-		ModSet proteinMods = new ModSet();
-		ModSet nonProteinMods = new ModSet();
+		final ModSet proteinMods = new ModSet();
+		final ModSet nonProteinMods = new ModSet();
 
-		for (ModSpecificity modModSpecificity : fixedMods.getModifications()) {
+		for (final ModSpecificity modModSpecificity : fixedMods.getModifications()) {
 			if (modModSpecificity.isProteinOnly()) {
 				proteinMods.add(modModSpecificity);
 				context.reportWarning("Modification: " + modModSpecificity.toString() + ", Peaks does not support Protein N/C-term, converting to peptite N/C-term.");
@@ -174,24 +174,24 @@ public final class PeaksMappings implements Mappings {
 			setVariableMods(context, proteinMods);
 		}
 
-		String parsedMods = getInputModifications(context, nonProteinMods, null);
+		final String parsedMods = getInputModifications(context, nonProteinMods, null);
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTFIXEDMODIES, parsedMods);
 	}
 
-	public String mapSequenceDatabaseFromNative(MappingContext context) {
+	public String mapSequenceDatabaseFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setSequenceDatabase(MappingContext context, String shortDatabaseName) {
+	public void setSequenceDatabase(final MappingContext context, final String shortDatabaseName) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_DATABASE, shortDatabaseName);
 	}
 
-	public Protease mapEnzymeFromNative(MappingContext context) {
+	public Protease mapEnzymeFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setProtease(MappingContext context, Protease protease) {
-		String enzymeName = ensymeMapping.get(protease.getName());
+	public void setProtease(final MappingContext context, final Protease protease) {
+		final String enzymeName = ensymeMapping.get(protease.getName());
 
 		if (enzymeName == null) {
 			context.reportWarning("Enzyme " + protease.toString() + " is not defiend by default in Peaks. Create enzyme with same name '" + protease.getName() + "' in Peaks if it does not already exist.");
@@ -201,20 +201,20 @@ public final class PeaksMappings implements Mappings {
 		}
 	}
 
-	public Integer mapMissedCleavagesFromNative(MappingContext context) {
+	public Integer mapMissedCleavagesFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setMissedCleavages(MappingContext context, Integer missedCleavages) {
+	public void setMissedCleavages(final MappingContext context, final Integer missedCleavages) {
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_MISSCLEAVAGE, missedCleavages.toString());
 	}
 
-	public Instrument mapInstrumentFromNative(MappingContext context) {
+	public Instrument mapInstrumentFromNative(final MappingContext context) {
 		return null;
 	}
 
-	public void setInstrument(MappingContext context, Instrument instrument) {
-		String instrumentName = instrumentMapping.get(instrument.getName());
+	public void setInstrument(final MappingContext context, final Instrument instrument) {
+		final String instrumentName = instrumentMapping.get(instrument.getName());
 		setNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INSTRUMENT, instrumentName);
 	}
 
@@ -224,15 +224,15 @@ public final class PeaksMappings implements Mappings {
 	 * @param name Native param name. Set of parameter names is defined in class PeaksOnlineSearchParameters.
 	 * @return
 	 */
-	public String getNativeParam(String name) {
+	public String getNativeParam(final String name) {
 		return parameters.get(name);
 	}
 
-	public void setNativeParam(String name, String value) {
+	public void setNativeParam(final String name, final String value) {
 		parameters.put(name, value);
 	}
 
-	private String getPositionModNotation(MappingContext context, ModSpecificity modModSpecificity) {
+	private String getPositionModNotation(final MappingContext context, final ModSpecificity modModSpecificity) {
 
 		//Special cases where the site is N or C terminus. Peaks does not support specifying N or C terminus sites, so
 		//This is translated to any site at the N or C terminus position.
@@ -255,8 +255,8 @@ public final class PeaksMappings implements Mappings {
 		return "A";
 	}
 
-	private Set<String> getSiteModNotation(MappingContext context, ModSpecificity modModSpecificity) {
-		TreeSet<String> sites = new TreeSet<String>();
+	private Set<String> getSiteModNotation(final MappingContext context, final ModSpecificity modModSpecificity) {
+		final TreeSet<String> sites = new TreeSet<String>();
 
 		//Special cases where the site is N or C terminus. Peaks does not support specifying N or C terminus sites, so
 		//This is translated to any site at the N or C terminus position.
@@ -271,8 +271,8 @@ public final class PeaksMappings implements Mappings {
 		return sites;
 	}
 
-	private TreeMap<Double, TreeMap<String, TreeSet<String>>> parseExistingModifications(String modifications) {
-		TreeMap<Double, TreeMap<String, TreeSet<String>>> masses = new TreeMap<Double, TreeMap<String, TreeSet<String>>>();
+	private TreeMap<Double, TreeMap<String, TreeSet<String>>> parseExistingModifications(final String modifications) {
+		final TreeMap<Double, TreeMap<String, TreeSet<String>>> masses = new TreeMap<Double, TreeMap<String, TreeSet<String>>>();
 
 		if (modifications != null && modifications.length() > 0) {
 			TreeMap<String, TreeSet<String>> positions = null;
@@ -280,7 +280,7 @@ public final class PeaksMappings implements Mappings {
 			Double mass = null;
 			String position = null;
 
-			String[] mods = modifications.split(",");
+			final String[] mods = modifications.split(",");
 			String[] massArray = null;
 			String[] positionArray = null;
 
@@ -311,8 +311,8 @@ public final class PeaksMappings implements Mappings {
 		return masses;
 	}
 
-	private TreeSet<String> parseSites(String sitesString) {
-		TreeSet<String> sites = new TreeSet<String>();
+	private TreeSet<String> parseSites(final String sitesString) {
+		final TreeSet<String> sites = new TreeSet<String>();
 
 		for (int j = 0; j < sitesString.length(); j++) {
 			sites.add(Character.toString(sitesString.charAt(j)));
@@ -321,14 +321,14 @@ public final class PeaksMappings implements Mappings {
 		return sites;
 	}
 
-	private String getInputModifications(MappingContext context, ModSet mods, String existingValue) {
-		TreeMap<Double, TreeMap<String, TreeSet<String>>> masses = parseExistingModifications(existingValue);
+	private String getInputModifications(final MappingContext context, final ModSet mods, final String existingValue) {
+		final TreeMap<Double, TreeMap<String, TreeSet<String>>> masses = parseExistingModifications(existingValue);
 		TreeMap<String, TreeSet<String>> positions = null;
 		TreeSet<String> sites = null;
 		Set<String> modSites = null;
 		String position = null;
 
-		for (ModSpecificity modModSpecificity : mods.getModifications()) {
+		for (final ModSpecificity modModSpecificity : mods.getModifications()) {
 
 			position = getPositionModNotation(context, modModSpecificity);
 			modSites = getSiteModNotation(context, modModSpecificity);
@@ -355,16 +355,16 @@ public final class PeaksMappings implements Mappings {
 			}
 		}
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		// Masses
-		for (Map.Entry<Double, TreeMap<String, TreeSet<String>>> me1 : masses.entrySet()) {
+		for (final Map.Entry<Double, TreeMap<String, TreeSet<String>>> me1 : masses.entrySet()) {
 			//Positions
-			for (Map.Entry<String, TreeSet<String>> me2 : me1.getValue().entrySet()) {
+			for (final Map.Entry<String, TreeSet<String>> me2 : me1.getValue().entrySet()) {
 				sb.append(me1.getKey().toString()).append("@");
 
 				//Sites
-				for (String site : me2.getValue()) {
+				for (final String site : me2.getValue()) {
 					sb.append(site);
 				}
 

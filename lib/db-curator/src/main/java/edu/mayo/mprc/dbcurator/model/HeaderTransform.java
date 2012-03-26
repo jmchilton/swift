@@ -31,7 +31,7 @@ public class HeaderTransform extends PersistableBase {
 	 */
 	private Pattern groupPattern = null;
 
-	public String transform(String toTransform) {
+	public String transform(final String toTransform) {
 		if (groupString == null || substitutionPattern == null) {
 			return toTransform;
 		}
@@ -40,9 +40,9 @@ public class HeaderTransform extends PersistableBase {
 			groupPattern = Pattern.compile(groupString);
 		}
 
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 
-		Matcher match = groupPattern.matcher(toTransform);
+		final Matcher match = groupPattern.matcher(toTransform);
 
 		while (match.find()) {
 			match.appendReplacement(result, substitutionPattern);
@@ -61,7 +61,7 @@ public class HeaderTransform extends PersistableBase {
 		return name;
 	}
 
-	public HeaderTransform setName(String name) {
+	public HeaderTransform setName(final String name) {
 		this.name = name;
 		return this;
 	}
@@ -70,7 +70,7 @@ public class HeaderTransform extends PersistableBase {
 		return groupString;
 	}
 
-	public HeaderTransform setGroupString(String groupString) {
+	public HeaderTransform setGroupString(final String groupString) {
 		this.groupString = groupString;
 		return this;
 	}
@@ -79,7 +79,7 @@ public class HeaderTransform extends PersistableBase {
 		return substitutionPattern;
 	}
 
-	public HeaderTransform setSubstitutionPattern(String substitutionPattern) {
+	public HeaderTransform setSubstitutionPattern(final String substitutionPattern) {
 		this.substitutionPattern = substitutionPattern;
 		return this;
 	}
@@ -88,13 +88,13 @@ public class HeaderTransform extends PersistableBase {
 		return common;
 	}
 
-	public HeaderTransform setCommon(Boolean common) {
+	public HeaderTransform setCommon(final Boolean common) {
 		this.common = common;
 		return this;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -102,7 +102,7 @@ public class HeaderTransform extends PersistableBase {
 			return false;
 		}
 
-		HeaderTransform that = (HeaderTransform) o;
+		final HeaderTransform that = (HeaderTransform) o;
 
 		if (getCommon() != null ? !getCommon().equals(that.getCommon()) : that.getCommon() != null) {
 			return false;

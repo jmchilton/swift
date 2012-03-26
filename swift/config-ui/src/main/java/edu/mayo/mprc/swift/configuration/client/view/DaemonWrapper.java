@@ -16,7 +16,7 @@ public final class DaemonWrapper extends SimplePanel {
 	private Context context;
 
 	private class ModuleConfigUis {
-		private ModuleConfigUis(ModuleWrapper moduleWrapper, RunnerView runner) {
+		private ModuleConfigUis(final ModuleWrapper moduleWrapper, final RunnerView runner) {
 			this.ui = moduleWrapper;
 			this.runner = runner;
 		}
@@ -25,10 +25,10 @@ public final class DaemonWrapper extends SimplePanel {
 		public RunnerView runner;
 	}
 
-	public DaemonWrapper(DaemonModel daemonModel, final Context context) {
+	public DaemonWrapper(final DaemonModel daemonModel, final Context context) {
 		this.context = context;
 		this.addStyleName("module-wrapper");
-		FlowPanel panel = new FlowPanel();
+		final FlowPanel panel = new FlowPanel();
 		panel.addStyleName("module");
 		final Label label = new Label("Daemon");
 		label.addStyleName("module-label");
@@ -49,14 +49,14 @@ public final class DaemonWrapper extends SimplePanel {
 		this.daemonModel.addListener(new MyDaemonModelListener());
 
 		newModulePicker = new ListBox(false);
-		for (AvailableModules.Info info : availableModules.getModuleInfos()) {
+		for (final AvailableModules.Info info : availableModules.getModuleInfos()) {
 			newModulePicker.addItem(info.getName(), info.getType());
 		}
 
 		newModuleButton = new Button("Add new module");
 		newModuleButton.addStyleName("new-module-button");
 		newModuleButton.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				final int index = newModulePicker.getSelectedIndex();
 				final String type = newModulePicker.getValue(index);
 				DaemonWrapper.this.daemonModel.addNewResource(type, null, context);
@@ -67,42 +67,42 @@ public final class DaemonWrapper extends SimplePanel {
 		daemonConfigUI.initializeUi(this.daemonModel, this.context);
 		panel.add(daemonConfigUI.getWidget());
 
-		Panel moduleAdding = new HorizontalPanel();
+		final Panel moduleAdding = new HorizontalPanel();
 		moduleAdding.add(newModulePicker);
 		moduleAdding.add(newModuleButton);
 		panel.add(moduleAdding);
 
-		for (ResourceModel resource : daemonModel.getChildren()) {
+		for (final ResourceModel resource : daemonModel.getChildren()) {
 			addUiForResource(resource);
 		}
 		this.setWidget(panel);
 	}
 
-	public ModuleWrapper getUiForResource(ResourceModel resourceModel) {
+	public ModuleWrapper getUiForResource(final ResourceModel resourceModel) {
 		final DaemonWrapper.ModuleConfigUis configUis = uis.get(resourceModel);
 		return configUis == null ? null : configUis.ui;
 	}
 
-	public RunnerView getRunnerUiForModule(ModuleModel moduleModel) {
+	public RunnerView getRunnerUiForModule(final ModuleModel moduleModel) {
 		return uis.get(moduleModel).runner;
 	}
 
 	private class MyDaemonModelListener implements ResourceModelListener {
-		public void initialized(ResourceModel model) {
+		public void initialized(final ResourceModel model) {
 		}
 
-		public void nameChanged(ResourceModel model) {
+		public void nameChanged(final ResourceModel model) {
 		}
 
-		public void childAdded(ResourceModel child, ResourceModel addedTo) {
+		public void childAdded(final ResourceModel child, final ResourceModel addedTo) {
 			addUiForResource(child);
 		}
 
-		public void childRemoved(ResourceModel child, ResourceModel removedFrom) {
+		public void childRemoved(final ResourceModel child, final ResourceModel removedFrom) {
 			removeUiForResource(child);
 		}
 
-		public void propertyChanged(ResourceModel model, String propertyName, String newValue) {
+		public void propertyChanged(final ResourceModel model, final String propertyName, final String newValue) {
 			daemonConfigUI.loadUI((DaemonModel) model);
 		}
 	}
@@ -110,8 +110,8 @@ public final class DaemonWrapper extends SimplePanel {
 	/**
 	 * The model is already in the list. Just add the ui.
 	 */
-	private void addUiForResource(ResourceModel resource) {
-		ModuleWrapper ui = createNewModuleConfigUI(resource);
+	private void addUiForResource(final ResourceModel resource) {
+		final ModuleWrapper ui = createNewModuleConfigUI(resource);
 		ui.getModule().loadUI(resource.getProperties());
 
 		RunnerView runner = null;
@@ -119,35 +119,35 @@ public final class DaemonWrapper extends SimplePanel {
 			runner = createNewRunnerUi(((ModuleModel) resource).getRunner());
 		}
 
-		ModuleConfigUis t = new ModuleConfigUis(ui, runner);
+		final ModuleConfigUis t = new ModuleConfigUis(ui, runner);
 		uis.put(resource, t);
 	}
 
 	private ModuleWrapper createNewModuleConfigUI(final ResourceModel module) {
-		String type = module.getType();
-		ModuleView ui = null;
-		if ("database" .equals(type)) {
+		final String type = module.getType();
+		final ModuleView ui = null;
+		if ("database".equals(type)) {
 			// Special case. Database UI is currently not supported by UiBuilder, so it is created manually
-			GwtUiBuilder builder = new GwtUiBuilder(context, module);
+			final GwtUiBuilder builder = new GwtUiBuilder(context, module);
 
 			final DatabaseView databaseView = new DatabaseView(builder, module);
 			return new ModuleWrapper(availableModules.getModuleNameForType(type), databaseView, availableModules.getDescriptionForType(type));
 		} else {
-			GwtUiBuilder builder = new GwtUiBuilder(context, module);
+			final GwtUiBuilder builder = new GwtUiBuilder(context, module);
 			builder.start();
 			module.getReplayer().replay(builder);
 			return new ModuleWrapper(availableModules.getModuleNameForType(type), builder.end(), availableModules.getDescriptionForType(type));
 		}
 	}
 
-	private RunnerView createNewRunnerUi(ResourceModel model) {
-		RunnerView runner = new RunnerView(context, model);
+	private RunnerView createNewRunnerUi(final ResourceModel model) {
+		final RunnerView runner = new RunnerView(context, model);
 		runner.setStyleName("runner-wrapper");
 		return runner;
 	}
 
-	private void removeUiForResource(ResourceModel module) {
-		for (Map.Entry<ResourceModel, ModuleConfigUis> ui : uis.entrySet()) {
+	private void removeUiForResource(final ResourceModel module) {
+		for (final Map.Entry<ResourceModel, ModuleConfigUis> ui : uis.entrySet()) {
 			if (ui.getKey().equals(module)) {
 				uis.remove(ui.getKey());
 				break;

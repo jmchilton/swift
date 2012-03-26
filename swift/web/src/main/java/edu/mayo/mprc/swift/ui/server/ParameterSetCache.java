@@ -33,13 +33,13 @@ public final class ParameterSetCache {
 	private final HttpSession session;
 	private final ParamsDao paramsDao;
 
-	public ParameterSetCache(HttpSession session, ParamsDao paramsDao) {
+	public ParameterSetCache(final HttpSession session, final ParamsDao paramsDao) {
 		this.session = session;
 		this.paramsDao = paramsDao;
 	}
 
-	private synchronized void addToCache(ClientParamSet clientParamSet, SearchEngineParameters serverParamSet) {
-		Map<Integer, SearchEngineParameters> cache = getCache(clientParamSet.getId());
+	private synchronized void addToCache(final ClientParamSet clientParamSet, final SearchEngineParameters serverParamSet) {
+		final Map<Integer, SearchEngineParameters> cache = getCache(clientParamSet.getId());
 		if (serverParamSet.getId() != null) {
 			throw new MprcException("Cache can only store objects detached from Hibernate");
 		}
@@ -49,7 +49,7 @@ public final class ParameterSetCache {
 		}
 	}
 
-	public synchronized void removeFromCache(ClientParamSet clientParamSet) {
+	public synchronized void removeFromCache(final ClientParamSet clientParamSet) {
 		getCache(clientParamSet.getId()).remove(clientParamSet.getId());
 		if (clientParamSet.isTemporary()) {
 			getTemporaryClientParamList().remove(clientParamSet);
@@ -62,18 +62,18 @@ public final class ParameterSetCache {
 	 * @param paramSet
 	 * @return
 	 */
-	public synchronized SearchEngineParameters getFromCache(ClientParamSet paramSet) {
+	public synchronized SearchEngineParameters getFromCache(final ClientParamSet paramSet) {
 		SearchEngineParameters ps = null;
-		Map<Integer, SearchEngineParameters> cache = getCache(paramSet.getId());
+		final Map<Integer, SearchEngineParameters> cache = getCache(paramSet.getId());
 
-		Integer key = paramSet.getId();
+		final Integer key = paramSet.getId();
 
 		if (!cache.containsKey(key)) {
 
 			if (key < 0) {
 				throw new MprcException("Can't find temporary search definition " + key);
 			}
-			SavedSearchEngineParameters saved = paramsDao.getSavedSearchEngineParameters(key);
+			final SavedSearchEngineParameters saved = paramsDao.getSavedSearchEngineParameters(key);
 			if (saved == null) {
 				throw new MprcException("Can't load Swift search parameters " + paramSet.getName()
 						+ " (" + key + ") from database");
@@ -92,11 +92,11 @@ public final class ParameterSetCache {
 	 * Get parameter set from cache. When the parameter set corresponds to a saved parameter set,
 	 * load it from database instead of relying on cached value.
 	 */
-	public SearchEngineParameters getFromCacheHibernate(ClientParamSet paramSet) {
-		Integer key = paramSet.getId();
+	public SearchEngineParameters getFromCacheHibernate(final ClientParamSet paramSet) {
+		final Integer key = paramSet.getId();
 
 		if (paramSet.isTemporary()) {
-			Map<Integer, SearchEngineParameters> cache = getCache(paramSet.getId());
+			final Map<Integer, SearchEngineParameters> cache = getCache(paramSet.getId());
 
 			if (!cache.containsKey(key)) {
 				throw new MprcException("Can't find temporary search definition " + key);
@@ -104,7 +104,7 @@ public final class ParameterSetCache {
 				return cache.get(key);
 			}
 		} else {
-			SavedSearchEngineParameters saved = paramsDao.getSavedSearchEngineParameters(key);
+			final SavedSearchEngineParameters saved = paramsDao.getSavedSearchEngineParameters(key);
 			if (saved == null) {
 				throw new MprcException("Can't load Swift search parameters " + paramSet.getName()
 						+ " (" + key + ") from database");
@@ -114,7 +114,7 @@ public final class ParameterSetCache {
 	}
 
 
-	private Map<Integer, SearchEngineParameters> getCache(Integer id) {
+	private Map<Integer, SearchEngineParameters> getCache(final Integer id) {
 		if (id < 0) {
 			if (temporaryCache == null) {
 				temporaryCache = (Map<Integer, SearchEngineParameters>) session.getAttribute(TEMPORARY_PARAM_SETS);
@@ -152,16 +152,16 @@ public final class ParameterSetCache {
 	/**
 	 * Make a new temporary parameter set based on the already existing one
 	 */
-	public synchronized ClientParamSet installTemporary(ClientParamSet paramSet) {
+	public synchronized ClientParamSet installTemporary(final ClientParamSet paramSet) {
 		final String paramSetName = paramSet.getName();
 		final String paramSetOwnerEmail = paramSet.getOwnerEmail();
 		final String paramSetOwnerInitials = paramSet.getInitials();
 
-		SearchEngineParameters orig = getFromCache(paramSet);
+		final SearchEngineParameters orig = getFromCache(paramSet);
 		if (orig == null) {
 			throw new MprcException("Can't load paramset " + paramSet.getId() + " for cloning to temp");
 		}
-		SearchEngineParameters serverParamSet = orig.copy();
+		final SearchEngineParameters serverParamSet = orig.copy();
 
 		return installTemporary(paramSetName, paramSetOwnerEmail, paramSetOwnerInitials, serverParamSet);
 	}
@@ -169,44 +169,44 @@ public final class ParameterSetCache {
 	/**
 	 * Make a new temporary parameter set from scratch.
 	 */
-	public ClientParamSet installTemporary(String originalName, String ownerEmail, String ownerInitials, SearchEngineParameters serverParamSet) {
+	public ClientParamSet installTemporary(final String originalName, final String ownerEmail, final String ownerInitials, final SearchEngineParameters serverParamSet) {
 		if (serverParamSet.getId() != null) {
 			throw new MprcException("The temporary parameter set must not participate in hibernate");
 		}
 		final List<ClientParamSet> temporaryClientParamSets = getTemporaryClientParamList();
 
-		String name = getUniqueTemporaryName(originalName, temporaryClientParamSets);
+		final String name = getUniqueTemporaryName(originalName, temporaryClientParamSets);
 
 		// Find the minimum temporary id. Set our new id as one less the minimum (--> uniqueness)
 		int minId = 0;
-		for (ClientParamSet cps : temporaryClientParamSets) {
+		for (final ClientParamSet cps : temporaryClientParamSets) {
 			if (cps.getId() < minId) {
 				minId = cps.getId();
 			}
 		}
 
-		ClientParamSet clientParamSet = new ClientParamSet(minId - 1, name, ownerEmail, ownerInitials);
+		final ClientParamSet clientParamSet = new ClientParamSet(minId - 1, name, ownerEmail, ownerInitials);
 
 		addToCache(clientParamSet, serverParamSet);
 
 		return clientParamSet;
 	}
 
-	private String getUniqueTemporaryName(String paramSetName, List<ClientParamSet> temporaryClientParamSets) {
+	private String getUniqueTemporaryName(final String paramSetName, final List<ClientParamSet> temporaryClientParamSets) {
 		// Original name is a name without the "Copy # of " before it
-		String origName = COPIED_PARAM_SET.matcher(paramSetName).replaceAll("");
+		final String origName = COPIED_PARAM_SET.matcher(paramSetName).replaceAll("");
 
 		// The name must be different than all saved names
-		HashSet<String> persNames;
+		final HashSet<String> persNames;
 		final List<SavedSearchEngineParameters> engineParametersList = paramsDao.savedSearchEngineParameters();
 		persNames = new HashSet<String>(engineParametersList.size());
-		for (SavedSearchEngineParameters saved : engineParametersList) {
+		for (final SavedSearchEngineParameters saved : engineParametersList) {
 			persNames.add(saved.getName());
 		}
 
 		// The name must be different from all current temp names
-		HashSet<String> tempNames = new HashSet<String>();
-		for (ClientParamSet cp : temporaryClientParamSets) {
+		final HashSet<String> tempNames = new HashSet<String>();
+		for (final ClientParamSet cp : temporaryClientParamSets) {
 			tempNames.add(cp.getName());
 		}
 
@@ -222,9 +222,9 @@ public final class ParameterSetCache {
 		return name;
 	}
 
-	public ClientParamSet findMatchingTemporaryParamSet(SearchEngineParameters parameters) {
+	public ClientParamSet findMatchingTemporaryParamSet(final SearchEngineParameters parameters) {
 		final List<ClientParamSet> temporaryClientParamList = getTemporaryClientParamList();
-		for (ClientParamSet set : temporaryClientParamList) {
+		for (final ClientParamSet set : temporaryClientParamList) {
 			final SearchEngineParameters cache = getFromCache(set);
 			if (parameters.equals(cache)) {
 				return set;

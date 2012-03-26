@@ -115,20 +115,20 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		hidePageContentsWhileLoading();
 		ServiceConnection.instance().listSearchEngines(
 				new AsyncCallback<List<ClientSearchEngine>>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						// SWALLOWED: No search engines. We just create filetable that does not let user to enable any search engine
 						finalizeFileTableInit(new ArrayList<ClientSearchEngine>());
 					}
 
-					public void onSuccess(List<ClientSearchEngine> o) {
+					public void onSuccess(final List<ClientSearchEngine> o) {
 						finalizeFileTableInit(o);
 					}
 				});
 	}
 
-	private void finalizeFileTableInit(List<ClientSearchEngine> o) {
+	private void finalizeFileTableInit(final List<ClientSearchEngine> o) {
 		files = new FileTable(o);
-		RootPanel filePanel = RootPanel.get("fileTable");
+		final RootPanel filePanel = RootPanel.get("fileTable");
 		filePanel.add(files);
 		connectOutputLocationAndFileTable();
 		showPageContentsAfterLoad();
@@ -137,12 +137,12 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	private void initSpectrumQa() {
 		hidePageContentsWhileLoading();
 		ServiceConnection.instance().listSpectrumQaParamFiles(new AsyncCallback<List<SpectrumQaParamFileInfo>>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				// SWALLOWED: No msmsEval available. Do not even create the spectrum QA UI
 				finalizeSpectrumQa(null);
 			}
 
-			public void onSuccess(List<SpectrumQaParamFileInfo> o) {
+			public void onSuccess(final List<SpectrumQaParamFileInfo> o) {
 				finalizeSpectrumQa(o);
 			}
 		});
@@ -151,29 +151,29 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	private void initPublicMgfs() {
 		hidePageContentsWhileLoading();
 		additionalSettingsPanel = new AdditionalSettingsPanel();
-		RootPanel panel = RootPanel.get("publicResults");
+		final RootPanel panel = RootPanel.get("publicResults");
 		panel.add(additionalSettingsPanel);
 		showPageContentsAfterLoad();
 	}
 
-	private void finalizeSpectrumQa(List<SpectrumQaParamFileInfo> list) {
+	private void finalizeSpectrumQa(final List<SpectrumQaParamFileInfo> list) {
 		if (list == null || list.size() == 0) {
 			DOM.setStyleAttribute(DOM.getElementById("spectrumQaRow"), "display", "none");
 		} else {
 			DOM.setStyleAttribute(DOM.getElementById("spectrumQaRow"), "display", "");
 			spectrumQaSetupPanel = new SpectrumQaSetupPanel(list);
-			RootPanel rootSpectrumQaPanel = RootPanel.get("spectrumQa");
+			final RootPanel rootSpectrumQaPanel = RootPanel.get("spectrumQa");
 			rootSpectrumQaPanel.add(spectrumQaSetupPanel);
 		}
 		showPageContentsAfterLoad();
 	}
 
 	private void initTitleEditor() {
-		RootPanel titlePanel = RootPanel.get("title");
+		final RootPanel titlePanel = RootPanel.get("title");
 		title.setVisibleLength(30);
 		titlePanel.add(title);
 		title.addKeyboardListener(new KeyboardListenerAdapter() {
-			public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+			public void onKeyUp(final Widget sender, final char keyCode, final int modifiers) {
 				// TODO Validation
 				updateOutputLocation();
 			}
@@ -184,15 +184,15 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 
 	private void initReport() {
 		ServiceConnection.instance().isScaffoldReportEnabled(new AsyncCallback<Boolean>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				DOM.setStyleAttribute(DOM.getElementById("reportingRow"), "display", "none");
 			}
 
-			public void onSuccess(Boolean reportEnabled) {
+			public void onSuccess(final Boolean reportEnabled) {
 				if (reportEnabled) {
 					DOM.setStyleAttribute(DOM.getElementById("reportingRow"), "display", "");
 					reportSetupPanel = new ReportSetupPanel();
-					RootPanel rootPanel = RootPanel.get("report");
+					final RootPanel rootPanel = RootPanel.get("report");
 					rootPanel.add(reportSetupPanel);
 				} else {
 					DOM.setStyleAttribute(DOM.getElementById("reportingRow"), "display", "none");
@@ -207,13 +207,13 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	}
 
 	private void initEditorToggle() {
-		RootPanel togglePanel = RootPanel.get("paramsToggleButton");
+		final RootPanel togglePanel = RootPanel.get("paramsToggleButton");
 		editorToggle = new ToggleButton(new Image("images/triright.png"), new Image("images/tridown.png"));
 		editorToggle.setDown(false);
 		editorToggle.addStyleName("toggle-button");
 		togglePanel.add(editorToggle);
 		editorToggle.addClickListener(new ClickListener() {
-			public void onClick(Widget sender) {
+			public void onClick(final Widget sender) {
 				paramsEditor.setEditorExpanded(editorToggle.isDown());
 			}
 		});
@@ -225,7 +225,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		}
 		ClientUser user = null;
 		if (users.getSelectedIndex() > 0) {
-			String email = users.getValue(users.getSelectedIndex());
+			final String email = users.getValue(users.getSelectedIndex());
 			if (userInfo.containsKey(email)) {
 				user =
 						userInfo.get(email);
@@ -235,14 +235,14 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		}
 
 		// Figure out whether this user can edit parameters or not
-		boolean editorEnabled = user != null && user.isParameterEditorEnabled();
+		final boolean editorEnabled = user != null && user.isParameterEditorEnabled();
 		if (paramsEditor != null) {
 			paramsEditor.setEditorEnabled(editorEnabled, user);
 		}
 		setOutputPathChangeEnabled(user != null && user.isOutputPathChangeEnabled());
 	}
 
-	private void setOutputPathChangeEnabled(boolean enabled) {
+	private void setOutputPathChangeEnabled(final boolean enabled) {
 		if (output != null && enabled != this.outputPathChangeEnabled) {
 			this.outputPathChangeEnabled = enabled;
 			if (!outputPathChangeEnabled) {
@@ -254,12 +254,12 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		}
 	}
 
-	private static String wrapDisplayMessage(String message) {
+	private static String wrapDisplayMessage(final String message) {
 		return "<div class=\"user-message\">" + message + "</div>";
 	}
 
 	private void initMessage() {
-		RootPanel messagePanel = RootPanel.get("messagePlaceholder");
+		final RootPanel messagePanel = RootPanel.get("messagePlaceholder");
 		messageDisplay.setVisible(false);
 		messagePanel.add(messageDisplay);
 		updateUserMessage();
@@ -271,7 +271,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	 * @param name Query string parameter name
 	 * @return Value of the parameter
 	 */
-	private static String getQueryString(String name) {
+	private static String getQueryString(final String name) {
 		return Window.Location.getParameter(name);
 	}
 
@@ -290,14 +290,14 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 			searchRunId = Integer.parseInt(searchRunIdString);
 			previousSearchRunId = searchRunId;
 			ServiceConnection.instance().loadSearch(new Service.Token(true), searchRunId, new AsyncCallback<ClientLoadedSearch>() {
-				public void onFailure(Throwable caught) {
+				public void onFailure(final Throwable caught) {
 					// SWALLOWED: not a big deal when a load fails
 					// Clear the search run id - load did not work
 					previousSearchRunId = 0;
 					showPageContentsAfterLoad();
 				}
 
-				public void onSuccess(ClientLoadedSearch result) {
+				public void onSuccess(final ClientLoadedSearch result) {
 					final ClientSwiftSearchDefinition definition = result.getDefinition();
 					displayMessage("Loaded previous search " + definition.getSearchTitle());
 
@@ -311,7 +311,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 
 					// Determine search type
 					SearchType searchType = null;
-					for (ClientFileSearch clientFileSearch : definition.getInputFiles()) {
+					for (final ClientFileSearch clientFileSearch : definition.getInputFiles()) {
 						final String fileNamefileNameWithoutExtension = FilePathWidget.getFileNameWithoutExtension(clientFileSearch.getPath());
 						final SearchType newSearchType = SearchTypeList.getSearchTypeFromSetup(
 								definition.getSearchTitle(),
@@ -356,17 +356,17 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 
 	private void updateUserMessage() {
 		ServiceConnection.instance().getUserMessage(new AsyncCallback<String>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				displayMessage("");
 			}
 
-			public void onSuccess(String message) {
+			public void onSuccess(final String message) {
 				displayMessage(message);
 			}
 		});
 	}
 
-	private void displayMessage(String message) {
+	private void displayMessage(final String message) {
 		if (message != null && message.length() > 0) {
 			messageDisplay.setHTML(wrapDisplayMessage(message));
 			messageDisplay.setVisible(true);
@@ -377,29 +377,29 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 
 	private void initUserList() {
 		// The user listing is downloaded by an async call.
-		RootPanel userPanel = RootPanel.get("email");
+		final RootPanel userPanel = RootPanel.get("email");
 		userPanel.add(users);
 		users.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
+			public void onChange(final Widget widget) {
 				userChanged();
 			}
 		});
 		hidePageContentsWhileLoading();
 		ServiceConnection.instance().listUsers(new AsyncCallback<ClientUser[]>() {
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				showPageContents();
 			}
 
-			public void onSuccess(ClientUser[] list) {
+			public void onSuccess(final ClientUser[] list) {
 				users.addItem(SELECT_USER_STRING, "");
 				userInfo.clear();
-				for (ClientUser user : list) {
+				for (final ClientUser user : list) {
 					users.addItem(user.getName(), user.getEmail());
 					userInfo.put(user.getEmail(), user);
 				}
 
 				// Select the user according to the cookie stored
-				String userEmail = Cookies.getCookie("email");
+				final String userEmail = Cookies.getCookie("email");
 				selectUser(userEmail);
 
 				showPageContentsAfterLoad();
@@ -407,7 +407,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		});
 	}
 
-	private void selectUser(String userEmail) {
+	private void selectUser(final String userEmail) {
 		if (userEmail != null) {
 			for (int i = 0; i < users.getItemCount(); i++) {
 				if (users.getValue(i).equalsIgnoreCase(userEmail)) {
@@ -422,17 +422,17 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	private void initAddFilesButton() {
 		// Add files button produces a dialog
 		addFileButton = new PushButton("", new ClickListener() {
-			public void onClick(Widget sender) {
-				int clientWidth = Window.getClientWidth();
-				int clientHeight = Window.getClientHeight();
-				int popupWidth = clientWidth * 3 / 4;
-				int popupHeight = clientHeight * 3 / 4;
-				int posX = (clientWidth - popupWidth) / 2;
-				int posY = (clientHeight - popupHeight) / 2;
-				FileTreeDialog dialog = new FileTreeDialog(popupWidth, popupHeight);
+			public void onClick(final Widget sender) {
+				final int clientWidth = Window.getClientWidth();
+				final int clientHeight = Window.getClientHeight();
+				final int popupWidth = clientWidth * 3 / 4;
+				final int popupHeight = clientHeight * 3 / 4;
+				final int posX = (clientWidth - popupWidth) / 2;
+				final int posY = (clientHeight - popupHeight) / 2;
+				final FileTreeDialog dialog = new FileTreeDialog(popupWidth, popupHeight);
 				dialog.setPopupPosition(posX, posY);
 				dialog.setSelectedFilesListener(new SelectedFilesListener() {
-					public void selectedFiles(FileInfo[] info) {
+					public void selectedFiles(final FileInfo[] info) {
 						files.addFiles(info);
 					}
 				});
@@ -453,11 +453,11 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		// currently, the save location is populated deterministically by the combination of
 		// the users's input
 
-		RootPanel outputPanel = RootPanel.get("output");
+		final RootPanel outputPanel = RootPanel.get("output");
 		output = new TextBox();
 		output.setVisibleLength(150);
 		output.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
+			public void onChange(final Widget widget) {
 				outputPathUserSpecified = true;
 				updateOutputLocation();
 			}
@@ -474,7 +474,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	private void connectOutputLocationAndFileTable() {
 		if (files != null) {
 			files.addChangeListener(new ChangeListener() {
-				public void onChange(Widget widget) {
+				public void onChange(final Widget widget) {
 					updateOutputLocation();
 				}
 			});
@@ -490,7 +490,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		// Make params editor disable the runWithCallback button when it is invalid
 		if (paramsEditor != null) {
 			paramsEditor.getValidationController().addChangeListener(new ChangeListener() {
-				public void onChange(Widget sender) {
+				public void onChange(final Widget sender) {
 					runButton.setEnabled(paramsEditor.isValid());
 				}
 			});
@@ -526,7 +526,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 				outputPathSpecial = false;
 				outputPath = fileSearches.get(0).getPath();
 				if (!outputPath.endsWith("/")) {
-					int i = outputPath.lastIndexOf('/');
+					final int i = outputPath.lastIndexOf('/');
 					if (i < 0) {
 						outputPath = "";
 					} else {
@@ -549,7 +549,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	/**
 	 * When the title changes, we need to fire onChange event on its listener.
 	 */
-	private void setTitleText(String title) {
+	private void setTitleText(final String title) {
 		this.title.setText(title);
 		titleChangeListener.onChange(this.title);
 	}
@@ -561,8 +561,8 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 		return title.getText() == null ? null : title.getText().trim();
 	}
 
-	static String pathify(String userProvided) {
-		String s = userProvided.replaceAll("\\.\\.", "_");
+	static String pathify(final String userProvided) {
+		final String s = userProvided.replaceAll("\\.\\.", "_");
 		return s.replaceAll("/", "_");
 	}
 
@@ -575,11 +575,11 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	private class RunClickListener implements ClickListener {
 		private final SwiftApp swiftApp;
 
-		public RunClickListener(SwiftApp app) {
+		public RunClickListener(final SwiftApp app) {
 			swiftApp = app;
 		}
 
-		public void onClick(Widget sender) {
+		public void onClick(final Widget sender) {
 			updateUserMessage();
 			updateOutputLocation();
 
@@ -598,15 +598,15 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 			dialog.showModal();
 
 			try {
-				List<ClientFileSearch> entries = files.getData();
+				final List<ClientFileSearch> entries = files.getData();
 
-				ClientSpectrumQa clientSpectrumQa;
+				final ClientSpectrumQa clientSpectrumQa;
 				if (spectrumQaSetupPanel != null) {
 					clientSpectrumQa = spectrumQaSetupPanel.getParameters();
 				} else {
 					clientSpectrumQa = new ClientSpectrumQa();
 				}
-				ClientSwiftSearchDefinition def = new ClientSwiftSearchDefinition(
+				final ClientSwiftSearchDefinition def = new ClientSwiftSearchDefinition(
 						getTitleText(),
 						userInfo.get(users.getValue(users.getSelectedIndex())),
 						effectiveOutputPath,
@@ -621,12 +621,12 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 				def.setFromScratch(additionalSettingsPanel.isFromScratch());
 
 				ServiceConnection.instance().startSearch(new Service.Token(true), def, new AsyncCallback<Void>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						dialog.hide();
 						SimpleParamsEditorPanel.handleGlobalError(throwable);
 					}
 
-					public void onSuccess(Void o) {
+					public void onSuccess(final Void o) {
 						dialog.hide();
 						redirect("/report/report.jsp");
 					}
@@ -639,7 +639,7 @@ public final class SwiftApp implements EntryPoint, HidesPageContentsWhileLoading
 	}
 
 	private class TitleChangeListener implements ChangeListener {
-		public void onChange(Widget sender) {
+		public void onChange(final Widget sender) {
 			files.updateSearchTitle(getTitleText());
 		}
 	}

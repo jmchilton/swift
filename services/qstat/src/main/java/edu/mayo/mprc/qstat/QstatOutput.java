@@ -7,7 +7,7 @@ public final class QstatOutput implements ProgressInfo {
 
 	private String qstatOutput;
 
-	public QstatOutput(String qstatOutput) {
+	public QstatOutput(final String qstatOutput) {
 		this.qstatOutput = qstatOutput;
 	}
 

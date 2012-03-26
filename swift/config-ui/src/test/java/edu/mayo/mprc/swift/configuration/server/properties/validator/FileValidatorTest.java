@@ -10,19 +10,19 @@ public final class FileValidatorTest {
 
 	@Test
 	public void validateExistingDir() {
-		String tempDir = FileUtilities.DEFAULT_TEMP_DIRECTORY.getAbsolutePath();
+		final String tempDir = FileUtilities.DEFAULT_TEMP_DIRECTORY.getAbsolutePath();
 
-		FileValidator fileValidator = new FileValidator(null, true, true, false);
+		final FileValidator fileValidator = new FileValidator(null, true, true, false);
 
 		Assert.assertNull(fileValidator.validate(tempDir), "Validation of existing directory failed.");
 	}
 
 	@Test
 	public void validateAndFixExistingDir() {
-		File file = new File(FileUtilities.DEFAULT_TEMP_DIRECTORY, "test" + System.currentTimeMillis());
+		final File file = new File(FileUtilities.DEFAULT_TEMP_DIRECTORY, "test" + System.currentTimeMillis());
 
 		try {
-			FileValidator fileValidator = new FileValidator(null, true, true, false);
+			final FileValidator fileValidator = new FileValidator(null, true, true, false);
 
 			Assert.assertNotNull(fileValidator.validate(file.getAbsolutePath()), "Validation of existing directory failed. Validator must produce error message.");
 
@@ -36,9 +36,9 @@ public final class FileValidatorTest {
 
 	@Test
 	public void validateAndFixNotExistingFile() {
-		File file = new File(FileUtilities.DEFAULT_TEMP_DIRECTORY, "test" + System.currentTimeMillis());
+		final File file = new File(FileUtilities.DEFAULT_TEMP_DIRECTORY, "test" + System.currentTimeMillis());
 
-		FileValidator fileValidator = new FileValidator(null, true, false, false);
+		final FileValidator fileValidator = new FileValidator(null, true, false, false);
 
 		Assert.assertNotNull(fileValidator.validate(file.getAbsolutePath()), "Validation of existing file failed. Validator must produce error message.");
 
@@ -49,10 +49,10 @@ public final class FileValidatorTest {
 
 	@Test
 	public void validateFileIsNotDir() {
-		File file = FileUtilities.createTempFolder();
+		final File file = FileUtilities.createTempFolder();
 
 		try {
-			FileValidator fileValidator = new FileValidator(null, true, false, false);
+			final FileValidator fileValidator = new FileValidator(null, true, false, false);
 
 			Assert.assertNotNull(fileValidator.validate(file.getAbsolutePath()), "Validation of existing file failed. Validator must produce error message.");
 		} finally {

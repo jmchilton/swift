@@ -14,7 +14,7 @@ public class ExtractMsnSettings extends PersistableBase {
 	public ExtractMsnSettings() {
 	}
 
-	public ExtractMsnSettings(String commandLineSwitches) {
+	public ExtractMsnSettings(final String commandLineSwitches) {
 		this.commandLineSwitches = commandLineSwitches;
 	}
 
@@ -22,12 +22,12 @@ public class ExtractMsnSettings extends PersistableBase {
 		return commandLineSwitches;
 	}
 
-	public void setCommandLineSwitches(String commandLineSwitches) {
+	public void setCommandLineSwitches(final String commandLineSwitches) {
 		this.commandLineSwitches = commandLineSwitches;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -35,7 +35,7 @@ public class ExtractMsnSettings extends PersistableBase {
 			return false;
 		}
 
-		ExtractMsnSettings that = (ExtractMsnSettings) o;
+		final ExtractMsnSettings that = (ExtractMsnSettings) o;
 
 		if (getCommandLineSwitches() != null ? !getCommandLineSwitches().equals(that.getCommandLineSwitches()) : that.getCommandLineSwitches() != null) {
 			return false;

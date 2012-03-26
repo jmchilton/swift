@@ -20,7 +20,7 @@ public final class Daemon {
 	private List<AbstractRunner> runners;
 	private List<Object> resources;
 
-	public Daemon(List<AbstractRunner> runners, List<Object> resources) {
+	public Daemon(final List<AbstractRunner> runners, final List<Object> resources) {
 		this.runners = runners;
 		this.resources = resources;
 	}
@@ -29,7 +29,7 @@ public final class Daemon {
 	 * Runs all the defined daemons runners.
 	 */
 	public void start() {
-		for (AbstractRunner runner : runners) {
+		for (final AbstractRunner runner : runners) {
 			try {
 				runner.start();
 			} catch (Exception t) {
@@ -42,7 +42,7 @@ public final class Daemon {
 	 * Stops the daemon runners. Does not block until the runners terminate.
 	 */
 	public void stop() {
-		for (AbstractRunner runner : runners) {
+		for (final AbstractRunner runner : runners) {
 			runner.stop();
 		}
 	}
@@ -51,7 +51,7 @@ public final class Daemon {
 	 * Wait until the runners all terminate.
 	 */
 	public void awaitTermination() {
-		for (AbstractRunner runner : runners) {
+		for (final AbstractRunner runner : runners) {
 			runner.awaitTermination();
 		}
 	}
@@ -77,42 +77,42 @@ public final class Daemon {
 		/* Factory for the particular daemon components */
 		private MultiFactory factory;
 
-		public Daemon createDaemon(DaemonConfig config) {
+		public Daemon createDaemon(final DaemonConfig config) {
 
-			DependencyResolver dependencies = new DependencyResolver(factory);
+			final DependencyResolver dependencies = new DependencyResolver(factory);
 
 			// Create daemon resources
-			List<Object> resources = new ArrayList<Object>(config.getResources().size());
+			final List<Object> resources = new ArrayList<Object>(config.getResources().size());
 			addResourcesToList(resources, config.getResources(), dependencies);
 
 			// Create runners
-			List<AbstractRunner> runners = new ArrayList<AbstractRunner>(config.getServices().size());
+			final List<AbstractRunner> runners = new ArrayList<AbstractRunner>(config.getServices().size());
 			addRunnersToList(runners, config.getServices(), dependencies);
 
 			return new Daemon(runners, resources);
 		}
 
-		private void addResourcesToList(List<Object> resources, List<ResourceConfig> configs, DependencyResolver dependencies) {
+		private void addResourcesToList(final List<Object> resources, final List<ResourceConfig> configs, final DependencyResolver dependencies) {
 			Collections.sort(configs, new ResourceComparator());
-			for (ResourceConfig resourceConfig : configs) {
+			for (final ResourceConfig resourceConfig : configs) {
 				final ResourceFactory resourceFactory = this.factory.getFactory(resourceConfig.getClass());
 				final Object resource = resourceFactory.createSingleton(resourceConfig, dependencies);
 				resources.add(resource);
 			}
 		}
 
-		private void addRunnersToList(List<AbstractRunner> runners, List<ServiceConfig> services, DependencyResolver dependencies) {
-			for (ServiceConfig serviceConfig : services) {
+		private void addRunnersToList(final List<AbstractRunner> runners, final List<ServiceConfig> services, final DependencyResolver dependencies) {
+			for (final ServiceConfig serviceConfig : services) {
 				if (serviceConfig == null) {
 					LOGGER.error("Programmer error: service configuration was null - listing the configurations: ");
-					for (ServiceConfig config : services) {
+					for (final ServiceConfig config : services) {
 						LOGGER.error(config);
 					}
 					throw new MprcException("Programmer error: service configuration was null.");
 				}
-				DaemonConnection daemonConnection = (DaemonConnection) factory.createSingleton(serviceConfig, dependencies);
-				RunnerConfig runnerConfig = serviceConfig.getRunner();
-				AbstractRunner runner = (AbstractRunner) factory.createSingleton(runnerConfig, dependencies);
+				final DaemonConnection daemonConnection = (DaemonConnection) factory.createSingleton(serviceConfig, dependencies);
+				final RunnerConfig runnerConfig = serviceConfig.getRunner();
+				final AbstractRunner runner = (AbstractRunner) factory.createSingleton(runnerConfig, dependencies);
 				runner.setDaemonConnection(daemonConnection);
 				runners.add(runner);
 			}
@@ -122,7 +122,7 @@ public final class Daemon {
 			return factory;
 		}
 
-		public void setMultiFactory(MultiFactory factory) {
+		public void setMultiFactory(final MultiFactory factory) {
 			this.factory = factory;
 		}
 	}
@@ -130,7 +130,7 @@ public final class Daemon {
 	private static final class ResourceComparator implements Comparator<ResourceConfig>, Serializable {
 		private static final long serialVersionUID = 20101123L;
 
-		public int compare(ResourceConfig o1, ResourceConfig o2) {
+		public int compare(final ResourceConfig o1, final ResourceConfig o2) {
 			return Integer.valueOf(o2.getPriority()).compareTo(o1.getPriority());
 		}
 	}

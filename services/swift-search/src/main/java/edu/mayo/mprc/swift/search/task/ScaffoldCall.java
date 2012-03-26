@@ -4,13 +4,13 @@ class ScaffoldCall {
 	private final String experiment;
 	private final String version;
 
-	ScaffoldCall(String experiment, String version) {
+	ScaffoldCall(final String experiment, final String version) {
 		this.experiment = experiment;
 		this.version = version;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -18,7 +18,7 @@ class ScaffoldCall {
 			return false;
 		}
 
-		ScaffoldCall that = (ScaffoldCall) o;
+		final ScaffoldCall that = (ScaffoldCall) o;
 
 		if (experiment != null ? !experiment.equals(that.experiment) : that.experiment != null) {
 			return false;

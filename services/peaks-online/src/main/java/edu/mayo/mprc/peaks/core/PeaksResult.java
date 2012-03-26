@@ -32,7 +32,7 @@ public final class PeaksResult {
 	 * @param httpClient
 	 * @throws IOException
 	 */
-	protected PeaksResult(URI searchURI, URI monitorURI, URI userSettingsURI, HttpClient httpClient) throws IOException {
+	protected PeaksResult(final URI searchURI, final URI monitorURI, final URI userSettingsURI, final HttpClient httpClient) throws IOException {
 		this(searchURI, monitorURI, userSettingsURI, httpClient, 10);
 	}
 
@@ -44,7 +44,7 @@ public final class PeaksResult {
 	 *                                  database will be retreived.
 	 * @throws IOException
 	 */
-	protected PeaksResult(URI searchURI, URI monitorURI, URI userSettingsURI, HttpClient httpClient, int maximumNumberOfSearchDays) throws IOException {
+	protected PeaksResult(final URI searchURI, final URI monitorURI, final URI userSettingsURI, final HttpClient httpClient, final int maximumNumberOfSearchDays) throws IOException {
 		this.searchURI = searchURI;
 		this.monitorURI = monitorURI;
 		this.userSettingsURI = userSettingsURI;
@@ -53,7 +53,7 @@ public final class PeaksResult {
 		setMaximumNumberOfSearchDays(maximumNumberOfSearchDays);
 	}
 
-	public String getSearchStatus(String searchId) throws IOException {
+	public String getSearchStatus(final String searchId) throws IOException {
 
 		GetMethod method = null;
 		String string = null;
@@ -114,7 +114,7 @@ public final class PeaksResult {
 	 *
 	 * @param numberOfDays
 	 */
-	private void setMaximumNumberOfSearchDays(int numberOfDays) throws IOException {
+	private void setMaximumNumberOfSearchDays(final int numberOfDays) throws IOException {
 		PostMethod method = null;
 
 		try {

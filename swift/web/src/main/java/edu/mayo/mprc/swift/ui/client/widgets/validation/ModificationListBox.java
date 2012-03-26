@@ -11,23 +11,23 @@ import java.util.List;
  * Allows multiple-selection of modifications.
  */
 public final class ModificationListBox extends ValidatableListBox {
-	public ModificationListBox(String param, boolean allowMultiple) {
+	public ModificationListBox(final String param, final boolean allowMultiple) {
 		super(param, allowMultiple);
 	}
 
-	public ClientValue bundle(List<? extends ClientValue> selected) {
-		List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(selected.size());
-		for (ClientValue value : selected) {
+	public ClientValue bundle(final List<? extends ClientValue> selected) {
+		final List<ClientModSpecificity> specs = new ArrayList<ClientModSpecificity>(selected.size());
+		for (final ClientValue value : selected) {
 			specs.add(ClientModSpecificity.cast(value));
 		}
 		return new ClientModSpecificitySet(specs);
 	}
 
-	public String getStringValue(ClientValue value) {
+	public String getStringValue(final ClientValue value) {
 		return ClientModSpecificity.cast(value).getName();
 	}
 
-	public List<? extends ClientValue> unbundle(ClientValue value) {
+	public List<? extends ClientValue> unbundle(final ClientValue value) {
 		return ClientModSpecificitySet.cast(value).getModSpecificities();
 	}
 

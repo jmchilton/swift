@@ -21,7 +21,7 @@ public class SpectrumQa extends PersistableBase {
 	public SpectrumQa() {
 	}
 
-	public SpectrumQa(String paramFilePath, String engine) {
+	public SpectrumQa(final String paramFilePath, final String engine) {
 		this.paramFilePath = paramFilePath;
 		this.engine = engine;
 	}
@@ -30,7 +30,7 @@ public class SpectrumQa extends PersistableBase {
 		return engine;
 	}
 
-	public void setEngine(String engine) {
+	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
 
@@ -45,12 +45,12 @@ public class SpectrumQa extends PersistableBase {
 		return paramFilePath;
 	}
 
-	public void setParamFilePath(String paramFilePath) {
+	public void setParamFilePath(final String paramFilePath) {
 		this.paramFilePath = paramFilePath;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -58,7 +58,7 @@ public class SpectrumQa extends PersistableBase {
 			return false;
 		}
 
-		SpectrumQa that = (SpectrumQa) o;
+		final SpectrumQa that = (SpectrumQa) o;
 
 		if (getEngine() != null ? !getEngine().equals(that.getEngine()) : that.getEngine() != null) {
 			return false;

@@ -60,7 +60,7 @@ public class DeploymentResult extends FileHolder implements ProgressInfo {
 		return deployedFile;
 	}
 
-	public void setDeployedFile(File deployedFile) {
+	public void setDeployedFile(final File deployedFile) {
 		this.deployedFile = deployedFile;
 	}
 
@@ -73,7 +73,7 @@ public class DeploymentResult extends FileHolder implements ProgressInfo {
 	 *
 	 * @param undeployedFiles
 	 */
-	public void setUndeployedFiles(List<File> undeployedFiles) {
+	public void setUndeployedFiles(final List<File> undeployedFiles) {
 		this.undeployedFiles = new LinkedList<File>();
 		this.undeployedFiles.addAll(undeployedFiles);
 	}
@@ -85,7 +85,7 @@ public class DeploymentResult extends FileHolder implements ProgressInfo {
 		return new CompositeException(this.exceptions);
 	}
 
-	public synchronized void addException(Exception toAdd) {
+	public synchronized void addException(final Exception toAdd) {
 		this.exceptions.add(toAdd);
 	}
 
@@ -93,7 +93,7 @@ public class DeploymentResult extends FileHolder implements ProgressInfo {
 		return Collections.unmodifiableList(messages);
 	}
 
-	public synchronized void addMessage(String toAdd) {
+	public synchronized void addMessage(final String toAdd) {
 		this.messages.add(toAdd);
 	}
 
@@ -101,7 +101,7 @@ public class DeploymentResult extends FileHolder implements ProgressInfo {
 		return generatedFiles;
 	}
 
-	public void setGeneratedFiles(List<File> generatedFiles) {
+	public void setGeneratedFiles(final List<File> generatedFiles) {
 		this.generatedFiles = new ArrayList<File>();
 		this.generatedFiles.addAll(generatedFiles);
 	}

@@ -11,7 +11,7 @@ public final class ExceptionUtilities {
 	 * @param object        Object that was supposed to be some class.
 	 * @param expectedClass The class the object was expected to be.
 	 */
-	public static void throwCastException(Object object, Class<?> expectedClass) {
+	public static void throwCastException(final Object object, final Class<?> expectedClass) {
 		if (object != null) {
 			throw new ClassCastException("Programmer error:\n"
 					+ "expected:\t" + expectedClass.getName() + "\n"

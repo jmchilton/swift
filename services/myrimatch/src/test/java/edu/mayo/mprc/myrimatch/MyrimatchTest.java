@@ -59,8 +59,8 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapFixedMods() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
-		ModSet mods = new ModSet();
+		final MappingContext mappingContext = createMappingContext();
+		final ModSet mods = new ModSet();
 		final Unimod unimod = UNIMOD_DAO.load();
 
 		mappings.setFixedMods(mappingContext, mods);
@@ -83,8 +83,8 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapVariableMods() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
-		ModSet mods = new ModSet();
+		final MappingContext mappingContext = createMappingContext();
+		final ModSet mods = new ModSet();
 		final Unimod unimod = UNIMOD_DAO.load();
 
 		mappings.setVariableMods(mappingContext, mods);
@@ -142,7 +142,7 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapPeptideTolerance() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
+		final MappingContext mappingContext = createMappingContext();
 
 		mappings.setPeptideTolerance(mappingContext, new Tolerance("2.3 Da"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.PRECURSOR_MZ_TOLERANCE), "2.3");
@@ -156,7 +156,7 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapFragmentTolerance() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
+		final MappingContext mappingContext = createMappingContext();
 
 		mappings.setFragmentTolerance(mappingContext, new Tolerance("10.37 Da"));
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.FRAGMENT_MZ_TOLERANCE), "10.37 daltons");
@@ -170,7 +170,7 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapInstrument() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
+		final MappingContext mappingContext = createMappingContext();
 
 		mappings.setInstrument(mappingContext, Instrument.ORBITRAP);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.USE_AVG_MASS_OF_SEQUENCES), "false", "Orbitrap uses monoisotopic mass");
@@ -179,7 +179,7 @@ public final class MyrimatchTest {
 	@Test
 	public final void shouldMapMissedCleavages() {
 		final MyrimatchMappings mappings = createMappings();
-		MappingContext mappingContext = createMappingContext();
+		final MappingContext mappingContext = createMappingContext();
 		mappings.setMissedCleavages(mappingContext, 3);
 		Assert.assertEquals(mappings.getNativeParam(MyrimatchMappings.NUM_MAX_MISSED_CLEAVAGES), "3", "Missed cleavages do not match");
 	}
@@ -189,24 +189,24 @@ public final class MyrimatchTest {
 		final MyrimatchMappings mappings = createMappings();
 		compareMappingsToBase(mappings, null, null);
 
-		MappingContext mappingContext = createMappingContext();
+		final MappingContext mappingContext = createMappingContext();
 		mappings.setProtease(mappingContext, new Protease("Lys-C (restrict P)", "K", "!P"));
 		compareMappingsToBase(mappings, "CleavageRules = Trypsin/P", "CleavageRules = (?<=K)(?!P)");
 	}
 
 	@Test
 	public final void shouldRunSearch() throws IOException, InterruptedException {
-		File myrimatchExecutable = getMyrimatchExecutable();
+		final File myrimatchExecutable = getMyrimatchExecutable();
 		try {
-			File tempFolder = FileUtilities.createTempFolder();
+			final File tempFolder = FileUtilities.createTempFolder();
 
 			final MyrimatchMappings mappings = createMappings();
-			MappingContext mappingContext = createMappingContext();
+			final MappingContext mappingContext = createMappingContext();
 			mappings.setProtease(mappingContext, new Protease("Trypsin (allow P)", "KR", ""));
 			mappings.setMissedCleavages(mappingContext, 2);
 
-			File configFile = new File(tempFolder, "myrimatch.cfg");
-			FileWriter writer = new FileWriter(configFile);
+			final File configFile = new File(tempFolder, "myrimatch.cfg");
+			final FileWriter writer = new FileWriter(configFile);
 			try {
 				mappings.write(mappings.baseSettings(), writer);
 			} finally {
@@ -215,20 +215,20 @@ public final class MyrimatchTest {
 
 			final File fastaFile =
 					TestingUtilities.getTempFileFromResource(MyrimatchTest.class, "/edu/mayo/mprc/myrimatch/database.fasta", false, tempFolder, ".fasta");
-			File mgfFile =
+			final File mgfFile =
 					TestingUtilities.getTempFileFromResource(MyrimatchTest.class, "/edu/mayo/mprc/myrimatch/test.mgf", false, tempFolder, ".mgf");
 
-			File resultFile = new File(tempFolder, "result.pepXML");
+			final File resultFile = new File(tempFolder, "result.pepXML");
 
-			MyrimatchWorkPacket work = new MyrimatchWorkPacket(mgfFile, configFile, resultFile, tempFolder, fastaFile, 2, "Rev_", false, "Test Myrimatch run", false);
+			final MyrimatchWorkPacket work = new MyrimatchWorkPacket(mgfFile, configFile, resultFile, tempFolder, fastaFile, 2, "Rev_", false, "Test Myrimatch run", false);
 
-			MyrimatchWorker worker = new MyrimatchWorker(myrimatchExecutable);
+			final MyrimatchWorker worker = new MyrimatchWorker(myrimatchExecutable);
 
-			DaemonWorkerTester tester = new DaemonWorkerTester(worker);
+			final DaemonWorkerTester tester = new DaemonWorkerTester(worker);
 
 			final Object workToken = tester.sendWork(work, new ProgressListener() {
 				@Override
-				public void requestEnqueued(String s) {
+				public void requestEnqueued(final String s) {
 					LOGGER.debug("Enqueued MyriMatch request: " + s);
 				}
 
@@ -243,13 +243,13 @@ public final class MyrimatchTest {
 				}
 
 				@Override
-				public void requestTerminated(Exception e) {
+				public void requestTerminated(final Exception e) {
 					LOGGER.error("MyriMatch request terminated", e);
 					Assert.fail("Myrimatch failed", e);
 				}
 
 				@Override
-				public void userProgressInformation(ProgressInfo progressInfo) {
+				public void userProgressInformation(final ProgressInfo progressInfo) {
 					LOGGER.debug("MyriMatch progress: " + progressInfo.toString());
 				}
 			});
@@ -296,15 +296,15 @@ public final class MyrimatchTest {
 
 	@Test
 	public final void shouldDeploy() throws IOException {
-		File tempFolder = FileUtilities.createTempFolder();
+		final File tempFolder = FileUtilities.createTempFolder();
 
-		File databaseFile = TestingUtilities.getTempFileFromResource(MyrimatchTest.class, "/edu/mayo/mprc/myrimatch/database.fasta", false, tempFolder, ".fasta");
+		final File databaseFile = TestingUtilities.getTempFileFromResource(MyrimatchTest.class, "/edu/mayo/mprc/myrimatch/database.fasta", false, tempFolder, ".fasta");
 
-		MyrimatchDeploymentService.Config config = new MyrimatchDeploymentService.Config();
+		final MyrimatchDeploymentService.Config config = new MyrimatchDeploymentService.Config();
 		config.setDeployableDbFolder(tempFolder.getAbsolutePath());
-		MyrimatchDeploymentService.Factory factory = new MyrimatchDeploymentService.Factory();
-		MyrimatchDeploymentService deployer = (MyrimatchDeploymentService) factory.create(config, new DependencyResolver(null));
-		DeploymentRequest request = new DeploymentRequest("test deployment",
+		final MyrimatchDeploymentService.Factory factory = new MyrimatchDeploymentService.Factory();
+		final MyrimatchDeploymentService deployer = (MyrimatchDeploymentService) factory.create(config, new DependencyResolver(null));
+		final DeploymentRequest request = new DeploymentRequest("test deployment",
 				new FastaFile("database", "test database for Myrimatch", databaseFile, new DatabaseAnnotation()));
 		deployCheckResult(deployer, request);
 		deployCheckResult(deployer, request);
@@ -316,14 +316,14 @@ public final class MyrimatchTest {
 		FileUtilities.cleanupTempFile(tempFolder);
 	}
 
-	private void deployCheckResult(MyrimatchDeploymentService deployer, DeploymentRequest request) {
+	private void deployCheckResult(final MyrimatchDeploymentService deployer, final DeploymentRequest request) {
 		final DeploymentResult result = deployer.performDeployment(request);
-		MyrimatchDeploymentResult myrimatchResult = (MyrimatchDeploymentResult) result;
+		final MyrimatchDeploymentResult myrimatchResult = (MyrimatchDeploymentResult) result;
 		Assert.assertEquals(myrimatchResult.getDecoySequencePrefix(), "Rev_", "Determined prefix does not match");
 		Assert.assertEquals(myrimatchResult.getNumForwardEntries(), 2, "Different amount of forward entries");
 	}
 
-	private static String replaceLongFloats(String inputString) {
+	private static String replaceLongFloats(final String inputString) {
 		return inputString.replaceAll("(?<=\\d+\\.\\d{5})\\d+", Matcher.quoteReplacement("~"));
 	}
 
@@ -342,7 +342,7 @@ public final class MyrimatchTest {
 	 * @param prefix Prefix (e.g. date= for replacing date="whatever" with date="$$TIME$$")
 	 * @return String with replacements
 	 */
-	private static String replaceTime(String input, String prefix) {
+	private static String replaceTime(final String input, final String prefix) {
 		return input.replaceAll("(?<=" + Pattern.quote(prefix) + ")\"([^\"]*)\"", Matcher.quoteReplacement("\"$$TIME$$\""));
 	}
 
@@ -351,21 +351,21 @@ public final class MyrimatchTest {
 		Assert.assertEquals(replaceTime("hello this is time=\"11-12-2011 10:20;30\" test", "time="), "hello this is time=\"$$TIME$$\" test");
 	}
 
-	private static String replace(String resultString, String toReplace, String replaceWith) {
+	private static String replace(String resultString, final String toReplace, final String replaceWith) {
 		resultString = resultString.replaceAll(Pattern.quote(toReplace), Matcher.quoteReplacement(replaceWith));
 		return resultString;
 	}
 
 	private File getMyrimatchExecutable() {
-		File myrimatchExecutable = Installer.myrimatch(null, Installer.Action.INSTALL);
+		final File myrimatchExecutable = Installer.myrimatch(null, Installer.Action.INSTALL);
 		Assert.assertTrue(myrimatchExecutable.exists(), "Myrimatch executable must exist");
 		Assert.assertTrue(myrimatchExecutable.isFile(), "Myrimatch executable must be a file");
 		Assert.assertTrue(myrimatchExecutable.canExecute(), "Myrimatch executable must be actually executable");
 		return myrimatchExecutable;
 	}
 
-	private void compareMappingsToBase(MyrimatchMappings mappings, String toReplaceInBase, String replaceWith) throws IOException {
-		StringWriter writer = new StringWriter(10000);
+	private void compareMappingsToBase(final MyrimatchMappings mappings, final String toReplaceInBase, final String replaceWith) throws IOException {
+		final StringWriter writer = new StringWriter(10000);
 		try {
 			mappings.write(mappings.baseSettings(), writer);
 		} finally {
@@ -392,23 +392,23 @@ public final class MyrimatchTest {
 			}
 
 			@Override
-			public void startMapping(ParamName paramName) {
+			public void startMapping(final ParamName paramName) {
 				LOGGER.debug("Started mapping " + paramName);
 			}
 
 			@Override
-			public void reportError(String s, Throwable throwable) {
+			public void reportError(final String s, final Throwable throwable) {
 				LOGGER.error("Mapping error: " + s, throwable);
 				noErrors = false;
 			}
 
 			@Override
-			public void reportWarning(String s) {
+			public void reportWarning(final String s) {
 				LOGGER.debug("Mapping warning: " + s);
 			}
 
 			@Override
-			public void reportInfo(String s) {
+			public void reportInfo(final String s) {
 				LOGGER.debug("Mapping info: " + s);
 			}
 
@@ -418,7 +418,7 @@ public final class MyrimatchTest {
 			}
 
 			@Override
-			public Curation addLegacyCuration(String s) {
+			public Curation addLegacyCuration(final String s) {
 				Assert.fail("Should not be invoked");
 				return null;
 			}
@@ -426,18 +426,18 @@ public final class MyrimatchTest {
 	}
 
 	private MyrimatchMappings createMappings() {
-		MyrimatchMappingFactory factory = new MyrimatchMappingFactory();
+		final MyrimatchMappingFactory factory = new MyrimatchMappingFactory();
 		Assert.assertEquals(factory.getCanonicalParamFileName(), "myrimatch.cfg");
 		final MyrimatchMappings mapping = (MyrimatchMappings) factory.createMapping();
 		return mapping;
 	}
 
-	private MyrimatchWorker createWorker(String executable) {
-		MyrimatchWorker.Factory factory = new MyrimatchWorker.Factory();
+	private MyrimatchWorker createWorker(final String executable) {
+		final MyrimatchWorker.Factory factory = new MyrimatchWorker.Factory();
 		factory.setDescription("Myrimatch");
 
-		MyrimatchWorker.Config config = new MyrimatchWorker.Config(executable);
-		DependencyResolver resolver = new DependencyResolver(null);
+		final MyrimatchWorker.Config config = new MyrimatchWorker.Config(executable);
+		final DependencyResolver resolver = new DependencyResolver(null);
 
 		return (MyrimatchWorker) factory.create(config, resolver);
 	}

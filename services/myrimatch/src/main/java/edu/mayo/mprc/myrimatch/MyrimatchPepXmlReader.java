@@ -54,10 +54,10 @@ public final class MyrimatchPepXmlReader extends DefaultHandler implements Keyed
 	 *
 	 * @param pepXML Stream to load pepXML from.
 	 */
-	public void load(InputStream pepXML) {
+	public void load(final InputStream pepXML) {
 		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			SAXParser parser = parserFactory.newSAXParser();
+			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			final SAXParser parser = parserFactory.newSAXParser();
 			lineInformation = new HashMap<Integer, String>(INITIAL_NUM_SPECTRA);
 			parser.parse(pepXML, this);
 		} catch (Exception e) {
@@ -68,7 +68,7 @@ public final class MyrimatchPepXmlReader extends DefaultHandler implements Keyed
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+	public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
 		if (qName.equals("spectrum_query")) {
 			scan = Integer.valueOf(attributes.getValue("start_scan"));
 		} else if (qName.equals("search_hit")) {
@@ -95,7 +95,7 @@ public final class MyrimatchPepXmlReader extends DefaultHandler implements Keyed
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException {
+	public void endElement(final String uri, final String localName, final String qName) throws SAXException {
 		if (qName.equals("spectrum_query")) {
 			lineInformation.put(scan,
 					peptide + "\t" + protein + "\t" + totalProteins + "\t"
@@ -119,8 +119,8 @@ public final class MyrimatchPepXmlReader extends DefaultHandler implements Keyed
 	 * @return Information from myrimatch for the particular line.
 	 */
 	@Override
-	public String getLineForKey(String key) {
-		int spectrum = Integer.valueOf(key);
+	public String getLineForKey(final String key) {
+		final int spectrum = Integer.valueOf(key);
 		final String result = lineInformation.get(spectrum);
 		if (result == null) {
 			return getEmptyLine();

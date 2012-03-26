@@ -41,11 +41,11 @@ public final class OmssaWorker implements Worker {
 
 	public static final String OMSSACL_PATH = "omssaclPath";
 
-	public OmssaWorker(OmssaUserModsWriter omssaUserModsWriter) {
+	public OmssaWorker(final OmssaUserModsWriter omssaUserModsWriter) {
 		this.omssaUserModsWriter = omssaUserModsWriter;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket);
@@ -56,14 +56,14 @@ public final class OmssaWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket) {
-		OmssaWorkPacket omssaWorkPacket = (OmssaWorkPacket) workPacket;
+	private void process(final WorkPacket workPacket) {
+		final OmssaWorkPacket omssaWorkPacket = (OmssaWorkPacket) workPacket;
 		LOGGER.info("Starting OMSSA search: " + omssaWorkPacket.toString());
 
 		omssaWorkPacket.waitForInputFiles();
 
 		final File outputFile = omssaWorkPacket.getOutputFile();
-		File modOutputFile = new File(outputFile.getParentFile(), outputFile.getName() + ".org");
+		final File modOutputFile = new File(outputFile.getParentFile(), outputFile.getName() + ".org");
 		File tempFolder = null;
 
 		try {
@@ -122,7 +122,7 @@ public final class OmssaWorker implements Worker {
 	 * @param workPacket
 	 * @return the complete params file that should be used for searching.
 	 */
-	private File finishParamsFile(String folderPath, OmssaWorkPacket workPacket, File outputFile) {
+	private File finishParamsFile(final String folderPath, final OmssaWorkPacket workPacket, final File outputFile) {
 		final File rawParamsFile = workPacket.getSearchParamsFile();
 		final File mgfFile = workPacket.getInputFile();
 		final File databaseFile = workPacket.getDatabaseFile();
@@ -139,7 +139,7 @@ public final class OmssaWorker implements Worker {
 		try {
 			matcher = new StreamRegExMatcher(rawParamsFile);
 			matcher.replaceAll(replacements);
-			File outFile = new File(new File(folderPath), rawParamsFile.getName() + ".final." + System.currentTimeMillis());
+			final File outFile = new File(new File(folderPath), rawParamsFile.getName() + ".final." + System.currentTimeMillis());
 			matcher.writeContentsToFile(outFile);
 			return outFile;
 		} catch (IOException e) {
@@ -154,7 +154,7 @@ public final class OmssaWorker implements Worker {
 	/**
 	 * copy the user mods file to a temporary folder and then modify it
 	 */
-	private File finishUserModsFile(File folder, File omssaParamsFile) {
+	private File finishUserModsFile(final File folder, final File omssaParamsFile) {
 		File finalUserModsFile = null;
 		try {
 			finalUserModsFile = File.createTempFile("usermod", "xml", folder);
@@ -174,7 +174,7 @@ public final class OmssaWorker implements Worker {
 		}
 	}
 
-	public void setOmssaclPath(File omssaclPath) {
+	public void setOmssaclPath(final File omssaclPath) {
 		this.omssaclPath = omssaclPath;
 	}
 
@@ -182,7 +182,7 @@ public final class OmssaWorker implements Worker {
 		return omssaUserModsWriter;
 	}
 
-	public void setOmssaUserModsWriter(OmssaUserModsWriter omssaUserModsWriter) {
+	public void setOmssaUserModsWriter(final OmssaUserModsWriter omssaUserModsWriter) {
 		this.omssaUserModsWriter = omssaUserModsWriter;
 	}
 
@@ -193,14 +193,14 @@ public final class OmssaWorker implements Worker {
 		private OmssaUserModsWriter omssaUserModsWriter;
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			OmssaWorker worker = new OmssaWorker(getOmssaUserModsWriter());
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final OmssaWorker worker = new OmssaWorker(getOmssaUserModsWriter());
 			worker.setOmssaclPath(new File(config.getOmssaclPath()));
 			worker.validateConfiguration();
 			return worker;
 		}
 
-		public void setOmssaUserModsWriter(OmssaUserModsWriter omssaUserModsWriter) {
+		public void setOmssaUserModsWriter(final OmssaUserModsWriter omssaUserModsWriter) {
 			this.omssaUserModsWriter = omssaUserModsWriter;
 		}
 
@@ -218,7 +218,7 @@ public final class OmssaWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String omssaclPath) {
+		public Config(final String omssaclPath) {
 			this.omssaclPath = omssaclPath;
 		}
 
@@ -226,17 +226,17 @@ public final class OmssaWorker implements Worker {
 			return omssaclPath;
 		}
 
-		public void setOmssaclPath(String omssaclPath) {
+		public void setOmssaclPath(final String omssaclPath) {
 			this.omssaclPath = omssaclPath;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(OMSSACL_PATH, omssaclPath);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			omssaclPath = values.get(OMSSACL_PATH);
 		}
 
@@ -250,7 +250,7 @@ public final class OmssaWorker implements Worker {
 		private static final String WINDOWS = "bin/omssa/windows/omssacl.exe";
 		private static final String LINUX = "bin/omssa/linux/omssacl";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(OMSSACL_PATH, "CL", "Omssa command line executable." +
 					"<p>Swift install contains following executables for your convenience:</p>"
 					+ "<table>"

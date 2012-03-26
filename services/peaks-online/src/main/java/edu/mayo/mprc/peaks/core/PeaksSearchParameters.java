@@ -88,12 +88,12 @@ public final class PeaksSearchParameters {
 		parameters.put(SUBMIT_SEARCH_USEPRECURSORAVERAGEMASS, new PeaksParameter(SUBMIT_SEARCH_USEPRECURSORAVERAGEMASS, "0"));
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		parameters.put(SUBMIT_SEARCH_TITLE, new PeaksParameter(SUBMIT_SEARCH_TITLE, title));
 	}
 
 	public String getTitle() {
-		PeaksParameter peaksOnlineParameter = parameters.get(SUBMIT_SEARCH_TITLE);
+		final PeaksParameter peaksOnlineParameter = parameters.get(SUBMIT_SEARCH_TITLE);
 
 		if (peaksOnlineParameter != null) {
 			return peaksOnlineParameter.getParameterValue().toString();
@@ -107,7 +107,7 @@ public final class PeaksSearchParameters {
 	 *
 	 * @param dataFile
 	 */
-	public void setDataFile(File dataFile) {
+	public void setDataFile(final File dataFile) {
 		parameters.put(SUBMIT_SEARCH_DATABASE, new PeaksParameter(SUBMIT_SEARCH_DATAFILE, dataFile));
 	}
 
@@ -115,7 +115,7 @@ public final class PeaksSearchParameters {
 	 * @return Peaks search engine locally accessible data file.
 	 */
 	public File getDataFile() {
-		PeaksParameter peaksOnlineParameter = parameters.get(SUBMIT_SEARCH_DATAFILE);
+		final PeaksParameter peaksOnlineParameter = parameters.get(SUBMIT_SEARCH_DATAFILE);
 
 		if (peaksOnlineParameter != null) {
 			return (File) peaksOnlineParameter.getParameterValue();
@@ -132,19 +132,19 @@ public final class PeaksSearchParameters {
 		return parameters.size();
 	}
 
-	public void setParameter(PeaksParameter peaksOnlineParameter) {
+	public void setParameter(final PeaksParameter peaksOnlineParameter) {
 		parameters.put(peaksOnlineParameter.getParameterName(), peaksOnlineParameter);
 	}
 
-	public void removeParameter(String parameterName) {
+	public void removeParameter(final String parameterName) {
 		parameters.remove(parameterName);
 	}
 
-	public PeaksParameter getParameter(String parameterName) {
+	public PeaksParameter getParameter(final String parameterName) {
 		return parameters.get(parameterName);
 	}
 
-	public Object getParameterValue(String parameterName) {
+	public Object getParameterValue(final String parameterName) {
 		return parameters.get(parameterName).getParameterValue();
 	}
 
@@ -154,15 +154,15 @@ public final class PeaksSearchParameters {
 	 * @param parameterName
 	 * @param parameterValue String representation of this parameter value
 	 */
-	public void setParameter(String parameterName, String parameterValue) {
+	public void setParameter(final String parameterName, final String parameterValue) {
 		setParameter(new PeaksParameter(parameterName, parameterName.equals(SUBMIT_SEARCH_DATAFILE) ? new File(parameterValue) : parameterValue));
 	}
 
 	/**
 	 * @param parameters parameter name and parameter value pairs.
 	 */
-	public void setParameters(Map<String, String> parameters) {
-		for (Map.Entry<String, String> me : parameters.entrySet()) {
+	public void setParameters(final Map<String, String> parameters) {
+		for (final Map.Entry<String, String> me : parameters.entrySet()) {
 			setParameter(me.getKey(), me.getValue());
 		}
 	}

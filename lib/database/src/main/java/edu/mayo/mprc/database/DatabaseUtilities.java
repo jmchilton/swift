@@ -30,7 +30,7 @@ public final class DatabaseUtilities {
 
 		private String value;
 
-		SchemaInitialization(String value) {
+		SchemaInitialization(final String value) {
 			this.value = value;
 		}
 
@@ -39,15 +39,15 @@ public final class DatabaseUtilities {
 		}
 	}
 
-	public static SessionFactory getSessionFactory(String url, String userName, String password,
-	                                               String dialect,
-	                                               String driverClassName,
-	                                               String defaultSchema, String schema,
-	                                               Map<String, String> hibernateProperties,
-	                                               List<String> mappingResources,
-	                                               SchemaInitialization initialization) {
+	public static SessionFactory getSessionFactory(final String url, final String userName, final String password,
+	                                               final String dialect,
+	                                               final String driverClassName,
+	                                               final String defaultSchema, final String schema,
+	                                               final Map<String, String> hibernateProperties,
+	                                               final List<String> mappingResources,
+	                                               final SchemaInitialization initialization) {
 		try {
-			Configuration cfg = getHibernateConfiguration(url, userName, password, dialect, driverClassName, defaultSchema,
+			final Configuration cfg = getHibernateConfiguration(url, userName, password, dialect, driverClassName, defaultSchema,
 					schema, hibernateProperties, mappingResources, initialization);
 			return cfg.buildSessionFactory();
 		} catch (Exception t) {
@@ -55,13 +55,13 @@ public final class DatabaseUtilities {
 		}
 	}
 
-	public static Configuration getHibernateConfiguration(String url, String userName, String password, String dialect,
-	                                                      String driverClassName, String defaultSchema, String schema,
-	                                                      Map<String, String> hibernateProperties, List<String> mappingResources,
-	                                                      SchemaInitialization initialization) {
-		Configuration cfg = new Configuration();
+	public static Configuration getHibernateConfiguration(final String url, final String userName, final String password, final String dialect,
+	                                                      final String driverClassName, final String defaultSchema, final String schema,
+	                                                      final Map<String, String> hibernateProperties, final List<String> mappingResources,
+	                                                      final SchemaInitialization initialization) {
+		final Configuration cfg = new Configuration();
 
-		for (String resource : mappingResources) {
+		for (final String resource : mappingResources) {
 			cfg.addResource(resource);
 		}
 
@@ -85,13 +85,13 @@ public final class DatabaseUtilities {
 
 		cfg.setNamingStrategy(new SwiftDatabaseNamingStrategy());
 
-		for (Map.Entry<String, String> entry : hibernateProperties.entrySet()) {
+		for (final Map.Entry<String, String> entry : hibernateProperties.entrySet()) {
 			cfg.setProperty(entry.getKey(), entry.getValue());
 		}
 		return cfg;
 	}
 
-	public static void schemaInitialization(Configuration cfg, SchemaInitialization initialization) {
+	public static void schemaInitialization(final Configuration cfg, final SchemaInitialization initialization) {
 		switch (initialization) {
 			case Create:
 				cfg.setProperty("hibernate.hbm2ddl.auto", "create");
@@ -114,9 +114,9 @@ public final class DatabaseUtilities {
 	 * @param mappingResources List of .hbm.xml files to use for mapping objects.
 	 * @return A session factory for a test database.
 	 */
-	public static Configuration getTestHibernateConfiguration(List<String> mappingResources) {
+	public static Configuration getTestHibernateConfiguration(final List<String> mappingResources) {
 		LOGGER.debug("Creating test database configuration");
-		Map<String, String> hibernateProperties = new HashMap<String, String>();
+		final Map<String, String> hibernateProperties = new HashMap<String, String>();
 		hibernateProperties.put("hibernate.show_sql", "false");
 		hibernateProperties.put("hibernate.current_session_context_class", "thread");
 		hibernateProperties.put("hibernate.transaction.factory_class", "org.hibernate.transaction.JDBCTransactionFactory");
@@ -126,15 +126,15 @@ public final class DatabaseUtilities {
 				SchemaInitialization.CreateDrop);
 	}
 
-	public static SessionFactory getTestSessionFactory(List<String> mappingResources) {
+	public static SessionFactory getTestSessionFactory(final List<String> mappingResources) {
 		return getTestHibernateConfiguration(mappingResources).buildSessionFactory();
 	}
 
 	/**
 	 * Turns a set of persistable objects into a list of their ids.
 	 */
-	public static <T extends PersistableBase> Integer[] getIdList(Collection<T> items) {
-		Integer[] ids = new Integer[items.size()];
+	public static <T extends PersistableBase> Integer[] getIdList(final Collection<T> items) {
+		final Integer[] ids = new Integer[items.size()];
 		final Iterator<T> iterator = items.iterator();
 		for (int i = 0; i < ids.length; i++) {
 			final T item = iterator.next();

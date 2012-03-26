@@ -8,13 +8,13 @@ import java.io.File;
  * @author Roman Zenka
  */
 public class DummyFileTokenTranslator implements FileTokenToDatabaseTranslator {
-    @Override
-    public String fileToDatabaseToken(File file) {
-        return file.getAbsolutePath();
-    }
+	@Override
+	public String fileToDatabaseToken(final File file) {
+		return file.getAbsolutePath();
+	}
 
-    @Override
-    public File databaseTokenToFile(String tokenPath) {
-        return new File(tokenPath);
-    }
+	@Override
+	public File databaseTokenToFile(final String tokenPath) {
+		return new File(tokenPath);
+	}
 }

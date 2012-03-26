@@ -11,12 +11,12 @@ import java.io.File;
 public final class SequestMGFWorkPacket extends EngineWorkPacket {
 	private static final long serialVersionUID = 20101221L;
 
-	public SequestMGFWorkPacket(File outputFile, File searchParamsFile, File inputFile, File databaseFile, boolean publishSearchFiles, String taskId, boolean fromScratch) {
+	public SequestMGFWorkPacket(final File outputFile, final File searchParamsFile, final File inputFile, final File databaseFile, final boolean publishSearchFiles, final String taskId, final boolean fromScratch) {
 		super(inputFile, outputFile, searchParamsFile, databaseFile, publishSearchFiles, taskId, fromScratch);
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new SequestMGFWorkPacket(
 				new File(wipFolder, getOutputFile().getName()),
 				getSearchParamsFile(),

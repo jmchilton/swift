@@ -19,12 +19,12 @@ public final class MultiFileTransferRequest implements Serializable {
 	private boolean areSource;
 	private InetSocketAddress inetSocketAddress;
 
-	public MultiFileTransferRequest(long requestId, List<FileInfo> fileInfos) {
+	public MultiFileTransferRequest(final long requestId, final List<FileInfo> fileInfos) {
 		this.requestId = requestId;
 		this.fileInfos = fileInfos;
 	}
 
-	public MultiFileTransferRequest(long requestId, List<FileInfo> fileInfos, InetSocketAddress inetSocketAddress) {
+	public MultiFileTransferRequest(final long requestId, final List<FileInfo> fileInfos, final InetSocketAddress inetSocketAddress) {
 		this(requestId, fileInfos);
 		this.inetSocketAddress = inetSocketAddress;
 	}
@@ -33,7 +33,7 @@ public final class MultiFileTransferRequest implements Serializable {
 		return fileInfos;
 	}
 
-	public void setFileInfos(List<FileInfo> fileInfos) {
+	public void setFileInfos(final List<FileInfo> fileInfos) {
 		this.fileInfos = fileInfos;
 	}
 
@@ -41,7 +41,7 @@ public final class MultiFileTransferRequest implements Serializable {
 		return inetSocketAddress;
 	}
 
-	public void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+	public void setInetSocketAddress(final InetSocketAddress inetSocketAddress) {
 		this.inetSocketAddress = inetSocketAddress;
 	}
 
@@ -54,7 +54,7 @@ public final class MultiFileTransferRequest implements Serializable {
 		return areSource;
 	}
 
-	public void setBeSource(boolean areSource) {
+	public void setBeSource(final boolean areSource) {
 		this.areSource = areSource;
 	}
 

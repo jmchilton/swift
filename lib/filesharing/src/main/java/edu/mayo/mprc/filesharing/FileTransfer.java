@@ -26,12 +26,12 @@ public final class FileTransfer {
 		transferedFiles = new LinkedList<File>();
 	}
 
-	public FileTransfer(List<File> files) {
+	public FileTransfer(final List<File> files) {
 		this();
 		this.files = files;
 	}
 
-	public FileTransfer(File file) {
+	public FileTransfer(final File file) {
 		this();
 		files = new LinkedList<File>();
 		files.add(file);
@@ -87,7 +87,7 @@ public final class FileTransfer {
 		return transferedFiles;
 	}
 
-	public void setTransferedFiles(List<File> transferedFiles) {
+	public void setTransferedFiles(final List<File> transferedFiles) {
 		this.transferedFiles = transferedFiles;
 	}
 
@@ -100,7 +100,7 @@ public final class FileTransfer {
 		return errorException;
 	}
 
-	public void setErrorException(Exception errorException) {
+	public void setErrorException(final Exception errorException) {
 		this.errorException = errorException;
 	}
 }

@@ -23,7 +23,7 @@ public final class FileType implements UserType {
 	public FileType() {
 	}
 
-	public static void initialize(FileTokenToDatabaseTranslator translator) {
+	public static void initialize(final FileTokenToDatabaseTranslator translator) {
 		FileType.translator = translator;
 	}
 
@@ -35,7 +35,7 @@ public final class FileType implements UserType {
 		return File.class;
 	}
 
-	public boolean equals(Object o, Object o1) throws HibernateException {
+	public boolean equals(final Object o, final Object o1) throws HibernateException {
 		if (o == o1) {
 			return true;
 		}
@@ -45,12 +45,12 @@ public final class FileType implements UserType {
 		return o.equals(o1);
 	}
 
-	public int hashCode(Object o) throws HibernateException {
+	public int hashCode(final Object o) throws HibernateException {
 		return o.hashCode();
 	}
 
-	public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner) throws HibernateException, SQLException {
-		String uriString = resultSet.getString(names[0]);
+	public Object nullSafeGet(final ResultSet resultSet, final String[] names, final Object owner) throws HibernateException, SQLException {
+		final String uriString = resultSet.getString(names[0]);
 
 		if (resultSet.wasNull()) {
 			return null;
@@ -66,7 +66,7 @@ public final class FileType implements UserType {
 		}
 	}
 
-	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index) throws HibernateException, SQLException {
+	public void nullSafeSet(final PreparedStatement preparedStatement, final Object value, final int index) throws HibernateException, SQLException {
 		if (null == value) {
 			preparedStatement.setNull(index, Types.VARCHAR);
 		} else {
@@ -81,7 +81,7 @@ public final class FileType implements UserType {
 		}
 	}
 
-	public Object deepCopy(Object o) throws HibernateException {
+	public Object deepCopy(final Object o) throws HibernateException {
 		if (o == null) {
 			return null;
 		}
@@ -92,7 +92,7 @@ public final class FileType implements UserType {
 		return false;
 	}
 
-	public Serializable disassemble(Object o) throws HibernateException {
+	public Serializable disassemble(final Object o) throws HibernateException {
 		try {
 			checkTranslatorNotNull();
 			return translator.fileToDatabaseToken((File) o);
@@ -101,7 +101,7 @@ public final class FileType implements UserType {
 		}
 	}
 
-	public Object assemble(Serializable serializable, Object o) throws HibernateException {
+	public Object assemble(final Serializable serializable, final Object o) throws HibernateException {
 		try {
 			if (!(serializable instanceof String)) {
 				ExceptionUtilities.throwCastException(serializable, String.class);
@@ -114,7 +114,7 @@ public final class FileType implements UserType {
 		}
 	}
 
-	public Object replace(Object original, Object target, Object owner) throws HibernateException {
+	public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
 		return original;
 	}
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public final class MockCurationDao implements CurationDao {
 	@Override
-	public Curation getCuration(int curationID) {
+	public Curation getCuration(final int curationID) {
 		return null;
 	}
 
@@ -33,65 +33,65 @@ public final class MockCurationDao implements CurationDao {
 	}
 
 	@Override
-	public void addCuration(Curation curation) {
+	public void addCuration(final Curation curation) {
 
 	}
 
 	@Override
-	public void save(SourceDatabaseArchive archive) {
+	public void save(final SourceDatabaseArchive archive) {
 	}
 
 	@Override
-	public void deleteCuration(Curation curation, Change change) {
+	public void deleteCuration(final Curation curation, final Change change) {
 	}
 
 	@Override
-	public FastaSource getDataSourceByName(String urlString) {
+	public FastaSource getDataSourceByName(final String urlString) {
 		return null;
 	}
 
 	@Override
-	public FastaSource getDataSourceByUrl(String urlString) {
+	public FastaSource getDataSourceByUrl(final String urlString) {
 		return null;
 	}
 
 	@Override
-	public SourceDatabaseArchive findSourceDatabaseInExistence(String s, DateTime urlLastMod) {
+	public SourceDatabaseArchive findSourceDatabaseInExistence(final String s, final DateTime urlLastMod) {
 		return null;
 	}
 
 	@Override
-	public HeaderTransform getHeaderTransformByUrl(String url) {
+	public HeaderTransform getHeaderTransformByUrl(final String url) {
 		return null;
 	}
 
 	@Override
-	public HeaderTransform getHeaderTransformByName(String name) {
+	public HeaderTransform getHeaderTransformByName(final String name) {
 		return null;
 	}
 
 	@Override
-	public List<Curation> getMatchingCurations(Curation templateCuration, Date earliestRunDate, Date latestRunDate) {
+	public List<Curation> getMatchingCurations(final Curation templateCuration, final Date earliestRunDate, final Date latestRunDate) {
 		return null;
 	}
 
 	@Override
-	public Curation findCuration(String shortDbName) {
+	public Curation findCuration(final String shortDbName) {
 		return null;
 	}
 
 	@Override
-	public Curation getCurationByShortName(String uniqueName) {
+	public Curation getCurationByShortName(final String uniqueName) {
 		return null;
 	}
 
 	@Override
-	public List<Curation> getCurationsByShortname(String curationShortName) {
+	public List<Curation> getCurationsByShortname(final String curationShortName) {
 		return null;
 	}
 
 	@Override
-	public List<Curation> getCurationsByShortname(String shortname, boolean ignoreCase) {
+	public List<Curation> getCurationsByShortname(final String shortname, final boolean ignoreCase) {
 		return null;
 	}
 
@@ -101,7 +101,7 @@ public final class MockCurationDao implements CurationDao {
 	}
 
 	@Override
-	public void addHeaderTransform(HeaderTransform sprotTrans) {
+	public void addHeaderTransform(final HeaderTransform sprotTrans) {
 	}
 
 	@Override
@@ -110,22 +110,22 @@ public final class MockCurationDao implements CurationDao {
 	}
 
 	@Override
-	public long countAll(Class<? extends Evolvable> clazz) {
+	public long countAll(final Class<? extends Evolvable> clazz) {
 		return 0;
 	}
 
 	@Override
-	public long rowCount(Class<?> clazz) {
+	public long rowCount(final Class<?> clazz) {
 		return 0;
 	}
 
 	@Override
-	public Curation addLegacyCuration(String legacyName) {
+	public Curation addLegacyCuration(final String legacyName) {
 		return null;
 	}
 
 	@Override
-	public void addFastaSource(FastaSource source) {
+	public void addFastaSource(final FastaSource source) {
 	}
 
 	@Override

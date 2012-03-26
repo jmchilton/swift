@@ -17,16 +17,16 @@ public class Report {
 
 	private boolean rowStarted = false;
 
-	public Report(Writer w) {
+	public Report(final Writer w) {
 		this.w = w;
 	}
 
-	public static String esc(String s) {
+	public static String esc(final String s) {
 		return StringUtilities.escapeHtml(s);
 	}
 
 
-	public Report write(String s) {
+	public Report write(final String s) {
 		try {
 			w.write(s);
 		} catch (IOException e) {
@@ -40,7 +40,7 @@ public class Report {
 	 *
 	 * @param title Title on the top of the table.
 	 */
-	public Report startTable(String title) {
+	public Report startTable(final String title) {
 		rowStarted = false;
 		if (title != null) {
 			header(title);
@@ -55,11 +55,11 @@ public class Report {
 		return this;
 	}
 
-	public Report cell(String text) {
+	public Report cell(final String text) {
 		return cell(text, 1);
 	}
 
-	public Report cell(String text, int colspan) {
+	public Report cell(final String text, final int colspan) {
 		checkRow();
 		if (colspan == 1) {
 			write("<td>");
@@ -82,13 +82,13 @@ public class Report {
 		}
 	}
 
-	public Report hCell(String text) {
+	public Report hCell(final String text) {
 		checkRow();
 		write("<th>" + esc(text) + "</th>\n");
 		return this;
 	}
 
-	public Report hCellRaw(String text) {
+	public Report hCellRaw(final String text) {
 		checkRow();
 		write("<th>" + text + "</th>\n");
 		return this;
@@ -100,7 +100,7 @@ public class Report {
 	 * @param key   Key, displayed in bold.
 	 * @param value Value.
 	 */
-	public Report addKeyValueTable(String key, Object value) {
+	public Report addKeyValueTable(final String key, final Object value) {
 		hCell(key);
 		cell(value == null ? "<null>" : value.toString());
 		nextRow();
@@ -115,7 +115,7 @@ public class Report {
 		return this;
 	}
 
-	public Report header(String text) {
+	public Report header(final String text) {
 		write("<h2>" + esc(text) + "</h2>\n");
 		return this;
 	}

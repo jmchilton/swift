@@ -12,7 +12,7 @@ import java.util.Comparator;
 class FilenameComparator implements Comparator<File>, Serializable {
 	private static final long serialVersionUID = 20100312L;
 
-	public int compare(File o1, File o2) {
+	public int compare(final File o1, final File o2) {
 		if (o1.isDirectory() && !o2.isDirectory()) {
 			return -1;
 		} else if (!o1.isDirectory() && o2.isDirectory()) {

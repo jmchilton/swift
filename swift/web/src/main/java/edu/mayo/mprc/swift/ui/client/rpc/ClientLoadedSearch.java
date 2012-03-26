@@ -15,7 +15,7 @@ public final class ClientLoadedSearch implements ClientValue {
 	public ClientLoadedSearch() {
 	}
 
-	public ClientLoadedSearch(ClientSwiftSearchDefinition definition, ClientParamSetList clientParamSetList) {
+	public ClientLoadedSearch(final ClientSwiftSearchDefinition definition, final ClientParamSetList clientParamSetList) {
 		this.definition = definition;
 		this.clientParamSetList = clientParamSetList;
 	}

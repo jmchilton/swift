@@ -43,12 +43,12 @@ public final class MSMSEvalWorkerTest {
 	@Test(dependsOnMethods = {"createTestFiles"}, enabled = true)
 	public void msmsEvalWorkerTest() {
 
-		MSMSEvalWorker msmsEvalWorker = new MSMSEvalWorker();
+		final MSMSEvalWorker msmsEvalWorker = new MSMSEvalWorker();
 		msmsEvalWorker.setMsmsEvalExecutable(MSMSEvalTest.getMsmsEvalExecutable());
 
-		DaemonWorkerTester daemonWorkerTester = new DaemonWorkerTester(msmsEvalWorker);
+		final DaemonWorkerTester daemonWorkerTester = new DaemonWorkerTester(msmsEvalWorker);
 
-		Object workerToken = daemonWorkerTester.sendWork(new MSMSEvalWorkPacket(mgfFile, paramFile, tempDirectory, "0"), null);
+		final Object workerToken = daemonWorkerTester.sendWork(new MSMSEvalWorkPacket(mgfFile, paramFile, tempDirectory, "0"), null);
 
 		while (!daemonWorkerTester.isDone(workerToken)) {
 			try {
@@ -67,12 +67,12 @@ public final class MSMSEvalWorkerTest {
 	@Test(dependsOnMethods = {"msmsEvalWorkerTest"}, enabled = true)
 	public void msmsEvalWorkerSkippedExecutionTest() {
 
-		MSMSEvalWorker msmsEvalWorker = new MSMSEvalWorker();
+		final MSMSEvalWorker msmsEvalWorker = new MSMSEvalWorker();
 		msmsEvalWorker.setMsmsEvalExecutable(MSMSEvalTest.getMsmsEvalExecutable());
 
-		DaemonWorkerTester daemonWorkerTester = new DaemonWorkerTester(msmsEvalWorker);
+		final DaemonWorkerTester daemonWorkerTester = new DaemonWorkerTester(msmsEvalWorker);
 
-		Object workerToken = daemonWorkerTester.sendWork(new MSMSEvalWorkPacket(mgfFile, paramFile, tempDirectory, "0", false), null);
+		final Object workerToken = daemonWorkerTester.sendWork(new MSMSEvalWorkPacket(mgfFile, paramFile, tempDirectory, "0", false), null);
 
 		while (!daemonWorkerTester.isDone(workerToken)) {
 			try {

@@ -38,27 +38,27 @@ public final class MascotDeploymentServiceTest {
 	public void testMascotDeploymentSuccess() {
 		init();
 
-		MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
-		File fastaFolder = Installer.testFastaFiles(null, Installer.Action.INSTALL);
+		final MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
+		final File fastaFolder = Installer.testFastaFiles(null, Installer.Action.INSTALL);
 
 		try {
 
 			final File mockMascotDatFile = monitor.getMockMascotDatFile();
 			final File mockMonitorLogFile = monitor.getMockMonitorLogFile();
 
-			MascotDeploymentService service = MascotDeploymentService.createForTesting(mockMascotDatFile, mockMonitorLogFile);
+			final MascotDeploymentService service = MascotDeploymentService.createForTesting(mockMascotDatFile, mockMonitorLogFile);
 
 			new Thread(monitor).start();
 
-			File fakeFASTAFileToDeploy = new File(fastaFolder, "test_in.fasta");
+			final File fakeFASTAFileToDeploy = new File(fastaFolder, "test_in.fasta");
 
-			Curation toDeploy = new Curation();
+			final Curation toDeploy = new Curation();
 			toDeploy.setShortName("test_in");
 			toDeploy.setCurationFile(fakeFASTAFileToDeploy);
-			DeploymentRequest request = new DeploymentRequest(this.getClass().getSimpleName(), toDeploy.getFastaFile());
+			final DeploymentRequest request = new DeploymentRequest(this.getClass().getSimpleName(), toDeploy.getFastaFile());
 			WorkPacketBase.simulateTransfer(request);
 
-			DeploymentResult result = service.performDeployment(request);
+			final DeploymentResult result = service.performDeployment(request);
 
 			Assert.assertNotNull(result);
 
@@ -74,12 +74,12 @@ public final class MascotDeploymentServiceTest {
 	public void testAppendToMascotDat() throws Throwable {
 		init();
 		try {
-			MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
-			MascotDeploymentService service = MascotDeploymentService.createForTesting(monitor.getMockMascotDatFile(), monitor.getMockMonitorLogFile());
+			final MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
+			final MascotDeploymentService service = MascotDeploymentService.createForTesting(monitor.getMockMascotDatFile(), monitor.getMockMonitorLogFile());
 
-			String expected = testFastaFile.getAbsolutePath();
+			final String expected = testFastaFile.getAbsolutePath();
 			service.updateMascotDatFile("test_003", testFastaFile.getAbsoluteFile());
-			String actual = service.getPreviousDeploymentPath("test_003");
+			final String actual = service.getPreviousDeploymentPath("test_003");
 			Assert.assertEquals(actual, expected);
 
 		} catch (Exception t) {
@@ -91,8 +91,8 @@ public final class MascotDeploymentServiceTest {
 	@Test(expectedExceptions = MprcException.class)
 	public void testDuplicateEntries() throws Throwable {
 		init();
-		MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
-		MascotDeploymentService service = MascotDeploymentService.createForTesting(monitor.getMockMascotDatFile(), monitor.getMockMonitorLogFile());
+		final MockMonitor monitor = new MockMonitor(/*toSucceed*/ true);
+		final MascotDeploymentService service = MascotDeploymentService.createForTesting(monitor.getMockMascotDatFile(), monitor.getMockMonitorLogFile());
 		service.getPreviousDeploymentPath("test_002");
 	}
 
@@ -112,7 +112,7 @@ public final class MascotDeploymentServiceTest {
 			this.toSucceed = true;
 		}
 
-		public MockMonitor(boolean toSucceed) {
+		public MockMonitor(final boolean toSucceed) {
 			this.toSucceed = toSucceed;
 		}
 

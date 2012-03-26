@@ -10,7 +10,7 @@ public class ReportInfo implements Comparable<ReportInfo> {
 	private String filePath;
 	private boolean hasAnalysis;
 
-	public ReportInfo(long reportId, String filePath, boolean hasAnalysis) {
+	public ReportInfo(final long reportId, final String filePath, final boolean hasAnalysis) {
 		this.reportId = reportId;
 		this.filePath = filePath;
 		this.hasAnalysis = hasAnalysis;
@@ -29,7 +29,7 @@ public class ReportInfo implements Comparable<ReportInfo> {
 	}
 
 	@Override
-	public int compareTo(ReportInfo reportInfo) {
+	public int compareTo(final ReportInfo reportInfo) {
 		return this.getFilePath().compareTo(reportInfo.getFilePath());
 	}
 }

@@ -29,7 +29,7 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 	public UnimodDaoHibernate() {
 	}
 
-	public UnimodDaoHibernate(DatabasePlaceholder databasePlaceholder) {
+	public UnimodDaoHibernate(final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 	}
 
@@ -49,8 +49,8 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 			final List<Mod> list = (List<Mod>) allCriteria(Mod.class)
 					.setReadOnly(true)
 					.list();
-			Unimod unimod = new Unimod();
-			for (Mod mod : list) {
+			final Unimod unimod = new Unimod();
+			for (final Mod mod : list) {
 				unimod.add(mod);
 				session.evict(mod);
 			}
@@ -61,10 +61,10 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 	}
 
 	@Override
-	public UnimodUpgrade upgrade(Unimod unimod, Change request) {
+	public UnimodUpgrade upgrade(final Unimod unimod, final Change request) {
 		try {
 			final List<Mod> list = (List<Mod>) allCriteria(Mod.class).list();
-			UnimodUpgrade upgrade = new UnimodUpgrade();
+			final UnimodUpgrade upgrade = new UnimodUpgrade();
 			upgrade.upgrade(list, unimod, request, getSession());
 			return upgrade;
 		} catch (Exception t) {
@@ -73,7 +73,7 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		if (countAll(Mod.class) == 0) {
 			return "No unimod modifications defined";
 		}
@@ -81,11 +81,11 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 		if (countAll(Mod.class) == 0) {
-			Change change = new Change("Installing initial unimod modifications", new DateTime());
+			final Change change = new Change("Installing initial unimod modifications", new DateTime());
 			LOGGER.info(change.getReason());
-			Unimod unimod = getDefaultUnimod();
+			final Unimod unimod = getDefaultUnimod();
 
 			final UnimodUpgrade upgrade = upgrade(unimod, change);
 			LOGGER.debug("Unimod install results: " + upgrade.toString());
@@ -93,7 +93,7 @@ public final class UnimodDaoHibernate extends DaoBase implements UnimodDao {
 	}
 
 	private static Unimod getDefaultUnimod() {
-		Unimod unimod = new Unimod();
+		final Unimod unimod = new Unimod();
 		try {
 			unimod.parseUnimodXML(ResourceUtilities.getStream("classpath:edu/mayo/mprc/unimod/unimod.xml", Unimod.class));
 		} catch (Exception t) {

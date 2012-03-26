@@ -59,7 +59,7 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		private String mappingData; // mappingData that was passed to AbstractParam in order to get below allowedValues
 		private List<? extends ClientValue> allowedValues;
 
-		private Registration(Validatable v, String param, ValidationPanel validationPanel) {
+		private Registration(final Validatable v, final String param, final ValidationPanel validationPanel) {
 			this.v = v;
 			this.validationPanel = validationPanel;
 			this.param = param;
@@ -91,7 +91,7 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	}
 
 
-	public ValidationController(ServiceAsync serviceAsync, ParamSetSelectionController selector) {
+	public ValidationController(final ServiceAsync serviceAsync, final ParamSetSelectionController selector) {
 		this.s = serviceAsync;
 		this.selector = selector;
 		selector.addParamSetSelectionListener(this);
@@ -101,7 +101,7 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		return contentsHiding;
 	}
 
-	public void setContentsHiding(HidesPageContentsWhileLoading contentsHiding) {
+	public void setContentsHiding(final HidesPageContentsWhileLoading contentsHiding) {
 		this.contentsHiding = contentsHiding;
 	}
 
@@ -112,15 +112,15 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	 * @param param      The param to associate this Validatable with.
 	 * @param validation The ValidationPanel in which to place errors/warnings received for the given param.
 	 */
-	public void add(Validatable v, String param, ValidationPanel validation) {
-		Registration reg = new Registration(v, param, validation);
+	public void add(final Validatable v, final String param, final ValidationPanel validation) {
+		final Registration reg = new Registration(v, param, validation);
 		byParam.put(param, reg);
 		byWidget.put(v, reg);
 		byValidationPanel.put(validation, reg);
 		v.addChangeListener(this);
 	}
 
-	public void update(String paramId, ClientValidationList cv) {
+	public void update(final String paramId, final ClientValidationList cv) {
 		update(paramId, null, cv, new HashSet<Validatable>());
 	}
 
@@ -136,11 +136,11 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	 *                validations cleared in case there are multiple validations for a given
 	 *                Validatable.
 	 */
-	public void update(String paramId,
+	public void update(final String paramId,
 	                   ClientValue value,
-	                   ClientValidationList ccv,
-	                   HashSet<Validatable> visited) {
-		Registration rr = byParam.get(paramId);
+	                   final ClientValidationList ccv,
+	                   final HashSet<Validatable> visited) {
+		final Registration rr = byParam.get(paramId);
 		if (value == null && ccv != null) {
 			value = ccv.getValue();
 		}
@@ -155,14 +155,14 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		}
 		if (ccv != null) {
 			rr.cv = ccv;
-			int sev = ccv.getWorstSeverity();
+			final int sev = ccv.getWorstSeverity();
 			rr.getV().setValidationSeverity(sev);
 			if (sev > ClientValidation.SEVERITY_WARNING) {
 				invalid.add(rr);
 			} else {
 				invalid.remove(rr);
 			}
-			for (ClientValidation v : ccv) {
+			for (final ClientValidation v : ccv) {
 				if (v.getSeverity() != ClientValidation.SEVERITY_NONE) {
 					rr.getValidationPanel().addValidation(v.shallowCopy(), rr.getV());
 				}
@@ -181,12 +181,12 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		}
 	}
 
-	public void onChange(Widget widget) {
-		Validatable v = (Validatable) widget;
+	public void onChange(final Widget widget) {
+		final Validatable v = (Validatable) widget;
 		if (v == null) {
 			throw new RuntimeException("ValidationController received change event for non Validatable widget");
 		}
-		Registration r = (Registration) byWidget.get(v);
+		final Registration r = (Registration) byWidget.get(v);
 		if (r == null) {
 			throw new RuntimeException("ValidationController received changed event for unregistered Validatable");
 		}
@@ -224,53 +224,53 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	private void createTemporary(final Registration r, final ClientValue value) {
 		s.save(new Service.Token(true), paramSet, null, null, null,
 				false, new AsyncCallback<ClientParamSet>() {
-					public void onFailure(Throwable throwable) {
-						SimpleParamsEditorPanel.handleGlobalError(throwable);
-					}
+			public void onFailure(final Throwable throwable) {
+				SimpleParamsEditorPanel.handleGlobalError(throwable);
+			}
 
-					public void onSuccess(final ClientParamSet newParamSet) {
-						selector.refresh(new ParamSetSelectionController.Callback() {
-							public void refreshed() {
-								// we match ClientParamSets by pointer, so always use the one from the list.
-								ClientParamSet selectme = null;
-								List<ClientParamSet> list = selector.getClientParamSets();
-								for (ClientParamSet aList : list) {
-									if (aList.equals(newParamSet)) {
-										selectme = aList;
-										break;
-									}
-								}
-								if (selectme == null) {
-									throw new RuntimeException("Temporary param set isn't in list");
-								}
-								selector.select(selectme);
+			public void onSuccess(final ClientParamSet newParamSet) {
+				selector.refresh(new ParamSetSelectionController.Callback() {
+					public void refreshed() {
+						// we match ClientParamSets by pointer, so always use the one from the list.
+						ClientParamSet selectme = null;
+						final List<ClientParamSet> list = selector.getClientParamSets();
+						for (final ClientParamSet aList : list) {
+							if (aList.equals(newParamSet)) {
+								selectme = aList;
+								break;
 							}
-						});
+						}
+						if (selectme == null) {
+							throw new RuntimeException("Temporary param set isn't in list");
+						}
+						selector.select(selectme);
 					}
 				});
+			}
+		});
 	}
 
-	private void doUpdate(Registration r, ClientValue value) {
+	private void doUpdate(final Registration r, final ClientValue value) {
 		s.update(new Service.Token(true), paramSet, r.getParam(), value, new UpdateCallback(r));
 	}
 
 	private class UpdateCallback implements AsyncCallback<ClientParamsValidations> {
 		private Registration r;
 
-		UpdateCallback(Registration r) {
+		UpdateCallback(final Registration r) {
 			this.r = r;
 		}
 
-		public void onFailure(Throwable throwable) {
+		public void onFailure(final Throwable throwable) {
 			r.getValidationPanel().addValidation(new ClientValidation(throwable.toString()), r.getV());
 		}
 
-		public void onSuccess(ClientParamsValidations o) {
-			HashSet<Validatable> visited = new HashSet<Validatable>();
+		public void onSuccess(final ClientParamsValidations o) {
+			final HashSet<Validatable> visited = new HashSet<Validatable>();
 			// Update all validations to clear them
-			for (Registration r : byWidget.values()) {
-				String paramId = r.getParam();
-				ClientValidationList cv = o.getValidationMap().get(paramId);
+			for (final Registration r : byWidget.values()) {
+				final String paramId = r.getParam();
+				final ClientValidationList cv = o.getValidationMap().get(paramId);
 				if (cv == null) {
 					update(paramId, null);
 				} else {
@@ -278,9 +278,9 @@ public final class ValidationController implements ChangeListener, SourcesChange
 				}
 			}
 			// Update all others
-			for (Map.Entry<String, ClientValidationList> entry : o.getValidationMap().entrySet()) {
-				String paramId = entry.getKey();
-				ClientValidationList cv = entry.getValue();
+			for (final Map.Entry<String, ClientValidationList> entry : o.getValidationMap().entrySet()) {
+				final String paramId = entry.getKey();
+				final ClientValidationList cv = entry.getValue();
 				update(paramId, cv.getValue(), cv, visited);
 			}
 			finishedUpdating();
@@ -292,9 +292,9 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		fetchAllowedValues(new Callback() {
 
 			public void done() {
-				List<ClientParam> vals = values.getValues();
-				HashSet<Validatable> visited = new HashSet<Validatable>();
-				for (ClientParam val : vals) {
+				final List<ClientParam> vals = values.getValues();
+				final HashSet<Validatable> visited = new HashSet<Validatable>();
+				for (final ClientParam val : vals) {
 					update(val.getParamId(), val.getValue(), val.getValidationList(), visited);
 				}
 				finishedUpdating();
@@ -308,38 +308,38 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		return invalid.size() == 0;
 	}
 
-	public void getAllowedValuesForValidatable(Validatable v, final Callback cb) {
+	public void getAllowedValuesForValidatable(final Validatable v, final Callback cb) {
 		final Registration r = byWidget.get(v);
 		s.getAllowedValues(new Service.Token(true),
 				paramSet,
 				new String[]{r.getParam()},
 				new String[]{null}, new AsyncCallback<List<List<ClientValue>>>() {
 
-					public void onFailure(Throwable throwable) {
-						SimpleParamsEditorPanel.handleGlobalError(throwable);
-					}
+			public void onFailure(final Throwable throwable) {
+				SimpleParamsEditorPanel.handleGlobalError(throwable);
+			}
 
-					public void onSuccess(List<List<ClientValue>> allowedValues) {
-						if (allowedValues.size() != 1) {
-							throw new RuntimeException("Incorrect number of allowed values returned.");
-						}
-						r.allowedValues = allowedValues.get(0);
-						HashSet<Validatable> visited = new HashSet<Validatable>();
-						update(r.getParam(), null, r.getCv(), visited);
-						if (cb != null) {
-							cb.done();
-						}
-					}
-				});
+			public void onSuccess(final List<List<ClientValue>> allowedValues) {
+				if (allowedValues.size() != 1) {
+					throw new RuntimeException("Incorrect number of allowed values returned.");
+				}
+				r.allowedValues = allowedValues.get(0);
+				final HashSet<Validatable> visited = new HashSet<Validatable>();
+				update(r.getParam(), null, r.getCv(), visited);
+				if (cb != null) {
+					cb.done();
+				}
+			}
+		});
 
 	}
 
 	private void fetchAllowedValues(final Callback cb) {
 		final List<String> params = new ArrayList<String>();
 		final List<String> mappingDatas = new ArrayList<String>();
-		for (Object o : byWidget.values()) {
-			Registration r = (Registration) o;
-			String newMappingData = r.getV().getAllowedValuesParam();
+		for (final Object o : byWidget.values()) {
+			final Registration r = (Registration) o;
+			final String newMappingData = r.getV().getAllowedValuesParam();
 			if (newMappingData != null && ((!newMappingData.equals(r.getMappingData())) || r.getAllowedValues() == null)) {
 				params.add(r.getParam());
 				mappingDatas.add(newMappingData);
@@ -358,43 +358,43 @@ public final class ValidationController implements ChangeListener, SourcesChange
 				params.toArray(new String[params.size()]),
 				mappingDatas.toArray(new String[mappingDatas.size()]), new AsyncCallback<List<List<ClientValue>>>() {
 
-					public void onFailure(Throwable throwable) {
-						SimpleParamsEditorPanel.handleGlobalError(throwable);
-					}
+			public void onFailure(final Throwable throwable) {
+				SimpleParamsEditorPanel.handleGlobalError(throwable);
+			}
 
-					public void onSuccess(List<List<ClientValue>> allowedValues) {
-						if (allowedValues.size() != params.size()) {
-							throw new RuntimeException("Incorrect number of allowed values returned.");
-						}
-						HashSet<Validatable> visited = new HashSet<Validatable>();
-						for (int i = 0; i < params.size(); ++i) {
-							Registration r = byParam.get(params.get(i));
-							r.allowedValues = allowedValues.get(i);
-							r.mappingData = mappingDatas.get(i);
-							update(r.getParam(), null, r.getCv(), visited);
-						}
+			public void onSuccess(final List<List<ClientValue>> allowedValues) {
+				if (allowedValues.size() != params.size()) {
+					throw new RuntimeException("Incorrect number of allowed values returned.");
+				}
+				final HashSet<Validatable> visited = new HashSet<Validatable>();
+				for (int i = 0; i < params.size(); ++i) {
+					final Registration r = byParam.get(params.get(i));
+					r.allowedValues = allowedValues.get(i);
+					r.mappingData = mappingDatas.get(i);
+					update(r.getParam(), null, r.getCv(), visited);
+				}
 
-						if (cb != null) {
-							cb.done();
-						}
-					}
-				});
+				if (cb != null) {
+					cb.done();
+				}
+			}
+		});
 	}
 
 	/**
 	 * Forces the refetch of given allowed values.
 	 */
-	public void getAllowedValues(Validatable v, final Callback cb) {
-		Registration r = byWidget.get(v);
+	public void getAllowedValues(final Validatable v, final Callback cb) {
+		final Registration r = byWidget.get(v);
 		r.allowedValues = null;
 		fetchAllowedValues(cb);
 	}
 
-	public void addChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(final ChangeListener changeListener) {
 		listeners.add(changeListener);
 	}
 
-	public void removeChangeListener(ChangeListener changeListener) {
+	public void removeChangeListener(final ChangeListener changeListener) {
 		listeners.remove(changeListener);
 	}
 
@@ -403,7 +403,7 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	 * <p/>
 	 * TODO this probably doesn't belong here, but where to put it?
 	 */
-	static void setValidationSeverity(int validationSeverity, UIObject o) {
+	static void setValidationSeverity(final int validationSeverity, final UIObject o) {
 		switch (validationSeverity) {
 			case ClientValidation.SEVERITY_ERROR:
 				o.addStyleName("severity-Error");
@@ -419,8 +419,8 @@ public final class ValidationController implements ChangeListener, SourcesChange
 		}
 	}
 
-	public void setEnabled(boolean enabled) {
-		for (Registration r : byWidget.values()) {
+	public void setEnabled(final boolean enabled) {
+		for (final Registration r : byWidget.values()) {
 			r.getV().setEnabled(enabled);
 		}
 	}
@@ -433,7 +433,7 @@ public final class ValidationController implements ChangeListener, SourcesChange
 	/**
 	 * Fired whenever the selection changes.
 	 */
-	public void selected(ClientParamSet selection) {
+	public void selected(final ClientParamSet selection) {
 		final ClientParamSet sel = selection;
 		if (paramSet == null || !paramSet.equals(sel)) {
 			setEnabled(false);
@@ -451,12 +451,12 @@ public final class ValidationController implements ChangeListener, SourcesChange
 					contentsHiding.hidePageContentsWhileLoading();
 				}
 				s.getParamSetValues(new Service.Token(true), sel, new AsyncCallback<ClientParamSetValues>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						contentsHiding.showPageContents();
 						SimpleParamsEditorPanel.handleGlobalError(throwable);
 					}
 
-					public void onSuccess(ClientParamSetValues newValues) {
+					public void onSuccess(final ClientParamSetValues newValues) {
 						try {
 							if (newValues == null) {
 								throw new RuntimeException("Didn't get a ClientParamSet");

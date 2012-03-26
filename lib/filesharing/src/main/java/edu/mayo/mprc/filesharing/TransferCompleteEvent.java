@@ -12,7 +12,7 @@ public final class TransferCompleteEvent {
 	private Exception exception;
 	private File file;
 
-	public TransferCompleteEvent(File file, Exception exception) {
+	public TransferCompleteEvent(final File file, final Exception exception) {
 		this.exception = exception;
 		this.file = file;
 	}
@@ -21,7 +21,7 @@ public final class TransferCompleteEvent {
 		return exception;
 	}
 
-	public void setException(Exception exception) {
+	public void setException(final Exception exception) {
 		this.exception = exception;
 	}
 
@@ -29,7 +29,7 @@ public final class TransferCompleteEvent {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(final File file) {
 		this.file = file;
 	}
 }

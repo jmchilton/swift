@@ -10,7 +10,7 @@ public class PercentDone implements ProgressInfo {
 	/**
 	 * @param percentDone How many percent done. 100% is stored as 100.0
 	 */
-	public PercentDone(float percentDone) {
+	public PercentDone(final float percentDone) {
 		this.percentDone = percentDone;
 	}
 

@@ -36,7 +36,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 	 *
 	 * @throws java.io.IOException
 	 */
-	public MzXMLPeakListWriter(String outputFileName) throws XMLStreamException, IOException {
+	public MzXMLPeakListWriter(final String outputFileName) throws XMLStreamException, IOException {
 		this(outputFileName, true);
 	}
 
@@ -46,7 +46,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 	 *
 	 * @throws java.io.IOException
 	 */
-	public MzXMLPeakListWriter(File outputFile) throws XMLStreamException, IOException {
+	public MzXMLPeakListWriter(final File outputFile) throws XMLStreamException, IOException {
 		this(outputFile, true);
 	}
 
@@ -57,7 +57,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 	 *
 	 * @throws java.io.IOException
 	 */
-	public MzXMLPeakListWriter(String outputFileName, boolean enable64BitPrecision) throws XMLStreamException, IOException {
+	public MzXMLPeakListWriter(final String outputFileName, final boolean enable64BitPrecision) throws XMLStreamException, IOException {
 		this(new File(outputFileName), enable64BitPrecision);
 	}
 
@@ -68,7 +68,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 	 *
 	 * @throws java.io.IOException
 	 */
-	public MzXMLPeakListWriter(File outputFile, boolean enable64BitPrecision) throws XMLStreamException, IOException {
+	public MzXMLPeakListWriter(final File outputFile, final boolean enable64BitPrecision) throws XMLStreamException, IOException {
 
 		this.enable64BitPrecision = enable64BitPrecision;
 
@@ -98,8 +98,8 @@ public final class MzXMLPeakListWriter implements Closeable {
 		xmlWriter.writeStartElement("msRun");
 	}
 
-	public int writePeakList(PeakList peakList) throws XMLStreamException {
-		Peak[] peaks = peakList.getPeaks();
+	public int writePeakList(final PeakList peakList) throws XMLStreamException {
+		final Peak[] peaks = peakList.getPeaks();
 
 		int byteBufferCapacity = 0;
 
@@ -119,7 +119,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 		 */
 		bb = bb.order(ByteOrder.BIG_ENDIAN);
 
-		for (Peak peak : peaks) {
+		for (final Peak peak : peaks) {
 			if (!enable64BitPrecision) {
 				bb.putFloat((float) peak.getMassOverCharge());
 				bb.putFloat((float) peak.getIntensity());
@@ -132,7 +132,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 		/**
 		 * Convert bytes
 		 */
-		String encodedBytes = Base64.encodeBytes(bb.array(), false);
+		final String encodedBytes = Base64.encodeBytes(bb.array(), false);
 
 		xmlWriter.writeCharacters("\n");
 		xmlWriter.writeStartElement("scan");
@@ -150,7 +150,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 		 * Write precursor mz info
 		 */
 		if (peakList.getParentPeak() != null) {
-			Peak parentPeak = peakList.getParentPeak();
+			final Peak parentPeak = peakList.getParentPeak();
 
 			if (parentPeak.getIntensity() == Peak.UNKNOWN_INTENSITY) {
 				throw new IllegalArgumentException("mzXML requires an intensity value for precursor peaks.");
@@ -209,7 +209,7 @@ public final class MzXMLPeakListWriter implements Closeable {
 		return scanNumber - 1;
 	}
 
-	private void writeNonNull(String name, String value) throws XMLStreamException {
+	private void writeNonNull(final String name, final String value) throws XMLStreamException {
 		if (name != null && value != null) {
 			xmlWriter.writeAttribute(name, value);
 		}

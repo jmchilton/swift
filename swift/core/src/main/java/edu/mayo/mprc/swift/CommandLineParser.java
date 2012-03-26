@@ -38,7 +38,7 @@ public final class CommandLineParser {
 		return parser;
 	}
 
-	CommandLineParser(String[] args) {
+	CommandLineParser(final String[] args) {
 		setupParser();
 		final OptionSet options = parser.parse(args);
 

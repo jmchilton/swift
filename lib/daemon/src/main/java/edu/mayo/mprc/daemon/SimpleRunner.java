@@ -54,7 +54,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return factory;
 	}
 
-	public void setFactory(WorkerFactory factory) {
+	public void setFactory(final WorkerFactory factory) {
 		this.factory = factory;
 	}
 
@@ -62,7 +62,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return executorService;
 	}
 
-	public void setExecutorService(ExecutorService executorService) {
+	public void setExecutorService(final ExecutorService executorService) {
 		this.executorService = executorService;
 	}
 
@@ -70,7 +70,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return logOutputFolder;
 	}
 
-	public void setLogOutputFolder(File logOutputFolder) {
+	public void setLogOutputFolder(final File logOutputFolder) {
 		this.logOutputFolder = logOutputFolder;
 	}
 
@@ -78,7 +78,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 	}
 
@@ -86,7 +86,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return operational;
 	}
 
-	public void setOperational(boolean operational) {
+	public void setOperational(final boolean operational) {
 		this.operational = operational;
 	}
 
@@ -94,7 +94,7 @@ public final class SimpleRunner extends AbstractRunner {
 		return daemonConnection;
 	}
 
-	public void setDaemonConnection(DaemonConnection daemonConnection) {
+	public void setDaemonConnection(final DaemonConnection daemonConnection) {
 		this.daemonConnection = daemonConnection;
 	}
 
@@ -104,7 +104,7 @@ public final class SimpleRunner extends AbstractRunner {
 	 *
 	 * @param worker Worker to execute in the single thread.
 	 */
-	public void setWorker(Worker worker) {
+	public void setWorker(final Worker worker) {
 		this.executorService = new SimpleThreadPoolExecutor(1,
 				(daemonConnection != null ? daemonConnection.getConnectionName() : worker.getClass().getSimpleName()) + "-runner");
 		this.factory = new MyWorkerFactory(worker);
@@ -116,7 +116,7 @@ public final class SimpleRunner extends AbstractRunner {
 	private static final class MyWorkerFactory implements WorkerFactory {
 		private final Worker finalWorker;
 
-		public MyWorkerFactory(Worker finalWorker) {
+		public MyWorkerFactory(final Worker finalWorker) {
 			this.finalWorker = finalWorker;
 		}
 
@@ -133,7 +133,7 @@ public final class SimpleRunner extends AbstractRunner {
 		private final DaemonRequest request;
 		private final LoggingSetup loggingSetup;
 
-		private MyProgressReporter(DaemonRequest request, LoggingSetup loggingSetup) {
+		private MyProgressReporter(final DaemonRequest request, final LoggingSetup loggingSetup) {
 			this.request = request;
 			this.loggingSetup = loggingSetup;
 		}
@@ -147,7 +147,7 @@ public final class SimpleRunner extends AbstractRunner {
 			}
 		}
 
-		public void reportProgress(ProgressInfo progressInfo) {
+		public void reportProgress(final ProgressInfo progressInfo) {
 			sendResponse(request, new DaemonProgressMessage(DaemonProgress.UserSpecificProgressInfo, progressInfo), false);
 		}
 
@@ -155,7 +155,7 @@ public final class SimpleRunner extends AbstractRunner {
 			sendResponse(request, new DaemonProgressMessage(DaemonProgress.RequestCompleted), true);
 		}
 
-		public void reportFailure(Throwable t) {
+		public void reportFailure(final Throwable t) {
 			sendResponse(request, t, true);
 		}
 	}
@@ -168,7 +168,7 @@ public final class SimpleRunner extends AbstractRunner {
 		public Config() {
 		}
 
-		public Config(ResourceConfig workerFactory) {
+		public Config(final ResourceConfig workerFactory) {
 			super(workerFactory);
 		}
 
@@ -176,7 +176,7 @@ public final class SimpleRunner extends AbstractRunner {
 			return numThreads;
 		}
 
-		public void setNumThreads(int numThreads) {
+		public void setNumThreads(final int numThreads) {
 			this.numThreads = numThreads;
 		}
 
@@ -184,21 +184,21 @@ public final class SimpleRunner extends AbstractRunner {
 			return logOutputFolder;
 		}
 
-		public void setLogOutputFolder(String logOutputFolder) {
+		public void setLogOutputFolder(final String logOutputFolder) {
 			this.logOutputFolder = logOutputFolder;
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put("numThreads", String.valueOf(numThreads));
 			map.put("logOutputFolder", logOutputFolder);
 			return map;
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
-			String numThreadsString = values.get("numThreads");
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
+			final String numThreadsString = values.get("numThreads");
 			numThreads = Integer.parseInt(numThreadsString);
 
 			logOutputFolder = values.get("logOutputFolder");
@@ -214,12 +214,12 @@ public final class SimpleRunner extends AbstractRunner {
 		private MultiFactory table;
 
 		@Override
-		public SimpleRunner create(Config config, DependencyResolver dependencies) {
-			SimpleRunner runner = new SimpleRunner();
+		public SimpleRunner create(final Config config, final DependencyResolver dependencies) {
+			final SimpleRunner runner = new SimpleRunner();
 
 			runner.setEnabled(true);
 
-			ResourceConfig workerFactoryConfig = config.getWorkerConfiguration();
+			final ResourceConfig workerFactoryConfig = config.getWorkerConfiguration();
 
 			runner.setFactory(getWorkerFactory(getTable(), workerFactoryConfig, dependencies));
 			final int numThreads = config.getNumThreads();
@@ -231,7 +231,7 @@ public final class SimpleRunner extends AbstractRunner {
 			return runner;
 		}
 
-		public void setTable(MultiFactory table) {
+		public void setTable(final MultiFactory table) {
 			this.table = table;
 		}
 
@@ -239,7 +239,7 @@ public final class SimpleRunner extends AbstractRunner {
 			return table;
 		}
 
-		private static WorkerFactoryBase getWorkerFactory(MultiFactory table, ResourceConfig config, DependencyResolver dependencies) {
+		private static WorkerFactoryBase getWorkerFactory(final MultiFactory table, final ResourceConfig config, final DependencyResolver dependencies) {
 			final WorkerFactoryBase factory =
 					(WorkerFactoryBase) table.getFactory(config.getClass());
 			// Since the factory by default does not even know what is it creating (that would require duplicating
@@ -256,13 +256,13 @@ public final class SimpleRunner extends AbstractRunner {
 		private final Worker worker;
 		private final DaemonRequest request;
 
-		public RequestProcessor(Worker worker, DaemonRequest request) {
+		public RequestProcessor(final Worker worker, final DaemonRequest request) {
 			this.worker = worker;
 			this.request = request;
 		}
 
 		public void run() {
-			LoggingSetup logging;
+			final LoggingSetup logging;
 			if (worker instanceof NoLoggingWorker) {
 				logging = null;
 			} else {

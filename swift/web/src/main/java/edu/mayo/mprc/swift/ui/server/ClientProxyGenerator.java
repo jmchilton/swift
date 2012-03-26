@@ -38,27 +38,27 @@ public final class ClientProxyGenerator {
 	private Unimod cachedUnimod;
 	private File browseRoot;
 
-	public ClientProxyGenerator(UnimodDao unimodDao, WorkspaceDao workspaceDao, SwiftDao swiftDao, File browseRoot) {
+	public ClientProxyGenerator(final UnimodDao unimodDao, final WorkspaceDao workspaceDao, final SwiftDao swiftDao, final File browseRoot) {
 		this.unimodDao = unimodDao;
 		this.workspaceDao = workspaceDao;
 		this.swiftDao = swiftDao;
 		this.browseRoot = browseRoot;
 	}
 
-	public static ClientParamSetList getClientParamSetList(List<SavedSearchEngineParameters> savedSets, List<ClientParamSet> temporarySets) {
-		List<ClientParamSet> list = new ArrayList<ClientParamSet>(savedSets.size() + temporarySets.size());
-		for (SavedSearchEngineParameters params : savedSets) {
+	public static ClientParamSetList getClientParamSetList(final List<SavedSearchEngineParameters> savedSets, final List<ClientParamSet> temporarySets) {
+		final List<ClientParamSet> list = new ArrayList<ClientParamSet>(savedSets.size() + temporarySets.size());
+		for (final SavedSearchEngineParameters params : savedSets) {
 			list.add(new ClientParamSet(params.getId(), params.getName(), params.getUser().getUserName(), params.getUser().getInitials()));
 		}
-		for (ClientParamSet temporarySet : temporarySets) {
+		for (final ClientParamSet temporarySet : temporarySets) {
 			list.add(temporarySet);
 		}
 		return new ClientParamSetList(list);
 	}
 
-	public ClientParamSetValues convertValues(SearchEngineParameters ps, ParamsValidations validations) {
-		List<ClientParam> values = new ArrayList<ClientParam>(ParamName.values().length);
-		for (ParamName paramName : ParamName.values()) {
+	public ClientParamSetValues convertValues(final SearchEngineParameters ps, final ParamsValidations validations) {
+		final List<ClientParam> values = new ArrayList<ClientParam>(ParamName.values().length);
+		for (final ParamName paramName : ParamName.values()) {
 			values.add(new ClientParam(paramName.getId(), convert(ps.getValue(paramName)), convertTo(validations.getValidationFor(paramName))));
 		}
 		return new ClientParamSetValues(values);
@@ -67,11 +67,11 @@ public final class ClientProxyGenerator {
 	public static final class ConversionException extends MprcException {
 		private static final long serialVersionUID = 20071220L;
 
-		public ConversionException(String message) {
+		public ConversionException(final String message) {
 			super(message);
 		}
 
-		public ConversionException(Throwable throwable) {
+		public ConversionException(final Throwable throwable) {
 			super(throwable);
 		}
 
@@ -79,20 +79,20 @@ public final class ClientProxyGenerator {
 		}
 	}
 
-	public ClientParamsValidations convertTo(ParamsValidations validations) {
-		Map<String, ClientValidationList> map = new HashMap<String, ClientValidationList>();
-		for (Map.Entry<ParamName, ValidationList> entry : validations.getValidationMap().entrySet()) {
+	public ClientParamsValidations convertTo(final ParamsValidations validations) {
+		final Map<String, ClientValidationList> map = new HashMap<String, ClientValidationList>();
+		for (final Map.Entry<ParamName, ValidationList> entry : validations.getValidationMap().entrySet()) {
 			map.put(entry.getKey().getId(), convertTo(entry.getValue()));
 		}
 		return new ClientParamsValidations(map);
 	}
 
-	public ClientUser convertTo(User user) {
+	public ClientUser convertTo(final User user) {
 		return new ClientUser(user.getUserName(), user.getFirstName() + " " + user.getLastName(), user.getInitials(), user.isParameterEditorEnabled(), user.isOutputPathChangeEnabled());
 	}
 
-	public ClientValidation convertTo(Validation v) {
-		ClientValidation cv = new ClientValidation();
+	public ClientValidation convertTo(final Validation v) {
+		final ClientValidation cv = new ClientValidation();
 		cv.setMessage(v.getMessage());
 		cv.setSeverity(v.getSeverity().rank);
 		cv.setParamId(v.getParam().getId());
@@ -100,51 +100,51 @@ public final class ClientProxyGenerator {
 			cv.setValue(convert(v.getValue()));
 		}
 		if (v.getThrowable() != null) {
-			Throwable t = v.getThrowable();
+			final Throwable t = v.getThrowable();
 			cv.setThrowableMessage(t.getMessage());
 			cv.setThrowableStackTrace(MprcException.getDetailedMessage(t));
 		}
 		return cv;
 	}
 
-	public ClientValidationList convertTo(ValidationList l) {
-		ClientValidationList list = new ClientValidationList(l.size());
-		for (Validation v : l) {
+	public ClientValidationList convertTo(final ValidationList l) {
+		final ClientValidationList list = new ClientValidationList(l.size());
+		for (final Validation v : l) {
 			list.add(convertTo(v));
 		}
 		return list;
 	}
 
-	List<ClientValue> getAllowedValues(ParamName p, ParamsInfo paramsInfo) {
+	List<ClientValue> getAllowedValues(final ParamName p, final ParamsInfo paramsInfo) {
 		List<ClientValue> allowedValues = null;
-		Iterable<?> vals = paramsInfo.getAllowedValues(p);
+		final Iterable<?> vals = paramsInfo.getAllowedValues(p);
 		if (vals != null) {
 			allowedValues = new ArrayList<ClientValue>();
-			for (Object oo : vals) {
+			for (final Object oo : vals) {
 				allowedValues.add(convert(oo));
 			}
 		}
 		return allowedValues;
 	}
 
-	public ClientTolerance convertTo(Tolerance du) {
+	public ClientTolerance convertTo(final Tolerance du) {
 		return new ClientTolerance(du.getValue() + " " + du.getUnit().getCode());
 	}
 
-	public Tolerance convertFrom(ClientTolerance du) {
+	public Tolerance convertFrom(final ClientTolerance du) {
 		return new Tolerance(du.getValue());
 	}
 
-	public ClientSequenceDatabase convertTo(Curation val) {
+	public ClientSequenceDatabase convertTo(final Curation val) {
 		return new ClientSequenceDatabase(val.getId(), val.getTitle(), val.getShortName(), val.getOwnerEmail());
 	}
 
-	public ClientInstrument convertTo(Instrument val) {
+	public ClientInstrument convertTo(final Instrument val) {
 		return new ClientInstrument(val.getName());
 	}
 
-	public Curation convertFrom(ClientSequenceDatabase val, Iterable<Curation> allowedValues) {
-		for (Curation db : allowedValues) {
+	public Curation convertFrom(final ClientSequenceDatabase val, final Iterable<Curation> allowedValues) {
+		for (final Curation db : allowedValues) {
 			if (val.getShortName().equals(db.getShortName())) {
 				return db;
 			}
@@ -152,8 +152,8 @@ public final class ClientProxyGenerator {
 		throw new MprcException("No such database " + val.getShortName());
 	}
 
-	public Instrument convertFrom(ClientInstrument val, Iterable<Instrument> allowedValues) {
-		for (Instrument inst : allowedValues) {
+	public Instrument convertFrom(final ClientInstrument val, final Iterable<Instrument> allowedValues) {
+		for (final Instrument inst : allowedValues) {
 			if (val.getName().equals(inst.getName())) {
 				return inst;
 			}
@@ -161,23 +161,23 @@ public final class ClientProxyGenerator {
 		throw new MprcException("No such instrument " + val.getName());
 	}
 
-	public ModSet convertFrom(ClientModSpecificitySet val) {
-		ModSet modSpecSet = new ModSet();
-		List<ClientModSpecificity> modSpecs = val.getModSpecificities();
+	public ModSet convertFrom(final ClientModSpecificitySet val) {
+		final ModSet modSpecSet = new ModSet();
+		final List<ClientModSpecificity> modSpecs = val.getModSpecificities();
 
-		for (ClientModSpecificity modSpec : modSpecs) {
+		for (final ClientModSpecificity modSpec : modSpecs) {
 			if (cachedUnimod == null) {
 				cachedUnimod = unimodDao.load();
 			}
-			List<ModSpecificity> modspec = cachedUnimod.getSpecificitiesByMascotName(modSpec.getName());
+			final List<ModSpecificity> modspec = cachedUnimod.getSpecificitiesByMascotName(modSpec.getName());
 			modSpecSet.addAll(modspec);
 		}
 		return modSpecSet;
 	}
 
-	public FileSearch convertFrom(ClientFileSearch entry) {
-		EnabledEngines enabledEngines = new EnabledEngines();
-		for (String engineCode : entry.getEnabledEngineCodes()) {
+	public FileSearch convertFrom(final ClientFileSearch entry) {
+		final EnabledEngines enabledEngines = new EnabledEngines();
+		for (final String engineCode : entry.getEnabledEngineCodes()) {
 			if (engineCode != null && engineCode.length() != 0) {
 				enabledEngines.add(swiftDao.getSearchEngineConfig(engineCode));
 			}
@@ -197,7 +197,7 @@ public final class ClientProxyGenerator {
 	 * @param file File to convert to relative path.
 	 * @return Path to the file, relative to browse root. The path uses forward slashes, irregardless of the OS.
 	 */
-	private String pathRelativeToBrowseRoot(File file) {
+	private String pathRelativeToBrowseRoot(final File file) {
 		final String relativePath = FileUtilities.getRelativePath(browseRoot.getAbsolutePath(), file.getAbsolutePath());
 		if (!"/".equals(File.separator)) {
 			return relativePath.replaceAll(Pattern.quote(File.separator), "/");
@@ -205,11 +205,11 @@ public final class ClientProxyGenerator {
 		return relativePath;
 	}
 
-	public ClientSwiftSearchDefinition convertTo(SwiftSearchDefinition definition, ClientParamSetResolver resolver) {
+	public ClientSwiftSearchDefinition convertTo(final SwiftSearchDefinition definition, final ClientParamSetResolver resolver) {
 		final String relativeOutputFolderPath = pathRelativeToBrowseRoot(definition.getOutputFolder());
 
 		final List<FileSearch> files = definition.getInputFiles();
-		List<ClientFileSearch> clientInputFiles = new ArrayList<ClientFileSearch>(files.size());
+		final List<ClientFileSearch> clientInputFiles = new ArrayList<ClientFileSearch>(files.size());
 
 		for (final FileSearch fileSearch : files) {
 			final File inputFile = fileSearch.getInputFile();
@@ -245,19 +245,19 @@ public final class ClientProxyGenerator {
 		);
 	}
 
-	private String fixedCategoryName(FileSearch fileSearch) {
+	private String fixedCategoryName(final FileSearch fileSearch) {
 		return fileSearch.getCategoryName() == null ? "none" : fileSearch.getCategoryName();
 	}
 
-	private static ClientPeptideReport convertTo(PeptideReport peptideReport) {
+	private static ClientPeptideReport convertTo(final PeptideReport peptideReport) {
 		return new ClientPeptideReport(peptideReport != null);
 	}
 
-	private static ClientExtractMsnSettings convertTo(ExtractMsnSettings extractMsnSettings) {
+	private static ClientExtractMsnSettings convertTo(final ExtractMsnSettings extractMsnSettings) {
 		return new ClientExtractMsnSettings(extractMsnSettings.getCommandLineSwitches());
 	}
 
-	private ClientScaffoldSettings convertTo(ScaffoldSettings scaffoldSettings) {
+	private ClientScaffoldSettings convertTo(final ScaffoldSettings scaffoldSettings) {
 		return new ClientScaffoldSettings(
 				scaffoldSettings.getProteinProbability(),
 				scaffoldSettings.getPeptideProbability(),
@@ -271,7 +271,7 @@ public final class ClientProxyGenerator {
 		);
 	}
 
-	private ClientStarredProteins convertTo(StarredProteins starredProteins) {
+	private ClientStarredProteins convertTo(final StarredProteins starredProteins) {
 		if (starredProteins == null) {
 			return null;
 		}
@@ -282,21 +282,21 @@ public final class ClientProxyGenerator {
 				starredProteins.isMatchName());
 	}
 
-	private ClientSpectrumQa convertTo(SpectrumQa qa) {
+	private ClientSpectrumQa convertTo(final SpectrumQa qa) {
 		if (qa == null || qa.getParamFilePath() == null) {
 			return new ClientSpectrumQa();
 		}
 		return new ClientSpectrumQa(qa.getParamFilePath());
 	}
 
-	public ExtractMsnSettings convertFrom(ClientExtractMsnSettings extractMsnSettings) {
+	public ExtractMsnSettings convertFrom(final ClientExtractMsnSettings extractMsnSettings) {
 		if (extractMsnSettings == null) {
 			return ExtractMsnSettings.DEFAULT;
 		}
 		return new ExtractMsnSettings(extractMsnSettings.getCommandLineSwitches());
 	}
 
-	public ScaffoldSettings convertFrom(ClientScaffoldSettings scaffoldSettings) {
+	public ScaffoldSettings convertFrom(final ClientScaffoldSettings scaffoldSettings) {
 		if (scaffoldSettings == null) {
 			return ScaffoldSettings.DEFAULT;
 		}
@@ -313,7 +313,7 @@ public final class ClientProxyGenerator {
 		);
 	}
 
-	private StarredProteins convertFrom(ClientStarredProteins starredProteins) {
+	private StarredProteins convertFrom(final ClientStarredProteins starredProteins) {
 		if (starredProteins == null) {
 			return null;
 		}
@@ -324,10 +324,10 @@ public final class ClientProxyGenerator {
 				starredProteins.isMatchName());
 	}
 
-	public SwiftSearchDefinition convertFrom(ClientSwiftSearchDefinition definition, SearchEngineParameters parameters) {
-		List<ClientFileSearch> fileTable = definition.getInputFiles();
-		List<FileSearch> fileEntries = new ArrayList<FileSearch>(fileTable.size());
-		for (ClientFileSearch entry : fileTable) {
+	public SwiftSearchDefinition convertFrom(final ClientSwiftSearchDefinition definition, final SearchEngineParameters parameters) {
+		final List<ClientFileSearch> fileTable = definition.getInputFiles();
+		final List<FileSearch> fileEntries = new ArrayList<FileSearch>(fileTable.size());
+		for (final ClientFileSearch entry : fileTable) {
 			fileEntries.add(convertFrom(entry));
 		}
 
@@ -343,24 +343,24 @@ public final class ClientProxyGenerator {
 				definition.isPublicSearchFiles());
 	}
 
-	public PeptideReport convertFrom(ClientPeptideReport clientPeptideReport) {
+	public PeptideReport convertFrom(final ClientPeptideReport clientPeptideReport) {
 		return clientPeptideReport.isScaffoldPeptideReportEnabled() ? new PeptideReport() : null;
 	}
 
-	public SpectrumQa convertFrom(ClientSpectrumQa clientSpectrumQa) {
+	public SpectrumQa convertFrom(final ClientSpectrumQa clientSpectrumQa) {
 		return clientSpectrumQa.isEnabled() ? new SpectrumQa(clientSpectrumQa.getParamFilePath(), SpectrumQa.DEFAULT_ENGINE) : null;
 	}
 
-	public ClientModSpecificitySet convertTo(ModSet val) {
-		List<ClientModSpecificity> vals = new ArrayList<ClientModSpecificity>();
-		for (ModSpecificity modspec : val.getModifications()) {
+	public ClientModSpecificitySet convertTo(final ModSet val) {
+		final List<ClientModSpecificity> vals = new ArrayList<ClientModSpecificity>();
+		for (final ModSpecificity modspec : val.getModifications()) {
 			vals.add(convertTo(modspec));
 		}
 		return new ClientModSpecificitySet(vals);
 	}
 
-	public ClientModSpecificity convertTo(ModSpecificity modspec) {
-		ClientModSpecificity cmod = new ClientModSpecificity();
+	public ClientModSpecificity convertTo(final ModSpecificity modspec) {
+		final ClientModSpecificity cmod = new ClientModSpecificity();
 		cmod.setName(modspec.toString());
 		cmod.setClassification(modspec.getClassification());
 		cmod.setTerm(modspec.getTerm().toString());
@@ -371,8 +371,8 @@ public final class ClientProxyGenerator {
 		cmod.setProteinOnly(modspec.isProteinOnly());
 		cmod.setHidden(modspec.getHidden());
 		if (modspec.getModification().getAltNames() != null) {
-			int len = modspec.getModification().getAltNames().size();
-			List<String> list = new ArrayList<String>(len);
+			final int len = modspec.getModification().getAltNames().size();
+			final List<String> list = new ArrayList<String>(len);
 			list.addAll(modspec.getModification().getAltNames());
 			cmod.setAltNames(list);
 		}
@@ -381,9 +381,9 @@ public final class ClientProxyGenerator {
 		return cmod;
 	}
 
-	public Protease convertFrom(ClientProtease val,
-	                            Iterable<Protease> allowedValues) {
-		for (Protease p : allowedValues) {
+	public Protease convertFrom(final ClientProtease val,
+	                            final Iterable<Protease> allowedValues) {
+		for (final Protease p : allowedValues) {
 			if (val.getName().equals(p.getName())) {
 				return p;
 			}
@@ -391,11 +391,11 @@ public final class ClientProxyGenerator {
 		throw new ConversionException("Can't seem to find Protease " + val.getName());
 	}
 
-	public ClientProtease convertTo(Protease val) {
+	public ClientProtease convertTo(final Protease val) {
 		return new ClientProtease(val.getName());
 	}
 
-	public ClientValue convert(Object val) {
+	public ClientValue convert(final Object val) {
 		if (val instanceof Tolerance) {
 			return convertTo((Tolerance) val);
 		} else if (val instanceof Validation) {
@@ -423,7 +423,7 @@ public final class ClientProxyGenerator {
 		}
 	}
 
-	public Object convert(ClientValue val, Object allowedValues) {
+	public Object convert(final ClientValue val, final Object allowedValues) {
 		if (val instanceof ClientInteger) {
 			return ((ClientInteger) val).getValue();
 		} else if (val instanceof ClientTolerance) {

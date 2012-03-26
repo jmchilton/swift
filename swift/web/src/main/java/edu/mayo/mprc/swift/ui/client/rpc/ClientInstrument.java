@@ -12,7 +12,7 @@ public final class ClientInstrument implements ClientValue, Comparable {
 	public ClientInstrument() {
 	}
 
-	public ClientInstrument(String name) {
+	public ClientInstrument(final String name) {
 		this.name = name;
 	}
 
@@ -20,15 +20,15 @@ public final class ClientInstrument implements ClientValue, Comparable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public boolean equals(Object t) {
+	public boolean equals(final Object t) {
 		if (!(t instanceof ClientInstrument)) {
 			return false;
 		}
-		ClientInstrument tt = (ClientInstrument) t;
+		final ClientInstrument tt = (ClientInstrument) t;
 		return getName().equals(tt.getName());
 	}
 
@@ -36,11 +36,11 @@ public final class ClientInstrument implements ClientValue, Comparable {
 		return getName().hashCode();
 	}
 
-	public int compareTo(Object t) {
+	public int compareTo(final Object t) {
 		if (!(t instanceof ClientInstrument)) {
 			return 1;
 		}
-		ClientInstrument tt = (ClientInstrument) t;
+		final ClientInstrument tt = (ClientInstrument) t;
 		return getName().compareTo(tt.getName());
 	}
 

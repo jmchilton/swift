@@ -27,11 +27,11 @@ public abstract class DaoBase implements Dao {
 	public DaoBase() {
 	}
 
-	public DaoBase(DatabasePlaceholder databasePlaceholder) {
+	public DaoBase(final DatabasePlaceholder databasePlaceholder) {
 		this.databasePlaceholder = databasePlaceholder;
 	}
 
-	public void setDatabasePlaceholder(DatabasePlaceholder databasePlaceholder) {
+	public void setDatabasePlaceholder(final DatabasePlaceholder databasePlaceholder) {
 		this.databasePlaceholder = databasePlaceholder;
 	}
 
@@ -71,7 +71,7 @@ public abstract class DaoBase implements Dao {
 	 * @param clazz
 	 * @return
 	 */
-	protected Criteria allCriteria(Class<? extends Evolvable> clazz) {
+	protected Criteria allCriteria(final Class<? extends Evolvable> clazz) {
 		return getSession().createCriteria(clazz).add(Restrictions.isNull(DELETION_FIELD));
 	}
 
@@ -83,7 +83,7 @@ public abstract class DaoBase implements Dao {
 	 * @param clazz Class instances to list.
 	 * @return A list of all instances.
 	 */
-	protected List<?> listAll(Class<? extends Evolvable> clazz) {
+	protected List<?> listAll(final Class<? extends Evolvable> clazz) {
 		try {
 			return (List<?>) allCriteria(clazz).setReadOnly(true).list();
 		} catch (Exception t) {
@@ -98,7 +98,7 @@ public abstract class DaoBase implements Dao {
 	 * @param clazz Type of the class
 	 * @return How many instances are in the database.
 	 */
-	public long countAll(Class<? extends Evolvable> clazz) {
+	public long countAll(final Class<? extends Evolvable> clazz) {
 		final Object o = allCriteria(clazz)
 				.setProjection(Projections.rowCount())
 				.uniqueResult();
@@ -116,7 +116,7 @@ public abstract class DaoBase implements Dao {
 	 * @param clazz Class to count instances of.
 	 * @return Total count of rows in the database for the given class.
 	 */
-	public long rowCount(Class<?> clazz) {
+	public long rowCount(final Class<?> clazz) {
 		final Object o = getSession().createCriteria(clazz)
 				.setProjection(Projections.rowCount())
 				.uniqueResult();
@@ -134,7 +134,7 @@ public abstract class DaoBase implements Dao {
 	 * @param equalityCriteria Criteria for object equality.
 	 * @return A single instance of a matching object, <c>null</c> if nothing matches the criteria.
 	 */
-	protected <T extends Evolvable> T get(Class<? extends Evolvable> clazz, Criterion equalityCriteria) {
+	protected <T extends Evolvable> T get(final Class<? extends Evolvable> clazz, final Criterion equalityCriteria) {
 		try {
 			return (T) allCriteria(clazz)
 					.add(equalityCriteria)
@@ -153,8 +153,8 @@ public abstract class DaoBase implements Dao {
 	 *                 the same set.
 	 * @param setField Name of the field under which is the set stored to the database.
 	 */
-	protected <T extends PersistableBase, S extends PersistableBase> T updateSet(T owner, Collection<S> set, String setField) {
-		Session session = getSession();
+	protected <T extends PersistableBase, S extends PersistableBase> T updateSet(final T owner, final Collection<S> set, final String setField) {
+		final Session session = getSession();
 		if (owner == null) {
 			throw new MprcException("The owner of the set must not be null");
 		}
@@ -185,7 +185,7 @@ public abstract class DaoBase implements Dao {
 		return owner;
 	}
 
-	private PersistableBase getMatchingEmptySet(String setField, String className) {
+	private PersistableBase getMatchingEmptySet(final String setField, final String className) {
 		final List ts = getSession().createQuery(
 				"select s from " + className + " as s where s." + setField + ".size = 0")
 				.list();
@@ -197,9 +197,9 @@ public abstract class DaoBase implements Dao {
 		return null;
 	}
 
-	private <S extends PersistableBase> PersistableBase getMatchingSet(Collection<S> set, String setField, String className) {
-		Session session = getSession();
-		Integer[] ids = DatabaseUtilities.getIdList(set);
+	private <S extends PersistableBase> PersistableBase getMatchingSet(final Collection<S> set, final String setField, final String className) {
+		final Session session = getSession();
+		final Integer[] ids = DatabaseUtilities.getIdList(set);
 
 		final List ts = session.createQuery(
 				"select s from " + className + " as s join s." + setField + " as m where m.id in (:ids) and s.id in ("
@@ -224,9 +224,9 @@ public abstract class DaoBase implements Dao {
 	 * @param equalityCriteria Criteria to find identical, already existing item. Do not need to check for the item class and deletion.
 	 * @param createNew        New object must be created.
 	 */
-	protected <T extends Evolvable> T save(T item, Change change, Criterion equalityCriteria, boolean createNew) {
-		Session session = getSession();
-		Evolvable existingObject = (Evolvable)
+	protected <T extends Evolvable> T save(final T item, final Change change, final Criterion equalityCriteria, final boolean createNew) {
+		final Session session = getSession();
+		final Evolvable existingObject = (Evolvable)
 				allCriteria(item.getClass()) // It is not deprecated already
 						.add(equalityCriteria)
 						.uniqueResult();
@@ -267,9 +267,9 @@ public abstract class DaoBase implements Dao {
 	 * @param createNew        New object must be created.
 	 * @return The saved object. This can be either the newly saved item (it did not exist in the database yet), or a result of Hibernate's merge operation.
 	 */
-	protected <T extends PersistableBase> T save(T item, Criterion equalityCriteria, boolean createNew) {
-		Session session = getSession();
-		T existingObject = (T) session
+	protected <T extends PersistableBase> T save(final T item, final Criterion equalityCriteria, final boolean createNew) {
+		final Session session = getSession();
+		final T existingObject = (T) session
 				.createCriteria(item.getClass())
 				.add(equalityCriteria)
 				.uniqueResult();
@@ -299,12 +299,12 @@ public abstract class DaoBase implements Dao {
 	 * @param <T>
 	 * @return
 	 */
-	protected <T extends PersistableBase> T saveStateless(StatelessSession session, T item, Criterion equalityCriteria, boolean createNew) {
+	protected <T extends PersistableBase> T saveStateless(final StatelessSession session, final T item, final Criterion equalityCriteria, final boolean createNew) {
 		if (item.getId() != null) {
 			return item;
 		}
 
-		T existingObject = equalityCriteria == null ? null : (T) session
+		final T existingObject = equalityCriteria == null ? null : (T) session
 				.createCriteria(item.getClass())
 				.add(equalityCriteria)
 				.uniqueResult();
@@ -329,15 +329,15 @@ public abstract class DaoBase implements Dao {
 	 * @param equalityCriteria Criteria to find identical, already existing item. Do not need to check for the item class and deletion.
 	 * @param createNew        New object must be created.
 	 */
-	protected <T extends PersistableBase> T saveLaxEquality(T item, Criterion equalityCriteria, boolean createNew) {
-		Session session = getSession();
-		List<T> existingObjects = (List<T>) session
+	protected <T extends PersistableBase> T saveLaxEquality(final T item, final Criterion equalityCriteria, final boolean createNew) {
+		final Session session = getSession();
+		final List<T> existingObjects = (List<T>) session
 				.createCriteria(item.getClass())
 				.add(equalityCriteria)
 				.list();
 
 		if (existingObjects != null && existingObjects.size() > 0) {
-			for (T existingObject : existingObjects) {
+			for (final T existingObject : existingObjects) {
 				if (existingObject.equals(item)) {
 					if (createNew) {
 						throw new MprcException(item.getClass().getSimpleName() + " already exists");
@@ -362,7 +362,7 @@ public abstract class DaoBase implements Dao {
 	 * @param <T>        Type of the item.
 	 * @return A saved item that is updated with the latest values from {@code updateWith}.
 	 */
-	private <T extends PersistableBase> T updateSavedItem(T savedItem, T updateWith, Session session) {
+	private <T extends PersistableBase> T updateSavedItem(final T savedItem, final T updateWith, final Session session) {
 		updateWith.setId(savedItem.getId());
 		return (T) session.merge(updateWith);
 	}
@@ -374,7 +374,7 @@ public abstract class DaoBase implements Dao {
 	 * @param item   The item to create (in database)
 	 * @param change What change is this creation related to.
 	 */
-	protected void delete(Evolvable item, Change change) {
+	protected void delete(final Evolvable item, final Change change) {
 		if (item.getDeletion() != null) {
 			// Already deleted
 			return;
@@ -396,7 +396,7 @@ public abstract class DaoBase implements Dao {
 	 * @param association  This is what the property has to point to.
 	 * @return Query criterion that will check for the particular association.
 	 */
-	public static Criterion associationEq(String propertyName, PersistableBase association) {
+	public static Criterion associationEq(final String propertyName, final PersistableBase association) {
 		Preconditions.checkArgument(association == null || association.getId() != null, "Association to class %s has to be previously saved", association != null ? association.getClass().getName() : "(null)");
 		if (association == null) {
 			return Restrictions.isNull(propertyName);
@@ -405,7 +405,7 @@ public abstract class DaoBase implements Dao {
 		}
 	}
 
-	public static Criterion nullSafeEq(String propertyName, Object value) {
+	public static Criterion nullSafeEq(final String propertyName, final Object value) {
 		if (value == null) {
 			return Restrictions.isNull(propertyName);
 		} else {
@@ -419,7 +419,7 @@ public abstract class DaoBase implements Dao {
 	 * @param tolerance    The value has to be in &lt;value-tolerance, value+tolerance&gt; range.
 	 * @return A criterion that checks the given property is in the permissible range.
 	 */
-	public static Criterion doubleEq(String propertyName, double value, double tolerance) {
+	public static Criterion doubleEq(final String propertyName, final double value, final double tolerance) {
 		if (Double.isNaN(value)) {
 			return Restrictions.isNull(propertyName);
 		}

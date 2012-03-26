@@ -35,7 +35,7 @@ public final class DatabaseView extends SimplePanel implements ModuleView {
 	private TabPanel databaseConfiguration;
 	private ResourceModel model;
 
-	public DatabaseView(GwtUiBuilder builder, ResourceModel model) {
+	public DatabaseView(final GwtUiBuilder builder, final ResourceModel model) {
 
 		this.model = model;
 		databaseConfiguration = new TabPanel();
@@ -92,11 +92,11 @@ public final class DatabaseView extends SimplePanel implements ModuleView {
 
 		databaseConfiguration.selectTab(0);
 		databaseConfiguration.addTabListener(new TabListener() {
-			public boolean onBeforeTabSelected(SourcesTabEvents sourcesTabEvents, int i) {
+			public boolean onBeforeTabSelected(final SourcesTabEvents sourcesTabEvents, final int i) {
 				return true;
 			}
 
-			public void onTabSelected(SourcesTabEvents sourcesTabEvents, int i) {
+			public void onTabSelected(final SourcesTabEvents sourcesTabEvents, final int i) {
 				saveUI();
 				// Fire validations for every single resulting property
 				customPropertyList.fireValidations();
@@ -110,11 +110,11 @@ public final class DatabaseView extends SimplePanel implements ModuleView {
 		return this;
 	}
 
-	public void loadUI(Map<String, String> values) {
+	public void loadUI(final Map<String, String> values) {
 		if (values == null) {
 			return;
 		}
-		String urlValue = values.get(URL);
+		final String urlValue = values.get(URL);
 		customPropertyList.loadUI(values);
 
 		if (urlValue == null) {
@@ -126,15 +126,15 @@ public final class DatabaseView extends SimplePanel implements ModuleView {
 			h2PropertyList.loadUI(values);
 			databaseConfiguration.selectTab(0);
 		} else if (urlValue.startsWith(ORACLE_URL_PREFIX)) {
-			String str = urlValue.substring(ORACLE_URL_PREFIX.length());
+			final String str = urlValue.substring(ORACLE_URL_PREFIX.length());
 			values.put(ORACLE_SERVER, str.substring(0, str.indexOf(':')));
 			values.put(ORACLE_PORT, str.substring(str.indexOf(':') + 1, str.lastIndexOf(':')));
 			values.put(ORACLE_SID, str.substring(str.lastIndexOf(':') + 1));
 			oraclePropertyList.loadUI(values);
 			databaseConfiguration.selectTab(1);
 		} else if (urlValue.startsWith(MYSQL_URL_PREFIX)) {
-			String str = urlValue.substring(MYSQL_URL_PREFIX.length());
-			int lastSlash = str.lastIndexOf('/');
+			final String str = urlValue.substring(MYSQL_URL_PREFIX.length());
+			final int lastSlash = str.lastIndexOf('/');
 			if (lastSlash >= 0) {
 				values.put(MYSQL_URL, str.substring(0, lastSlash));
 				values.put(SCHEMA, str.substring(lastSlash + 1));
@@ -192,7 +192,7 @@ public final class DatabaseView extends SimplePanel implements ModuleView {
 	}
 
 	private class PropertyChangeListener implements ChangeListener {
-		public void onChange(Widget sender) {
+		public void onChange(final Widget sender) {
 			saveUI();
 		}
 	}

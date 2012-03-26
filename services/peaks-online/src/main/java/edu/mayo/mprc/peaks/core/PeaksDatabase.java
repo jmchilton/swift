@@ -21,7 +21,7 @@ public final class PeaksDatabase implements Serializable {
 	 * @param databaseFormat
 	 * @param estDatabase
 	 */
-	public PeaksDatabase(String databaseId, String databaseName, String databaseFilePath, String databaseFormat, boolean estDatabase) {
+	public PeaksDatabase(final String databaseId, final String databaseName, final String databaseFilePath, final String databaseFormat, final boolean estDatabase) {
 		this.databaseId = databaseId;
 		this.databaseName = databaseName;
 		this.databaseFilePath = databaseFilePath;
@@ -29,7 +29,7 @@ public final class PeaksDatabase implements Serializable {
 		this.estDatabase = estDatabase;
 	}
 
-	public PeaksDatabase(String databaseName, String databaseFilePath, String databaseFormat, boolean estDatabase) {
+	public PeaksDatabase(final String databaseName, final String databaseFilePath, final String databaseFormat, final boolean estDatabase) {
 		this(null, databaseName, databaseFilePath, databaseFormat, estDatabase);
 	}
 
@@ -37,7 +37,7 @@ public final class PeaksDatabase implements Serializable {
 		return databaseName;
 	}
 
-	public void setDatabaseName(String databaseName) {
+	public void setDatabaseName(final String databaseName) {
 		this.databaseName = databaseName;
 	}
 
@@ -45,7 +45,7 @@ public final class PeaksDatabase implements Serializable {
 		return databaseFilePath;
 	}
 
-	public void setDatabaseFilePath(String databaseFilePath) {
+	public void setDatabaseFilePath(final String databaseFilePath) {
 		this.databaseFilePath = databaseFilePath;
 	}
 
@@ -53,7 +53,7 @@ public final class PeaksDatabase implements Serializable {
 		return databaseFormat;
 	}
 
-	public void setDatabaseFormat(String databaseFormat) {
+	public void setDatabaseFormat(final String databaseFormat) {
 		this.databaseFormat = databaseFormat;
 	}
 
@@ -61,7 +61,7 @@ public final class PeaksDatabase implements Serializable {
 		return estDatabase;
 	}
 
-	public void setEstDatabase(boolean estDatabase) {
+	public void setEstDatabase(final boolean estDatabase) {
 		this.estDatabase = estDatabase;
 	}
 
@@ -71,7 +71,7 @@ public final class PeaksDatabase implements Serializable {
 
 	public String toString() {
 
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("Database Id: ").append(databaseId).append("\n");
 		builder.append("Database Name: ").append(databaseName).append("\n");
 		builder.append("Database File Path: ").append(databaseFilePath).append("\n");

@@ -17,7 +17,7 @@ public final class TestMaxCommandLine {
 		if (FileUtilities.isLinuxPlatform()) {
 			LOGGER.debug("running testGetMaxCommandLengthLinux");
 
-			long result = MaxCommandLine.findMaxCallLength(1000 * 100 * 14L, "echo");
+			final long result = MaxCommandLine.findMaxCallLength(1000 * 100 * 14L, "echo");
 			LOGGER.debug("max call length=" + result);
 			Assert.assertTrue(result > 10000);
 		}
@@ -27,7 +27,7 @@ public final class TestMaxCommandLine {
 	public void testGetMaxCommandLengthWindows() {
 		if (FileUtilities.isWindowsPlatform()) {
 			LOGGER.debug("running testGetMaxCommandLengthWindows");
-			long result = MaxCommandLine.findMaxCallLength(1000, "cmd /c echo");
+			final long result = MaxCommandLine.findMaxCallLength(1000, "cmd /c echo");
 			LOGGER.debug("max call length=" + result);
 			Assert.assertTrue(result > 32000);
 		}

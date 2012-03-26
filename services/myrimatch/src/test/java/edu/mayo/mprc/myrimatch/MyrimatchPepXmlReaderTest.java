@@ -11,9 +11,9 @@ public class MyrimatchPepXmlReaderTest {
 	@Test
 	public static void shouldParsePepXml() {
 		final InputStream stream = ResourceUtilities.getStream("classpath:edu/mayo/mprc/myrimatch/result.pepXML", MyrimatchPepXmlReaderTest.class);
-		MyrimatchPepXmlReader reader = new MyrimatchPepXmlReader();
+		final MyrimatchPepXmlReader reader = new MyrimatchPepXmlReader();
 		reader.load(stream);
-		String line = reader.getLineForKey("3");
+		final String line = reader.getLineForKey("3");
 
 		Assert.assertEquals(line.replaceAll("[a-zA-Z0-9_.~+-]+", ""), reader.getEmptyLine(), "Empty line has same amount of tabs as normal line");
 		Assert.assertEquals(reader.getHeaderLine(),

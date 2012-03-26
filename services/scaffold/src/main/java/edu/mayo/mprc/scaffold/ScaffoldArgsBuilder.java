@@ -22,7 +22,7 @@ final class ScaffoldArgsBuilder {
 	/**
 	 * @param installDir Scaffold install directory.
 	 */
-	public ScaffoldArgsBuilder(File installDir) {
+	public ScaffoldArgsBuilder(final File installDir) {
 		this.installDir = installDir;
 	}
 
@@ -33,8 +33,8 @@ final class ScaffoldArgsBuilder {
 	 * @param mainClassName Name of the Scaffold class to be executed. For batch searches, use {@link #getScaffoldBatchClassName()}
 	 * @return List of scaffold command-line arguments
 	 */
-	public List<String> buildScaffoldArgs(String memoryLimit, String mainClassName) {
-		List<String> args = new ArrayList<String>();
+	public List<String> buildScaffoldArgs(final String memoryLimit, final String mainClassName) {
+		final List<String> args = new ArrayList<String>();
 		args.add("-classpath");
 		args.add(getScaffoldClassPath());
 
@@ -60,8 +60,8 @@ final class ScaffoldArgsBuilder {
 	 * @param outputFolder Where the search output is to be produced.
 	 * @return Scaffold working folder.
 	 */
-	public File getWorkFolder(File outputFolder) {
-		File workFolder;
+	public File getWorkFolder(final File outputFolder) {
+		final File workFolder;
 		if (isCommercial()) {
 			workFolder = new File(installDir.getAbsolutePath());
 		} else {
@@ -99,7 +99,7 @@ final class ScaffoldArgsBuilder {
 
 	private String getScaffoldClassPath() {
 		// Find all the Scaffold jars
-		List<File> jarFiles = new ArrayList<File>();
+		final List<File> jarFiles = new ArrayList<File>();
 		if (isCommercial()) {
 			addJarsFromDirectory(installDir, jarFiles);
 		} else {
@@ -107,8 +107,8 @@ final class ScaffoldArgsBuilder {
 			jarFiles.add(new File(installDir, "bin"));
 		}
 
-		StringBuilder classPath = new StringBuilder();
-		for (File jar : jarFiles) {
+		final StringBuilder classPath = new StringBuilder();
+		for (final File jar : jarFiles) {
 			if (classPath.length() != 0) {
 				classPath.append(File.pathSeparator);
 			}
@@ -123,9 +123,9 @@ final class ScaffoldArgsBuilder {
 	 * @param directory Directory to search for .jar files.
 	 * @param jars      Discovered jar files are added to this list.
 	 */
-	private static void addJarsFromDirectory(File directory, List<File> jars) {
-		File[] files = directory.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
+	private static void addJarsFromDirectory(final File directory, final List<File> jars) {
+		final File[] files = directory.listFiles(new FilenameFilter() {
+			public boolean accept(final File dir, final String name) {
 				return StringUtilities.endsWithIgnoreCase(name, ".jar");
 			}
 		});

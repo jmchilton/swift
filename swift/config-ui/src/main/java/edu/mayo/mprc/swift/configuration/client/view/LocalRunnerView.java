@@ -16,8 +16,8 @@ public final class LocalRunnerView extends SimplePanel {
 	public static final String LOG_OUTPUT_FOLDER_DEFAULT = "var/log";
 
 
-	public LocalRunnerView(Context context, ResourceModel model) {
-		GwtUiBuilder builder = new GwtUiBuilder(context, model);
+	public LocalRunnerView(final Context context, final ResourceModel model) {
+		final GwtUiBuilder builder = new GwtUiBuilder(context, model);
 
 		builder.start();
 		builder.property("numThreads", THREAD_NUMBER, "Number of simultaneously executing threads.").integerValue(1, MAX_THREADS).defaultValue("1").required();
@@ -33,13 +33,13 @@ public final class LocalRunnerView extends SimplePanel {
 	}
 
 	public ResourceModel getModel() {
-		HashMap<String, String> properties = propertyList.saveUI();
+		final HashMap<String, String> properties = propertyList.saveUI();
 
 		resourceModel.setProperties(properties);
 		return resourceModel;
 	}
 
-	public void setModel(ResourceModel model) {
+	public void setModel(final ResourceModel model) {
 		resourceModel = model;
 
 		// Clean up potentially missing log folder

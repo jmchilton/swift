@@ -21,11 +21,11 @@ public final class XMLUtilities {
 	private XMLUtilities() {
 	}
 
-	public static StringBuilder appendline(StringBuilder in, String text) {
+	public static StringBuilder appendline(final StringBuilder in, final String text) {
 		return in.append(text).append("\r\n");
 	}
 
-	public static StringBuilder append(StringBuilder in, String text) {
+	public static StringBuilder append(final StringBuilder in, final String text) {
 		return in.append(text);
 	}
 
@@ -37,8 +37,8 @@ public final class XMLUtilities {
 	 * @param value
 	 * @deprecated Thou shall not produce XML by hand.
 	 */
-	public static String wrapatt(String name, String value) {
-		String escapedValue = value.replace(">", "&gt;").replace("<", "&lt;");
+	public static String wrapatt(final String name, final String value) {
+		final String escapedValue = value.replace(">", "&gt;").replace("<", "&lt;");
 		return " " + name + "=" + "\"" + escapedValue + "\"";
 	}
 
@@ -71,14 +71,14 @@ public final class XMLUtilities {
 			"\n" +
 			"</xsl:stylesheet>";
 
-	public static void indentXML(Reader input, Writer output) throws TransformerException {
-		TransformerFactory tfactory = TransformerFactory.newInstance();
+	public static void indentXML(final Reader input, final Writer output) throws TransformerException {
+		final TransformerFactory tfactory = TransformerFactory.newInstance();
 
-		Source tSource = new StreamSource(new StringReader(INDENT_TRANSFORM_STRING));
+		final Source tSource = new StreamSource(new StringReader(INDENT_TRANSFORM_STRING));
 
-		Transformer transformer = tfactory.newTransformer(tSource);
-		Source xml = new StreamSource(input);
-		Result result = new StreamResult(output);
+		final Transformer transformer = tfactory.newTransformer(tSource);
+		final Source xml = new StreamSource(input);
+		final Result result = new StreamResult(output);
 		transformer.transform(xml, result);
 
 		try {
@@ -88,9 +88,9 @@ public final class XMLUtilities {
 		}
 	}
 
-	private static Document loadDocument(InputSource source) {
+	private static Document loadDocument(final InputSource source) {
 		Document doc = null;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 
 		try {
@@ -108,7 +108,7 @@ public final class XMLUtilities {
 		return doc;
 	}
 
-	public static Document loadDocument(Reader document) {
+	public static Document loadDocument(final Reader document) {
 		try {
 			final InputSource source = new InputSource(document);
 			return loadDocument(source);
@@ -117,7 +117,7 @@ public final class XMLUtilities {
 		}
 	}
 
-	public static Document loadDocument(File document) {
+	public static Document loadDocument(final File document) {
 		final InputSource source = new InputSource();
 		source.setPublicId(document.getAbsolutePath());
 		FileInputStream stream = null;
@@ -142,15 +142,15 @@ public final class XMLUtilities {
 	 */
 	public static String getElementValue(final Element target) {
 
-		NodeList nodeList = target.getChildNodes();
+		final NodeList nodeList = target.getChildNodes();
 		if (nodeList == null) {
 			return null;
 		}
 		for (int current = 0; current < nodeList.getLength(); current++) {
-			Node node = nodeList.item(current);
+			final Node node = nodeList.item(current);
 			if (node instanceof Text) {
-				Text text = (Text) node;
-				String value = text.getNodeValue();
+				final Text text = (Text) node;
+				final String value = text.getNodeValue();
 				if ((value != null) && (value.length() > 0)) {
 					return value;
 				}
@@ -165,14 +165,14 @@ public final class XMLUtilities {
 	 *
 	 * @param root
 	 */
-	public static Element findElement(String idValue, String idTagName, String tagName, Element root) {
+	public static Element findElement(final String idValue, final String idTagName, final String tagName, final Element root) {
 		String textVal = null;
-		NodeList nl = root.getElementsByTagName(tagName);
+		final NodeList nl = root.getElementsByTagName(tagName);
 		if (nl != null && nl.getLength() > 0) {
 			// iterate over these
 			for (int i = 0; i < nl.getLength(); i++) {
-				Element ei = (Element) nl.item(i);
-				NodeList n2 = ei.getElementsByTagName(idTagName);
+				final Element ei = (Element) nl.item(i);
+				final NodeList n2 = ei.getElementsByTagName(idTagName);
 				if (n2 != null && n2.getLength() > 0) {
 					for (int j = 0; j < n2.getLength(); j++) {
 						textVal = getElementValue((Element) n2.item(j));
@@ -193,11 +193,11 @@ public final class XMLUtilities {
 	 * @param root    - where to start looking
 	 * @return the element
 	 */
-	public static Element findElement(String tagName, Element root) {
+	public static Element findElement(final String tagName, final Element root) {
 		if (root.getTagName().equals(tagName)) {
 			return root;
 		}
-		NodeList nl = root.getElementsByTagName(tagName);
+		final NodeList nl = root.getElementsByTagName(tagName);
 		if (nl != null && nl.getLength() == 1) {
 			return (Element) nl.item(0);
 		}
@@ -211,18 +211,18 @@ public final class XMLUtilities {
 	 * @param value
 	 * @return
 	 */
-	public static boolean replaceTextValue(Element target, String value) {
+	public static boolean replaceTextValue(final Element target, final String value) {
 		if (target == null) {
 			return false;
 		}
-		NodeList nodeList = target.getChildNodes();
+		final NodeList nodeList = target.getChildNodes();
 		if (nodeList == null) {
 			return false;
 		}
 		for (int current = 0; current < nodeList.getLength(); current++) {
-			Node node = nodeList.item(current);
+			final Node node = nodeList.item(current);
 			if (node instanceof Text) {
-				Text text = (Text) node;
+				final Text text = (Text) node;
 				text.setData(value);
 				return true;
 			}
@@ -230,9 +230,9 @@ public final class XMLUtilities {
 		return false;
 	}
 
-	public static boolean setAttributeValue(Element target, String attributeName, String value) {
-		NamedNodeMap map = target.getAttributes();
-		Node attributeValueHolder = map.getNamedItem(attributeName);
+	public static boolean setAttributeValue(final Element target, final String attributeName, final String value) {
+		final NamedNodeMap map = target.getAttributes();
+		final Node attributeValueHolder = map.getNamedItem(attributeName);
 		if (attributeValueHolder != null) {
 			attributeValueHolder.setNodeValue(value);
 			return true;

@@ -9,7 +9,7 @@ public final class MgfFilteredSpectraCount {
 	private final int acceptedSpectra;
 	private final int rejectedSpectra;
 
-	public MgfFilteredSpectraCount(int totalSpectra, int acceptedSpectra, int rejectedSpectra) {
+	public MgfFilteredSpectraCount(final int totalSpectra, final int acceptedSpectra, final int rejectedSpectra) {
 		this.totalSpectra = totalSpectra;
 		this.acceptedSpectra = acceptedSpectra;
 		this.rejectedSpectra = rejectedSpectra;

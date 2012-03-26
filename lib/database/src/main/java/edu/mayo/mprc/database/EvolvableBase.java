@@ -13,7 +13,7 @@ public abstract class EvolvableBase extends PersistableBase implements Evolvable
 	}
 
 	@Override
-	public void setCreation(Change creation) {
+	public void setCreation(final Change creation) {
 		this.creation = creation;
 	}
 
@@ -23,7 +23,7 @@ public abstract class EvolvableBase extends PersistableBase implements Evolvable
 	}
 
 	@Override
-	public void setDeletion(Change deletion) {
+	public void setDeletion(final Change deletion) {
 		this.deletion = deletion;
 	}
 }

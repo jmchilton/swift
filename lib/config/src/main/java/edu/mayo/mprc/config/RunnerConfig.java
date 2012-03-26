@@ -12,7 +12,7 @@ public abstract class RunnerConfig implements ResourceConfig {
 	public RunnerConfig() {
 	}
 
-	public RunnerConfig(ResourceConfig workerConfiguration) {
+	public RunnerConfig(final ResourceConfig workerConfiguration) {
 		this.workerConfiguration = workerConfiguration;
 	}
 
@@ -20,7 +20,7 @@ public abstract class RunnerConfig implements ResourceConfig {
 		return workerConfiguration;
 	}
 
-	public void setWorkerConfiguration(ResourceConfig workerConfiguration) {
+	public void setWorkerConfiguration(final ResourceConfig workerConfiguration) {
 		this.workerConfiguration = workerConfiguration;
 	}
 

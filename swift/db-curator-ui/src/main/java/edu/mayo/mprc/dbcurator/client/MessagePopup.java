@@ -5,17 +5,17 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 class MessagePopup extends PopupPanel {
-	public MessagePopup(String msg, int xPosition, int yPosition) {
+	public MessagePopup(final String msg, final int xPosition, final int yPosition) {
 		super(true);
 		this.setPopupPosition(xPosition, yPosition);
 		this.setStyleName("curator-message-popup");
 		setWidget(new Label(msg));
 	}
 
-	public void show(int msToDisplay) {
+	public void show(final int msToDisplay) {
 		super.show();
 		if (msToDisplay > 0) {
-			Timer hideTimer = new Timer() {
+			final Timer hideTimer = new Timer() {
 				public void run() {
 					MessagePopup.this.hide();
 				}

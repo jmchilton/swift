@@ -18,7 +18,7 @@ public final class PeaksURIs implements Serializable {
 	private URI adminAddUpdateDatabaseURI;
 	private URI userSettingsURI;
 
-	public PeaksURIs(URI baseURI) throws URISyntaxException {
+	public PeaksURIs(final URI baseURI) throws URISyntaxException {
 		this.baseURI = baseURI;
 		this.loginURI = new URI(baseURI.toString() + "/ManageServlet?action=login");
 		this.searchSubmitURI = new URI(baseURI.toString() + "/SearchRequest?sg=1");
@@ -33,7 +33,7 @@ public final class PeaksURIs implements Serializable {
 		return baseURI;
 	}
 
-	public void setBaseURI(URI baseURI) {
+	public void setBaseURI(final URI baseURI) {
 		this.baseURI = baseURI;
 	}
 
@@ -41,7 +41,7 @@ public final class PeaksURIs implements Serializable {
 		return loginURI;
 	}
 
-	public void setLoginURI(URI loginURI) {
+	public void setLoginURI(final URI loginURI) {
 		this.loginURI = loginURI;
 	}
 
@@ -49,7 +49,7 @@ public final class PeaksURIs implements Serializable {
 		return searchSubmitURI;
 	}
 
-	public void setSearchSubmitURI(URI searchSubmitURI) {
+	public void setSearchSubmitURI(final URI searchSubmitURI) {
 		this.searchSubmitURI = searchSubmitURI;
 	}
 
@@ -57,7 +57,7 @@ public final class PeaksURIs implements Serializable {
 		return searchResultURI;
 	}
 
-	public void setSearchResultURI(URI searchResultURI) {
+	public void setSearchResultURI(final URI searchResultURI) {
 		this.searchResultURI = searchResultURI;
 	}
 
@@ -65,7 +65,7 @@ public final class PeaksURIs implements Serializable {
 		return adminAddUpdateDatabaseURI;
 	}
 
-	public void setAdminAddUpdateDatabaseURI(URI adminAddUpdateDatabaseURI) {
+	public void setAdminAddUpdateDatabaseURI(final URI adminAddUpdateDatabaseURI) {
 		this.adminAddUpdateDatabaseURI = adminAddUpdateDatabaseURI;
 	}
 
@@ -73,7 +73,7 @@ public final class PeaksURIs implements Serializable {
 		return userSettingsURI;
 	}
 
-	public void setUserSettingsURI(URI userSettingsURI) {
+	public void setUserSettingsURI(final URI userSettingsURI) {
 		this.userSettingsURI = userSettingsURI;
 	}
 
@@ -81,7 +81,7 @@ public final class PeaksURIs implements Serializable {
 		return searchMonitorURI;
 	}
 
-	public void setSearchMonitorURI(URI searchMonitorURI) {
+	public void setSearchMonitorURI(final URI searchMonitorURI) {
 		this.searchMonitorURI = searchMonitorURI;
 	}
 
@@ -89,7 +89,7 @@ public final class PeaksURIs implements Serializable {
 		return adminURI;
 	}
 
-	public void setAdminURI(URI adminURI) {
+	public void setAdminURI(final URI adminURI) {
 		this.adminURI = adminURI;
 	}
 }

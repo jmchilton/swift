@@ -51,7 +51,7 @@ public abstract class ParamsInfo {
 	 * @param param Name of the parameter to get allowed values for.
 	 * @return List of allowed values.
 	 */
-	public Iterable<?> getAllowedValues(ParamName param) {
+	public Iterable<?> getAllowedValues(final ParamName param) {
 		switch (param) {
 			case Database:
 				return getDatabaseAllowedValues();

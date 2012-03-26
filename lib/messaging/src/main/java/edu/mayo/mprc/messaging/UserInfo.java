@@ -8,14 +8,14 @@ final class UserInfo {
 	private String userName;
 	private String password;
 
-	public UserInfo(URI uri) {
-		String userInfo = uri.getUserInfo();
+	public UserInfo(final URI uri) {
+		final String userInfo = uri.getUserInfo();
 		if ((userInfo == null) || userInfo.equals("")) {
 			this.userName = null;
 			this.password = null;
 		} else {
 
-			int index = userInfo.indexOf(':');
+			final int index = userInfo.indexOf(':');
 			if (index < 0) {
 				throw new MprcException("The URI does not contain proper user name:password pair: " + uri.toString());
 			}

@@ -15,7 +15,7 @@ public final class RAWDumpResult extends FileHolder implements ProgressInfo {
 	private File sampleInformationFile;
 	private File errorLogFile;
 
-	public RAWDumpResult(File rawInfoFile, File rawSpectraFile, File chromatogramFile, File tuneMethodFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile) {
+	public RAWDumpResult(final File rawInfoFile, final File rawSpectraFile, final File chromatogramFile, final File tuneMethodFile, final File instrumentMethodFile, final File sampleInformationFile, final File errorLogFile) {
 		this.rawInfoFile = rawInfoFile;
 		this.rawSpectraFile = rawSpectraFile;
 		this.chromatogramFile = chromatogramFile;

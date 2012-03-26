@@ -15,7 +15,7 @@ public final class ClientTolerance implements ClientValue {
 		this.value = "UNSET";
 	}
 
-	public ClientTolerance(String value) {
+	public ClientTolerance(final String value) {
 		this.value = value;
 	}
 
@@ -23,7 +23,7 @@ public final class ClientTolerance implements ClientValue {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 }

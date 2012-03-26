@@ -49,10 +49,10 @@ public final class TestTarWriter {
 
 			name = createFilledTempFile("myfile", ".dta", lines);
 
-			File tar = File.createTempFile("mytarfile", ".tar");
+			final File tar = File.createTempFile("mytarfile", ".tar");
 			tarName = tar.getAbsolutePath();
 
-			TarWriter tt = new TarWriter(tar);
+			final TarWriter tt = new TarWriter(tar);
 
 			LOGGER.debug("wrote tar at " + tar.getAbsolutePath());
 
@@ -71,10 +71,10 @@ public final class TestTarWriter {
 	}
 
 
-	private String createFilledTempFile(String prefix, String extension, String[] content) {
+	private String createFilledTempFile(final String prefix, final String extension, final String[] content) {
 
 		try {
-			File f1 = File.createTempFile(prefix, extension);
+			final File f1 = File.createTempFile(prefix, extension);
 
 			FileUtilities.writeStringsToFileNoBackup(f1, Arrays.asList(content), "\n");
 
@@ -84,10 +84,10 @@ public final class TestTarWriter {
 		}
 	}
 
-	private File createFilledTempFileinTempFolder(File folder, String prefix, String extension, String[] content) {
+	private File createFilledTempFileinTempFolder(final File folder, final String prefix, final String extension, final String[] content) {
 		try {
 
-			File f1 = new File(folder + File.separator + prefix + "." + extension);
+			final File f1 = new File(folder + File.separator + prefix + "." + extension);
 			f1.createNewFile();
 			FileUtilities.writeStringsToFileNoBackup(f1, Arrays.asList(content), "\n");
 
@@ -115,10 +115,10 @@ public final class TestTarWriter {
 			name = createFilledTempFile("myfile", ".dta", lines);
 			name1 = createFilledTempFile("myfile2", ".dta", lines);
 
-			File tar = File.createTempFile("mytarfile2", ".tar");
+			final File tar = File.createTempFile("mytarfile2", ".tar");
 			tarName = tar.getAbsolutePath();
 
-			TarWriter tt = new TarWriter(tar);
+			final TarWriter tt = new TarWriter(tar);
 
 			LOGGER.debug("wrote tar at " + tar.getAbsolutePath());
 
@@ -146,23 +146,23 @@ public final class TestTarWriter {
 		}
 		String tempFolder = null;
 		try {
-			File folder = FileUtilities.createTempFolder();
+			final File folder = FileUtilities.createTempFolder();
 			tempFolder = folder.getAbsolutePath();
 
 			LOGGER.debug("tempfolder=" + tempFolder);
 
-			File dta1 = createFilledTempFileinTempFolder(folder, "myfile", "dta", lines);
+			final File dta1 = createFilledTempFileinTempFolder(folder, "myfile", "dta", lines);
 			LOGGER.debug("dta=" + dta1);
-			File dta2 = createFilledTempFileinTempFolder(folder, "myfile2", "dta", lines);
+			final File dta2 = createFilledTempFileinTempFolder(folder, "myfile2", "dta", lines);
 			LOGGER.debug("dta=" + dta2);
 
-			File tar = File.createTempFile("mytarfileall", ".tar");
+			final File tar = File.createTempFile("mytarfileall", ".tar");
 
-			TarWriter tt = new TarWriter(tar);
+			final TarWriter tt = new TarWriter(tar);
 
 			LOGGER.debug("wrote tar at " + tar.getAbsolutePath());
 
-			List<File> dtas = new ArrayList<File>();
+			final List<File> dtas = new ArrayList<File>();
 			dtas.add(dta1);
 			dtas.add(dta2);
 			tt.addFiles(dtas);
@@ -184,20 +184,20 @@ public final class TestTarWriter {
 		String tempFolder = null;
 		try {
 
-			File folder = FileUtilities.createTempFolder();
+			final File folder = FileUtilities.createTempFolder();
 			tempFolder = folder.getAbsolutePath();
 
 			LOGGER.debug("tempfolder=" + tempFolder);
 
-			File dta1 = createFilledTempFileinTempFolder(folder, "myfile", "dta", lines);
+			final File dta1 = createFilledTempFileinTempFolder(folder, "myfile", "dta", lines);
 			LOGGER.debug("dta=" + dta1);
-			File dta2 = createFilledTempFileinTempFolder(folder, "myfile2", "dta", lines);
+			final File dta2 = createFilledTempFileinTempFolder(folder, "myfile2", "dta", lines);
 			LOGGER.debug("dta=" + dta2);
 
 
-			File tar = File.createTempFile("mytarfile2", ".tar");
+			final File tar = File.createTempFile("mytarfile2", ".tar");
 
-			TarWriter tt = new TarWriter(tar);
+			final TarWriter tt = new TarWriter(tar);
 
 			LOGGER.debug("wrote tar at " + tar.getAbsolutePath());
 
@@ -209,12 +209,12 @@ public final class TestTarWriter {
 			// read the tar to see if stored properly;
 			Assert.assertEquals(TarReader.readNumberHeaders(tar), 2, "wrong number of headers in the file");
 
-			File dta3 = createFilledTempFileinTempFolder(folder, "myfile", "dta.1", lines);
+			final File dta3 = createFilledTempFileinTempFolder(folder, "myfile", "dta.1", lines);
 			LOGGER.debug("dta=" + dta1);
-			File dta4 = createFilledTempFileinTempFolder(folder, "myfile2", "dta.1", lines);
+			final File dta4 = createFilledTempFileinTempFolder(folder, "myfile2", "dta.1", lines);
 			LOGGER.debug("dta=" + dta2);
 
-			List<File> files = new ArrayList<File>();
+			final List<File> files = new ArrayList<File>();
 			files.add(dta3);
 			files.add(dta4);
 			tt.addFiles(files);

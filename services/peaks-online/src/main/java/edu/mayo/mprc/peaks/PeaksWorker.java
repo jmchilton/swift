@@ -39,11 +39,11 @@ public final class PeaksWorker implements Worker {
 	private Peaks peaksOnline;
 	private static final int PEAK_SEARCH_TIMEOUT_HOURS = 24;
 
-	public PeaksWorker(Peaks peaksOnline) {
+	public PeaksWorker(final Peaks peaksOnline) {
 		this.peaksOnline = peaksOnline;
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			process(workPacket, progressReporter);
@@ -55,24 +55,24 @@ public final class PeaksWorker implements Worker {
 		}
 	}
 
-	private void process(WorkPacket workPacket, final ProgressReporter progressReporter) {
+	private void process(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		if (!(workPacket instanceof PeaksWorkPacket)) {
 			throw new DaemonException("Unexpected packet type " + workPacket.getClass().getName() + ", expected " + PeaksWorkPacket.class.getName());
 		}
 
-		PeaksWorkPacket peaksWorkPacket = (PeaksWorkPacket) workPacket;
+		final PeaksWorkPacket peaksWorkPacket = (PeaksWorkPacket) workPacket;
 
 		try {
-			PeaksSearchParameters searchParameters = new PeaksSearchParameters();
+			final PeaksSearchParameters searchParameters = new PeaksSearchParameters();
 			searchParameters.setParameters(getPeaksParameters(peaksWorkPacket));
 
 			String enzymeId = null;
 			String databaseId = null;
 
 			//Verify that the enzyme value exists in Peaks search engine. If enzyme exists, set parameter value to the enzyme id instead of name.
-			Object enzymeParameterValue = searchParameters.getParameter(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME).getParameterValue();
-			PeaksAdmin peaksAdmin = peaksOnline.getPeaksOnlineAdmin();
-			for (PeaksEnzyme enzyme : peaksAdmin.getAllEnzymes()) {
+			final Object enzymeParameterValue = searchParameters.getParameter(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME).getParameterValue();
+			final PeaksAdmin peaksAdmin = peaksOnline.getPeaksOnlineAdmin();
+			for (final PeaksEnzyme enzyme : peaksAdmin.getAllEnzymes()) {
 				if (enzyme.getEnzymeName().equals(enzymeParameterValue)) {
 					enzymeId = enzyme.getEnzymeId();
 					searchParameters.setParameter(PeaksSearchParameters.SUBMIT_SEARCH_ENZYME, enzymeId);
@@ -85,8 +85,8 @@ public final class PeaksWorker implements Worker {
 			}
 
 			//Verify that the database has been deployed to Peaks search engine. If database is deployed, set paramater value to the database id instead of name.
-			Object databaseParameterValue = searchParameters.getParameter(PeaksSearchParameters.SUBMIT_SEARCH_DATABASE).getParameterValue();
-			for (PeaksDatabase database : peaksAdmin.getAllDatabases()) {
+			final Object databaseParameterValue = searchParameters.getParameter(PeaksSearchParameters.SUBMIT_SEARCH_DATABASE).getParameterValue();
+			for (final PeaksDatabase database : peaksAdmin.getAllDatabases()) {
 				if (database.getDatabaseName().equals(databaseParameterValue)) {
 					databaseId = database.getDatabaseId();
 					searchParameters.setParameter(PeaksSearchParameters.SUBMIT_SEARCH_DATABASE, databaseId);
@@ -99,20 +99,20 @@ public final class PeaksWorker implements Worker {
 			}
 
 			//Set MGF data file parameter.
-			File mgfFile = peaksWorkPacket.getMgfFile();
+			final File mgfFile = peaksWorkPacket.getMgfFile();
 			searchParameters.setDataFile(mgfFile);
 
 			//Set Peaks title to mgf file name.
 			searchParameters.setTitle(FileUtilities.getFileNameWithoutExtension(mgfFile).toUpperCase(Locale.ENGLISH));
 
-			PeaksSearch peaksOnlineSearch = peaksOnline.getPeaksOnlineSearch();
+			final PeaksSearch peaksOnlineSearch = peaksOnline.getPeaksOnlineSearch();
 			final String searchId = peaksOnlineSearch.submitSearch(searchParameters);
 			final CountDownLatch searchDone = new CountDownLatch(1);
 
 			final PeaksSearchMonitor searchMonitor = new PeaksSearchMonitor(searchId, peaksOnline.getPeaksOnlineResult());
 			searchMonitor.addPeaksOnlineMonitorListener(new PeaksMonitorListener() {
 
-				public void searchCompleted(PeaksSearchStatusEvent event) {
+				public void searchCompleted(final PeaksSearchStatusEvent event) {
 					progressReporter.reportSuccess();
 					LOGGER.info("Peaks search finished successfully");
 
@@ -120,19 +120,19 @@ public final class PeaksWorker implements Worker {
 					searchDone.countDown();
 				}
 
-				public void searchRunning(PeaksSearchStatusEvent event) {
+				public void searchRunning(final PeaksSearchStatusEvent event) {
 					final String message = "Peaks search id: " + event.getSearchId() + " is " + event.getStatus();
 					progressReporter.reportProgress(new PeaksProgressInfo(message));
 					LOGGER.info(message);
 				}
 
-				public void searchWaiting(PeaksSearchStatusEvent event) {
+				public void searchWaiting(final PeaksSearchStatusEvent event) {
 					final String message = "Peaks search id: " + event.getSearchId() + " is " + event.getStatus();
 					progressReporter.reportProgress(new PeaksProgressInfo(message));
 					LOGGER.info(message);
 				}
 
-				public void searchNotFound(PeaksSearchStatusEvent event) {
+				public void searchNotFound(final PeaksSearchStatusEvent event) {
 					LOGGER.error("Peaks search running");
 					progressReporter.reportFailure(new MprcException("Peaks search id: " + event.getSearchId() + " could not be found in Peaks Online search engine."));
 
@@ -151,13 +151,13 @@ public final class PeaksWorker implements Worker {
 		}
 	}
 
-	private static Map<String, String> getPeaksParameters(PeaksWorkPacket workPacket) throws IOException {
+	private static Map<String, String> getPeaksParameters(final PeaksWorkPacket workPacket) throws IOException {
 		if (workPacket.getParamsFile() == null) {
 			throw new DaemonException("Peaks parameter file can not be null.");
 		}
-		File paramsFile = workPacket.getParamsFile();
+		final File paramsFile = workPacket.getParamsFile();
 
-		Properties properties = new Properties();
+		final Properties properties = new Properties();
 		final FileInputStream inStream = new FileInputStream(paramsFile);
 		try {
 			properties.load(inStream);
@@ -166,7 +166,7 @@ public final class PeaksWorker implements Worker {
 		}
 
 		final Map<String, String> map = new HashMap<String, String>();
-		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+		for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
 			map.put(entry.getKey().toString(), entry.getValue().toString());
 		}
 		return map;
@@ -177,7 +177,7 @@ public final class PeaksWorker implements Worker {
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			PeaksWorker worker = null;
 			try {
 				worker = new PeaksWorker(new Peaks(new PeaksURIs(new URI(config.getBaseURI())), config.getUserName(), config.getPassword()));
@@ -192,13 +192,13 @@ public final class PeaksWorker implements Worker {
 		public Config() {
 		}
 
-		public Config(String baseURI, String userName, String password) {
+		public Config(final String baseURI, final String userName, final String password) {
 			super(baseURI, userName, password);
 		}
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property("baseURI", "Base URL", "Peaks Online base URL").required()
 					.property("userName", "Username", "Administrator account user name").required()
 					.property("password", "Password", "Administrator account password").required();
@@ -209,7 +209,7 @@ public final class PeaksWorker implements Worker {
 		private static final long serialVersionUID = 20121221L;
 		private final String message;
 
-		public PeaksProgressInfo(String message) {
+		public PeaksProgressInfo(final String message) {
 			this.message = message;
 		}
 

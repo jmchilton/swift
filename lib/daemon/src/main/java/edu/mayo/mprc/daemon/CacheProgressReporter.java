@@ -21,7 +21,7 @@ final class CacheProgressReporter implements ProgressReporter {
 	public CacheProgressReporter() {
 	}
 
-	public synchronized void addProgressReporter(ProgressReporter reporter) {
+	public synchronized void addProgressReporter(final ProgressReporter reporter) {
 		reporters.add(reporter);
 		if (startReported) {
 			reporter.reportStart();
@@ -40,15 +40,15 @@ final class CacheProgressReporter implements ProgressReporter {
 	@Override
 	public synchronized void reportStart() {
 		startReported = true;
-		for (ProgressReporter reporter : reporters) {
+		for (final ProgressReporter reporter : reporters) {
 			reporter.reportStart();
 		}
 	}
 
 	@Override
-	public synchronized void reportProgress(ProgressInfo progressInfo) {
+	public synchronized void reportProgress(final ProgressInfo progressInfo) {
 		lastProgressInfo = progressInfo;
-		for (ProgressReporter reporter : reporters) {
+		for (final ProgressReporter reporter : reporters) {
 			reporter.reportProgress(progressInfo);
 		}
 	}
@@ -56,15 +56,15 @@ final class CacheProgressReporter implements ProgressReporter {
 	@Override
 	public synchronized void reportSuccess() {
 		successReported = true;
-		for (ProgressReporter reporter : reporters) {
+		for (final ProgressReporter reporter : reporters) {
 			reporter.reportSuccess();
 		}
 	}
 
 	@Override
-	public synchronized void reportFailure(Throwable t) {
+	public synchronized void reportFailure(final Throwable t) {
 		failureReported = t;
-		for (ProgressReporter reporter : reporters) {
+		for (final ProgressReporter reporter : reporters) {
 			reporter.reportFailure(failureReported);
 		}
 	}

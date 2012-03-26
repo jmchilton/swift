@@ -42,7 +42,7 @@ public final class DisplayThresholds {
 	public DisplayThresholds() {
 	}
 
-	public DisplayThresholds(String name, double proteinProbability, double peptideProbability, int minimumPeptideCount, int minimumNTT, String useCharge, boolean useMergedPeptideProbability, List<AbstractProgramSpecificThreshold> thresholds) {
+	public DisplayThresholds(final String name, final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNTT, final String useCharge, final boolean useMergedPeptideProbability, final List<AbstractProgramSpecificThreshold> thresholds) {
 		this.name = name;
 		this.proteinProbability = proteinProbability;
 		this.peptideProbability = peptideProbability;
@@ -57,7 +57,7 @@ public final class DisplayThresholds {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -65,7 +65,7 @@ public final class DisplayThresholds {
 		return proteinProbability;
 	}
 
-	public void setProteinProbability(double proteinProbability) {
+	public void setProteinProbability(final double proteinProbability) {
 		this.proteinProbability = proteinProbability;
 	}
 
@@ -73,7 +73,7 @@ public final class DisplayThresholds {
 		return peptideProbability;
 	}
 
-	public void setPeptideProbability(double peptideProbability) {
+	public void setPeptideProbability(final double peptideProbability) {
 		this.peptideProbability = peptideProbability;
 	}
 
@@ -81,7 +81,7 @@ public final class DisplayThresholds {
 		return minimumPeptideCount;
 	}
 
-	public void setMinimumPeptideCount(int minimumPeptideCount) {
+	public void setMinimumPeptideCount(final int minimumPeptideCount) {
 		this.minimumPeptideCount = minimumPeptideCount;
 	}
 
@@ -89,7 +89,7 @@ public final class DisplayThresholds {
 		return minimumNTT;
 	}
 
-	public void setMinimumNTT(int minimumNTT) {
+	public void setMinimumNTT(final int minimumNTT) {
 		this.minimumNTT = minimumNTT;
 	}
 
@@ -97,7 +97,7 @@ public final class DisplayThresholds {
 		return useCharge;
 	}
 
-	public void setUseCharge(String useCharge) {
+	public void setUseCharge(final String useCharge) {
 		this.useCharge = useCharge;
 	}
 
@@ -105,7 +105,7 @@ public final class DisplayThresholds {
 		return useMergedPeptideProbability;
 	}
 
-	public void setUseMergedPeptideProbability(boolean useMergedPeptideProbability) {
+	public void setUseMergedPeptideProbability(final boolean useMergedPeptideProbability) {
 		this.useMergedPeptideProbability = useMergedPeptideProbability;
 	}
 
@@ -113,7 +113,7 @@ public final class DisplayThresholds {
 		return thresholds;
 	}
 
-	public void setThresholds(List<AbstractProgramSpecificThreshold> thresholds) {
+	public void setThresholds(final List<AbstractProgramSpecificThreshold> thresholds) {
 		this.thresholds = thresholds;
 	}
 }

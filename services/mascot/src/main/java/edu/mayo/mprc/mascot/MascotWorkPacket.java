@@ -29,11 +29,11 @@ public final class MascotWorkPacket extends EngineWorkPacket {
 
 	public static final String MASCOT_URL_FILENAME = "mascot_url.txt";
 
-	public MascotWorkPacket(String taskId, boolean fromScratch) {
+	public MascotWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public MascotWorkPacket(File outputFile, File searchParamsFile, File inputFile, String shortDbName, String taskId, boolean fromScratch, boolean publishSearchFiles) {
+	public MascotWorkPacket(final File outputFile, final File searchParamsFile, final File inputFile, final String shortDbName, final String taskId, final boolean fromScratch, final boolean publishSearchFiles) {
 		super(inputFile, outputFile, searchParamsFile, null, publishSearchFiles, taskId, fromScratch);
 
 		assert inputFile != null : "Mascot request cannot be created: The input file was null";
@@ -50,7 +50,7 @@ public final class MascotWorkPacket extends EngineWorkPacket {
 
 	@Override
 	public String getStringDescriptionOfTask() {
-		StringBuilder description = new StringBuilder(100);
+		final StringBuilder description = new StringBuilder(100);
 		String paramString = "";
 		try {
 			paramString = Files.toString(getSearchParamsFile(), Charsets.UTF_8);
@@ -72,7 +72,7 @@ public final class MascotWorkPacket extends EngineWorkPacket {
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new MascotWorkPacket(
 				new File(wipFolder, getOutputFile().getName()),
 				getSearchParamsFile(),
@@ -89,7 +89,7 @@ public final class MascotWorkPacket extends EngineWorkPacket {
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 		final File mascotUrlFile = new File(targetFolder, outputFiles.get(1));
 		if (mascotUrlFile.exists()) {
 			try {

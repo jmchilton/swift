@@ -21,7 +21,7 @@ public final class NewDatabaseInclusionStub extends CurationStepStub {
 	 */
 	public AbstractStepPanel getStepPanel() {
 		//create a panel and add this stub to it
-		NewDatabaseInclusionPanel panel = new NewDatabaseInclusionPanel();
+		final NewDatabaseInclusionPanel panel = new NewDatabaseInclusionPanel();
 		panel.setContainedStep(this);
 		return panel;
 	}

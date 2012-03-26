@@ -25,9 +25,9 @@ public final class TestDtaComparator {
 		assertComparison("test3.10.11.2.dta", "test3.10.11.2.dta", 0);
 	}
 
-	private void assertComparison(String dta1, String dta2, int result) {
-		File f1 = new File(dta1);
-		File f2 = new File(dta2);
+	private void assertComparison(final String dta1, final String dta2, final int result) {
+		final File f1 = new File(dta1);
+		final File f2 = new File(dta2);
 		Assert.assertEquals(DTA_COMPARATOR.compare(f1, f2), result, dta1 + " compared to " + dta2 + " should yield " + result);
 		Assert.assertEquals(DTA_COMPARATOR.compare(f2, f1), -result, dta1 + " compared to " + dta2 + " should yield " + (-result));
 	}

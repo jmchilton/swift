@@ -9,7 +9,7 @@ public final class KeyValueArraysTest {
 
 	@Test
 	public void shouldGetIndexSimpleCase() {
-		float kv[] = new float[]{
+		final float[] kv = new float[]{
 				0, 0,
 				1, 1,
 				2, 2,
@@ -29,7 +29,7 @@ public final class KeyValueArraysTest {
 
 	@Test
 	public void shouldGetIndexConstantArray() {
-		float kv[] = new float[]{
+		final float[] kv = new float[]{
 				0, 0,
 				0, 1,
 				0, 2,
@@ -49,7 +49,7 @@ public final class KeyValueArraysTest {
 
 	@Test
 	public void shouldGetIndexMultipleSameValues() {
-		float kv[] = new float[]{
+		final float[] kv = new float[]{
 				0, 0,
 				1, 1,
 				1, 2,
@@ -72,7 +72,7 @@ public final class KeyValueArraysTest {
 		Assert.assertEquals(KeyValueArrays.interpolate(1f, 2f, 1.5f, 3f, 4f), 3.5f);
 		Assert.assertEquals(KeyValueArrays.interpolate(1.0, 2.0, 1.5, 3.0, 4.0), 3.5);
 
-		float kv[] = new float[]{
+		final float[] kv = new float[]{
 				0, 0,
 				1, 1,
 				1, 2,

@@ -9,7 +9,7 @@ public final class SgePacketTest {
 
 	@Test
 	public static void shouldDeserializeXTandem() {
-		String xml = "<edu.mayo.mprc.sge.GridDaemonWorkerAllocatorInputObject>\n" +
+		final String xml = "<edu.mayo.mprc.sge.GridDaemonWorkerAllocatorInputObject>\n" +
 				"  <workPacket class=\"edu.mayo.mprc.xtandem.XTandemWorkPacket\">\n" +
 				"    <tokenMap>\n" +
 				"      <entry>\n" +
@@ -100,8 +100,8 @@ public final class SgePacketTest {
 				"  </fileSharingFactoryURI>\n" +
 				"  <sharedTempDirectory>/mnt/raid1/software/swift/swift_2.5.6/var/tmp</sharedTempDirectory>\n" +
 				"</edu.mayo.mprc.sge.GridDaemonWorkerAllocatorInputObject>";
-		XStream xStream = new XStream(new DomDriver());
-		Object o = xStream.fromXML(xml);
+		final XStream xStream = new XStream(new DomDriver());
+		final Object o = xStream.fromXML(xml);
 		Assert.assertNotNull(o);
 	}
 }

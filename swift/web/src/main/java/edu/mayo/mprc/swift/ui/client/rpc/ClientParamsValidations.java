@@ -13,7 +13,7 @@ public final class ClientParamsValidations implements Serializable {
 	public ClientParamsValidations() {
 	}
 
-	public ClientParamsValidations(Map<String, ClientValidationList> validationMap) {
+	public ClientParamsValidations(final Map<String, ClientValidationList> validationMap) {
 		this.validationMap = validationMap;
 	}
 

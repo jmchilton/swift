@@ -7,14 +7,14 @@ public final class ValidationList extends ArrayList<Validation> {
 	private static final long serialVersionUID = 20101221L;
 
 
-	public ValidationList(int initialCapacity) {
+	public ValidationList(final int initialCapacity) {
 		super(initialCapacity);
 	}
 
 	public ValidationList() {
 	}
 
-	public ValidationList(Collection<? extends Validation> c) {
+	public ValidationList(final Collection<? extends Validation> c) {
 		super(c);
 	}
 
@@ -23,7 +23,7 @@ public final class ValidationList extends ArrayList<Validation> {
 	}
 
 	public Object getValue() {
-		for (Validation v : this) {
+		for (final Validation v : this) {
 			if (v.getValue() != null) {
 				return v.getValue();
 			}
@@ -37,7 +37,7 @@ public final class ValidationList extends ArrayList<Validation> {
 
 	private ValidationSeverity getWorstSeverityRec() {
 		ValidationSeverity currentSeverity = ValidationSeverity.NONE;
-		for (Validation v : this) {
+		for (final Validation v : this) {
 			if (currentSeverity == null || v.getSeverity().rank > currentSeverity.rank) {
 				currentSeverity = v.getSeverity();
 			}
@@ -49,7 +49,7 @@ public final class ValidationList extends ArrayList<Validation> {
 	 * @return First throwable from the list of errors or null if none was specified.
 	 */
 	public Object getThrowable() {
-		for (Validation v : this) {
+		for (final Validation v : this) {
 			if (v.getThrowable() != null) {
 				return v.getThrowable();
 			}

@@ -27,7 +27,7 @@ final class DatabaseDeployment extends AsyncTaskBase implements DatabaseDeployme
 	private List<File> generatedFiles;
 	private DeploymentResult deploymentResult;
 
-	public DatabaseDeployment(String engineCode, String engineFriendlyName, DaemonConnection deploymentDaemon, File paramsFile, Curation dbToDeploy, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public DatabaseDeployment(final String engineCode, final String engineFriendlyName, final DaemonConnection deploymentDaemon, final File paramsFile, final Curation dbToDeploy, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(deploymentDaemon, fileTokenFactory, fromScratch);
 		this.engineCode = engineCode;
 		this.engineFriendlyName = engineFriendlyName;
@@ -49,7 +49,7 @@ final class DatabaseDeployment extends AsyncTaskBase implements DatabaseDeployme
 	 *         to send a work packet.
 	 */
 	public WorkPacket createWorkPacket() {
-		DeploymentRequest workPacket = new DeploymentRequest(getFullId(), dbToDeploy.getFastaFile());
+		final DeploymentRequest workPacket = new DeploymentRequest(getFullId(), dbToDeploy.getFastaFile());
 		if ("SEQUEST".equalsIgnoreCase(engineCode)) {
 			// Sequest needs the param file path as a parameter
 			workPacket.addProperty(
@@ -62,7 +62,7 @@ final class DatabaseDeployment extends AsyncTaskBase implements DatabaseDeployme
 	public synchronized void onSuccess() {
 	}
 
-	public synchronized void onProgress(ProgressInfo progressInfo) {
+	public synchronized void onProgress(final ProgressInfo progressInfo) {
 		// The deployer sends deployment result as progress message
 		if (progressInfo instanceof DeploymentResult) {
 			deploymentResult = (DeploymentResult) progressInfo;
@@ -71,7 +71,7 @@ final class DatabaseDeployment extends AsyncTaskBase implements DatabaseDeployme
 			LOGGER.debug("Deployment received. Deployed fasta file: " + fastaFile + " for " + engineFriendlyName);
 		}
 		if (progressInfo instanceof SequestDeploymentResult) {
-			SequestDeploymentResult result = (SequestDeploymentResult) progressInfo;
+			final SequestDeploymentResult result = (SequestDeploymentResult) progressInfo;
 			fastaFile = result.getDeployedFile();
 			hdrFile = result.getFileToSearchAgainst();
 			generatedFiles = result.getGeneratedFiles();

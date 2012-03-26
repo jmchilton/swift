@@ -46,12 +46,12 @@ public final class FileSearchBean {
 	 *
 	 * @param basePath Path to the root of the search bean (the {@link #setPath} and {@link @setExpandPath} are entered relative to this root.
 	 */
-	public FileSearchBean(String basePath) {
+	public FileSearchBean(final String basePath) {
 		this.basePath = basePath;
 		expandedPaths = EMPTY_FILE_ARRAY;
 	}
 
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = new File(basePath, path).getPath();
 	}
 
@@ -59,8 +59,8 @@ public final class FileSearchBean {
 		return path;
 	}
 
-	public void setExpandedPaths(String paths) {
-		String[] parts = paths.split("\\|");
+	public void setExpandedPaths(final String paths) {
+		final String[] parts = paths.split("\\|");
 		expandedPaths = new File[parts.length];
 		for (int i = 0; i < parts.length; i++) {
 			expandedPaths[i] = new File(basePath, parts[i]);
@@ -89,16 +89,16 @@ public final class FileSearchBean {
 	 *
 	 * @param writer Writer to output the contents to.
 	 */
-	public void writeFolderContent(Writer writer) {
+	public void writeFolderContent(final Writer writer) {
 		try {
-			File dir = checkFolderPath(path);
+			final File dir = checkFolderPath(path);
 
-			AttributesImpl atts = new AttributesImpl();
-			StreamResult streamResult = new StreamResult(writer);
-			SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+			final AttributesImpl atts = new AttributesImpl();
+			final StreamResult streamResult = new StreamResult(writer);
+			final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
 			// SAX2.0 ContentHandler.
-			TransformerHandler hd = tf.newTransformerHandler();
-			Transformer serializer = hd.getTransformer();
+			final TransformerHandler hd = tf.newTransformerHandler();
+			final Transformer serializer = hd.getTransformer();
 			serializer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 			serializer.setOutputProperty(OutputKeys.INDENT, "no");
 			hd.setResult(streamResult);
@@ -119,7 +119,7 @@ public final class FileSearchBean {
 		}
 	}
 
-	private void writeErrorMessage(Writer writer, Throwable e) {
+	private void writeErrorMessage(final Writer writer, final Throwable e) {
 		try {
 			writer.write(getErrorResult(ERROR_MESSAGE_PREFIX + e.getMessage()).toString());
 		} catch (IOException e1) {
@@ -133,11 +133,11 @@ public final class FileSearchBean {
 	 * @param path Path to check.
 	 * @return File representing the given path.
 	 */
-	private File checkFolderPath(String path) {
+	private File checkFolderPath(final String path) {
 		if (path == null || path.equals("")) {
 			throw new MprcException("FileSearchBean.parseFolderContentforRawFiles : path is not set...");
 		}
-		File pFile = new File(path);
+		final File pFile = new File(path);
 		if (!pFile.exists()) {
 			throw new MprcException("directory does not exist, name=" + path);
 		}
@@ -147,8 +147,8 @@ public final class FileSearchBean {
 		return pFile;
 	}
 
-	StringBuilder getErrorResult(String message) {
-		StringBuilder buffer = new StringBuilder("<" + ERROR_TAG + ">");
+	StringBuilder getErrorResult(final String message) {
+		final StringBuilder buffer = new StringBuilder("<" + ERROR_TAG + ">");
 		buffer.append(message);
 		buffer.append("</" + ERROR_TAG + ">" + "\n");
 		return buffer;
@@ -162,14 +162,14 @@ public final class FileSearchBean {
 	 * @param subs Array of subfolder paths.
 	 * @return True when at least one of the subs is inside dir (directly or not).
 	 */
-	private boolean isSubfolder(File dir, File[] subs) {
+	private boolean isSubfolder(final File dir, final File[] subs) {
 		if (subs == null) {
 			return false;
 		}
 		if (dir == null) {
 			return true;
 		}
-		for (File sub : subs) {
+		for (final File sub : subs) {
 			if (sub.getPath().startsWith(dir.getPath())) {
 				return true;
 			}
@@ -189,18 +189,18 @@ public final class FileSearchBean {
 	 * @param root          Directory to lists.
 	 * @param expandedPaths Directories that are expanded within the listing.
 	 */
-	private void writeOutFolder(TransformerHandler hd, final File root, File[] expandedPaths) {
+	private void writeOutFolder(final TransformerHandler hd, final File root, final File[] expandedPaths) {
 		// find all the files+directories
 		final List<File> dirs = new ArrayList<File>(100);
 		final List<File> files = new ArrayList<File>(100);
 
 		FileUtilities.listFolderContents(root, ServiceImpl.FILTER, dirs, files);
-		AttributesImpl atts = new AttributesImpl();
+		final AttributesImpl atts = new AttributesImpl();
 		try {
 			Collections.sort(dirs, new SimpleFileComparator());
 			Collections.sort(files, new SimpleFileComparator());
 
-			for (File dir : dirs) {
+			for (final File dir : dirs) {
 				atts.clear();
 				atts.addAttribute("", "", NAME_ATTR, "CDATA", dir.getName());
 				hd.startElement("", "", DIR_TAG, atts);
@@ -211,7 +211,7 @@ public final class FileSearchBean {
 				hd.endElement("", "", DIR_TAG);
 			}
 
-			for (File file : files) {
+			for (final File file : files) {
 				atts.clear();
 				atts.addAttribute("", "", NAME_ATTR, "CDATA", file.getName());
 				hd.startElement("", "", FILE_TAG, atts);
@@ -226,7 +226,7 @@ public final class FileSearchBean {
 		private static final long serialVersionUID = 20121221L;
 
 		@Override
-		public int compare(File o1, File o2) {
+		public int compare(final File o1, final File o2) {
 			return o1.getName().compareToIgnoreCase(o2.getName());
 		}
 	}

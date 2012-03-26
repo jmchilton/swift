@@ -54,7 +54,7 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 	 */
 	public HeaderTransformPanel() {
 
-		VerticalPanel mainPanel = new VerticalPanel();
+		final VerticalPanel mainPanel = new VerticalPanel();
 
 		mainPanel.setSpacing(5);
 		initWidget(mainPanel);
@@ -72,8 +72,8 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 		lstCommonTransforms.setStyleName("steppanel-headertransform-lstcommontransforms");
 		requestTransformers(); //populate the list box making an rpc call if necessary
 		lstCommonTransforms.addChangeListener(new ChangeListener() {
-			public void onChange(Widget widget) {
-				int selectedIndex = ((ListBox) widget).getSelectedIndex();
+			public void onChange(final Widget widget) {
+				final int selectedIndex = ((ListBox) widget).getSelectedIndex();
 				if (selectedIndex == 0) {
 					txtDescription.setText("");
 					txtMatchPattern.setText("");
@@ -82,7 +82,7 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 				}
 				//if we have enough to handle the request then handle it
 				if (commonHeaderTransformers.size() > selectedIndex - 1) {
-					HeaderTransformStub transform = (HeaderTransformStub) commonHeaderTransformers.get(selectedIndex - 1);
+					final HeaderTransformStub transform = (HeaderTransformStub) commonHeaderTransformers.get(selectedIndex - 1);
 					txtDescription.setText(transform.description);
 					txtMatchPattern.setText(transform.matchPattern);
 					txtSubPattern.setText(transform.subPattern);
@@ -100,7 +100,7 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 		mainPanel.add(tempLayoutPanel);
 
 		tempLayoutPanel = new HorizontalPanel();
-		Label matchLabel = new Label("Group Definition Pattern: ");
+		final Label matchLabel = new Label("Group Definition Pattern: ");
 		matchLabel.setTitle("This is used to help identify classes in a regular expression so that the header can be transformed");
 		tempLayoutPanel.add(matchLabel);
 		txtMatchPattern = new TextBox();
@@ -109,7 +109,7 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 		mainPanel.add(tempLayoutPanel);
 
 		tempLayoutPanel = new HorizontalPanel();
-		Label subLabel = new Label("Output Pattern: ");
+		final Label subLabel = new Label("Output Pattern: ");
 		subLabel.setTitle("Use the classes identified in the Group Definition Pattern and show how you want them layed out.");
 		tempLayoutPanel.add(subLabel);
 		txtSubPattern = new TextBox();
@@ -131,16 +131,16 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 	 */
 	private void requestTransformers() {
 		final CommonDataRequesterAsync dataRequester = (CommonDataRequesterAsync) GWT.create(CommonDataRequester.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) dataRequester;
+		final ServiceDefTarget endpoint = (ServiceDefTarget) dataRequester;
 		endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "CommonDataRequester");
 		dataRequester.getHeaderTransformers(new AsyncCallback<List<HeaderTransformStub>>() {
 
-			public void onFailure(Throwable throwable) {
+			public void onFailure(final Throwable throwable) {
 				//do nothing we just can't add common formatters
 			}
 
-			public void onSuccess(List<HeaderTransformStub> trans) {
-				for (HeaderTransformStub tran : trans) {
+			public void onSuccess(final List<HeaderTransformStub> trans) {
+				for (final HeaderTransformStub tran : trans) {
 					commonHeaderTransformers.add(tran);
 					lstCommonTransforms.addItem(tran.toString());
 				}
@@ -156,7 +156,7 @@ public final class HeaderTransformPanel extends AbstractStepPanel {
 		return "shell-header-headertransformstep";
 	}
 
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof HeaderTransformStub)) {
 			ExceptionUtilities.throwCastException(step, HeaderTransformStub.class);
 			return;

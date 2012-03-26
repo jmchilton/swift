@@ -75,7 +75,7 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 	 *
 	 * @param rawDumpFile rawDump file to process
 	 */
-	public RawDumpReader(File rawDumpFile) {
+	public RawDumpReader(final File rawDumpFile) {
 		if (rawDumpFile == null) {
 			// Null files are honored - they will act as if there was no input information
 			// Use default header (otherwise we use header obtained from the file).
@@ -113,18 +113,18 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 	 *         contain the scan id. The columns are as specified by {@link #getHeaderLine()}.
 	 */
 	@Override
-	public String getLineForKey(String key) {
+	public String getLineForKey(final String key) {
 		if (lines == null) {
 			return EMPTY_LINE;
 		}
-		String line = lines.get(key);
+		final String line = lines.get(key);
 		if (line == null) {
 			return EMPTY_LINE;
 		}
 		return line;
 	}
 
-	private void parse(BufferedReader br, Map<String, String> lines) {
+	private void parse(final BufferedReader br, final Map<String, String> lines) {
 		try {
 			initSpectrumMinMax();
 			header = readHeader(br);
@@ -135,11 +135,11 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 				if (line == null) {
 					break;
 				}
-				int firstTab = line.indexOf('\t');
+				final int firstTab = line.indexOf('\t');
 				if (firstTab > 0) {
 					// We have data
 					final String scanNumStr = line.substring(0, firstTab);
-					int scanNum = Integer.parseInt(scanNumStr);
+					final int scanNum = Integer.parseInt(scanNumStr);
 
 					lines.put(scanNumStr, line.substring(firstTab + 1));
 					updateSpectrumMinMax(scanNum);
@@ -164,7 +164,7 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 	/**
 	 * For given scan number, update the {@link #firstSpectrum} and {@link #lastSpectrum}
 	 */
-	private void updateSpectrumMinMax(int scanNum) {
+	private void updateSpectrumMinMax(final int scanNum) {
 		if (scanNum < firstSpectrum || firstSpectrum == -1) {
 			firstSpectrum = scanNum;
 		}
@@ -173,16 +173,16 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 		}
 	}
 
-	private static String[] readHeader(BufferedReader br) throws IOException {
-		String line = br.readLine();
+	private static String[] readHeader(final BufferedReader br) throws IOException {
+		final String line = br.readLine();
 		if (line == null) {
 			throw new MprcException("The rawDump output has no header");
 		}
-		String[] tmpHeader = TAB_SPLIT.split(line);
+		final String[] tmpHeader = TAB_SPLIT.split(line);
 		if (!SCAN_NUM_HEADER.equals(tmpHeader[0])) {
 			throw new MprcException("Unknown rawDump output format (first column should be '" + SCAN_NUM_HEADER + "', was '" + tmpHeader[0] + "'.");
 		}
-		String[] parsedHeader = new String[tmpHeader.length - 1];
+		final String[] parsedHeader = new String[tmpHeader.length - 1];
 		System.arraycopy(tmpHeader, 1, parsedHeader, 0, tmpHeader.length - 1);
 		return parsedHeader;
 	}
@@ -200,7 +200,7 @@ public final class RawDumpReader implements KeyedTsvReader, Iterable<String> {
 			@Override
 			public String next() {
 				currentSpectrum++;
-				String spectrumStr = String.valueOf(currentSpectrum);
+				final String spectrumStr = String.valueOf(currentSpectrum);
 				if (lines.containsKey(spectrumStr)) {
 					return spectrumStr;
 				}

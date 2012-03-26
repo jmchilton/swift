@@ -11,7 +11,7 @@ public final class ClientDatabaseUndeployerProgress implements Serializable {
 	private String progressMessage;
 	private boolean isLast;
 
-	public ClientDatabaseUndeployerProgress(long databaseUndeployerTaskId, String progressMessage, boolean last) {
+	public ClientDatabaseUndeployerProgress(final long databaseUndeployerTaskId, final String progressMessage, final boolean last) {
 		this.databaseUndeployerTaskId = databaseUndeployerTaskId;
 		this.progressMessage = progressMessage;
 		isLast = last;
@@ -24,7 +24,7 @@ public final class ClientDatabaseUndeployerProgress implements Serializable {
 		return databaseUndeployerTaskId;
 	}
 
-	public void setDatabaseUndeployerTaskId(long databaseUndeployerTaskId) {
+	public void setDatabaseUndeployerTaskId(final long databaseUndeployerTaskId) {
 		this.databaseUndeployerTaskId = databaseUndeployerTaskId;
 	}
 
@@ -32,7 +32,7 @@ public final class ClientDatabaseUndeployerProgress implements Serializable {
 		return progressMessage;
 	}
 
-	public void setProgressMessage(String progressMessage) {
+	public void setProgressMessage(final String progressMessage) {
 		this.progressMessage = progressMessage;
 	}
 
@@ -40,7 +40,7 @@ public final class ClientDatabaseUndeployerProgress implements Serializable {
 		return isLast;
 	}
 
-	public void setLast(boolean last) {
+	public void setLast(final boolean last) {
 		isLast = last;
 	}
 }

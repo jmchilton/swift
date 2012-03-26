@@ -20,7 +20,7 @@ public final class PeaksParameter implements Comparable {
 	 * @param parameterName
 	 * @param parameterValue Paramater value use in the http call.
 	 */
-	public PeaksParameter(String parameterName, Object parameterValue) {
+	public PeaksParameter(final String parameterName, final Object parameterValue) {
 		this.parameterName = parameterName;
 
 		this.parameterValue = parameterValue;
@@ -30,7 +30,7 @@ public final class PeaksParameter implements Comparable {
 		return parameterName;
 	}
 
-	public void setParameterName(String parameterName) {
+	public void setParameterName(final String parameterName) {
 		this.parameterName = parameterName;
 	}
 
@@ -38,7 +38,7 @@ public final class PeaksParameter implements Comparable {
 		return parameterValue;
 	}
 
-	public void setParameterValue(Object parameterValue) {
+	public void setParameterValue(final Object parameterValue) {
 		this.parameterValue = parameterValue;
 	}
 
@@ -61,10 +61,10 @@ public final class PeaksParameter implements Comparable {
 		return part;
 	}
 
-	public int compareTo(Object o) {
+	public int compareTo(final Object o) {
 
 		if (o instanceof PeaksParameter) {
-			PeaksParameter peaksOnlineParameter = PeaksParameter.class.cast(o);
+			final PeaksParameter peaksOnlineParameter = PeaksParameter.class.cast(o);
 
 			return getParameterName().compareTo(peaksOnlineParameter.getParameterName());
 		}
@@ -73,7 +73,7 @@ public final class PeaksParameter implements Comparable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -81,7 +81,7 @@ public final class PeaksParameter implements Comparable {
 			return false;
 		}
 
-		PeaksParameter that = (PeaksParameter) o;
+		final PeaksParameter that = (PeaksParameter) o;
 
 		if (parameterName != null ? !parameterName.equals(that.parameterName) : that.parameterName != null) {
 			return false;

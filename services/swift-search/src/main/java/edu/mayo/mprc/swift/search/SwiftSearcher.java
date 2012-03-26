@@ -123,7 +123,7 @@ public final class SwiftSearcher implements Worker {
 
 	private FileTokenFactory fileTokenFactory;
 
-	public SwiftSearcher(CurationDao curationDao, SwiftDao swiftDao, FileTokenFactory fileTokenFactory) {
+	public SwiftSearcher(final CurationDao curationDao, final SwiftDao swiftDao, final FileTokenFactory fileTokenFactory) {
 		// We execute the switch workflows in a single thread
 		service = new SimpleThreadPoolExecutor(1, "swiftSearcher");
 		this.curationDao = curationDao;
@@ -135,7 +135,7 @@ public final class SwiftSearcher implements Worker {
 		return raw2mgfEnabled;
 	}
 
-	public void setRaw2mgfEnabled(boolean raw2mgfEnabled) {
+	public void setRaw2mgfEnabled(final boolean raw2mgfEnabled) {
 		this.raw2mgfEnabled = raw2mgfEnabled;
 	}
 
@@ -143,7 +143,7 @@ public final class SwiftSearcher implements Worker {
 		return mgf2mgfEnabled;
 	}
 
-	public void setMgf2mgfEnabled(boolean mgf2mgfEnabled) {
+	public void setMgf2mgfEnabled(final boolean mgf2mgfEnabled) {
 		this.mgf2mgfEnabled = mgf2mgfEnabled;
 	}
 
@@ -151,7 +151,7 @@ public final class SwiftSearcher implements Worker {
 		return rawdumpEnabled;
 	}
 
-	public void setRawdumpEnabled(boolean rawdumpEnabled) {
+	public void setRawdumpEnabled(final boolean rawdumpEnabled) {
 		this.rawdumpEnabled = rawdumpEnabled;
 	}
 
@@ -159,7 +159,7 @@ public final class SwiftSearcher implements Worker {
 		return msmsEvalEnabled;
 	}
 
-	public void setMsmsEvalEnabled(boolean msmsEvalEnabled) {
+	public void setMsmsEvalEnabled(final boolean msmsEvalEnabled) {
 		this.msmsEvalEnabled = msmsEvalEnabled;
 	}
 
@@ -167,7 +167,7 @@ public final class SwiftSearcher implements Worker {
 		return scaffoldReportEnabled;
 	}
 
-	public void setScaffoldReportEnabled(boolean scaffoldReportEnabled) {
+	public void setScaffoldReportEnabled(final boolean scaffoldReportEnabled) {
 		this.scaffoldReportEnabled = scaffoldReportEnabled;
 	}
 
@@ -175,7 +175,7 @@ public final class SwiftSearcher implements Worker {
 		return qaEnabled;
 	}
 
-	public void setQaEnabled(boolean qaEnabled) {
+	public void setQaEnabled(final boolean qaEnabled) {
 		this.qaEnabled = qaEnabled;
 	}
 
@@ -183,7 +183,7 @@ public final class SwiftSearcher implements Worker {
 		return dbLoadEnabled;
 	}
 
-	public void setDbLoadEnabled(boolean dbLoadEnabled) {
+	public void setDbLoadEnabled(final boolean dbLoadEnabled) {
 		this.dbLoadEnabled = dbLoadEnabled;
 	}
 
@@ -191,7 +191,7 @@ public final class SwiftSearcher implements Worker {
 		return Collections.unmodifiableCollection(supportedEngines);
 	}
 
-	public void setSupportedEngines(Collection<SearchEngine> supportedEngines) {
+	public void setSupportedEngines(final Collection<SearchEngine> supportedEngines) {
 		this.supportedEngines = supportedEngines;
 	}
 
@@ -204,10 +204,10 @@ public final class SwiftSearcher implements Worker {
 	 *
 	 * @param searchEngines List of all available search engines.
 	 */
-	public void setSearchEngines(Collection<SearchEngine> searchEngines) {
+	public void setSearchEngines(final Collection<SearchEngine> searchEngines) {
 		this.searchEngines = searchEngines;
 		supportedEngines = new HashSet<SearchEngine>();
-		for (SearchEngine engine : searchEngines) {
+		for (final SearchEngine engine : searchEngines) {
 			if (engine.isEnabled()) {
 				supportedEngines.add(engine);
 			}
@@ -218,7 +218,7 @@ public final class SwiftSearcher implements Worker {
 		return raw2mgfDaemon;
 	}
 
-	public void setRaw2mgfDaemon(DaemonConnection raw2mgfDaemon) {
+	public void setRaw2mgfDaemon(final DaemonConnection raw2mgfDaemon) {
 		this.raw2mgfDaemon = raw2mgfDaemon;
 	}
 
@@ -226,7 +226,7 @@ public final class SwiftSearcher implements Worker {
 		return mgfCleanupDaemon;
 	}
 
-	public void setMgfCleanupDaemon(DaemonConnection mgfCleanupDaemon) {
+	public void setMgfCleanupDaemon(final DaemonConnection mgfCleanupDaemon) {
 		this.mgfCleanupDaemon = mgfCleanupDaemon;
 	}
 
@@ -234,11 +234,11 @@ public final class SwiftSearcher implements Worker {
 		return rawDumpDaemon;
 	}
 
-	public void setRawDumpDaemon(DaemonConnection rawDumpDaemon) {
+	public void setRawDumpDaemon(final DaemonConnection rawDumpDaemon) {
 		this.rawDumpDaemon = rawDumpDaemon;
 	}
 
-	public void setMsmsEvalDaemon(DaemonConnection msmsEvalDaemon) {
+	public void setMsmsEvalDaemon(final DaemonConnection msmsEvalDaemon) {
 		this.msmsEvalDaemon = msmsEvalDaemon;
 	}
 
@@ -250,7 +250,7 @@ public final class SwiftSearcher implements Worker {
 		return scaffoldReportDaemon;
 	}
 
-	public void setScaffoldReportDaemon(DaemonConnection scaffoldReportDaemon) {
+	public void setScaffoldReportDaemon(final DaemonConnection scaffoldReportDaemon) {
 		this.scaffoldReportDaemon = scaffoldReportDaemon;
 	}
 
@@ -258,7 +258,7 @@ public final class SwiftSearcher implements Worker {
 		return qaDaemon;
 	}
 
-	public void setQaDaemon(DaemonConnection qaDaemon) {
+	public void setQaDaemon(final DaemonConnection qaDaemon) {
 		this.qaDaemon = qaDaemon;
 	}
 
@@ -266,7 +266,7 @@ public final class SwiftSearcher implements Worker {
 		return fastaDbDaemon;
 	}
 
-	public void setFastaDbDaemon(DaemonConnection fastaDbDaemon) {
+	public void setFastaDbDaemon(final DaemonConnection fastaDbDaemon) {
 		this.fastaDbDaemon = fastaDbDaemon;
 	}
 
@@ -274,7 +274,7 @@ public final class SwiftSearcher implements Worker {
 		return searchDbDaemon;
 	}
 
-	public void setSearchDbDaemon(DaemonConnection searchDbDaemon) {
+	public void setSearchDbDaemon(final DaemonConnection searchDbDaemon) {
 		this.searchDbDaemon = searchDbDaemon;
 	}
 
@@ -284,7 +284,7 @@ public final class SwiftSearcher implements Worker {
 		assert !mgf2mgfEnabled || mgfCleanupDaemon != null : "MgfCleanup daemon must be set up if it is enabled";
 	}
 
-	public void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			assertValid();
 			if (!(workPacket instanceof SwiftSearchWorkPacket)) {
@@ -295,7 +295,7 @@ public final class SwiftSearcher implements Worker {
 
 			progressReporter.reportStart();
 
-			SearchRunner searchRunner = createSearchRunner(swiftSearchWorkPacket, progressReporter);
+			final SearchRunner searchRunner = createSearchRunner(swiftSearchWorkPacket, progressReporter);
 
 			// Run the search. The search is responsible for reporting success/failure on termination
 			service.execute(searchRunner);
@@ -304,13 +304,13 @@ public final class SwiftSearcher implements Worker {
 		}
 	}
 
-	private SearchRunner createSearchRunner(SwiftSearchWorkPacket swiftSearchWorkPacket, ProgressReporter progressReporter) {
+	private SearchRunner createSearchRunner(final SwiftSearchWorkPacket swiftSearchWorkPacket, final ProgressReporter progressReporter) {
 		swiftDao.begin();
 		try {
-			SwiftSearchDefinition swiftSearchDefinition = swiftDao.getSwiftSearchDefinition(swiftSearchWorkPacket.getSwiftSearchId());
+			final SwiftSearchDefinition swiftSearchDefinition = swiftDao.getSwiftSearchDefinition(swiftSearchWorkPacket.getSwiftSearchId());
 			final SearchRun searchRun = swiftDao.fillSearchRun(swiftSearchDefinition);
 
-			SearchRunner searchRunner = new SearchRunner(
+			final SearchRunner searchRunner = new SearchRunner(
 					swiftSearchWorkPacket,
 					swiftSearchDefinition,
 					raw2mgfDaemon,
@@ -334,7 +334,7 @@ public final class SwiftSearcher implements Worker {
 			// Check whether we can actually do what they want us to do
 			checkSearchCapabilities(searchRunner.getSearchDefinition());
 
-			PersistenceMonitor monitor = new PersistenceMonitor(searchRun.getId(), swiftDao);
+			final PersistenceMonitor monitor = new PersistenceMonitor(searchRun.getId(), swiftDao);
 			searchRunner.addSearchMonitor(monitor);
 
 			reportNewSearchRunId(progressReporter, monitor.getSearchRunId());
@@ -354,15 +354,15 @@ public final class SwiftSearcher implements Worker {
 	/**
 	 * When the search is started, the search run id created by the searchers is reported to the caller.
 	 */
-	private void reportNewSearchRunId(ProgressReporter progressReporter, int searchRunId) {
+	private void reportNewSearchRunId(final ProgressReporter progressReporter, final int searchRunId) {
 		progressReporter.reportProgress(new AssignedSearchRunId(searchRunId));
 	}
 
-	private boolean previousSearchRunning(SwiftSearchWorkPacket swiftSearchWorkPacket) {
+	private boolean previousSearchRunning(final SwiftSearchWorkPacket swiftSearchWorkPacket) {
 		return swiftSearchWorkPacket.getPreviousSearchRunId() > 0;
 	}
 
-	private void hidePreviousSearchRun(SwiftSearchWorkPacket swiftSearchWorkPacket) {
+	private void hidePreviousSearchRun(final SwiftSearchWorkPacket swiftSearchWorkPacket) {
 		final SearchRun searchRun = swiftDao.getSearchRunForId(swiftSearchWorkPacket.getPreviousSearchRunId());
 		searchRun.setHidden(1);
 	}
@@ -373,16 +373,16 @@ public final class SwiftSearcher implements Worker {
 	 *
 	 * @param definition Search definition.
 	 */
-	private void checkSearchCapabilities(SwiftSearchDefinition definition) {
+	private void checkSearchCapabilities(final SwiftSearchDefinition definition) {
 		boolean raw2mgfProblem = false;
 		try {
-			Set<SearchEngine> problematicEngines = new HashSet<SearchEngine>();
-			for (FileSearch inputFile : definition.getInputFiles()) {
+			final Set<SearchEngine> problematicEngines = new HashSet<SearchEngine>();
+			for (final FileSearch inputFile : definition.getInputFiles()) {
 				if (!inputFile.getInputFile().getName().endsWith(".mgf") && !this.raw2mgfEnabled) {
 					raw2mgfProblem = true;
 				}
 
-				for (SearchEngine engine : supportedEngines) {
+				for (final SearchEngine engine : supportedEngines) {
 					if (inputFile.isSearch(engine.getCode()) && !engine.isEnabled()) {
 						problematicEngines.add(engine);
 					}
@@ -390,7 +390,7 @@ public final class SwiftSearcher implements Worker {
 
 			}
 
-			StringBuilder errorMessage = new StringBuilder();
+			final StringBuilder errorMessage = new StringBuilder();
 			if (raw2mgfProblem) {
 				errorMessage.append("RAW->MGF conversion, ");
 			}
@@ -408,14 +408,14 @@ public final class SwiftSearcher implements Worker {
 		}
 	}
 
-	private static void appendEngines(Collection<SearchEngine> engineSet, StringBuilder builder) {
-		for (SearchEngine e : engineSet) {
+	private static void appendEngines(final Collection<SearchEngine> engineSet, final StringBuilder builder) {
+		for (final SearchEngine e : engineSet) {
 			builder.append(e.getFriendlyName()).append(", ");
 		}
 	}
 
 	public String toString() {
-		StringBuilder result = new StringBuilder(NAME).append(" capable of running ");
+		final StringBuilder result = new StringBuilder(NAME).append(" capable of running ");
 		if (raw2mgfEnabled) {
 			result.append("Raw->MGF");
 		}
@@ -433,12 +433,12 @@ public final class SwiftSearcher implements Worker {
 		private FileTokenFactory fileTokenFactory;
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			SwiftSearcher worker = new SwiftSearcher(curationDao, swiftDao, fileTokenFactory);
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final SwiftSearcher worker = new SwiftSearcher(curationDao, swiftDao, fileTokenFactory);
 
 			// Fill the search engine list with daemon connections, if we have both the deployer and the searcher defined
-			List<SearchEngine> connectedSearchEngines = new ArrayList<SearchEngine>();
-			for (SearchEngine engine : searchEngines) {
+			final List<SearchEngine> connectedSearchEngines = new ArrayList<SearchEngine>();
+			for (final SearchEngine engine : searchEngines) {
 				fillEngineDaemons(engine, connectedSearchEngines, "MASCOT", config.mascot, config.mascotDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "SEQUEST", config.sequest, config.sequestDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "TANDEM", config.tandem, config.tandemDeployer, dependencies);
@@ -486,7 +486,7 @@ public final class SwiftSearcher implements Worker {
 			return worker;
 		}
 
-		private void fillEngineDaemons(SearchEngine engineToFill, List<SearchEngine> filledList, String engineCode, ServiceConfig daemonConfig, ServiceConfig dbDeployerConfig, DependencyResolver dependencies) {
+		private void fillEngineDaemons(final SearchEngine engineToFill, final List<SearchEngine> filledList, final String engineCode, final ServiceConfig daemonConfig, final ServiceConfig dbDeployerConfig, final DependencyResolver dependencies) {
 			if (engineCode.equals(engineToFill.getCode()) && daemonConfig != null && dbDeployerConfig != null) {
 				SearchEngine clone = null;
 				try {
@@ -504,7 +504,7 @@ public final class SwiftSearcher implements Worker {
 			return searchEngines;
 		}
 
-		public void setSearchEngines(Collection<SearchEngine> searchEngines) {
+		public void setSearchEngines(final Collection<SearchEngine> searchEngines) {
 			this.searchEngines = searchEngines;
 		}
 
@@ -512,7 +512,7 @@ public final class SwiftSearcher implements Worker {
 			return curationDao;
 		}
 
-		public void setCurationDao(CurationDao curationDao) {
+		public void setCurationDao(final CurationDao curationDao) {
 			this.curationDao = curationDao;
 		}
 
@@ -520,7 +520,7 @@ public final class SwiftSearcher implements Worker {
 			return swiftDao;
 		}
 
-		public void setSwiftDao(SwiftDao swiftDao) {
+		public void setSwiftDao(final SwiftDao swiftDao) {
 			this.swiftDao = swiftDao;
 		}
 
@@ -528,7 +528,7 @@ public final class SwiftSearcher implements Worker {
 			return fileTokenFactory;
 		}
 
-		public void setFileTokenFactory(FileTokenFactory fileTokenFactory) {
+		public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 			this.fileTokenFactory = fileTokenFactory;
 		}
 	}
@@ -570,16 +570,16 @@ public final class SwiftSearcher implements Worker {
 		public Config() {
 		}
 
-		public Config(String fastaPath, String fastaArchivePath, String fastaUploadPath
-				, ServiceConfig raw2mgf, ServiceConfig mgf2mgf, ServiceConfig rawdump, ServiceConfig mascot, ServiceConfig mascotDeployer
-				, ServiceConfig sequest, ServiceConfig sequestDeployer, ServiceConfig tandem, ServiceConfig tandemDeployer
-				, ServiceConfig omssa, ServiceConfig omssaDeployer, ServiceConfig peaks, ServiceConfig peaksDeployer
-				, ServiceConfig myrimatch, ServiceConfig myrimatchDeployer, ServiceConfig scaffold, ServiceConfig scaffoldDeployer
-				, ServiceConfig scaffold3, ServiceConfig scaffold3Deployer
-				, ServiceConfig scaffoldReport, ServiceConfig qa
-				, ServiceConfig fastaDb, ServiceConfig searchDb
-				, ServiceConfig msmsEval
-				, DatabaseFactory.Config database) {
+		public Config(final String fastaPath, final String fastaArchivePath, final String fastaUploadPath
+				, final ServiceConfig raw2mgf, final ServiceConfig mgf2mgf, final ServiceConfig rawdump, final ServiceConfig mascot, final ServiceConfig mascotDeployer
+				, final ServiceConfig sequest, final ServiceConfig sequestDeployer, final ServiceConfig tandem, final ServiceConfig tandemDeployer
+				, final ServiceConfig omssa, final ServiceConfig omssaDeployer, final ServiceConfig peaks, final ServiceConfig peaksDeployer
+				, final ServiceConfig myrimatch, final ServiceConfig myrimatchDeployer, final ServiceConfig scaffold, final ServiceConfig scaffoldDeployer
+				, final ServiceConfig scaffold3, final ServiceConfig scaffold3Deployer
+				, final ServiceConfig scaffoldReport, final ServiceConfig qa
+				, final ServiceConfig fastaDb, final ServiceConfig searchDb
+				, final ServiceConfig msmsEval
+				, final DatabaseFactory.Config database) {
 			this.fastaPath = fastaPath;
 			this.fastaArchivePath = fastaArchivePath;
 			this.fastaUploadPath = fastaUploadPath;
@@ -723,8 +723,8 @@ public final class SwiftSearcher implements Worker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(FASTA_PATH, fastaPath);
 			map.put(FASTA_ARCHIVE_PATH, fastaArchivePath);
 			map.put(FASTA_UPLOAD_PATH, fastaUploadPath);
@@ -756,7 +756,7 @@ public final class SwiftSearcher implements Worker {
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			fastaPath = values.get(FASTA_PATH);
 			fastaArchivePath = values.get(FASTA_ARCHIVE_PATH);
 			fastaUploadPath = values.get(FASTA_UPLOAD_PATH);
@@ -797,12 +797,12 @@ public final class SwiftSearcher implements Worker {
 
 		private DatabaseValidator validator;
 
-		public Ui(DatabaseValidator validator) {
+		public Ui(final DatabaseValidator validator) {
 			this.validator = validator;
 		}
 
-		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, UiBuilder builder) {
-			DatabaseFactory.Config database = (DatabaseFactory.Config) daemon.firstResourceOfType(DatabaseFactory.Config.class);
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
+			final DatabaseFactory.Config database = (DatabaseFactory.Config) daemon.firstResourceOfType(DatabaseFactory.Config.class);
 
 			builder
 					.property(FASTA_PATH, "FASTA Database Path", "When Swift filters a database, the results go here.<p>" +
@@ -823,9 +823,9 @@ public final class SwiftSearcher implements Worker {
 					.required()
 					.validateOnDemand(new PropertyChangeListener() {
 						@Override
-						public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+						public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 							if (validationRequested && (config instanceof Config)) {
-								Config searcher = (Config) config;
+								final Config searcher = (Config) config;
 								validator.setSearcherConfig(searcher);
 								validator.setDaemonConfig(daemon);
 								final String error = validator.check(new HashMap<String, String>(0));
@@ -836,12 +836,12 @@ public final class SwiftSearcher implements Worker {
 						}
 
 						@Override
-						public void fixError(ResourceConfig config, String propertyName, String action) {
+						public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 							if (!(config instanceof Config)) {
 								ExceptionUtilities.throwCastException(config, Config.class);
 								return;
 							}
-							Config searcher = (Config) config;
+							final Config searcher = (Config) config;
 							validator.setSearcherConfig(searcher);
 							validator.setDaemonConfig(daemon);
 							validator.initialize(new ImmutableMap.Builder<String, String>()

@@ -55,7 +55,7 @@ public final class PeptideAnalysisIdentification {
 		return matchProbability;
 	}
 
-	public void setMatchProbability(double matchProbability) {
+	public void setMatchProbability(final double matchProbability) {
 		this.matchProbability = matchProbability;
 	}
 
@@ -63,7 +63,7 @@ public final class PeptideAnalysisIdentification {
 		return primaryScoreValue;
 	}
 
-	public void setPrimaryScoreValue(double primaryScoreValue) {
+	public void setPrimaryScoreValue(final double primaryScoreValue) {
 		this.primaryScoreValue = primaryScoreValue;
 	}
 
@@ -71,7 +71,7 @@ public final class PeptideAnalysisIdentification {
 		return sequence;
 	}
 
-	public void setSequence(String sequence) {
+	public void setSequence(final String sequence) {
 		this.sequence = sequence;
 	}
 
@@ -79,7 +79,7 @@ public final class PeptideAnalysisIdentification {
 		return modifications;
 	}
 
-	public void setModifications(List<Modification> modifications) {
+	public void setModifications(final List<Modification> modifications) {
 		this.modifications = modifications;
 	}
 
@@ -87,7 +87,7 @@ public final class PeptideAnalysisIdentification {
 		return tandemScore;
 	}
 
-	public void setTandemScore(List<Score> tandemScore) {
+	public void setTandemScore(final List<Score> tandemScore) {
 		this.tandemScore = tandemScore;
 	}
 
@@ -95,7 +95,7 @@ public final class PeptideAnalysisIdentification {
 		return mascotScore;
 	}
 
-	public void setMascotScore(List<Score> mascotScore) {
+	public void setMascotScore(final List<Score> mascotScore) {
 		this.mascotScore = mascotScore;
 	}
 
@@ -103,7 +103,7 @@ public final class PeptideAnalysisIdentification {
 		return sequestScore;
 	}
 
-	public void setSequestScore(List<Score> sequestScore) {
+	public void setSequestScore(final List<Score> sequestScore) {
 		this.sequestScore = sequestScore;
 	}
 
@@ -116,7 +116,7 @@ public final class PeptideAnalysisIdentification {
 	 * <code>ADFGH</code>.
 	 * Assumes for the sake of simplicity that the sequence is in form <code>[(X)]X+[(X)]</code>.
 	 */
-	public static String stripNeighborAminoAcids(String sequence) {
+	public static String stripNeighborAminoAcids(final String sequence) {
 		int start = 0;
 		int end = sequence.length();
 		if (sequence.charAt(end - 1) == ')') {
@@ -132,7 +132,7 @@ public final class PeptideAnalysisIdentification {
 		return stripNeighborAminoAcids(sequence);
 	}
 
-	public double getMonoisotopicMass(AminoAcidSet aminoAcids) {
+	public double getMonoisotopicMass(final AminoAcidSet aminoAcids) {
 		return aminoAcids.getMonoisotopicMass(getSequenceWithoutNeighbors());
 	}
 
@@ -143,7 +143,7 @@ public final class PeptideAnalysisIdentification {
 	 * @param mod
 	 * @return
 	 */
-	private double getCheckedModificationMass(Map<String, Double> modificationMap, Modification mod) {
+	private double getCheckedModificationMass(final Map<String, Double> modificationMap, final Modification mod) {
 		final Double modificationMass = modificationMap.get(mod.getName());
 		if (modificationMass != null) {
 			return modificationMass;
@@ -153,20 +153,20 @@ public final class PeptideAnalysisIdentification {
 		}
 	}
 
-	public double getModificationsMassShift(Map<String, Double> modificationMap) {
+	public double getModificationsMassShift(final Map<String, Double> modificationMap) {
 		double mass = 0;
 		if (getModifications() != null) {
-			for (Modification mod : getModifications()) {
+			for (final Modification mod : getModifications()) {
 				mass += getCheckedModificationMass(modificationMap, mod);
 			}
 		}
 		return mass;
 	}
 
-	public double getModificationsMassShift(Map<String, Double> modificationMap, ModOverrideList modOverrides) {
+	public double getModificationsMassShift(final Map<String, Double> modificationMap, final ModOverrideList modOverrides) {
 		double mass = 0;
 		if (getModifications() != null) {
-			for (Modification mod : getModifications()) {
+			for (final Modification mod : getModifications()) {
 				if (!modOverrides.isOverriden(mod.getName())) {
 					mass += getCheckedModificationMass(modificationMap, mod);
 				} else {

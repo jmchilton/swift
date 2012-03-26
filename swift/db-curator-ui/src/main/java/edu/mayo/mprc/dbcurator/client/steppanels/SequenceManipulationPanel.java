@@ -24,13 +24,13 @@ public final class SequenceManipulationPanel extends AbstractStepPanel {
 	public static final String TITLE = "Make Decoy Database";
 
 	public SequenceManipulationPanel() {
-		VerticalPanel panel = new VerticalPanel();
+		final VerticalPanel panel = new VerticalPanel();
 
-		String radioGroup = String.valueOf(new Date().getTime());
+		final String radioGroup = String.valueOf(new Date().getTime());
 
 		this.radioReversal = new RadioButton(radioGroup, "Sequence Reversal");
 		this.radioScramble = new RadioButton(radioGroup, "Sequence Scramble");
-		HorizontalPanel modePanel = new HorizontalPanel();
+		final HorizontalPanel modePanel = new HorizontalPanel();
 		//radioReversal.setChecked(true);
 
 		modePanel.add(radioReversal);
@@ -70,7 +70,7 @@ public final class SequenceManipulationPanel extends AbstractStepPanel {
 	 * @param step the containedStep you want this mainPanel to represent
 	 * @throws ClassCastException if the containedStep passed in wasn't the type that the Panel can represent
 	 */
-	public void setContainedStep(CurationStepStub step) throws ClassCastException {
+	public void setContainedStep(final CurationStepStub step) throws ClassCastException {
 		if (!(step instanceof SequenceManipulationStepStub)) {
 			ExceptionUtilities.throwCastException(step, SequenceManipulationStepStub.class);
 			return;

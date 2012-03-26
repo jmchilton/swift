@@ -23,12 +23,12 @@ public final class InputFileFilter implements FilenameFilter, Serializable {
 	/**
 	 * @param allowedExtensions Allowed extensions, including the dot (such as ".RAW" or ".mgf")
 	 */
-	public InputFileFilter(String allowedExtensions, boolean dirsToo) {
-		String[] extensions = allowedExtensions.split("\\|");
-		StringBuilder pattern = new StringBuilder(PATTERN_BUILDER_CAPACITY);
+	public InputFileFilter(final String allowedExtensions, final boolean dirsToo) {
+		final String[] extensions = allowedExtensions.split("\\|");
+		final StringBuilder pattern = new StringBuilder(PATTERN_BUILDER_CAPACITY);
 		// We build a pattern like this: .*\\.ext$|.*\\.ext2$|...
 		// It should match any file name that ENDS in given extension.
-		for (String extension : extensions) {
+		for (final String extension : extensions) {
 			pattern.append("|.*");
 			pattern.append(Pattern.quote(extension));
 			pattern.append('$');
@@ -37,14 +37,14 @@ public final class InputFileFilter implements FilenameFilter, Serializable {
 		this.dirsToo = dirsToo;
 	}
 
-	public boolean accept(File dir, String name) {
+	public boolean accept(final File dir, final String name) {
 		boolean result = false;
-		File file = new File(dir, name);
+		final File file = new File(dir, name);
 		if (!file.isHidden()) {
 			if (this.dirsToo && file.isDirectory()) {
 				result = true;
 			} else if (file.isFile()) {
-				Matcher match = filePattern.matcher(name);
+				final Matcher match = filePattern.matcher(name);
 				if (match.matches()) {
 					result = true;
 				}

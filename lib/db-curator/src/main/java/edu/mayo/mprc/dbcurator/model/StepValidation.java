@@ -55,7 +55,7 @@ public final class StepValidation {
 		return Collections.unmodifiableList(messages);
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.messages.add(message);
 	}
 
@@ -66,7 +66,7 @@ public final class StepValidation {
 		return completionCount;
 	}
 
-	public void setCompletionCount(int completionCount) {
+	public void setCompletionCount(final int completionCount) {
 		this.completionCount = completionCount;
 	}
 
@@ -104,7 +104,7 @@ public final class StepValidation {
 	 * @param message
 	 * @param e
 	 */
-	public void addMessageAndException(String message, Exception e) {
+	public void addMessageAndException(final String message, final Exception e) {
 		this.messages.add(message);
 		if (e != null) {
 			this.wrappedExceptions.add(e);

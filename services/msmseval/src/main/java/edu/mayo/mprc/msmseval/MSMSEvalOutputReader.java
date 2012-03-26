@@ -46,7 +46,7 @@ public final class MSMSEvalOutputReader implements KeyedTsvReader {
 	 *
 	 * @param msmsEvalFile msmsEval file to process
 	 */
-	public MSMSEvalOutputReader(File msmsEvalFile) {
+	public MSMSEvalOutputReader(final File msmsEvalFile) {
 		if (msmsEvalFile == null) {
 			// Null files are honored - they will act as if there was no input information
 			// Use default header (otherwise we use header obtained from the file).
@@ -80,24 +80,24 @@ public final class MSMSEvalOutputReader implements KeyedTsvReader {
 	 *         contain the scan number. The columns are as specified by {@link #getHeaderLine()}.
 	 */
 	@Override
-	public String getLineForKey(String key) {
+	public String getLineForKey(final String key) {
 		if (lines == null) {
 			return EMPTY_LINE;
 		}
-		String line = lines.get(key);
+		final String line = lines.get(key);
 		if (line == null) {
 			return EMPTY_LINE;
 		}
 		return line;
 	}
 
-	private void parse(BufferedReader br, Map<String, String> lines) {
+	private void parse(final BufferedReader br, final Map<String, String> lines) {
 		try {
 			String line = br.readLine();
 			if (line == null) {
 				throw new MprcException("The msmsEval output has no header");
 			}
-			String[] tmpHeader = line.split(",");
+			final String[] tmpHeader = line.split(",");
 			if (!SCAN_NUM_HEADER.equals(tmpHeader[0])) {
 				throw new MprcException("Unknown msmsEval output format (first column should be '" + SCAN_NUM_HEADER + "', was '" + tmpHeader[0] + "'.");
 			}
@@ -110,10 +110,10 @@ public final class MSMSEvalOutputReader implements KeyedTsvReader {
 					break;
 				}
 
-				int firstComma = line.indexOf(',');
+				final int firstComma = line.indexOf(',');
 				if (firstComma > 0) {
 					// We have data
-					String tabSeparatedLine = line.replace(',', '\t');
+					final String tabSeparatedLine = line.replace(',', '\t');
 					lines.put(line.substring(0, firstComma), tabSeparatedLine.substring(firstComma + 1));
 				} else {
 					// Ignore the line

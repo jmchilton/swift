@@ -18,7 +18,7 @@ public final class ManualInclusionStepStub extends CurationStepStub {
 	 * in this case we will return a StepPanelShell that will contain a ManualInclusionPanel
 	 */
 	public AbstractStepPanel getStepPanel() {
-		ManualInclusionPanel panel = new ManualInclusionPanel();
+		final ManualInclusionPanel panel = new ManualInclusionPanel();
 		panel.setContainedStep(this);
 		return panel;
 	}

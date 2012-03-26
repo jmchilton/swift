@@ -46,7 +46,7 @@ public final class JsonWriter {
 	private static final long SECS_PER_MIN = 60L;
 	private static final long SECS_PER_HOUR = 3600L;
 
-	public JsonWriter(PrintWriter out) {
+	public JsonWriter(final PrintWriter out) {
 		this.out = out;
 	}
 
@@ -64,7 +64,7 @@ public final class JsonWriter {
 		out.print(TARGET + ".clearAll();");
 	}
 
-	public void setTimestamp(Date date) {
+	public void setTimestamp(final Date date) {
 		dumpMethod(null, null);
 		out.print(MessageFormat.format("window.timestamp={0};", Long.toString(date.getTime())));
 	}
@@ -78,8 +78,8 @@ public final class JsonWriter {
 	 * @param reports      A listing of searchRun output files. Can be null in case the searchRun did not finish yet.
 	 * @param runningTasks Number of tasks currently running.
 	 */
-	public void processSearchRun(int order, SearchRun searchRun, int runningTasks, Iterable<ReportInfo> reports, String method) {
-		StringBuilder parameter = new StringBuilder(SEARCH_RUN_BUILDER_CAPACITY);
+	public void processSearchRun(final int order, final SearchRun searchRun, final int runningTasks, final Iterable<ReportInfo> reports, final String method) {
+		final StringBuilder parameter = new StringBuilder(SEARCH_RUN_BUILDER_CAPACITY);
 		// Only insert method supports the order parameter (others define items by id)
 		// Only update method outputs just "live" data (data that change during lifetime of the searchRun)
 		appendSearchRunJson(parameter, "insert".equals(method) ? order : -1, searchRun, runningTasks, reports, "update".equals(method));
@@ -97,7 +97,7 @@ public final class JsonWriter {
 	 * @param justLiveData When true, only "live data" are reported (data that changes during the lifetime of the searchRun)
 	 * @return Original StringBuilder with searchRun appended.
 	 */
-	public static StringBuilder appendSearchRunJson(StringBuilder builder, int order, SearchRun searchRun, int runningTasks, Iterable<ReportInfo> reports, boolean justLiveData) {
+	public static StringBuilder appendSearchRunJson(final StringBuilder builder, final int order, final SearchRun searchRun, final int runningTasks, final Iterable<ReportInfo> reports, final boolean justLiveData) {
 		builder.append('{');
 
 		if (0 <= order) {
@@ -109,7 +109,7 @@ public final class JsonWriter {
 			appendKeyString(builder, "user", searchRun.getSubmittingUser().getFirstName() + ' ' + searchRun.getSubmittingUser().getLastName());
 			appendKeyString(builder, "submitted", formatDateCompact(searchRun.getStartTimestamp()));
 		}
-		Date endStamp = searchRun.getEndTimestamp();
+		final Date endStamp = searchRun.getEndTimestamp();
 		if (endStamp == null) {
 			appendKeyString(builder, "duration", formatTimeSpan(new Date().getTime() - searchRun.getStartTimestamp().getTime()) + " (running)");
 		} else {
@@ -143,13 +143,13 @@ public final class JsonWriter {
 	 * @param l Number of milliseconds elapsed.
 	 * @return Human readable time information (xx days, hh:mm:ss)
 	 */
-	private static String formatTimeSpan(long l) {
-		long seconds = l / 1000 % 60;
-		long minutes = l / 1000 / 60 % 60;
-		long hours = l / 1000 / 60 / 60 % 24;
-		long days = l / 1000 / 60 / 60 / 24;
+	private static String formatTimeSpan(final long l) {
+		final long seconds = l / 1000 % 60;
+		final long minutes = l / 1000 / 60 % 60;
+		final long hours = l / 1000 / 60 / 60 % 24;
+		final long days = l / 1000 / 60 / 60 / 24;
 
-		StringBuilder result = new StringBuilder(10);
+		final StringBuilder result = new StringBuilder(10);
 
 		if (days > 0) {
 			result.append(days);
@@ -167,9 +167,9 @@ public final class JsonWriter {
 		return result.toString();
 	}
 
-	public void rewriteTaskDataList(int searchRunId, List<TaskData> statusList) {
+	public void rewriteTaskDataList(final int searchRunId, final List<TaskData> statusList) {
 		dumpMethod(null, null);
-		StringBuilder parameter = new StringBuilder(TASK_STRINGBUILDER_CAPACITY);
+		final StringBuilder parameter = new StringBuilder(TASK_STRINGBUILDER_CAPACITY);
 		for (int i = 0; i < statusList.size(); i++) {
 			appendComma(parameter);
 			appendTaskDataJson(parameter, i, statusList.get(i));
@@ -185,7 +185,7 @@ public final class JsonWriter {
 	 * @param status  Task status data
 	 * @return Original StringBuilder with the task status appended.
 	 */
-	public static StringBuilder appendTaskDataJson(StringBuilder builder, int order, TaskData status) {
+	public static StringBuilder appendTaskDataJson(final StringBuilder builder, final int order, final TaskData status) {
 		builder.append('{');
 		appendKeyNumber(builder, "_", (long) order);
 		appendKeyNumber(builder, "taskid", status.getId());
@@ -203,8 +203,8 @@ public final class JsonWriter {
 		if (queue == null) {
 			queue = start;
 		}
-		long queueTotal = start.getTime() - queue.getTime();
-		long runTotal = end.getTime() - start.getTime();
+		final long queueTotal = start.getTime() - queue.getTime();
+		final long runTotal = end.getTime() - start.getTime();
 		String timeStr = "";
 		if (runTotal > 0) {
 			timeStr = "Actual time: " + millisToTimeString(runTotal);
@@ -245,26 +245,26 @@ public final class JsonWriter {
 		return builder;
 	}
 
-	private static String millisToTimeString(long millis) {
+	private static String millisToTimeString(final long millis) {
 		long sec = millis / MILLIS_PER_SEC;
-		long min = (sec / SECS_PER_MIN) % SECS_PER_MIN;
-		long hour = sec / SECS_PER_HOUR;
+		final long min = (sec / SECS_PER_MIN) % SECS_PER_MIN;
+		final long hour = sec / SECS_PER_HOUR;
 		sec %= SECS_PER_MIN;
 		return MessageFormat.format("{0,number}:{1,number,00}:{2,number,00}", hour, min, sec);
 	}
 
-	private static void appendComma(StringBuilder parameter) {
+	private static void appendComma(final StringBuilder parameter) {
 		if (1 < parameter.length() && '{' != parameter.charAt(parameter.length() - 1) && '[' != parameter.charAt(parameter.length() - 1)) {
 			parameter.append(", ");
 		}
 	}
 
-	private static void appendKeyNumber(StringBuilder parameter, String key, long value) {
+	private static void appendKeyNumber(final StringBuilder parameter, final String key, final long value) {
 		appendComma(parameter);
 		parameter.append('"').append(key).append("\":").append(value);
 	}
 
-	private static void appendKeyNumberNull(StringBuilder parameter, String key, Integer value) {
+	private static void appendKeyNumberNull(final StringBuilder parameter, final String key, final Integer value) {
 		appendComma(parameter);
 		if (value != null) {
 			parameter.append('"').append(key).append("\":").append(value);
@@ -273,7 +273,7 @@ public final class JsonWriter {
 		}
 	}
 
-	private static void appendKeyNumberNull(StringBuilder parameter, String key, Float value) {
+	private static void appendKeyNumberNull(final StringBuilder parameter, final String key, final Float value) {
 		appendComma(parameter);
 		if (value != null) {
 			parameter.append('"').append(key).append("\":").append(value);
@@ -282,7 +282,7 @@ public final class JsonWriter {
 		}
 	}
 
-	private static void appendKeyString(StringBuilder parameter, String key, String value) {
+	private static void appendKeyString(final StringBuilder parameter, final String key, final String value) {
 		appendComma(parameter);
 		if (value != null) {
 			parameter.append('"').append(key).append("\":\"").append(StringUtilities.toUnicodeEscapeString(escapeDoubleQuoteJavascript(value))).append('"');
@@ -291,14 +291,14 @@ public final class JsonWriter {
 		}
 	}
 
-	private static void appendKeyStringArray(StringBuilder parameter, String key, Iterable<String> value) {
+	private static void appendKeyStringArray(final StringBuilder parameter, final String key, final Iterable<String> value) {
 		appendComma(parameter);
 		if (value == null) {
 			parameter.append('"').append(key).append("\":null");
 		} else {
 			parameter.append('"').append(key).append("\":[");
 			boolean first = true;
-			for (String v : value) {
+			for (final String v : value) {
 				if (!first) {
 					parameter.append(',');
 				}
@@ -311,14 +311,14 @@ public final class JsonWriter {
 		}
 	}
 
-	private static void appendKeyReportInfo(StringBuilder parameter, String key, Iterable<ReportInfo> value) {
+	private static void appendKeyReportInfo(final StringBuilder parameter, final String key, final Iterable<ReportInfo> value) {
 		appendComma(parameter);
 		if (value == null) {
 			parameter.append('"').append(key).append("\":null");
 		} else {
 			parameter.append('"').append(key).append("\":[");
 			boolean first = true;
-			for (ReportInfo v : value) {
+			for (final ReportInfo v : value) {
 				if (!first) {
 					parameter.append(", ");
 				}
@@ -330,7 +330,7 @@ public final class JsonWriter {
 		}
 	}
 
-	private static void appendReportInfo(StringBuilder builder, ReportInfo info) {
+	private static void appendReportInfo(final StringBuilder builder, final ReportInfo info) {
 		builder.append('{');
 		appendKeyNumber(builder, "reportId", info.getReportId());
 		appendKeyString(builder, "path", info.getFilePath());
@@ -338,7 +338,7 @@ public final class JsonWriter {
 		builder.append('}');
 	}
 
-	private static void appendLogInfo(StringBuilder builder, LogInfo info) {
+	private static void appendLogInfo(final StringBuilder builder, final LogInfo info) {
 		appendComma(builder);
 		builder.append('{');
 		appendKeyString(builder, "type", info.getType());
@@ -354,7 +354,7 @@ public final class JsonWriter {
 	 * @param text Text to be escaped.
 	 * @return Escaped string (add enclosing apostrophes to use).
 	 */
-	public static String escapeSingleQuoteJavascript(String text) {
+	public static String escapeSingleQuoteJavascript(final String text) {
 		String replaced = JAVASCRIPT_ESCAPE.matcher(text).replaceAll("\\\\$0");
 		replaced = replaced.replaceAll("\n", "\\\\n");
 		replaced = replaced.replaceAll("\r", "\\\\r");
@@ -370,7 +370,7 @@ public final class JsonWriter {
 	 * @param text Text to be escaped.
 	 * @return Escaped string (add enclosing apostrophes to use).
 	 */
-	public static String escapeDoubleQuoteJavascript(String text) {
+	public static String escapeDoubleQuoteJavascript(final String text) {
 		String replaced = JAVASCRIPT_ESCAPE_QUOTE.matcher(text).replaceAll("\\\\$0");
 		replaced = replaced.replaceAll("\n", "\\\\n");
 		replaced = replaced.replaceAll("\r", "\\\\r");
@@ -384,15 +384,15 @@ public final class JsonWriter {
 	 * @param date Date to be formatted.
 	 * @return Formatted date string.
 	 */
-	public static String formatDateCompact(Date date) {
+	public static String formatDateCompact(final Date date) {
 		// Get current date/time
-		Calendar calendar = Calendar.getInstance();
-		Calendar formatData = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance();
+		final Calendar formatData = Calendar.getInstance();
 		formatData.setTime(date);
 		return formatDateCompact(formatData, calendar);
 	}
 
-	public static String formatDateCompact(Calendar date, Calendar now) {
+	public static String formatDateCompact(final Calendar date, final Calendar now) {
 		// Reset it to midnight of this day
 		now.set(Calendar.AM_PM, Calendar.AM);
 		now.set(Calendar.HOUR, 0);
@@ -411,7 +411,7 @@ public final class JsonWriter {
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date.getTime());
 	}
 
-	private void dumpMethod(String method, String parameter) {
+	private void dumpMethod(final String method, final String parameter) {
 		if (isMethodChanging(method)) {
 			if (this.currentMethod != null) {
 				out.print(MessageFormat.format("root.{0}([{1}]);", this.currentMethod, currentMethodArray.toString()));
@@ -427,7 +427,7 @@ public final class JsonWriter {
 		}
 	}
 
-	private boolean isMethodChanging(String method) {
+	private boolean isMethodChanging(final String method) {
 		if (this.currentMethod == null && method != null) {
 			return true;
 		}

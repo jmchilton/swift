@@ -37,7 +37,7 @@ public final class StarredProteinsDialog extends FrameDialog {
 		hide();
 	}
 
-	public void setValue(ClientScaffoldSettings value) {
+	public void setValue(final ClientScaffoldSettings value) {
 		this.value = value;
 		if (value.getStarredProteins() != null) {
 			this.lastValue = new ClientStarredProteins(
@@ -59,10 +59,10 @@ public final class StarredProteinsDialog extends FrameDialog {
 		return lastValue;
 	}
 
-	private String convertEditableToRegEx(String s) {
-		String[] chunks = s.split("\\s+");
-		StringBuilder result = new StringBuilder();
-		for (String chunk : chunks) {
+	private String convertEditableToRegEx(final String s) {
+		final String[] chunks = s.split("\\s+");
+		final StringBuilder result = new StringBuilder();
+		for (final String chunk : chunks) {
 			result.append("\\b")
 					.append(chunk)
 					.append("\\b\n");
@@ -70,10 +70,10 @@ public final class StarredProteinsDialog extends FrameDialog {
 		return result.substring(0, result.length() - 1);
 	}
 
-	private String convertRegexToEditable(String starredDescription) {
+	private String convertRegexToEditable(final String starredDescription) {
 		final String[] proteinList = starredDescription.split("\\n");
-		StringBuilder replaced = new StringBuilder();
-		for (String s : proteinList) {
+		final StringBuilder replaced = new StringBuilder();
+		for (final String s : proteinList) {
 			String result = s.trim();
 			if (result.startsWith("\\b")) {
 				result = result.substring(2);

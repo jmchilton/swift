@@ -14,7 +14,7 @@ public class StarredProteins extends PersistableBase {
 	public StarredProteins() {
 	}
 
-	public StarredProteins(String starred, String delimiter, boolean regularExpression, boolean matchName) {
+	public StarredProteins(final String starred, final String delimiter, final boolean regularExpression, final boolean matchName) {
 		this.starred = starred;
 		this.delimiter = delimiter;
 		this.regularExpression = regularExpression;
@@ -25,7 +25,7 @@ public class StarredProteins extends PersistableBase {
 		return starred;
 	}
 
-	public void setStarred(String starred) {
+	public void setStarred(final String starred) {
 		this.starred = starred;
 	}
 
@@ -33,7 +33,7 @@ public class StarredProteins extends PersistableBase {
 		return delimiter;
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 
@@ -41,7 +41,7 @@ public class StarredProteins extends PersistableBase {
 		return regularExpression;
 	}
 
-	public void setRegularExpression(boolean regularExpression) {
+	public void setRegularExpression(final boolean regularExpression) {
 		this.regularExpression = regularExpression;
 	}
 
@@ -49,12 +49,12 @@ public class StarredProteins extends PersistableBase {
 		return matchName;
 	}
 
-	public void setMatchName(boolean matchName) {
+	public void setMatchName(final boolean matchName) {
 		this.matchName = matchName;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -62,7 +62,7 @@ public class StarredProteins extends PersistableBase {
 			return false;
 		}
 
-		StarredProteins that = (StarredProteins) o;
+		final StarredProteins that = (StarredProteins) o;
 
 		if (isMatchName() != that.isMatchName()) {
 			return false;

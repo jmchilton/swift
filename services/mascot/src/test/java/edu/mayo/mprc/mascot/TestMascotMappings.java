@@ -17,15 +17,15 @@ public final class TestMascotMappings {
 
 	@Test
 	public void shouldSupportPhosphoST() {
-		ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
-		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
+		final ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
+		final MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
 
-		MappingContext context = new PhosphoStContext(abstractParamsInfo);
+		final MappingContext context = new PhosphoStContext(abstractParamsInfo);
 
 		final ModSpecificity phosphoS = unimod.getSpecificitiesByMascotName("Phospho (S)").get(0);
-		ModSet set = new ModSet();
+		final ModSet set = new ModSet();
 		set.add(phosphoS);
 		mapping.setFixedMods(context, set);
 
@@ -40,12 +40,12 @@ public final class TestMascotMappings {
 
 	@Test
 	public void shouldSupportDeamidatedNTerm() {
-		ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
-		MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
+		final ParamsInfo abstractParamsInfo = getAbstractParamsInfo();
+		final MascotMappingFactory mappingFactory = new MascotMappingFactory(abstractParamsInfo);
 		final Mappings mapping = mappingFactory.createMapping();
 		final Unimod unimod = abstractParamsInfo.getUnimod();
 
-		MappingContext context = new PhosphoStContext(abstractParamsInfo);
+		final MappingContext context = new PhosphoStContext(abstractParamsInfo);
 
 		final ModSpecificity deamidated = unimod.getSpecificitiesByMascotName("Deamidated (Protein N-term F)").get(0);
 		final ModSet modSet = new ModSet();
@@ -58,13 +58,13 @@ public final class TestMascotMappings {
 	}
 
 	public static ParamsInfo getAbstractParamsInfo() {
-		CurationDao curationDao = new MockCurationDao();
-		UnimodDao unimodDao = new MockUnimodDao();
-		ParamsDao paramsDao = new MockParamsDao();
+		final CurationDao curationDao = new MockCurationDao();
+		final UnimodDao unimodDao = new MockUnimodDao();
+		final ParamsDao paramsDao = new MockParamsDao();
 		return new ParamsInfoImpl(curationDao, unimodDao, paramsDao);
 	}
 
-	private static String mappingsToString(Mappings mapping) {
+	private static String mappingsToString(final Mappings mapping) {
 		final StringWriter writer = new StringWriter(1000);
 		mapping.write(getMascotParamReader(), writer);
 		return writer.toString();
@@ -75,12 +75,12 @@ public final class TestMascotMappings {
 	}
 
 	private static final class PhosphoStContext extends TestMappingContextBase {
-		private PhosphoStContext(ParamsInfo abstractParamsInfo) {
+		private PhosphoStContext(final ParamsInfo abstractParamsInfo) {
 			super(abstractParamsInfo);
 		}
 
 		@Override
-		public void reportWarning(String message) {
+		public void reportWarning(final String message) {
 			Assert.assertTrue(message.matches("Mascot will search additional site \\([ST]\\) for modification Phospho \\([ST]\\)"), "Unexpected warning");
 		}
 	}

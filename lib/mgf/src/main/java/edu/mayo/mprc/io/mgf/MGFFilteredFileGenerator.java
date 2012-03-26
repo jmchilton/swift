@@ -28,7 +28,7 @@ public final class MGFFilteredFileGenerator {
 	 * @param rejectedMgf Rejected spectra mgf (for spectra where filter returns false).
 	 * @param filter      Filter that either accepts or rejects each particular spectrum.
 	 */
-	public static MgfFilteredSpectraCount filterMgfFile(File sourceMgf, File acceptedMgf, File rejectedMgf, MgfPeakListFilter filter) {
+	public static MgfFilteredSpectraCount filterMgfFile(final File sourceMgf, final File acceptedMgf, final File rejectedMgf, final MgfPeakListFilter filter) {
 		int totalSpectra = 0;
 		int acceptedSpectra = 0;
 		int rejectedSpectra = 0;
@@ -87,14 +87,14 @@ public final class MGFFilteredFileGenerator {
 	 * @param badSpectraMGFTitles   Source mgf file bad spectra titles.
 	 * @return int value representing the number of bad spectra removed from the mgf source file.
 	 */
-	public static int generateMGFFilteredFile(String mgfSourceFileName, String filteredMGFFileName, String badSpectraMGFFileName, Collection<String> badSpectraMGFTitles) {
-		TreeSet<String> copyOfBadSpectraCollection = new TreeSet<String>(badSpectraMGFTitles);
-		File sourceMgf = new File(mgfSourceFileName);
-		File acceptedMgf = new File(filteredMGFFileName);
-		File rejectedMgf = new File(badSpectraMGFFileName);
-		BadSpectraTitleFilter spectraFilter = new BadSpectraTitleFilter(copyOfBadSpectraCollection);
+	public static int generateMGFFilteredFile(final String mgfSourceFileName, final String filteredMGFFileName, final String badSpectraMGFFileName, final Collection<String> badSpectraMGFTitles) {
+		final TreeSet<String> copyOfBadSpectraCollection = new TreeSet<String>(badSpectraMGFTitles);
+		final File sourceMgf = new File(mgfSourceFileName);
+		final File acceptedMgf = new File(filteredMGFFileName);
+		final File rejectedMgf = new File(badSpectraMGFFileName);
+		final BadSpectraTitleFilter spectraFilter = new BadSpectraTitleFilter(copyOfBadSpectraCollection);
 
-		MgfFilteredSpectraCount count = filterMgfFile(sourceMgf, acceptedMgf, rejectedMgf, spectraFilter);
+		final MgfFilteredSpectraCount count = filterMgfFile(sourceMgf, acceptedMgf, rejectedMgf, spectraFilter);
 
 		return count.getRejectedSpectra();
 	}

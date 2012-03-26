@@ -51,7 +51,7 @@ public class ConfigurationData {
 		return config;
 	}
 
-	public void setConfig(ApplicationConfig config) {
+	public void setConfig(final ApplicationConfig config) {
 		this.config = config;
 		initResolver();
 		mapConfigToModel();
@@ -67,16 +67,16 @@ public class ConfigurationData {
 		}
 	}
 
-	public String getId(ResourceConfig config) {
+	public String getId(final ResourceConfig config) {
 		return resolver.getIdFromConfig(config);
 	}
 
-	public ResourceConfig getResourceConfig(String id) {
+	public ResourceConfig getResourceConfig(final String id) {
 		return resolver.getConfigFromId(id);
 	}
 
-	public ResourceModel createChild(String parentId, String type) throws GWTServiceException {
-		String index = getFreeIndex(type);
+	public ResourceModel createChild(final String parentId, final String type) throws GWTServiceException {
+		final String index = getFreeIndex(type);
 		final ResourceConfig parent = getResourceConfig(parentId);
 		if (parent instanceof DaemonConfig) {
 			return createResource(index, type, (DaemonConfig) parent);
@@ -90,10 +90,10 @@ public class ConfigurationData {
 	 * For given type (e.g. "mascot") finds all objects with names "mascot1", "mascot2"... etc.
 	 * Returns lowest number referring to a name that does not exist yet (e.g. "3") in this case.
 	 */
-	private String getFreeIndex(String type) {
+	private String getFreeIndex(final String type) {
 		int count = 1;
 		while (true) {
-			String countedName = type + count;
+			final String countedName = type + count;
 			if (!nameExists(countedName)) {
 				return "" + count;
 			}
@@ -101,12 +101,12 @@ public class ConfigurationData {
 		}
 	}
 
-	private boolean nameExists(String name) {
-		for (DaemonConfig daemonConfig : getConfig().getDaemons()) {
+	private boolean nameExists(final String name) {
+		for (final DaemonConfig daemonConfig : getConfig().getDaemons()) {
 			if (daemonConfig.getName().equals(name)) {
 				return true;
 			}
-			for (ServiceConfig serviceConfig : daemonConfig.getServices()) {
+			for (final ServiceConfig serviceConfig : daemonConfig.getServices()) {
 				if (serviceConfig.getName().equals(name)) {
 					return true;
 				}
@@ -120,8 +120,8 @@ public class ConfigurationData {
 	 *
 	 * @param local If the daemon is to run on the local machine.
 	 */
-	private DaemonModel createDaemon(String name, boolean local) {
-		DaemonConfig daemon = DaemonConfig.getDefaultDaemonConfig(name, local);
+	private DaemonModel createDaemon(final String name, final boolean local) {
+		final DaemonConfig daemon = DaemonConfig.getDefaultDaemonConfig(name, local);
 		getConfig().addDaemon(daemon);
 		return mapDaemonConfigToModel(daemon);
 	}
@@ -129,7 +129,7 @@ public class ConfigurationData {
 	/**
 	 * Create new resource and add it to the given parent.
 	 */
-	private ResourceModel createResource(String index, String type, DaemonConfig parent) throws GWTServiceException {
+	private ResourceModel createResource(final String index, final String type, final DaemonConfig parent) throws GWTServiceException {
 		try {
 			final ResourceTable moduleConfigTable = getResourceTable();
 
@@ -170,7 +170,7 @@ public class ConfigurationData {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	private ResourceConfig getDefaultResourceConfig(String type, DaemonConfig parent, ResourceTable moduleConfigTable) {
+	private ResourceConfig getDefaultResourceConfig(final String type, final DaemonConfig parent, final ResourceTable moduleConfigTable) {
 		final Class<? extends ResourceConfig> configClass = moduleConfigTable.getConfigClassForType(type);
 		final ResourceConfig resourceConfig;
 		try {
@@ -195,13 +195,13 @@ public class ConfigurationData {
 	private String getMessageBrokerUrl() {
 		final List<ResourceConfig> brokerModules = config.getModulesOfConfigType(MessageBroker.Config.class);
 		if (brokerModules.size() > 0 && (brokerModules.get(0) instanceof MessageBroker.Config)) {
-			MessageBroker.Config broker = (MessageBroker.Config) brokerModules.get(0);
+			final MessageBroker.Config broker = (MessageBroker.Config) brokerModules.get(0);
 			return broker.effectiveBrokerUrl();
 		}
 		return "";
 	}
 
-	public void removeChild(String childId) throws GWTServiceException {
+	public void removeChild(final String childId) throws GWTServiceException {
 		final ResourceConfig resourceConfig = getResourceConfig(childId);
 		if (resourceConfig == null) {
 			throw new GWTServiceException("Could not find element: " + childId, null);
@@ -215,7 +215,7 @@ public class ConfigurationData {
 	 * @param config The configuration.
 	 * @param model  The model of the configuration being sent to the client.
 	 */
-	public void bindConfigToModel(ResourceConfig config, ResourceModel model) {
+	public void bindConfigToModel(final ResourceConfig config, final ResourceModel model) {
 		resolver.addDependency(config, model);
 		model.setId(resolver.getIdFromConfig(config));
 	}
@@ -225,21 +225,21 @@ public class ConfigurationData {
 	}
 
 	private ApplicationModel mapConfigToModel() {
-		ApplicationModel application = new ApplicationModel();
+		final ApplicationModel application = new ApplicationModel();
 		bindConfigToModel(getConfig(), application);
 
-		AvailableModules availableModules = makeAvailableModules();
+		final AvailableModules availableModules = makeAvailableModules();
 		application.setAvailableModules(availableModules);
 
 		// For each ResourceConfig in Config, make sure the resolver has an id defined
-		for (DaemonConfig daemon : getConfig().getDaemons()) {
+		for (final DaemonConfig daemon : getConfig().getDaemons()) {
 			final DaemonModel daemonModel = mapDaemonConfigToModel(daemon);
 			application.addDaemon(daemonModel);
 		}
 
 		// Now we can actually transfer the properties, since the resolver has been fully initialized
-		for (DaemonModel daemon : application.getDaemons()) {
-			for (ResourceModel resource : daemon.getChildren()) {
+		for (final DaemonModel daemon : application.getDaemons()) {
+			for (final ResourceModel resource : daemon.getChildren()) {
 				loadModelData(resource);
 			}
 		}
@@ -248,16 +248,16 @@ public class ConfigurationData {
 	}
 
 	private AvailableModules makeAvailableModules() {
-		AvailableModules availableModules = new AvailableModules();
+		final AvailableModules availableModules = new AvailableModules();
 		final ResourceTable resourceTable = getResourceTable();
-		for (String type : resourceTable.getAllTypes()) {
+		for (final String type : resourceTable.getAllTypes()) {
 			availableModules.add(resourceTable.getUserName(type), type, resourceTable.getDescription(type), resourceTable.getResourceTypeAsType(type) == ResourceTable.ResourceType.Worker);
 		}
 		return availableModules;
 	}
 
-	private DaemonModel mapDaemonConfigToModel(DaemonConfig daemon) {
-		DaemonModel daemonModel = new DaemonModel();
+	private DaemonModel mapDaemonConfigToModel(final DaemonConfig daemon) {
+		final DaemonModel daemonModel = new DaemonModel();
 		bindConfigToModel(daemon, daemonModel);
 
 		daemonModel.setName(daemon.getName());
@@ -266,68 +266,68 @@ public class ConfigurationData {
 		daemonModel.setOsName(daemon.getOsName());
 		daemonModel.setSharedFileSpacePath(daemon.getSharedFileSpacePath());
 		daemonModel.setTempFolderPath(daemon.getTempFolderPath());
-		for (ServiceConfig service : daemon.getServices()) {
+		for (final ServiceConfig service : daemon.getServices()) {
 			final ResourceTable table = getResourceTable();
 			final String type = table.getId(service.getRunner().getWorkerConfiguration().getClass());
 			final String moduleIndex = service.getName().substring(type.length() + "_".length());
-			ModuleModel module = mapServiceConfigToModel(moduleIndex, daemon, service);
+			final ModuleModel module = mapServiceConfigToModel(moduleIndex, daemon, service);
 			daemonModel.addChild(module);
 		}
-		for (ResourceConfig resourceConfig : daemon.getResources()) {
-			ResourceModel resource = mapResourceConfigToModel(daemon, resourceConfig);
+		for (final ResourceConfig resourceConfig : daemon.getResources()) {
+			final ResourceModel resource = mapResourceConfigToModel(daemon, resourceConfig);
 			daemonModel.addChild(resource);
 		}
 		return daemonModel;
 	}
 
-	private ResourceModel mapResourceConfigToModel(DaemonConfig daemon, ResourceConfig resourceConfig) {
+	private ResourceModel mapResourceConfigToModel(final DaemonConfig daemon, final ResourceConfig resourceConfig) {
 		final ResourceTable table = getResourceTable();
 
-		String resourceType = table.getId(resourceConfig.getClass());
-		String resourceName = table.getUserName(resourceType);
+		final String resourceType = table.getId(resourceConfig.getClass());
+		final String resourceName = table.getUserName(resourceType);
 
-		ResourceModel resource = new ResourceModel(resourceName, resourceType);
+		final ResourceModel resource = new ResourceModel(resourceName, resourceType);
 		setResourceUi(daemon, resourceConfig, resourceType, resource);
 
 		bindConfigToModel(resourceConfig, resource);
 		return resource;
 	}
 
-	private ModuleModel mapServiceConfigToModel(String index, DaemonConfig daemon, ServiceConfig service) {
-		ResourceModel serviceModel = new ResourceModel(service.getName(), ResourceTable.SERVICE);
+	private ModuleModel mapServiceConfigToModel(final String index, final DaemonConfig daemon, final ServiceConfig service) {
+		final ResourceModel serviceModel = new ResourceModel(service.getName(), ResourceTable.SERVICE);
 
 		resolver.addDependency(service, serviceModel);
 		serviceModel.setId(resolver.getIdFromConfig(service));
 
-		RunnerConfig runner = service.getRunner();
-		ResourceModel runnerModel = mapRunnerConfigToModel(runner);
+		final RunnerConfig runner = service.getRunner();
+		final ResourceModel runnerModel = mapRunnerConfigToModel(runner);
 		bindConfigToModel(runner, runnerModel);
 
 		final ResourceConfig moduleConfig = runner.getWorkerConfiguration();
 		final ResourceTable table = getResourceTable();
-		String moduleType = table.getId(moduleConfig.getClass());
-		String moduleName = table.getUserName(moduleType) + ("1".equals(index) ? "" : " " + index);
+		final String moduleType = table.getId(moduleConfig.getClass());
+		final String moduleName = table.getUserName(moduleType) + ("1".equals(index) ? "" : " " + index);
 
-		ModuleModel module = new ModuleModel(moduleName, moduleType, serviceModel, runnerModel);
+		final ModuleModel module = new ModuleModel(moduleName, moduleType, serviceModel, runnerModel);
 		setResourceUi(daemon, moduleConfig, moduleType, module);
 		bindConfigToModel(moduleConfig, module);
 
 		return module;
 	}
 
-	private void setResourceUi(final DaemonConfig daemon, final ResourceConfig config, String type, ResourceModel resource) {
+	private void setResourceUi(final DaemonConfig daemon, final ResourceConfig config, final String type, final ResourceModel resource) {
 		// Save the config properties, store them into the model
 		resource.setProperties(new HashMap<String, String>(config.save(resolver)));
 
 		final ServiceUiFactory factory = getResourceTable().getUiFactory(type);
-		SerializingUiBuilder builder = new SerializingUiBuilder(new ListenerMapBuilder() {
+		final SerializingUiBuilder builder = new SerializingUiBuilder(new ListenerMapBuilder() {
 			@Override
-			public void setListener(String propertyName, PropertyChangeListener listener) {
+			public void setListener(final String propertyName, final PropertyChangeListener listener) {
 				listeners.put(new ConcreteProperty(config, propertyName), listener);
 			}
 
 			@Override
-			public void setDaemonListener(PropertyChangeListener listener) {
+			public void setDaemonListener(final PropertyChangeListener listener) {
 				listeners.put(new ConcreteProperty(daemon, null), listener);
 			}
 		}, resolver);
@@ -335,14 +335,14 @@ public class ConfigurationData {
 		resource.setReplayer(builder.getReplayer());
 	}
 
-	private void loadModelData(ResourceModel resource) {
+	private void loadModelData(final ResourceModel resource) {
 		final String id = resolver.getIdFromDependency(resource);
 		final ResourceConfig resourceConfig = resolver.getConfigFromId(id);
 		resource.setProperties(new HashMap<String, String>(resourceConfig.save(resolver)));
 	}
 
-	private ResourceModel mapRunnerConfigToModel(RunnerConfig runner) {
-		ResourceModel runnerModel;
+	private ResourceModel mapRunnerConfigToModel(final RunnerConfig runner) {
+		final ResourceModel runnerModel;
 		if (runner instanceof SimpleRunner.Config) {
 			runnerModel = new ResourceModel("localRunner", "localRunner");
 		} else if (runner instanceof GridRunner.Config) {
@@ -364,13 +364,13 @@ public class ConfigurationData {
 	 * @return Default swift model.
 	 */
 	public void loadDefaultConfig() throws GWTServiceException {
-		ApplicationConfig config = new ApplicationConfig();
+		final ApplicationConfig config = new ApplicationConfig();
 		setConfig(config);
 
-		DaemonModel daemonModel = createDaemon("main", true);
+		final DaemonModel daemonModel = createDaemon("main", true);
 		getModel().addDaemon(daemonModel);
 
-		DaemonConfig daemon = (DaemonConfig) getResourceConfig(daemonModel.getId());
+		final DaemonConfig daemon = (DaemonConfig) getResourceConfig(daemonModel.getId());
 
 		final ResourceModel database = createResource("1", DatabaseFactory.TYPE, daemon);
 		daemonModel.addChild(database);
@@ -391,27 +391,27 @@ public class ConfigurationData {
 	 * @param parentFolder Where to put the generated scripts and config.
 	 * @return List of UI changes (validations triggered by save).
 	 */
-	public UiChangesReplayer saveConfig(File parentFolder) {
+	public UiChangesReplayer saveConfig(final File parentFolder) {
 		final File configFile = new File(parentFolder, Swift.CONFIG_FILE_NAME).getAbsoluteFile();
 		if (configFile.getParent() != null) {
 			FileUtilities.ensureFolderExists(configFile.getParentFile());
 		}
 
-		SerializingUiChanges uiChanges = new SerializingUiChanges(resolver);
+		final SerializingUiChanges uiChanges = new SerializingUiChanges(resolver);
 
 		final ApplicationConfig applicationConfig = getConfig();
 		final List<String> errorList = SwiftConfig.validateSwiftConfig(applicationConfig);
 
 		// Clear errors
 		uiChanges.displayPropertyError(applicationConfig, null, null);
-		for (String error : errorList) {
+		for (final String error : errorList) {
 			uiChanges.displayPropertyError(applicationConfig, null, error);
 		}
 		applicationConfig.save(configFile, getResourceTable());
-		for (DaemonConfig daemon : applicationConfig.getDaemons()) {
+		for (final DaemonConfig daemon : applicationConfig.getDaemons()) {
 			final String scriptName = daemon.getName().replaceAll("[^a-zA-Z0-9-_+]", "_") + "-run";
 			boolean hasWeb = false;
-			for (ResourceConfig resource : daemon.getResources()) {
+			for (final ResourceConfig resource : daemon.getResources()) {
 				if (resource instanceof WebUi.Config) {
 					hasWeb = true;
 					break;
@@ -429,7 +429,7 @@ public class ConfigurationData {
 			}
 
 			if (linux) {
-				File linuxScript = new File(parentFolder, scriptName + ".sh");
+				final File linuxScript = new File(parentFolder, scriptName + ".sh");
 				FileUtilities.writeStringToFile(linuxScript, ""
 						+ "while true\n"
 						+ "do\n"
@@ -441,7 +441,7 @@ public class ConfigurationData {
 			}
 
 			if (windows) {
-				File dosScript = new File(parentFolder, scriptName + ".bat");
+				final File dosScript = new File(parentFolder, scriptName + ".bat");
 				FileUtilities.writeStringToFile(dosScript, ""
 						+ "@echo off\r\n"
 						+ ":RUN_DAEMON\r\n"
@@ -454,11 +454,11 @@ public class ConfigurationData {
 		return uiChanges.getReplayer();
 	}
 
-	private String getServiceBrokerUri(String brokerUrl, String serviceName) {
+	private String getServiceBrokerUri(final String brokerUrl, final String serviceName) {
 		return "jms." + brokerUrl + (brokerUrl.indexOf('?') == -1 ? "?" : "&") + "simplequeue=" + serviceName;
 	}
 
-	public UiChangesReplayer setProperty(ResourceConfig resourceConfig, String propertyName, String newValue, boolean onDemand) {
+	public UiChangesReplayer setProperty(final ResourceConfig resourceConfig, final String propertyName, final String newValue, final boolean onDemand) {
 		// Set the property on the config
 		final Map<String, String> data = resourceConfig.save(resolver);
 		data.put(propertyName, newValue);
@@ -469,7 +469,7 @@ public class ConfigurationData {
 		model.setProperty(propertyName, newValue);
 
 		// Fire the property change event, serialize all UI changes that are needed as a response to property changing
-		SerializingUiChanges changes = new SerializingUiChanges(resolver);
+		final SerializingUiChanges changes = new SerializingUiChanges(resolver);
 
 		final PropertyChangeListener listener = getPropertyListener(resourceConfig, propertyName);
 		if (listener != null) {
@@ -487,7 +487,7 @@ public class ConfigurationData {
 	 * @param propertyName   Name of the property. <c>null</c> means "any property"
 	 * @return The change listener associated with the property.
 	 */
-	private PropertyChangeListener getPropertyListener(ResourceConfig resourceConfig, String propertyName) {
+	private PropertyChangeListener getPropertyListener(final ResourceConfig resourceConfig, final String propertyName) {
 		final PropertyChangeListener propertyChangeListener = listeners.get(new ConcreteProperty(resourceConfig, propertyName));
 		if (propertyChangeListener == null) {
 			return listeners.get(new ConcreteProperty(resourceConfig, null));
@@ -495,14 +495,14 @@ public class ConfigurationData {
 		return propertyChangeListener;
 	}
 
-	public void fix(ResourceConfig resourceConfig, String propertyName, String action) {
+	public void fix(final ResourceConfig resourceConfig, final String propertyName, final String action) {
 		final PropertyChangeListener listener = getPropertyListener(resourceConfig, propertyName);
 		if (listener != null) {
 			listener.fixError(resourceConfig, propertyName, action);
 		}
 	}
 
-	public void changeRunner(ServiceConfig serviceConfig, RunnerConfig newRunner) {
+	public void changeRunner(final ServiceConfig serviceConfig, final RunnerConfig newRunner) {
 		// Update mapping for runner of this service
 		resolver.changeConfigType(serviceConfig.getRunner(), newRunner);
 		serviceConfig.setRunner(newRunner);

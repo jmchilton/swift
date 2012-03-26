@@ -33,7 +33,7 @@ public final class MGF2MzXMLConverter {
 	 * @return Returns a map where the keys are the scan ids in mzXML file and the values are the
 	 *         corresponding spectra titles in the mgf file.
 	 */
-	public static Map<Integer, String> convert(String mgfInputFileName, String mzXMLOutputFileName, boolean enable64BitPresicion) {
+	public static Map<Integer, String> convert(final String mgfInputFileName, final String mzXMLOutputFileName, final boolean enable64BitPresicion) {
 
 		return convert(new File(mgfInputFileName), new File(mzXMLOutputFileName), enable64BitPresicion);
 	}
@@ -49,7 +49,7 @@ public final class MGF2MzXMLConverter {
 	 * @return Returns a map where the keys are the scan ids in mzXML file and the values are the
 	 *         corresponding spectra titles in the mgf file.
 	 */
-	public static Map<Integer, String> convert(File mgfInputFile, File mzXMLOutputFile, boolean enable64BitPresicion) {
+	public static Map<Integer, String> convert(final File mgfInputFile, final File mzXMLOutputFile, final boolean enable64BitPresicion) {
 
 		if (mgfInputFile == null) {
 			throw new IllegalArgumentException("mgfInputFilename parameter can not be null.");
@@ -62,7 +62,7 @@ public final class MGF2MzXMLConverter {
 		 */
 		MzXMLPeakListWriter mzXMLWriter = null;
 		MGFPeakListReader mgfReader = null;
-		Map<Integer, String> mzXMLScanToMGFTitle = new HashMap<Integer, String>(1000);
+		final Map<Integer, String> mzXMLScanToMGFTitle = new HashMap<Integer, String>(1000);
 
 		try {
 			mgfReader = new MGFPeakListReader(mgfInputFile);

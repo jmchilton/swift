@@ -17,7 +17,7 @@ final class MgfTitleCleanupTask extends AsyncTaskBase implements MgfOutput {
 	private final File cleanedMgf;
 	private static final AtomicInteger TASK_ID = new AtomicInteger(0);
 
-	public MgfTitleCleanupTask(DaemonConnection daemon, File mgfToCleanup, File cleanedMgf, FileTokenFactory fileTokenFactory, boolean fromScratch) {
+	public MgfTitleCleanupTask(final DaemonConnection daemon, final File mgfToCleanup, final File cleanedMgf, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.cleanupPerformed = false;
 		this.cleanedMgf = cleanedMgf;
@@ -39,9 +39,9 @@ final class MgfTitleCleanupTask extends AsyncTaskBase implements MgfOutput {
 		// Nothing to do.
 	}
 
-	public synchronized void onProgress(ProgressInfo progressInfo) {
+	public synchronized void onProgress(final ProgressInfo progressInfo) {
 		if (progressInfo instanceof MgfTitleCleanupResult) {
-			MgfTitleCleanupResult result = (MgfTitleCleanupResult) progressInfo;
+			final MgfTitleCleanupResult result = (MgfTitleCleanupResult) progressInfo;
 			cleanupPerformed = result.isCleanupPerformed();
 		}
 	}

@@ -20,7 +20,7 @@ public final class ParamsSelector extends ListBox {
 		return sets.get(getSelectedIndex());
 	}
 
-	public void select(int i) {
+	public void select(final int i) {
 		selected = sets.get(i);
 		setSelectedIndex(i);
 	}
@@ -31,7 +31,7 @@ public final class ParamsSelector extends ListBox {
 	 * @param paramSets    New list of parameter sets.
 	 * @param defaultSetId id of a parameter set to be selected by default if there was nothing selected previously
 	 */
-	public void update(List<ClientParamSet> paramSets, int defaultSetId) {
+	public void update(final List<ClientParamSet> paramSets, final int defaultSetId) {
 		clear();
 		sets = paramSets;
 

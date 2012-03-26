@@ -49,13 +49,13 @@ public final class ConfigurationDataTest {
 		final String databaseId = data.getId(databaseConfig);
 		Assert.assertEquals(swiftModule.getProperty("database"), databaseId, "The database has to refer to actual database module");
 
-		SwiftSearcher.Config swiftSearcherConfig = (SwiftSearcher.Config) getMainDaemon().getServices().get(0).getRunner().getWorkerConfiguration();
+		final SwiftSearcher.Config swiftSearcherConfig = (SwiftSearcher.Config) getMainDaemon().getServices().get(0).getRunner().getWorkerConfiguration();
 		Assert.assertEquals(swiftSearcherConfig.getDatabase(), databaseConfig, "The database config does not match");
 	}
 
 	@Test
 	public static void shouldSaveConfig() {
-		File folder = FileUtilities.createTempFolder();
+		final File folder = FileUtilities.createTempFolder();
 		data.saveConfig(folder);
 		Assert.assertTrue(new File(folder, "conf/").exists(), "Configuration folder must exist");
 		Assert.assertTrue(new File(folder, "conf/swift.xml").exists(), "Swift.xml config must exist");
@@ -73,13 +73,13 @@ public final class ConfigurationDataTest {
 			private static final long serialVersionUID = 8556656441048925831L;
 
 			@Override
-			public void setProperty(String resourceId, String propertyName, String newValue) {
+			public void setProperty(final String resourceId, final String propertyName, final String newValue) {
 				Assert.assertEquals(propertyName, USERNAME);
 				Assert.assertEquals(newValue, TEST);
 			}
 
 			@Override
-			public void displayPropertyError(String resourceId, String propertyName, String error) {
+			public void displayPropertyError(final String resourceId, final String propertyName, final String error) {
 				Assert.fail("this method should not be called");
 			}
 		});
@@ -107,13 +107,13 @@ public final class ConfigurationDataTest {
 			private static final long serialVersionUID = -2006104357034795782L;
 
 			@Override
-			public void setProperty(String resourceId, String propertyName, String newValue) {
+			public void setProperty(final String resourceId, final String propertyName, final String newValue) {
 				Assert.assertEquals(propertyName, XTandemWorker.TANDEM_EXECUTABLE);
 				Assert.assertEquals(newValue, "bin/tandem/linux_redhat_tandem/tandem.exe");
 			}
 
 			@Override
-			public void displayPropertyError(String resourceId, String propertyName, String error) {
+			public void displayPropertyError(final String resourceId, final String propertyName, final String error) {
 				Assert.fail();
 			}
 		});
@@ -126,7 +126,7 @@ public final class ConfigurationDataTest {
 		checkTandemExecutable(tandem, "bin/tandem/win32_tandem/tandem.exe");
 	}
 
-	private static void checkTandemExecutable(ResourceConfig tandem, String expected) {
+	private static void checkTandemExecutable(final ResourceConfig tandem, final String expected) {
 		final Map<String, String> tandemConfig = tandem.save(null);
 		Assert.assertEquals(tandemConfig.get(XTandemWorker.TANDEM_EXECUTABLE), expected);
 	}

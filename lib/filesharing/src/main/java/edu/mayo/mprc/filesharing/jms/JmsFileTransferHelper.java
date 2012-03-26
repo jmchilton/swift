@@ -56,7 +56,7 @@ public final class JmsFileTransferHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static FileTransfer upload(Session session, MessageProducer producer, final Map<File, String> fromTo) throws Exception {
+	public static FileTransfer upload(final Session session, final MessageProducer producer, final Map<File, String> fromTo) throws Exception {
 		return transferFiles(session, producer, fromTo, false);
 	}
 
@@ -70,9 +70,9 @@ public final class JmsFileTransferHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static FileTransfer download(Session session, MessageProducer producer, final String from, final File to) throws Exception {
+	public static FileTransfer download(final Session session, final MessageProducer producer, final String from, final File to) throws Exception {
 
-		Map<File, String> toFrom = new TreeMap<File, String>();
+		final Map<File, String> toFrom = new TreeMap<File, String>();
 		toFrom.put(to, from);
 
 		return download(session, producer, toFrom);
@@ -87,11 +87,11 @@ public final class JmsFileTransferHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static FileTransfer download(Session session, MessageProducer producer, final Map<File, String> toFrom) throws Exception {
+	public static FileTransfer download(final Session session, final MessageProducer producer, final Map<File, String> toFrom) throws Exception {
 		return transferFiles(session, producer, toFrom, true);
 	}
 
-	private static FileTransfer transferFiles(Session session, MessageProducer producer, final Map<File, String> localRemote, final boolean remoteToLocal) throws Exception {
+	private static FileTransfer transferFiles(final Session session, final MessageProducer producer, final Map<File, String> localRemote, final boolean remoteToLocal) throws Exception {
 		//Create reversed map of file paths and files. This will be used ahead in the code.
 		final Map<String, File> remoteFilePathLocalFilePairs = reverseMap(localRemote);
 
@@ -107,7 +107,7 @@ public final class JmsFileTransferHelper {
 			fileTransferRequest.setBeSource(true);
 		}
 
-		ObjectMessage objectMessage = session.createObjectMessage(fileTransferRequest);
+		final ObjectMessage objectMessage = session.createObjectMessage(fileTransferRequest);
 		objectMessage.setJMSReplyTo(session.createTemporaryQueue());
 
 		final FileTransfer fileTransfer = new FileTransfer(new LinkedList<File>(localRemote.keySet()));
@@ -118,7 +118,7 @@ public final class JmsFileTransferHelper {
 
 		//Expect reply with list of existing remote files.
 		session.createConsumer(objectMessage.getJMSReplyTo()).setMessageListener(new MessageListener() {
-			public void onMessage(Message message) {
+			public void onMessage(final Message message) {
 				try {
 					LOGGER.debug("Acknowledge message: " + message.toString());
 
@@ -126,7 +126,7 @@ public final class JmsFileTransferHelper {
 						ExceptionUtilities.throwCastException(message, ObjectMessage.class);
 						return;
 					}
-					Object object = ((ObjectMessage) message).getObject();
+					final Object object = ((ObjectMessage) message).getObject();
 
 					if (object instanceof MultiFileTransferResponse) {
 						final MultiFileTransferResponse multiFileTransferResponse = (MultiFileTransferResponse) object;
@@ -139,7 +139,7 @@ public final class JmsFileTransferHelper {
 						try {
 							LOGGER.debug("Client side request: " + multiFileTransferResponse.getRequestId() + ". Transfering " + multiFileTransferResponse.getFileInfos().size() + " file(s).");
 
-							for (FileInfo fileInfo : multiFileTransferResponse.getFileInfos()) {
+							for (final FileInfo fileInfo : multiFileTransferResponse.getFileInfos()) {
 								final File file = remoteFilePathLocalFilePairs.get(fileInfo.getFilePath());
 
 								LOGGER.debug("Creating client side socket for request: " + multiFileTransferResponse.getRequestId() + " and file: " + fileInfo.toString());
@@ -155,7 +155,7 @@ public final class JmsFileTransferHelper {
 
 								fileTransferThread.setTransferCompleteListener(new TransferCompleteListener() {
 									@Override
-									public void transferCompleted(TransferCompleteEvent event) {
+									public void transferCompleted(final TransferCompleteEvent event) {
 										LOGGER.info("Client side request: " + multiFileTransferResponse.getRequestId() + ". Completed transfering file [" + file.getAbsolutePath() + "]");
 
 										if (event.getException() != null && fileTransfer.getErrorException() == null) {
@@ -186,13 +186,13 @@ public final class JmsFileTransferHelper {
 
 						//Propagate deletions
 						if (remoteToLocal) {
-							for (FileInfo fileInfo : multiFileTransferResponse.getNotExistingFileInfos()) {
+							for (final FileInfo fileInfo : multiFileTransferResponse.getNotExistingFileInfos()) {
 								FileUtilities.deleteNow(remoteFilePathLocalFilePairs.get(fileInfo.getFilePath()));
 							}
 						}
 
 					} else if (object instanceof RemoteTransferCompleteEvent) {
-						RemoteTransferCompleteEvent remoteTransferCompleteEvent = (RemoteTransferCompleteEvent) object;
+						final RemoteTransferCompleteEvent remoteTransferCompleteEvent = (RemoteTransferCompleteEvent) object;
 
 						LOGGER.debug("Received file transfer complete event: " + remoteTransferCompleteEvent.getRequestId());
 
@@ -282,7 +282,7 @@ public final class JmsFileTransferHelper {
 
 				fileTransferThread.setTransferCompleteListener(new TransferCompleteListener() {
 					@Override
-					public void transferCompleted(TransferCompleteEvent event) {
+					public void transferCompleted(final TransferCompleteEvent event) {
 						LOGGER.info("Server side request: " + multiFileTransferRequest.getRequestId() + ". Completed transfering file [" + fileInfo.getFilePath() + "]");
 
 						if (event.getException() != null && remoteTransferCompleteEvent.getException() == null) {
@@ -319,7 +319,7 @@ public final class JmsFileTransferHelper {
 		}
 	}
 
-	private static void sendRemoteTransferCompleteEvent(RemoteTransferCompleteEvent remoteTransferCompleteEvent, Session session, Destination requester) {
+	private static void sendRemoteTransferCompleteEvent(final RemoteTransferCompleteEvent remoteTransferCompleteEvent, final Session session, final Destination requester) {
 		try {
 			LOGGER.debug("Sending file transefer complete event: " + remoteTransferCompleteEvent.getRequestId());
 			session.createProducer(requester).send(session.createObjectMessage(remoteTransferCompleteEvent));
@@ -328,10 +328,10 @@ public final class JmsFileTransferHelper {
 		}
 	}
 
-	private static List<FileInfo> getFileInfos(Map<File, String> localFileRemoteFilePathPairs) {
-		List<FileInfo> fileInfos = new ArrayList(localFileRemoteFilePathPairs.size());
+	private static List<FileInfo> getFileInfos(final Map<File, String> localFileRemoteFilePathPairs) {
+		final List<FileInfo> fileInfos = new ArrayList(localFileRemoteFilePathPairs.size());
 
-		for (Map.Entry<File, String> mapEntry : localFileRemoteFilePathPairs.entrySet()) {
+		for (final Map.Entry<File, String> mapEntry : localFileRemoteFilePathPairs.entrySet()) {
 			if (!mapEntry.getKey().isDirectory() && mapEntry.getKey().exists()) {
 				fileInfos.add(new FileInfo(mapEntry.getValue(), mapEntry.getKey().length(), mapEntry.getKey().lastModified()));
 			} else {
@@ -342,20 +342,20 @@ public final class JmsFileTransferHelper {
 		return fileInfos;
 	}
 
-	private static Map<String, File> reverseMap(Map<File, String> localFileRemoteFilePathPairs) {
-		Map<String, File> remoteFilePathLocalFilePairs = new TreeMap<String, File>();
+	private static Map<String, File> reverseMap(final Map<File, String> localFileRemoteFilePathPairs) {
+		final Map<String, File> remoteFilePathLocalFilePairs = new TreeMap<String, File>();
 
-		for (Map.Entry<File, String> me : localFileRemoteFilePathPairs.entrySet()) {
+		for (final Map.Entry<File, String> me : localFileRemoteFilePathPairs.entrySet()) {
 			remoteFilePathLocalFilePairs.put(me.getValue(), me.getKey());
 		}
 
 		return remoteFilePathLocalFilePairs;
 	}
 
-	private static void getModifiedFileInfos(List<FileInfo> originalFileInfos, List<FileInfo> modifiedFileInfos, List<FileInfo> notExistingFileInfos, boolean areSources) {
+	private static void getModifiedFileInfos(final List<FileInfo> originalFileInfos, final List<FileInfo> modifiedFileInfos, final List<FileInfo> notExistingFileInfos, final boolean areSources) {
 		File file = null;
 
-		for (FileInfo fileInfo : originalFileInfos) {
+		for (final FileInfo fileInfo : originalFileInfos) {
 			file = new File(fileInfo.getFilePath());
 
 			//This is a hack. If file is in shared file system, file may appear not to exist when it really does.

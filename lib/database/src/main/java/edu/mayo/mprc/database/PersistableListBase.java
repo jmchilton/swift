@@ -18,17 +18,17 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 		list = LinkedHashMultiset.create();
 	}
 
-	public PersistableListBase(int initialCapacity) {
+	public PersistableListBase(final int initialCapacity) {
 		list = LinkedHashMultiset.create(initialCapacity);
 	}
 
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(final Object o) {
 		return list.remove(o);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends T> ts) {
+	public boolean addAll(final Collection<? extends T> ts) {
 		return list.addAll(ts);
 	}
 
@@ -37,7 +37,7 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 	 *
 	 * @param items Items to add to this list.
 	 */
-	public PersistableListBase(Collection<T> items) {
+	public PersistableListBase(final Collection<T> items) {
 		this(items.size());
 		list.addAll(items);
 	}
@@ -46,22 +46,22 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 		return list;
 	}
 
-	public void setList(Collection<T> list) {
+	public void setList(final Collection<T> list) {
 		this.list = list;
 	}
 
 	@Override
-	public boolean containsAll(Collection<?> c) {
+	public boolean containsAll(final Collection<?> c) {
 		return list.containsAll(c);
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
+	public boolean removeAll(final Collection<?> c) {
 		return list.removeAll(c);
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> c) {
+	public boolean retainAll(final Collection<?> c) {
 		return list.retainAll(c);
 	}
 
@@ -81,7 +81,7 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 	}
 
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(final Object o) {
 		return list.contains(o);
 	}
 
@@ -91,12 +91,12 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <T> T[] toArray(final T[] a) {
 		return list.toArray(a);
 	}
 
 	@Override
-	public boolean add(T t) {
+	public boolean add(final T t) {
 		return list.add(t);
 	}
 
@@ -106,7 +106,7 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -114,15 +114,15 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 			return false;
 		}
 
-		PersistableListBase that = (PersistableListBase) o;
+		final PersistableListBase that = (PersistableListBase) o;
 
-		LinkedHashMultiset<T> me = makeMultiset(this.getList());
-		LinkedHashMultiset<T> other = makeMultiset(that.getList());
+		final LinkedHashMultiset<T> me = makeMultiset(this.getList());
+		final LinkedHashMultiset<T> other = makeMultiset(that.getList());
 		return !(me != null ? !me.equals(other) : other != null);
 
 	}
 
-	private LinkedHashMultiset<T> makeMultiset(Collection collection) {
+	private LinkedHashMultiset<T> makeMultiset(final Collection collection) {
 		if (collection == null) {
 			return null;
 		}

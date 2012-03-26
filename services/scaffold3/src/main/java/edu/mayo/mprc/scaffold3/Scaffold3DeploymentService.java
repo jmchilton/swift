@@ -43,7 +43,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	public Scaffold3DeploymentService() {
 	}
 
-	public DeploymentResult performDeployment(DeploymentRequest request) {
+	public DeploymentResult performDeployment(final DeploymentRequest request) {
 		final DeploymentResult reportInto = new DeploymentResult();
 
 		if (wasPreviouslyDeployed(request, reportInto)) {
@@ -66,9 +66,9 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	}
 
 	@Override
-	public DeploymentResult performUndeployment(DeploymentRequest request) {
-		DeploymentResult reportResult = new DeploymentResult();
-		File deployedFile = this.getFileToDeploy(request.getShortName());
+	public DeploymentResult performUndeployment(final DeploymentRequest request) {
+		final DeploymentResult reportResult = new DeploymentResult();
+		final File deployedFile = this.getFileToDeploy(request.getShortName());
 
 		this.cleanUpDeployedFiles(deployedFile, reportResult);
 
@@ -76,12 +76,12 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	}
 
 	@Override
-	protected void validateAndDeleteDeploymentRelatedFiles(File deployedFastaFile, File deploymentFolder, List<File> deletedFiles, List<File> notDeletedFiles) {
-		File[] deploymentFiles = deploymentFolder.listFiles();
+	protected void validateAndDeleteDeploymentRelatedFiles(final File deployedFastaFile, final File deploymentFolder, final List<File> deletedFiles, final List<File> notDeletedFiles) {
+		final File[] deploymentFiles = deploymentFolder.listFiles();
 
-		Pattern pattern = Pattern.compile(deployedFastaFile.getName() + "\\.\\d+\\.index");
+		final Pattern pattern = Pattern.compile(deployedFastaFile.getName() + "\\.\\d+\\.index");
 
-		for (File deploymentFile : deploymentFiles) {
+		for (final File deploymentFile : deploymentFiles) {
 			if (isDeploymentRelatedFile(deployedFastaFile, pattern, deploymentFile) && FileUtilities.deleteNow(deploymentFile)) {
 				deletedFiles.add(deploymentFile);
 				continue;
@@ -91,7 +91,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 		}
 	}
 
-	private boolean isDeploymentRelatedFile(File deployedFastaFile, Pattern pattern, File deploymentFile) {
+	private boolean isDeploymentRelatedFile(final File deployedFastaFile, final Pattern pattern, final File deploymentFile) {
 		return !deploymentFile.isDirectory()
 				&& (pattern.matcher(deploymentFile.getName()).matches()
 				|| deploymentFile.getName().equals(deployedFastaFile.getName()));
@@ -101,17 +101,17 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	 * Finds out the path to the file that we will want to deploy to.  This does not perform the copy action but only finds
 	 * out where we want to place the FASTA file.
 	 */
-	protected File getFileToDeploy(String uniqueName) {
-		File deploymentFolder = getCurrentDeploymentFolder(uniqueName);
+	protected File getFileToDeploy(final String uniqueName) {
+		final File deploymentFolder = getCurrentDeploymentFolder(uniqueName);
 		FileUtilities.ensureFolderExists(deploymentFolder);
 		return new File(deploymentFolder, uniqueName + ".fasta");
 	}
 
-	private File getCurrentDeploymentFolder(String uniqueName) {
+	private File getCurrentDeploymentFolder(final String uniqueName) {
 		return new File(getConfigDeploymentFolder(), uniqueName);
 	}
 
-	public boolean wasPreviouslyDeployed(DeploymentRequest request, DeploymentResult reportInto) {
+	public boolean wasPreviouslyDeployed(final DeploymentRequest request, final DeploymentResult reportInto) {
 		final File toCheckForPreviousDeployment = this.getFileToDeploy(request.getShortName());
 
 		if (!toCheckForPreviousDeployment.exists()) {
@@ -138,7 +138,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 		public Config() {
 		}
 
-		public Config(String deployableDbFolder) {
+		public Config(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
@@ -146,17 +146,17 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 			return deployableDbFolder;
 		}
 
-		public void setDeployableDbFolder(String deployableDbFolder) {
+		public void setDeployableDbFolder(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(DEPLOYABLE_DB_FOLDER, deployableDbFolder);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			deployableDbFolder = values.get(DEPLOYABLE_DB_FOLDER);
 		}
 
@@ -171,7 +171,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
+		public Worker create(final Config config, final DependencyResolver dependencies) {
 			Scaffold3DeploymentService worker = null;
 			try {
 				worker = new Scaffold3DeploymentService();
@@ -185,7 +185,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(DEPLOYABLE_DB_FOLDER, "Database Folder", "Folder where deployer copies database files to")
 					.required()
 					.existingDirectory()

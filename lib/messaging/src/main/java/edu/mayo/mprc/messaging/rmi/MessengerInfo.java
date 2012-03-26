@@ -11,7 +11,7 @@ public final class MessengerInfo implements Serializable {
 	private InetSocketAddress registryInfo;
 	private String messengerRemoteName;
 
-	public MessengerInfo(InetSocketAddress registryInfo, String messengerRemoteName) {
+	public MessengerInfo(final InetSocketAddress registryInfo, final String messengerRemoteName) {
 		this.registryInfo = registryInfo;
 		this.messengerRemoteName = messengerRemoteName;
 	}

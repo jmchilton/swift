@@ -13,7 +13,7 @@ public class SwiftDBVersion {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -21,12 +21,12 @@ public class SwiftDBVersion {
 		return version;
 	}
 
-	public void setVersion(Integer version) {
+	public void setVersion(final Integer version) {
 		this.version = version;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -34,7 +34,7 @@ public class SwiftDBVersion {
 			return false;
 		}
 
-		SwiftDBVersion that = (SwiftDBVersion) o;
+		final SwiftDBVersion that = (SwiftDBVersion) o;
 
 		if (getVersion() != null ? !getVersion().equals(that.getVersion()) : that.getVersion() != null) {
 			return false;

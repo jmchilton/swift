@@ -11,13 +11,13 @@ public final class StreamDrainerTest {
 
 	@Test
 	public void shouldSupportNullLogs() {
-		StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 1, null);
+		final StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 1, null);
 		Assert.assertEquals(testDrainer.getLog(), "");
 	}
 
 	@Test
 	public void shouldSupportRawLogs() {
-		StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 3, null);
+		final StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 3, null);
 		testDrainer.addLine("one");
 		testDrainer.addLine("two");
 		testDrainer.addLine("three");
@@ -26,7 +26,7 @@ public final class StreamDrainerTest {
 
 	@Test
 	public void shouldSupportOverflowLogs() {
-		StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 2, null);
+		final StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 2, null);
 		testDrainer.addLine("one");
 		testDrainer.addLine("two");
 		testDrainer.addLine("three");
@@ -36,7 +36,7 @@ public final class StreamDrainerTest {
 	@Test
 	public void shouldSupportMonitor() {
 		final MyLogMonitor monitor = new MyLogMonitor();
-		StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 2, monitor);
+		final StreamDrainer testDrainer = new StreamDrainer(null, LOGGER, Level.DEBUG, 2, monitor);
 		testDrainer.addLine("one");
 		testDrainer.addLine("two");
 		testDrainer.addLine("three");
@@ -47,7 +47,7 @@ public final class StreamDrainerTest {
 		StringBuilder concatenated = new StringBuilder(20);
 
 		@Override
-		public void line(String line) {
+		public void line(final String line) {
 			concatenated.append(line);
 		}
 

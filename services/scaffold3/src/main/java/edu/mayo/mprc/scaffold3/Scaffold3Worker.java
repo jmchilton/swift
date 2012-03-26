@@ -41,7 +41,7 @@ public final class Scaffold3Worker implements Worker {
 	}
 
 	@Override
-	public final void processRequest(WorkPacket workPacket, ProgressReporter progressReporter) {
+	public final void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
 		try {
 			progressReporter.reportStart();
 			if (workPacket instanceof Scaffold3WorkPacket) {
@@ -67,12 +67,12 @@ public final class Scaffold3Worker implements Worker {
 	private void processSearch(final Scaffold3WorkPacket scaffoldWorkPacket, final ProgressReporter progressReporter) {
 		LOGGER.debug("Scaffold 3 search processing request");
 
-		File outputFolder = scaffoldWorkPacket.getOutputFolder();
+		final File outputFolder = scaffoldWorkPacket.getOutputFolder();
 		// Make sure the output folder is there
 		FileUtilities.ensureFolderExists(outputFolder);
 
-		File scaffoldWorkFolder = getScaffoldBatchScript().getParentFile();
-		File scafmlFile = createScafmlFile(scaffoldWorkPacket, outputFolder);
+		final File scaffoldWorkFolder = getScaffoldBatchScript().getParentFile();
+		final File scafmlFile = createScafmlFile(scaffoldWorkPacket, outputFolder);
 
 		runScaffold(progressReporter, scafmlFile, scaffoldWorkFolder, outputFolder);
 	}
@@ -86,7 +86,7 @@ public final class Scaffold3Worker implements Worker {
 	private void processSpectrumExport(final Scaffold3SpectrumExportWorkPacket scaffoldWorkPacket, final ProgressReporter progressReporter) {
 		LOGGER.debug("Scaffold 3 spectrum export request");
 
-		File result = scaffoldWorkPacket.getSpectrumExportFile();
+		final File result = scaffoldWorkPacket.getSpectrumExportFile();
 		if (result.exists() && result.isFile() && result.canRead()) {
 			// The file is there. Is it the correct version?
 			if (isScaffold3SpectrumExport(result)) {
@@ -98,12 +98,12 @@ public final class Scaffold3Worker implements Worker {
 				}
 			}
 		}
-		File outputFolder = result.getParentFile();
+		final File outputFolder = result.getParentFile();
 		// Make sure the parent folder is there
 		FileUtilities.ensureFolderExists(outputFolder);
 
-		File scaffoldWorkFolder = getScaffoldBatchScript().getParentFile();
-		File scafmlFile = createSpectrumExportScafmlFile(scaffoldWorkPacket, outputFolder);
+		final File scaffoldWorkFolder = getScaffoldBatchScript().getParentFile();
+		final File scafmlFile = createSpectrumExportScafmlFile(scaffoldWorkPacket, outputFolder);
 
 		runScaffold(progressReporter, scafmlFile, scaffoldWorkFolder, outputFolder);
 
@@ -117,7 +117,7 @@ public final class Scaffold3Worker implements Worker {
 	 * @return True if this is a proper Scaffold 3 spectrum export (not an older version).
 	 */
 	private boolean isScaffold3SpectrumExport(final File export) {
-		ScaffoldSpectraVersion version = new ScaffoldSpectraVersion();
+		final ScaffoldSpectraVersion version = new ScaffoldSpectraVersion();
 		version.load(export, null/*Not sure which version*/, null/* No progress reporting */);
 		// Currently if the version starts with 3, it is deemed ok
 		return version.getScaffoldVersion().startsWith("3");
@@ -131,15 +131,15 @@ public final class Scaffold3Worker implements Worker {
 	 * @param scaffoldWorkFolder Where should Scaffold run (usually the Scaffold install folder)
 	 * @param outputFolder       Where do the Scaffold outputs go.
 	 */
-	private void runScaffold(ProgressReporter progressReporter, File scafmlFile, File scaffoldWorkFolder, File outputFolder) {
-		ProcessBuilder processBuilder = new ProcessBuilder(getScaffoldBatchScript().getAbsolutePath(), scafmlFile.getAbsolutePath())
+	private void runScaffold(final ProgressReporter progressReporter, final File scafmlFile, final File scaffoldWorkFolder, final File outputFolder) {
+		final ProcessBuilder processBuilder = new ProcessBuilder(getScaffoldBatchScript().getAbsolutePath(), scafmlFile.getAbsolutePath())
 				.directory(scaffoldWorkFolder);
 
-		ProcessCaller caller = new ProcessCaller(processBuilder);
+		final ProcessCaller caller = new ProcessCaller(processBuilder);
 		caller.setOutputMonitor(new ScaffoldLogMonitor(progressReporter));
 
 		caller.run();
-		int exitValue = caller.getExitValue();
+		final int exitValue = caller.getExitValue();
 
 		FileUtilities.restoreUmaskRights(outputFolder, true);
 
@@ -158,11 +158,11 @@ public final class Scaffold3Worker implements Worker {
 	 * @param outputFolder Where should the file be created.
 	 * @return Created scafml file.
 	 */
-	private File createScafmlFile(Scaffold3WorkPacket workPacket, File outputFolder) {
+	private File createScafmlFile(final Scaffold3WorkPacket workPacket, final File outputFolder) {
 		// Create the .scafml file
 		workPacket.getScafmlFile().getExperiment().setReportDecoyHits(isReportDecoyHits());
-		String scafmlDocument = workPacket.getScafmlFile().getDocument();
-		File scafmlFile = new File(outputFolder, workPacket.getExperimentName() + ".scafml");
+		final String scafmlDocument = workPacket.getScafmlFile().getDocument();
+		final File scafmlFile = new File(outputFolder, workPacket.getExperimentName() + ".scafml");
 		FileUtilities.writeStringToFile(scafmlFile, scafmlDocument, true);
 		return scafmlFile;
 	}
@@ -174,7 +174,7 @@ public final class Scaffold3Worker implements Worker {
 	 * @param outputFolder Where to put the {@code .scafml} file.
 	 * @return The created .scafml file
 	 */
-	private File createSpectrumExportScafmlFile(Scaffold3SpectrumExportWorkPacket work, File outputFolder) {
+	private File createSpectrumExportScafmlFile(final Scaffold3SpectrumExportWorkPacket work, final File outputFolder) {
 		final String experimentName = FileUtilities.stripGzippedExtension(work.getScaffoldFile().getName());
 		final File scafmlFile = new File(outputFolder,
 				experimentName + "_spectrum_export.scafml");
@@ -195,10 +195,10 @@ public final class Scaffold3Worker implements Worker {
 	 * @return String to put into .scafml file that will produce the export.
 	 * @throws ParserConfigurationException If xml creation failed
 	 */
-	static String getScafmlSpectrumExport(Scaffold3SpectrumExportWorkPacket work) {
+	static String getScafmlSpectrumExport(final Scaffold3SpectrumExportWorkPacket work) {
 		try {
 			final String experimentName = FileUtilities.stripGzippedExtension(work.getScaffoldFile().getName());
-			XMLBuilder builder = XMLBuilder.create("Scaffold");
+			final XMLBuilder builder = XMLBuilder.create("Scaffold");
 			builder.a("version", "1.5")
 					.e("Experiment")
 					.a("name", experimentName)
@@ -244,7 +244,7 @@ public final class Scaffold3Worker implements Worker {
 		return scaffoldBatchScript;
 	}
 
-	private void setScaffoldBatchScript(File scaffoldBatchScript) {
+	private void setScaffoldBatchScript(final File scaffoldBatchScript) {
 		this.scaffoldBatchScript = scaffoldBatchScript;
 	}
 
@@ -252,7 +252,7 @@ public final class Scaffold3Worker implements Worker {
 		return reportDecoyHits;
 	}
 
-	public void setReportDecoyHits(boolean reportDecoyHits) {
+	public void setReportDecoyHits(final boolean reportDecoyHits) {
 		this.reportDecoyHits = reportDecoyHits;
 	}
 
@@ -262,8 +262,8 @@ public final class Scaffold3Worker implements Worker {
 	public static final class Factory extends WorkerFactoryBase<Config> {
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			Scaffold3Worker worker = new Scaffold3Worker();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final Scaffold3Worker worker = new Scaffold3Worker();
 			worker.setScaffoldBatchScript(new File(config.getScaffoldBatchScript()).getAbsoluteFile());
 			worker.setReportDecoyHits(config.isReportDecoyHits());
 
@@ -282,7 +282,7 @@ public final class Scaffold3Worker implements Worker {
 		public Config() {
 		}
 
-		public Config(String scaffoldBatchScript) {
+		public Config(final String scaffoldBatchScript) {
 			this.scaffoldBatchScript = scaffoldBatchScript;
 		}
 
@@ -290,7 +290,7 @@ public final class Scaffold3Worker implements Worker {
 			return scaffoldBatchScript;
 		}
 
-		public void setScaffoldBatchScript(String scaffoldBatchScript) {
+		public void setScaffoldBatchScript(final String scaffoldBatchScript) {
 			this.scaffoldBatchScript = scaffoldBatchScript;
 		}
 
@@ -298,18 +298,18 @@ public final class Scaffold3Worker implements Worker {
 			return reportDecoyHits;
 		}
 
-		public void setReportDecoyHits(boolean reportDecoyHits) {
+		public void setReportDecoyHits(final boolean reportDecoyHits) {
 			this.reportDecoyHits = reportDecoyHits;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(SCAFFOLD_BATCH_SCRIPT, getScaffoldBatchScript());
 			map.put(REPORT_DECOY_HITS, Boolean.toString(isReportDecoyHits()));
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			setScaffoldBatchScript(values.get(SCAFFOLD_BATCH_SCRIPT));
 			setReportDecoyHits(Boolean.parseBoolean(values.get(REPORT_DECOY_HITS)));
 		}
@@ -321,7 +321,7 @@ public final class Scaffold3Worker implements Worker {
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(SCAFFOLD_BATCH_SCRIPT, "ScaffoldBatch3 path", "Path to the ScaffoldBatch3 script<p>Default for Linux: <code>/opt/Scaffold3/ScaffoldBatch3</code></p>")
 					.defaultValue("/opt/Scaffold3/ScaffoldBatch3")

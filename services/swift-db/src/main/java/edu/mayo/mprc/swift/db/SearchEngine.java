@@ -2,7 +2,8 @@ package edu.mayo.mprc.swift.db;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.swift.params2.*;
+import edu.mayo.mprc.swift.params2.ParamName;
+import edu.mayo.mprc.swift.params2.SearchEngineParameters;
 import edu.mayo.mprc.swift.params2.mapping.*;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
@@ -35,8 +36,8 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	private transient DaemonConnection searchDaemon;
 	private transient DaemonConnection dbDeployDaemon;
 
-	public static SearchEngine getForId(String id, Collection<SearchEngine> engines) {
-		for (SearchEngine engine : engines) {
+	public static SearchEngine getForId(final String id, final Collection<SearchEngine> engines) {
+		for (final SearchEngine engine : engines) {
 			if (engine.getCode().equalsIgnoreCase(id)) {
 				return engine;
 			}
@@ -53,11 +54,11 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	 * @param engines     List of engines to map.
 	 * @param validations Validations for all the parameters for all the search engines.
 	 */
-	public static void mapToParameterFiles(SearchEngineParameters parameters, File folder, Collection<SearchEngine> engines, ParamsValidations validations) {
+	public static void mapToParameterFiles(final SearchEngineParameters parameters, final File folder, final Collection<SearchEngine> engines, ParamsValidations validations) {
 		if (validations == null) {
 			validations = new ParamsValidations();
 		}
-		for (SearchEngine engine : engines) {
+		for (final SearchEngine engine : engines) {
 			engine.writeSearchEngineParameterFile(folder, parameters, validations);
 		}
 	}
@@ -69,9 +70,9 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	 * @param engines    List of engines that has to have valid parameter mappings.
 	 * @return Object with a list of validations for each parameter
 	 */
-	public static ParamsValidations validate(SearchEngineParameters parameters, Collection<SearchEngine> engines) {
-		ParamsValidations validations = new ParamsValidations();
-		for (SearchEngine engine : engines) {
+	public static ParamsValidations validate(final SearchEngineParameters parameters, final Collection<SearchEngine> engines) {
+		final ParamsValidations validations = new ParamsValidations();
+		for (final SearchEngine engine : engines) {
 			engine.validate(parameters, validations);
 		}
 		return validations;
@@ -85,7 +86,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	 * @param validations Object to be filled with parameter file validations
 	 * @return The generated parameter file.
 	 */
-	public File writeSearchEngineParameterFile(File folder, SearchEngineParameters params, ParamsValidations validations) {
+	public File writeSearchEngineParameterFile(final File folder, final SearchEngineParameters params, final ParamsValidations validations) {
 		if (getMappingFactory() == null) {
 			// This engine does not support mapping (e.g. Scaffold).
 			return null;
@@ -102,13 +103,13 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	/**
 	 * Same as {@link #writeSearchEngineParameterFile} only writes the parameters into a string.
 	 */
-	public String writeSearchEngineParameterString(SearchEngineParameters parameters, ParamsValidations validations) {
+	public String writeSearchEngineParameterString(final SearchEngineParameters parameters, final ParamsValidations validations) {
 		if (getMappingFactory() == null) {
 			// This engine does not support mapping (e.g. Scaffold).
 			return null;
 		}
 
-		StringWriter writer = new StringWriter();
+		final StringWriter writer = new StringWriter();
 		writeSearchEngineParameters(parameters, validations, writer);
 		return writer.toString();
 	}
@@ -116,16 +117,16 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 	/**
 	 * No writing of parameters, only the validations object gets filled.
 	 */
-	public void validate(SearchEngineParameters parameters, ParamsValidations validations) {
+	public void validate(final SearchEngineParameters parameters, final ParamsValidations validations) {
 		if (getMappingFactory() == null) {
 			// This engine does not support mapping (e.g. Scaffold).
 			return;
 		}
 
 		/** Pass a dummy writer that does nothing */
-		Writer writer = new Writer() {
+		final Writer writer = new Writer() {
 			@Override
-			public void write(char[] cbuf, int off, int len) throws IOException {
+			public void write(final char[] cbuf, final int off, final int len) throws IOException {
 				// Do nothing
 			}
 
@@ -142,11 +143,11 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		writeSearchEngineParameters(parameters, validations, writer);
 	}
 
-	private void writeSearchEngineParameters(SearchEngineParameters params, ParamsValidations validations, Writer writer) {
+	private void writeSearchEngineParameters(final SearchEngineParameters params, ParamsValidations validations, final Writer writer) {
 		if (validations == null) {
 			validations = new ParamsValidations();
 		}
-		ParamValidationsMappingContext context = new ParamValidationsMappingContext(validations, paramsInfo);
+		final ParamValidationsMappingContext context = new ParamValidationsMappingContext(validations, paramsInfo);
 
 		// Initialize the mappings object
 		final Mappings mapping = getMappingFactory().createMapping();
@@ -193,7 +194,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		}
 	}
 
-	public void setCode(String code) {
+	public void setCode(final String code) {
 		this.code = code;
 	}
 
@@ -210,15 +211,15 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		}
 	}
 
-	public void setResultExtension(String resultExtension) {
+	public void setResultExtension(final String resultExtension) {
 		this.resultExtension = resultExtension;
 	}
 
-	public void setDoSearchXmlAttribute(String doSearchXmlAttribute) {
+	public void setDoSearchXmlAttribute(final String doSearchXmlAttribute) {
 		this.doSearchXmlAttribute = doSearchXmlAttribute;
 	}
 
-	public void setFriendlyName(String friendlyName) {
+	public void setFriendlyName(final String friendlyName) {
 		this.friendlyName = friendlyName;
 	}
 
@@ -248,7 +249,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return searchDaemon;
 	}
 
-	public void setSearchDaemon(DaemonConnection searchDaemon) {
+	public void setSearchDaemon(final DaemonConnection searchDaemon) {
 		this.searchDaemon = searchDaemon;
 	}
 
@@ -256,7 +257,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return mappingFactory;
 	}
 
-	public void setMappingFactory(MappingFactory mappingFactory) {
+	public void setMappingFactory(final MappingFactory mappingFactory) {
 		this.mappingFactory = mappingFactory;
 	}
 
@@ -264,7 +265,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return dbDeployDaemon;
 	}
 
-	public void setDbDeployDaemon(DaemonConnection dbDeployDaemon) {
+	public void setDbDeployDaemon(final DaemonConnection dbDeployDaemon) {
 		this.dbDeployDaemon = dbDeployDaemon;
 	}
 
@@ -276,7 +277,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return paramsInfo;
 	}
 
-	public void setParamsInfo(ParamsInfo paramsInfo) {
+	public void setParamsInfo(final ParamsInfo paramsInfo) {
 		this.paramsInfo = paramsInfo;
 	}
 
@@ -287,11 +288,11 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return isOnByDefault;
 	}
 
-	public void setOnByDefault(boolean onByDefault) {
+	public void setOnByDefault(final boolean onByDefault) {
 		isOnByDefault = onByDefault;
 	}
 
-	public void setOutputDirName(String outputDirName) {
+	public void setOutputDirName(final String outputDirName) {
 		this.outputDirName = outputDirName;
 	}
 
@@ -299,7 +300,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return outputDirName;
 	}
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -307,7 +308,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 			return false;
 		}
 
-		SearchEngine that = (SearchEngine) o;
+		final SearchEngine that = (SearchEngine) o;
 
 		if (!getCode().equals(that.getCode())) {
 			return false;
@@ -320,7 +321,7 @@ public final class SearchEngine implements Serializable, Comparable<SearchEngine
 		return getCode().hashCode();
 	}
 
-	public int compareTo(SearchEngine o) {
+	public int compareTo(final SearchEngine o) {
 		return getCode().compareTo(o.getCode());
 	}
 

@@ -26,7 +26,7 @@ public final class MockUnimodDao implements UnimodDao {
 	}
 
 	@Override
-	public UnimodUpgrade upgrade(Unimod unimod, Change request) {
+	public UnimodUpgrade upgrade(final Unimod unimod, final Change request) {
 		throw new MprcException("Upgrading the unimod database is not supported with the mock implementation");
 	}
 
@@ -43,11 +43,11 @@ public final class MockUnimodDao implements UnimodDao {
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		return null;
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 	}
 }

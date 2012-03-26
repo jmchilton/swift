@@ -25,17 +25,17 @@ public final class ScafmlExperiment extends FileHolder {
 	private boolean annotateWithGOA = true;
 	private boolean reportDecoyHits;
 
-	public ScafmlExperiment(String name) {
+	public ScafmlExperiment(final String name) {
 		biologicalSamples = new LinkedHashMap<String, ScafmlBiologicalSample>(1);
 		scafmlFastaDatabases = new HashMap<String, ScafmlFastaDatabase>(1);
 		this.name = name;
 	}
 
-	public ScafmlFastaDatabase getFastaDatabase(String id) {
+	public ScafmlFastaDatabase getFastaDatabase(final String id) {
 		return this.scafmlFastaDatabases.get(id);
 	}
 
-	public void addFastaDatabase(ScafmlFastaDatabase pFastaDatabase) {
+	public void addFastaDatabase(final ScafmlFastaDatabase pFastaDatabase) {
 		if (pFastaDatabase == null) {
 			throw new MprcException("null object for Biological Sample");
 		}
@@ -45,11 +45,11 @@ public final class ScafmlExperiment extends FileHolder {
 		this.scafmlFastaDatabases.put(pFastaDatabase.getId(), pFastaDatabase);
 	}
 
-	public ScafmlBiologicalSample getBiologicalSample(String id) {
+	public ScafmlBiologicalSample getBiologicalSample(final String id) {
 		return this.biologicalSamples.get(id);
 	}
 
-	public void addBiologicalSample(ScafmlBiologicalSample pBiologicalSample) {
+	public void addBiologicalSample(final ScafmlBiologicalSample pBiologicalSample) {
 		if (pBiologicalSample == null) {
 			throw new MprcException("null object for Biological Sample");
 		}
@@ -59,7 +59,7 @@ public final class ScafmlExperiment extends FileHolder {
 		this.biologicalSamples.put(pBiologicalSample.getId(), pBiologicalSample);
 	}
 
-	public void setName(String sName) {
+	public void setName(final String sName) {
 		this.name = sName;
 	}
 
@@ -68,7 +68,7 @@ public final class ScafmlExperiment extends FileHolder {
 	}
 
 
-	public void setExport(ScafmlExport pExport) {
+	public void setExport(final ScafmlExport pExport) {
 		this.export = pExport;
 	}
 
@@ -80,7 +80,7 @@ public final class ScafmlExperiment extends FileHolder {
 		return connectToNCBI;
 	}
 
-	public void setConnectToNCBI(boolean connectToNCBI) {
+	public void setConnectToNCBI(final boolean connectToNCBI) {
 		this.connectToNCBI = connectToNCBI;
 	}
 
@@ -88,7 +88,7 @@ public final class ScafmlExperiment extends FileHolder {
 		return annotateWithGOA;
 	}
 
-	public void setAnnotateWithGOA(boolean annotateWithGOA) {
+	public void setAnnotateWithGOA(final boolean annotateWithGOA) {
 		this.annotateWithGOA = annotateWithGOA;
 	}
 
@@ -96,11 +96,11 @@ public final class ScafmlExperiment extends FileHolder {
 		return reportDecoyHits;
 	}
 
-	public void setReportDecoyHits(boolean reportDecoyHits) {
+	public void setReportDecoyHits(final boolean reportDecoyHits) {
 		this.reportDecoyHits = reportDecoyHits;
 	}
 
-	public void appendToDocument(StringBuilder result, String indent, ScafmlScaffold scaffold) {
+	public void appendToDocument(final StringBuilder result, final String indent, final ScafmlScaffold scaffold) {
 		result
 				.append(indent)
 				.append("<" + "Experiment")
@@ -118,12 +118,12 @@ public final class ScafmlExperiment extends FileHolder {
 		result.append(">\n");
 
 		// now the fasta databases
-		for (ScafmlFastaDatabase fd : this.scafmlFastaDatabases.values()) {
+		for (final ScafmlFastaDatabase fd : this.scafmlFastaDatabases.values()) {
 			fd.appendToDocument(result, indent + "\t", isReportDecoyHits());
 		}
 
 		// now the biological samples
-		for (ScafmlBiologicalSample bios : biologicalSamples.values()) {
+		for (final ScafmlBiologicalSample bios : biologicalSamples.values()) {
 			bios.appendToDocument(result, indent + "\t");
 		}
 

@@ -22,7 +22,7 @@ import java.util.*;
 final class UnimodOmssaConverter {
 	private ModsUtilities modsUtilities;
 
-	public UnimodOmssaConverter(ModsUtilities modsUtilities) {
+	public UnimodOmssaConverter(final ModsUtilities modsUtilities) {
 		this.modsUtilities = modsUtilities;
 	}
 
@@ -33,29 +33,29 @@ final class UnimodOmssaConverter {
 	 * <p/>
 	 * When this method is done the xmldoc given will be modified.
 	 */
-	public void convertUnimodToOmssa(boolean fixedMods, final Collection<ModSpecificity> mods, Document xmldoc) {
+	public void convertUnimodToOmssa(final boolean fixedMods, final Collection<ModSpecificity> mods, final Document xmldoc) {
 		final Element elemMSSearchSettings = xmldoc.getDocumentElement();
 		if (elemMSSearchSettings == null || elemMSSearchSettings.getNodeName() == null || !elemMSSearchSettings.getNodeName().equals("MSSearchSettings")) {
 			throw new MprcException("Does not appear to be a valid OMSSA params file.  The root element needs to be named 'MSSearchSettings'.");
 		}
 
 		// Lets clear all the fixed/variable mods, keep only the other set
-		String elementToRetainName = !fixedMods ? "MSSearchSettings_fixed" : "MSSearchSettings_variable";
+		final String elementToRetainName = !fixedMods ? "MSSearchSettings_fixed" : "MSSearchSettings_variable";
 		Element listModsToRetain = (Element) getSingleElement(elemMSSearchSettings, elementToRetainName);
 		if (listModsToRetain == null) {
 			listModsToRetain = xmldoc.createElement(elementToRetainName);
 			elemMSSearchSettings.appendChild(listModsToRetain);
 		}
 		final NodeList childNodes = listModsToRetain.getChildNodes();
-		Set<Integer> modIdsToRetain = new TreeSet<Integer>();
+		final Set<Integer> modIdsToRetain = new TreeSet<Integer>();
 		// These two mods are always retained - defaults
 		modIdsToRetain.add(119);
 		modIdsToRetain.add(120);
 		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node child = childNodes.item(i);
+			final Node child = childNodes.item(i);
 			if ("MSMod".equalsIgnoreCase(child.getNodeName())) {
-				String valueString = child.getTextContent();
-				int value = Integer.parseInt(valueString);
+				final String valueString = child.getTextContent();
+				final int value = Integer.parseInt(valueString);
 				modIdsToRetain.add(value);
 			}
 		}
@@ -64,7 +64,7 @@ final class UnimodOmssaConverter {
 
 		final NodeList matchingNodesUsermods = elemMSSearchSettings.getElementsByTagName("MSSearchSettings_usermods");
 
-		Element elemUsermods;
+		final Element elemUsermods;
 		if (matchingNodesUsermods.getLength() == 0) {
 			elemUsermods = xmldoc.createElement("MSSearchSettings_usermods");
 			elemMSSearchSettings.appendChild(elemUsermods);
@@ -73,7 +73,7 @@ final class UnimodOmssaConverter {
 		}
 
 		final NodeList matchingNodesMSModSpecSet = elemUsermods.getElementsByTagName("MSModSpecSet");
-		Element elemMSModSpecSet;
+		final Element elemMSModSpecSet;
 		if (matchingNodesMSModSpecSet.getLength() == 0) {
 			elemMSModSpecSet = xmldoc.createElement("MSModSpecSet");
 			elemUsermods.appendChild(elemMSModSpecSet);
@@ -90,7 +90,7 @@ final class UnimodOmssaConverter {
 					" modifications left (after " + (fixedMods ? "variable" : "fixed") + " modifications are taken out) and you want additional " + mods.size() + " " + (fixedMods ? "fixed" : "variable") + " mods.");
 		}
 
-		for (ModSpecificity spec : mods) {
+		for (final ModSpecificity spec : mods) {
 			final Element elemMSModSpec = xmldoc.createElement("MSModSpec");
 			elemMSModSpecSet.appendChild(elemMSModSpec);
 
@@ -154,10 +154,10 @@ final class UnimodOmssaConverter {
 
 	}
 
-	private void cleanupAllModsNotInList(Element elemMSModSpecSet, Set<Integer> modIdsToRetain) {
+	private void cleanupAllModsNotInList(final Element elemMSModSpecSet, final Set<Integer> modIdsToRetain) {
 		final NodeList childNodes = elemMSModSpecSet.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node child = childNodes.item(i);
+			final Node child = childNodes.item(i);
 			if ("MSModSpec".equals(child.getNodeName())) {
 				//                 <MSModSpec_mod>
 				// <MSMod value="usermod1">119</MSMod>
@@ -174,7 +174,7 @@ final class UnimodOmssaConverter {
 	/**
 	 * @return Return single element, throw if there are multiple, return null if there is none.
 	 */
-	private Node getSingleElement(Element parent, String name) {
+	private Node getSingleElement(final Element parent, final String name) {
 		final NodeList elementsToRetain = parent.getElementsByTagName(name);
 		if (elementsToRetain.getLength() > 1) {
 			throw new MprcException("OMSSA params file is corrupted, multiple <" + name + "> element.");
@@ -191,7 +191,7 @@ final class UnimodOmssaConverter {
 	 * <p/>
 	 * When this method is done the xmldoc given will be modified.
 	 */
-	public void convertUnimodToOmssa(boolean fixedMods, final Collection<ModSpecificity> mods, Document xmldoc, Map<ModSpecificity, String> ids) {
+	public void convertUnimodToOmssa(final boolean fixedMods, final Collection<ModSpecificity> mods, final Document xmldoc, final Map<ModSpecificity, String> ids) {
 		final Element elemMSSearchSettings = xmldoc.getDocumentElement();
 		if (elemMSSearchSettings == null || elemMSSearchSettings.getNodeName() == null || !elemMSSearchSettings.getNodeName().equals("MSSearchSettings")) {
 			throw new MprcException("Does not appear to be a valid OMSSA params file.  The root element needs to be named 'MSSearchSettings'.");
@@ -211,11 +211,11 @@ final class UnimodOmssaConverter {
 	 * @param elemMsModSpecSet
 	 * @return
 	 */
-	protected Queue<String> getAvailableIds(Element elemMsModSpecSet) {
+	protected Queue<String> getAvailableIds(final Element elemMsModSpecSet) {
 
-		int userModsSoFar = 0;
+		final int userModsSoFar = 0;
 
-		Queue<String> available = new LinkedList<String>();
+		final Queue<String> available = new LinkedList<String>();
 		//need to start at 121 since we need room for 2 defaults
 		for (int i = 119; i <= 128; i++) {
 			available.add(String.valueOf(i));
@@ -225,17 +225,17 @@ final class UnimodOmssaConverter {
 		}
 
 		//determine which are already taken
-		Set<String> alreadyTakenIds = new HashSet<String>();
+		final Set<String> alreadyTakenIds = new HashSet<String>();
 
-		NodeList existing = elemMsModSpecSet.getElementsByTagName("MSModSpec");
+		final NodeList existing = elemMsModSpecSet.getElementsByTagName("MSModSpec");
 		for (int i = 0; i < existing.getLength(); i++) {
-			NodeList msModSpecMods = ((Element) existing.item(i)).getElementsByTagName("MSModSpec_mod");
+			final NodeList msModSpecMods = ((Element) existing.item(i)).getElementsByTagName("MSModSpec_mod");
 			if (msModSpecMods.getLength() > 0) {
 				final NodeList msMods = ((Element) msModSpecMods.item(0)).getElementsByTagName("MSMod");
 				if (msMods.getLength() > 0) {
-					Element msMod = (Element) msMods.item(0);
+					final Element msMod = (Element) msMods.item(0);
 					//add to set of taken ids
-					String content = msMod.getTextContent();
+					final String content = msMod.getTextContent();
 					if (content != null) {
 						alreadyTakenIds.add(content.trim());
 					}
@@ -247,15 +247,15 @@ final class UnimodOmssaConverter {
 		return available;
 	}
 
-	protected void setSelectedMods(String elementName, List<String> modIds, Element parentNode, Document xmldoc) {
+	protected void setSelectedMods(final String elementName, final List<String> modIds, final Element parentNode, final Document xmldoc) {
 
 		final NodeList modNodes = xmldoc.getElementsByTagName(elementName);
-		Element elemMods;
+		final Element elemMods;
 		if (modNodes.getLength() > 1) {
 			throw new MprcException("There were multiple " + elementName + " tags in the xml document!");
 		} else if (modNodes.getLength() > 0) {
 			elemMods = (Element) modNodes.item(0);
-			NodeList existingMods = elemMods.getElementsByTagName("MSMod");
+			final NodeList existingMods = elemMods.getElementsByTagName("MSMod");
 			for (int i = existingMods.getLength() - 1; i >= 0; i--) {
 				elemMods.removeChild(existingMods.item(i));
 			}
@@ -264,7 +264,7 @@ final class UnimodOmssaConverter {
 			parentNode.appendChild(elemMods);
 		}
 
-		for (String id : modIds) {
+		for (final String id : modIds) {
 			final Element elemMSMod = xmldoc.createElement("MSMod");
 			elemMSMod.setAttribute("value", modsUtilities.getModValueLookup().get(id));
 			elemMSMod.setTextContent(id);
@@ -280,13 +280,13 @@ final class UnimodOmssaConverter {
 	 * @param unimod
 	 * @return
 	 */
-	public ModSpecificity convertToModSpecificity(Element elemMSModSpec, Unimod unimod) {
-		double massShift = Double.valueOf(elemMSModSpec.getElementsByTagName("MSModSpec_monomass").item(0).getTextContent());
-		Element elemType = (Element) elemMSModSpec.getElementsByTagName("MSModSpec_type").item(0);
-		String modTypeEnum = elemType.getElementsByTagName("MSModType").item(0).getTextContent();
+	public ModSpecificity convertToModSpecificity(final Element elemMSModSpec, final Unimod unimod) {
+		final double massShift = Double.valueOf(elemMSModSpec.getElementsByTagName("MSModSpec_monomass").item(0).getTextContent());
+		final Element elemType = (Element) elemMSModSpec.getElementsByTagName("MSModSpec_type").item(0);
+		final String modTypeEnum = elemType.getElementsByTagName("MSModType").item(0).getTextContent();
 
 		//get the residue from the document, the residue is optional for us so we will need more bounds checking.
-		NodeList residues = elemMSModSpec.getElementsByTagName("MSModSpec_residues");
+		final NodeList residues = elemMSModSpec.getElementsByTagName("MSModSpec_residues");
 		String residue = null;
 		if (residues.getLength() > 0) {
 			if (residues.getLength() > 1) {
@@ -298,16 +298,16 @@ final class UnimodOmssaConverter {
 		//get the modtype in a more friendly format than the enumeration that appears to be the way OMSSA likes to communicate,
 		//omssa does provide a "value" attribute but I think this was a new feature added later and not fully compatible way of
 		//communicating the modType.
-		String modType = modsUtilities.getModTypeLookup().inverse().get(modTypeEnum);
+		final String modType = modsUtilities.getModTypeLookup().inverse().get(modTypeEnum);
 		if (modType == null) {
 			throw new MprcException("Could not find a modType for the enumerated value" + modTypeEnum);
 		}
 
-		Character site = getSite(modType, residue);
-		Terminus terminus = getPosition(modType);
-		boolean proteinOnly = getProteinOnly(modType);
+		final Character site = getSite(modType, residue);
+		final Terminus terminus = getPosition(modType);
+		final boolean proteinOnly = getProteinOnly(modType);
 
-		ModSpecificity spec = unimod.findSingleMatchingModificationSet(massShift, ModsUtilities.MOD_MASS_TOL, site, terminus, proteinOnly, /*hidden, null means don't consider*/ null);
+		final ModSpecificity spec = unimod.findSingleMatchingModificationSet(massShift, ModsUtilities.MOD_MASS_TOL, site, terminus, proteinOnly, /*hidden, null means don't consider*/ null);
 
 		if (spec == null) {
 			throw new MprcException("Can't find modification in Unimod with:" + massShift + "@" + site);
@@ -318,14 +318,14 @@ final class UnimodOmssaConverter {
 	/**
 	 * modn, modnaa, modc, modcaa are protein only mods
 	 */
-	protected static boolean getProteinOnly(String modType) {
+	protected static boolean getProteinOnly(final String modType) {
 		return modType.equals("modn") ||
 				modType.equals("modnaa") ||
 				modType.equals("modc") ||
 				modType.equals("modcaa");
 	}
 
-	protected static Terminus getPosition(String modType) {
+	protected static Terminus getPosition(final String modType) {
 		if (modType.startsWith("modc")) {
 			return Terminus.Cterm;
 		} else if (modType.startsWith("modn")) {
@@ -334,7 +334,7 @@ final class UnimodOmssaConverter {
 		return Terminus.Anywhere;
 	}
 
-	protected static Character getSite(String modType, String residue) {
+	protected static Character getSite(final String modType, final String residue) {
 		if (residue == null || residue.length() == 0) {
 			if (!modType.endsWith("aa")) {
 				return '*';

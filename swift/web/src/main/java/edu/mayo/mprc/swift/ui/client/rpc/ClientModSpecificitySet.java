@@ -11,7 +11,7 @@ public final class ClientModSpecificitySet implements ClientValue {
 	public ClientModSpecificitySet() {
 	}
 
-	public ClientModSpecificitySet(List<ClientModSpecificity> modSpecificities) {
+	public ClientModSpecificitySet(final List<ClientModSpecificity> modSpecificities) {
 		this.modSpecificities = modSpecificities;
 	}
 
@@ -19,11 +19,11 @@ public final class ClientModSpecificitySet implements ClientValue {
 		return modSpecificities;
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof ClientModSpecificitySet)) {
 			return false;
 		}
-		ClientModSpecificitySet tt = (ClientModSpecificitySet) obj;
+		final ClientModSpecificitySet tt = (ClientModSpecificitySet) obj;
 		final List<ClientModSpecificity> otherSpecificities = tt.getModSpecificities();
 		final List<ClientModSpecificity> specificities = getModSpecificities();
 		if (otherSpecificities == null && specificities == null) {
@@ -47,7 +47,7 @@ public final class ClientModSpecificitySet implements ClientValue {
 		return modSpecificities != null ? modSpecificities.hashCode() : 0;
 	}
 
-	public static ClientModSpecificitySet cast(ClientValue value) {
+	public static ClientModSpecificitySet cast(final ClientValue value) {
 		if (!(value instanceof ClientModSpecificitySet)) {
 			ExceptionUtilities.throwCastException(value, ClientModSpecificitySet.class);
 			return null;

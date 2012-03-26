@@ -22,18 +22,18 @@ public final class MultiFileTransferResponse implements Serializable {
 
 	private InetSocketAddress inetSocketAddress;
 
-	public MultiFileTransferResponse(long requestId) {
+	public MultiFileTransferResponse(final long requestId) {
 		this.requestId = requestId;
 		fileInfos = new ArrayList<FileInfo>();
 		notExistingFileInfos = new ArrayList<FileInfo>();
 	}
 
-	public MultiFileTransferResponse(long requestId, List<FileInfo> fileInfos) {
+	public MultiFileTransferResponse(final long requestId, final List<FileInfo> fileInfos) {
 		this(requestId);
 		this.fileInfos = fileInfos;
 	}
 
-	public MultiFileTransferResponse(long requestId, List<FileInfo> fileInfos, InetSocketAddress inetSocketAddress) {
+	public MultiFileTransferResponse(final long requestId, final List<FileInfo> fileInfos, final InetSocketAddress inetSocketAddress) {
 		this(requestId);
 		this.fileInfos = fileInfos;
 		this.inetSocketAddress = inetSocketAddress;
@@ -43,7 +43,7 @@ public final class MultiFileTransferResponse implements Serializable {
 		return fileInfos;
 	}
 
-	public void setFileInfos(List<FileInfo> fileInfos) {
+	public void setFileInfos(final List<FileInfo> fileInfos) {
 		this.fileInfos = fileInfos;
 	}
 
@@ -51,7 +51,7 @@ public final class MultiFileTransferResponse implements Serializable {
 		return notExistingFileInfos;
 	}
 
-	public void setNotExistingFileInfos(List<FileInfo> notExistingFileInfos) {
+	public void setNotExistingFileInfos(final List<FileInfo> notExistingFileInfos) {
 		this.notExistingFileInfos = notExistingFileInfos;
 	}
 
@@ -59,7 +59,7 @@ public final class MultiFileTransferResponse implements Serializable {
 		return inetSocketAddress;
 	}
 
-	public void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+	public void setInetSocketAddress(final InetSocketAddress inetSocketAddress) {
 		this.inetSocketAddress = inetSocketAddress;
 	}
 

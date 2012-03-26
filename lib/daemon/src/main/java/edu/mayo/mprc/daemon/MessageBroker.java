@@ -50,7 +50,7 @@ public final class MessageBroker {
 		return brokerUrl;
 	}
 
-	public void setBrokerUrl(String brokerUrl) {
+	public void setBrokerUrl(final String brokerUrl) {
 		this.brokerUrl = brokerUrl;
 	}
 
@@ -58,7 +58,7 @@ public final class MessageBroker {
 		return embeddedBrokerUrl;
 	}
 
-	public void setEmbeddedBrokerUrl(String embeddedBrokerUrl) {
+	public void setEmbeddedBrokerUrl(final String embeddedBrokerUrl) {
 		this.embeddedBrokerUrl = embeddedBrokerUrl;
 	}
 
@@ -66,7 +66,7 @@ public final class MessageBroker {
 		return embedded;
 	}
 
-	public void setEmbedded(boolean embedded) {
+	public void setEmbedded(final boolean embedded) {
 		this.embedded = embedded;
 	}
 
@@ -74,7 +74,7 @@ public final class MessageBroker {
 		return useJmx;
 	}
 
-	public void setUseJmx(boolean useJmx) {
+	public void setUseJmx(final boolean useJmx) {
 		this.useJmx = useJmx;
 	}
 
@@ -95,7 +95,7 @@ public final class MessageBroker {
 	 */
 	public static final class Factory extends FactoryBase<Config, MessageBroker> {
 		@Override
-		public MessageBroker create(Config config, DependencyResolver dependencies) {
+		public MessageBroker create(final Config config, final DependencyResolver dependencies) {
 			final MessageBroker broker = new MessageBroker();
 
 			broker.setEmbedded(config.isEmbedded());
@@ -133,7 +133,7 @@ public final class MessageBroker {
 		}
 
 		@Override
-		public Map<String, String> save(DependencyResolver resolver) {
+		public Map<String, String> save(final DependencyResolver resolver) {
 			final Map<String, String> map = new HashMap<String, String>(1);
 			map.put(BROKER_URL, brokerUrl);
 			map.put(EMBEDDED_BROKER_URL, embeddedBrokerUrl);
@@ -143,7 +143,7 @@ public final class MessageBroker {
 		}
 
 		@Override
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			brokerUrl = values.get(BROKER_URL);
 			embeddedBrokerUrl = values.get(EMBEDDED_BROKER_URL);
 			embedded = values.get(EMBEDDED);
@@ -159,7 +159,7 @@ public final class MessageBroker {
 			return brokerUrl;
 		}
 
-		public void setBrokerUrl(String brokerUrl) {
+		public void setBrokerUrl(final String brokerUrl) {
 			this.brokerUrl = brokerUrl;
 		}
 
@@ -187,7 +187,7 @@ public final class MessageBroker {
 			Connection connection = null;
 			try {
 				if (brokerUrl != null && brokerUrl.length() > 0) {
-					ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
+					final ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 					connection = connectionFactory.createConnection();
 				} else {
 					return "JMS broker URL is not valid.";
@@ -220,13 +220,13 @@ public final class MessageBroker {
 
 		public static final String DEFAULT_PORT = "61616";
 
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder.property(BROKER_URL, "Connection URI", "The URI defines where the broker runs (hostname and port) as well as the protocol used to communicate with it." +
 					" The initial default value is set to use failover. This settign will allow for reconnection attempts if JMS broker system goes down.")
 					.required().defaultValue(getDefaultBrokerUrl(daemon))
 					.validateOnDemand(new PropertyChangeListener() {
 						@Override
-						public void propertyChanged(ResourceConfig config, String propertyName, String newValue, UiResponse response, boolean validationRequested) {
+						public void propertyChanged(final ResourceConfig config, final String propertyName, final String newValue, final UiResponse response, final boolean validationRequested) {
 							if (!(config instanceof Config)) {
 								ExceptionUtilities.throwCastException(config, Config.class);
 								return;
@@ -237,7 +237,7 @@ public final class MessageBroker {
 						}
 
 						@Override
-						public void fixError(ResourceConfig config, String propertyName, String action) {
+						public void fixError(final ResourceConfig config, final String propertyName, final String action) {
 						}
 					})
 
@@ -258,7 +258,7 @@ public final class MessageBroker {
 					.property(USE_JMX, "Enable the use of JMX", "").boolValue().defaultValue("false");
 		}
 
-		public static String getDefaultBrokerUrl(DaemonConfig daemon) {
+		public static String getDefaultBrokerUrl(final DaemonConfig daemon) {
 			return "failover:(tcp://" + daemon.getHostName() + ":" + DEFAULT_PORT + ")";
 		}
 	}

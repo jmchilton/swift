@@ -16,7 +16,7 @@ public final class MsmsEvalResult extends FileHolder implements ProgressInfo {
 	private transient ReceiverTokenTranslator translator;
 	private transient FileTokenSynchronizer synchronizer;
 
-	public MsmsEvalResult(File outputFile, File emFile) {
+	public MsmsEvalResult(final File outputFile, final File emFile) {
 		this.outputFile = outputFile;
 		this.emFile = emFile;
 	}

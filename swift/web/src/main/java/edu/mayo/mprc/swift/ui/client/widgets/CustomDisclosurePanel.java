@@ -50,11 +50,11 @@ public final class CustomDisclosurePanel extends Composite implements
 		private final Image iconImage;
 		private final DisclosurePanelImages images;
 
-		private DefaultHeader(DisclosurePanelImages images, String text) {
+		private DefaultHeader(final DisclosurePanelImages images, final String text) {
 			super(DOM.createAnchor());
 			this.images = images;
 
-			Element elem = getElement();
+			final Element elem = getElement();
 
 			DOM.setElementProperty(elem, "href", "javascript:void(0);");
 			// Avoids layout problems from having blocks in inlines.
@@ -66,9 +66,9 @@ public final class CustomDisclosurePanel extends Composite implements
 					: images.disclosurePanelClosed().createImage();
 
 			// I do not need any Widgets here, just a DOM structure.
-			Element root = DOM.createTable();
-			Element tbody = DOM.createTBody();
-			Element tr = DOM.createTR();
+			final Element root = DOM.createTable();
+			final Element tbody = DOM.createTBody();
+			final Element tr = DOM.createTR();
 			final Element imageTD = DOM.createTD();
 			labelTD = DOM.createTD();
 
@@ -96,15 +96,15 @@ public final class CustomDisclosurePanel extends Composite implements
 			return DOM.getInnerText(labelTD);
 		}
 
-		public final void onClose(CustomDisclosureEvent event) {
+		public final void onClose(final CustomDisclosureEvent event) {
 			setStyle();
 		}
 
-		public final void onOpen(CustomDisclosureEvent event) {
+		public final void onOpen(final CustomDisclosureEvent event) {
 			setStyle();
 		}
 
-		public final void setText(String text) {
+		public final void setText(final String text) {
 			DOM.setInnerText(labelTD, text);
 		}
 
@@ -116,7 +116,7 @@ public final class CustomDisclosurePanel extends Composite implements
 			}
 		}
 
-		public final void onBrowserEvent(Event event) {
+		public final void onBrowserEvent(final Event event) {
 			// no need to call super.
 			if (DOM.eventGetType(event) == Event.ONCLICK) {
 				// Prevent link default action.
@@ -179,8 +179,8 @@ public final class CustomDisclosurePanel extends Composite implements
 	 * @param headerText the text to be displayed in the header
 	 * @param isOpen     the initial open/close state of the content panel
 	 */
-	public CustomDisclosurePanel(DisclosurePanelImages images, String headerText,
-	                             boolean isOpen) {
+	public CustomDisclosurePanel(final DisclosurePanelImages images, final String headerText,
+	                             final boolean isOpen) {
 		init(isOpen, images, headerText);
 	}
 
@@ -190,7 +190,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *
 	 * @param headerText the text to be displayed in the header.
 	 */
-	public CustomDisclosurePanel(String headerText) {
+	public CustomDisclosurePanel(final String headerText) {
 		this(createDefaultImages(), headerText, false);
 	}
 
@@ -201,12 +201,12 @@ public final class CustomDisclosurePanel extends Composite implements
 	 * @param headerText the text to be displayed in the header
 	 * @param isOpen     the initial open/close state of the content panel
 	 */
-	public CustomDisclosurePanel(String headerText, boolean isOpen) {
+	public CustomDisclosurePanel(final String headerText, final boolean isOpen) {
 		this(createDefaultImages(), headerText, isOpen);
 	}
 
 
-	public void add(Widget w) {
+	public void add(final Widget w) {
 		if (this.getContent() == null) {
 			setContent(w);
 		} else {
@@ -221,7 +221,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *
 	 * @param handler the handler to be added (should not be null)
 	 */
-	public final void addEventHandler(CustomDisclosureHandler handler) {
+	public final void addEventHandler(final CustomDisclosureHandler handler) {
 		if (handlers == null) {
 			handlers = new ArrayList();
 		}
@@ -250,7 +250,7 @@ public final class CustomDisclosurePanel extends Composite implements
 		return staticHeader;
 	}
 
-	public void setHeaderText(String text) {
+	public void setHeaderText(final String text) {
 		clickableHeader.setText(text);
 	}
 
@@ -262,7 +262,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *         <code>null</code> otherwise
 	 */
 	public final HasText getHeaderTextAccessor() {
-		Widget widget = staticHeader;
+		final Widget widget = staticHeader;
 		return (widget instanceof HasText) ? (HasText) widget : null;
 	}
 
@@ -340,7 +340,7 @@ public final class CustomDisclosurePanel extends Composite implements
 				new Widget[]{getContent()});
 	}
 
-	public boolean remove(Widget w) {
+	public boolean remove(final Widget w) {
 		if (w.equals(getContent())) {
 			setContent(null);
 			return true;
@@ -353,7 +353,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *
 	 * @param handler the handler to be removed
 	 */
-	public final void removeEventHandler(CustomDisclosureHandler handler) {
+	public final void removeEventHandler(final CustomDisclosureHandler handler) {
 		if (handlers == null) {
 			return;
 		}
@@ -366,7 +366,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *
 	 * @param content the widget to be used as the content panel
 	 */
-	public final void setContent(Widget content) {
+	public final void setContent(final Widget content) {
 		final Widget currentContent = this.content;
 
 		// Remove existing content widget.
@@ -389,7 +389,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 *
 	 * @param headerWidget the widget to be used as the header
 	 */
-	public final void setHeader(Widget headerWidget) {
+	public final void setHeader(final Widget headerWidget) {
 
 		staticHeader.setWidget(headerWidget);
 	}
@@ -400,7 +400,7 @@ public final class CustomDisclosurePanel extends Composite implements
 	 * @param isOpen <code>true</code> to open the panel, <code>false</code>
 	 *               to close
 	 */
-	public final void setOpen(boolean isOpen) {
+	public final void setOpen(final boolean isOpen) {
 		if (this.isOpen != isOpen) {
 			this.isOpen = isOpen;
 			setContentDisplay();
@@ -413,9 +413,9 @@ public final class CustomDisclosurePanel extends Composite implements
 			return;
 		}
 
-		CustomDisclosureEvent event = new CustomDisclosureEvent(this);
-		for (Iterator it = handlers.iterator(); it.hasNext();) {
-			CustomDisclosureHandler handler = (CustomDisclosureHandler) it.next();
+		final CustomDisclosureEvent event = new CustomDisclosureEvent(this);
+		for (Iterator it = handlers.iterator(); it.hasNext(); ) {
+			final CustomDisclosureHandler handler = (CustomDisclosureHandler) it.next();
 			if (isOpen) {
 				handler.onOpen(event);
 			} else {
@@ -424,7 +424,7 @@ public final class CustomDisclosurePanel extends Composite implements
 		}
 	}
 
-	private void init(boolean isOpen, DisclosurePanelImages images, String headerText) {
+	private void init(final boolean isOpen, final DisclosurePanelImages images, final String headerText) {
 		this.isOpen = isOpen;
 		clickableHeader = new DefaultHeader(images, headerText);
 		initWidget(mainPanel);

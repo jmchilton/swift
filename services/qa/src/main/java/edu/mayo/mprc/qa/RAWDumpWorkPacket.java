@@ -25,13 +25,13 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 	private File sampleInformationFile;
 	private File errorLogFile;
 
-	public RAWDumpWorkPacket(String taskId, boolean fromScratch) {
+	public RAWDumpWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 	}
 
-	public RAWDumpWorkPacket(File rawFile, File rawInfoFile, File rawSpectraFile, File chromatogramFile,
-	                         File tuneMethodFile, File instrumentMethodFile, File sampleInformationFile, File errorLogFile,
-	                         String taskId, boolean fromScratch) {
+	public RAWDumpWorkPacket(final File rawFile, final File rawInfoFile, final File rawSpectraFile, final File chromatogramFile,
+	                         final File tuneMethodFile, final File instrumentMethodFile, final File sampleInformationFile, final File errorLogFile,
+	                         final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
 
 		assert rawFile != null : "Raw input file can not be null.";
@@ -104,7 +104,7 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 
 	@Override
 	public String getStringDescriptionOfTask() {
-		StringBuilder description = new StringBuilder();
+		final StringBuilder description = new StringBuilder();
 		description
 				.append("Input:")
 				.append(getRawFile().getAbsolutePath())
@@ -116,7 +116,7 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 	}
 
 	@Override
-	public WorkPacket translateToWorkInProgressPacket(File wipFolder) {
+	public WorkPacket translateToWorkInProgressPacket(final File wipFolder) {
 		return new RAWDumpWorkPacket(
 				getRawFile(),
 				new File(wipFolder, getRawInfoFile().getName()),
@@ -155,7 +155,7 @@ public final class RAWDumpWorkPacket extends WorkPacketBase implements CachableW
 	}
 
 	@Override
-	public void reportCachedResult(ProgressReporter reporter, File targetFolder, List<String> outputFiles) {
+	public void reportCachedResult(final ProgressReporter reporter, final File targetFolder, final List<String> outputFiles) {
 		final File rawInfo = new File(targetFolder, outputFiles.get(0));
 		final File rawSpectra = new File(targetFolder, outputFiles.get(1));
 		final File chromatogram = new File(targetFolder, outputFiles.get(2));

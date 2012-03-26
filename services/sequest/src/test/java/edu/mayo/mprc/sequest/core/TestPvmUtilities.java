@@ -32,25 +32,25 @@ public final class TestPvmUtilities {
 	 */
 	@Test(enabled = true, groups = {"linux", "pvm"})
 	public void testgetSlaveNodesUofMN() {
-		String[] nodes = {"sequest1.umn"};
+		final String[] nodes = {"sequest1.umn"};
 		String tempFolder = null;
 		try {
 			// create a temp file
-			File folder = FileUtilities.createTempFolder();
+			final File folder = FileUtilities.createTempFolder();
 			tempFolder = folder.getAbsolutePath();
-			File f = File.createTempFile("mine", "txt", folder);
+			final File f = File.createTempFile("mine", "txt", folder);
 			// add a comment
-			List<String> lines = new ArrayList<String>();
+			final List<String> lines = new ArrayList<String>();
 			lines.add("# my uofMN test");
 
 
-			for (String node : nodes) {
+			for (final String node : nodes) {
 				lines.add("" + node + " ep=/project/sequest/swift/sequest/");
 
 			}
 			FileUtilities.writeStringsToFileNoBackup(f, lines, "\n");
-			PvmUtilities pvm = new PvmUtilities();
-			List<String> foundNodes = pvm.getSlaveNodes(f.getAbsolutePath());
+			final PvmUtilities pvm = new PvmUtilities();
+			final List<String> foundNodes = pvm.getSlaveNodes(f.getAbsolutePath());
 			Assert.assertEquals(foundNodes, Arrays.asList(nodes), "did not find the nodes");
 		} catch (Exception t) {
 			Assert.fail("exception occurred", t);
@@ -65,22 +65,22 @@ public final class TestPvmUtilities {
 	 */
 	@Test(enabled = true, groups = {"linux", "pvm"})
 	public void testgetSlaveNodes() {
-		String[] nodes = {"node001", "node002", "node003", "node004", "node005"};
+		final String[] nodes = {"node001", "node002", "node003", "node004", "node005"};
 		String tempFolder = null;
 		try {
 			// create a temp file
-			File folder = FileUtilities.createTempFolder();
+			final File folder = FileUtilities.createTempFolder();
 			tempFolder = folder.getAbsolutePath();
-			File f = File.createTempFile("mine", "txt", folder);
-			List<String> lines = new ArrayList<String>();
+			final File f = File.createTempFile("mine", "txt", folder);
+			final List<String> lines = new ArrayList<String>();
 
-			for (String node : nodes) {
+			for (final String node : nodes) {
 				lines.add("" + node + " sp=2");
 
 			}
 			FileUtilities.writeStringsToFileNoBackup(f, lines, "\n");
-			PvmUtilities pvm = new PvmUtilities();
-			List<String> foundNodes = pvm.getSlaveNodes(f.getAbsolutePath());
+			final PvmUtilities pvm = new PvmUtilities();
+			final List<String> foundNodes = pvm.getSlaveNodes(f.getAbsolutePath());
 			Assert.assertEquals(foundNodes, Arrays.asList(nodes), "did not find the nodes");
 		} catch (Exception t) {
 			Assert.fail("exception occurred", t);
@@ -95,16 +95,16 @@ public final class TestPvmUtilities {
 	 */
 	@Test(enabled = true, groups = {"linux", "pvm"})
 	public void testgetProcessID() {
-		String pvmd = "pvmd3";
-		String expectedpid = "1001";
-		String[] lines = {
+		final String pvmd = "pvmd3";
+		final String expectedpid = "1001";
+		final String[] lines = {
 				"mprcdev2 " + expectedpid + " 0.0 0.5 1384 724 ? s a5:57 0:00 /usr/local/pvm3/lib/LINUX/" + pvmd + " -s",
 				"mprcdev2 512 0.0 0.5 1384 724 ? s a5:57 0:00 grep -s",
 				"mprcdev2 816 0.0 0.5 1384 724 ? s a5:57 0:00 which -s",
 				"mprcdev2 20001 0.0 0.5 1384 724 ? s a5:57 0:00 ps -s",
 		};
-		PvmUtilities pvm = new PvmUtilities();
-		long pid = pvm.getProcessID(Arrays.asList(lines), pvmd);
+		final PvmUtilities pvm = new PvmUtilities();
+		final long pid = pvm.getProcessID(Arrays.asList(lines), pvmd);
 		Assert.assertEquals(expectedpid, "" + pid, "process id mismatch");
 
 	}
@@ -118,9 +118,9 @@ public final class TestPvmUtilities {
 			return;
 		}
 		LOGGER.debug("in testgetSshResult");
-		PvmUtilities pvm = new PvmUtilities();
+		final PvmUtilities pvm = new PvmUtilities();
 		// look up the pvmhosts
-		List<String> slaves = pvm.getSlaveNodes(hostsFile);
+		final List<String> slaves = pvm.getSlaveNodes(hostsFile);
 		if (slaves != null && slaves.size() == 0) {
 			LOGGER.warn("No slaves detected in this pvm setup. The ssh test cannot be performed.");
 			return;
@@ -132,9 +132,9 @@ public final class TestPvmUtilities {
 		}
 
 		LOGGER.debug("first slave=" + hostName);
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
-		List<String> lines = pvm.getSshResult(hostName, "ls -AlL /");
+		final List<String> lines = pvm.getSshResult(hostName, "ls -AlL /");
 		if (lines == null) {
 			Assert.fail("no result from ssh " + hostName + " ls /");
 		}
@@ -143,7 +143,7 @@ public final class TestPvmUtilities {
 	public static String getHostName() {
 		// find the hostName
 		String hostName = "unknown";
-		InetAddress host;
+		final InetAddress host;
 		try {
 			host = InetAddress.getLocalHost();
 			hostName = host.getHostName();
@@ -160,12 +160,12 @@ public final class TestPvmUtilities {
 			return;
 		}
 
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
-		PvmUtilities pvm = new PvmUtilities();
-		List<String> args = Arrays.asList("ls", "-AlL", "/");
+		final PvmUtilities pvm = new PvmUtilities();
+		final List<String> args = Arrays.asList("ls", "-AlL", "/");
 
-		List<String> lines = pvm.getCmdResult(args);
+		final List<String> lines = pvm.getCmdResult(args);
 		if (lines == null || lines.isEmpty()) {
 			Assert.fail("no result from ls /");
 
@@ -177,23 +177,23 @@ public final class TestPvmUtilities {
 	public void testKillPVMonNode() {
 		try {
 			LOGGER.debug("in testKillPVMonNode");
-			String userName = System.getProperty("user.name");
+			final String userName = System.getProperty("user.name");
 			LOGGER.debug("userName=" + userName);
-			PvmUtilities pvm = new PvmUtilities();
-			List<String> nodes = pvm.getSlaveNodes(hostsFile);
+			final PvmUtilities pvm = new PvmUtilities();
+			final List<String> nodes = pvm.getSlaveNodes(hostsFile);
 			if (nodes == null || nodes.size() == 0) {
 				LOGGER.debug("no slave nodes");
 				return;
 			}
 			LOGGER.debug("found " + nodes.size() + " slave nodes");
-			String hostName = nodes.get(0);
+			final String hostName = nodes.get(0);
 			LOGGER.debug("hostName=" + hostName);
-			long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+			final long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 			if (pid != 0) {
 				LOGGER.debug("killing pvm on node=" + hostName);
 				pvm.killPVMonNode(hostName, userName, "pvmd", "/tmp", false);
 				LOGGER.debug("finding process id for pvmd");
-				long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+				final long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 				Assert.assertTrue(adjusted_pid == 0, "pvmd pid = " + adjusted_pid + " not killed");
 			}
 		} catch (Exception t) {
@@ -205,23 +205,23 @@ public final class TestPvmUtilities {
 	public void testKillPVMonSlaveNodes() {
 		try {
 			LOGGER.debug("in testKillPVMonNodes");
-			String userName = System.getProperty("user.name");
+			final String userName = System.getProperty("user.name");
 			LOGGER.debug("userName=" + userName);
-			PvmUtilities pvm = new PvmUtilities();
-			List<String> nodes = pvm.getSlaveNodes(hostsFile);
+			final PvmUtilities pvm = new PvmUtilities();
+			final List<String> nodes = pvm.getSlaveNodes(hostsFile);
 			if (nodes == null || nodes.size() == 0) {
 				LOGGER.debug("no slave nodes");
 				return;
 			}
 			LOGGER.debug("found " + nodes.size() + " slave nodes");
-			for (String hostName : nodes) {
+			for (final String hostName : nodes) {
 				LOGGER.debug("hostName=" + hostName);
-				long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+				final long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 				if (pid != 0) {
 					LOGGER.debug("killing pvm on node=" + hostName);
 					pvm.killPVMonNode(hostName, userName, "pvmd", "/tmp", false);
 					LOGGER.debug("finding process id for pvmd");
-					long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+					final long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 					Assert.assertTrue(adjusted_pid == 0, "pvmd pid = " + adjusted_pid + " not killed");
 				}
 			}
@@ -235,16 +235,16 @@ public final class TestPvmUtilities {
 			() {
 		try {
 			LOGGER.debug("in testKillPVMonMaster");
-			String userName = System.getProperty("user.name");
+			final String userName = System.getProperty("user.name");
 			LOGGER.debug("userName=" + userName);
-			PvmUtilities pvm = new PvmUtilities();
+			final PvmUtilities pvm = new PvmUtilities();
 
-			long pid = pvm.findProcessIDforExe(userName, "pvmd");
+			final long pid = pvm.findProcessIDforExe(userName, "pvmd");
 			if (pid != 0) {
 				LOGGER.debug("killing pvm locally");
 				pvm.killPVMonMasterNode(userName, "pvmd", "/tmp");
 				LOGGER.debug("finding process id for pvmd");
-				long adjusted_pid = pvm.findProcessIDforExe(userName, "pvmd");
+				final long adjusted_pid = pvm.findProcessIDforExe(userName, "pvmd");
 				Assert.assertTrue(adjusted_pid == 0, "pvmd pid = " + adjusted_pid + " not killed");
 			}
 
@@ -257,12 +257,12 @@ public final class TestPvmUtilities {
 	public void testIsPvmRunningCorrectly() {
 		LOGGER.debug("in testIsPVMRunning");
 		try {
-			String userName = System.getProperty("user.name");
+			final String userName = System.getProperty("user.name");
 			LOGGER.debug("userName=" + userName);
-			PvmUtilities pvm = new PvmUtilities();
+			final PvmUtilities pvm = new PvmUtilities();
 
-			File pFile = hostsFile;
-			boolean running = pvm.isPVMRunningCorrectly(userName, pFile.getAbsolutePath());
+			final File pFile = hostsFile;
+			final boolean running = pvm.isPVMRunningCorrectly(userName, pFile.getAbsolutePath());
 			if (running) {
 				LOGGER.debug("pvm is running");
 			} else {
@@ -278,7 +278,7 @@ public final class TestPvmUtilities {
 	public void testPVMRestartForcedbySlaveFailure() {
 		LOGGER.debug("in testPVMRestartForcedbySlaveFailure");
 		PvmUtilities pvm = null;
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
 		boolean running = false;
 		try {
@@ -299,20 +299,20 @@ public final class TestPvmUtilities {
 			// kill pvm on a slave
 			try {
 				LOGGER.debug("killng  pvm on slave");
-				List<String> nodes = pvm.getSlaveNodes(hostsFile);
+				final List<String> nodes = pvm.getSlaveNodes(hostsFile);
 				if (nodes == null || nodes.size() == 0) {
 					LOGGER.debug("no slave nodes");
 					return;
 				}
 				LOGGER.debug("found " + nodes.size() + " slave nodes");
-				String hostName = nodes.get(0);
+				final String hostName = nodes.get(0);
 				LOGGER.debug("hostName=" + hostName);
-				long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+				final long pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 				if (pid != 0) {
 					LOGGER.debug("killing pvm on node=" + hostName);
 					pvm.killPVMonNode(hostName, userName, "pvmd", "/tmp", false);
 					LOGGER.debug("finding process id for pvmd");
-					long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
+					final long adjusted_pid = pvm.findProcessIDforExe(hostName, userName, "pvmd");
 					Assert.assertTrue(adjusted_pid == 0, "pvmd pid = " + adjusted_pid + " not killed");
 				}
 			} catch (Exception t) {
@@ -322,7 +322,7 @@ public final class TestPvmUtilities {
 			try {
 				pvm = new PvmUtilities();
 
-				File pFile = hostsFile;
+				final File pFile = hostsFile;
 				running = pvm.isPVMRunningCorrectly(userName, pFile.getAbsolutePath());
 				if (running) {
 					LOGGER.debug("pvm is running");
@@ -341,17 +341,17 @@ public final class TestPvmUtilities {
 
 	@Test(enabled = false, groups = {"linux", "pvm"})
 	public void testIsPvmRunning() {
-		PvmUtilities pvm = new PvmUtilities();
-		String userName = System.getProperty("user.name");
-		long pid = pvm.isPVMRunning(userName);
+		final PvmUtilities pvm = new PvmUtilities();
+		final String userName = System.getProperty("user.name");
+		final long pid = pvm.isPVMRunning(userName);
 		LOGGER.debug("pvm process id = " + pid);
 	}
 
 	@Test(enabled = false, groups = {"linux", "pvm"})
 	public void testIsPvmRunningOk() {
-		PvmUtilities pvm = new PvmUtilities();
-		String userName = System.getProperty("user.name");
-		boolean running = pvm.isPVMRunningCorrectly(userName, "/Users/m039201/pvm/pvmhosts");
+		final PvmUtilities pvm = new PvmUtilities();
+		final String userName = System.getProperty("user.name");
+		final boolean running = pvm.isPVMRunningCorrectly(userName, "/Users/m039201/pvm/pvmhosts");
 		String rest = "";
 		if (!running) {
 			rest = "not";
@@ -364,7 +364,7 @@ public final class TestPvmUtilities {
 	public void testPVMRestartForcedbyMasterFailure() {
 		LOGGER.debug("in testPVMRestartForcedbyMasterFailure");
 		PvmUtilities pvm = null;
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
 		boolean running = false;
 		try {
@@ -385,12 +385,12 @@ public final class TestPvmUtilities {
 			// kill pvm on the master
 			try {
 				LOGGER.debug("killng  pvm on master");
-				long pid = pvm.findProcessIDforExe(userName, "pvmd");
+				final long pid = pvm.findProcessIDforExe(userName, "pvmd");
 				if (pid != 0) {
 					LOGGER.debug("killing pvm on master node");
 					pvm.killPVMonMasterNode(userName, "pvmd", "/tmp");
 					LOGGER.debug("finding process id for pvmd");
-					long adjusted_pid = pvm.findProcessIDforExe(userName, "pvmd");
+					final long adjusted_pid = pvm.findProcessIDforExe(userName, "pvmd");
 					Assert.assertTrue(adjusted_pid == 0, "pvmd pid = " + adjusted_pid + " not killed");
 				}
 			} catch (Exception t) {
@@ -400,7 +400,7 @@ public final class TestPvmUtilities {
 			try {
 				pvm = new PvmUtilities();
 
-				File pFile = hostsFile;
+				final File pFile = hostsFile;
 				running = pvm.isPVMRunningCorrectly(userName, pFile.getAbsolutePath());
 				if (running) {
 					LOGGER.debug("pvm is running");
@@ -421,17 +421,17 @@ public final class TestPvmUtilities {
 	@Test(enabled = true, groups = {"linux", "pvm"})
 	public void testGetFilenames
 			() {
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
-		PvmUtilities pvm = new PvmUtilities();
+		final PvmUtilities pvm = new PvmUtilities();
 		pvm.getPvmTempFileNames("/tmp", userName);
 	}
 
 	@Test(enabled = false, groups = {"linux", "pvm"})
 	public void testMakeSurePVMOk() {
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		LOGGER.debug("userName=" + userName);
-		PvmUtilities pvm = new PvmUtilities();
+		final PvmUtilities pvm = new PvmUtilities();
 		pvm.makeSurePVMOk(userName, hostsFile.getAbsolutePath(), PVM_DAEMON, "/tmp");
 	}
 
@@ -442,13 +442,13 @@ public final class TestPvmUtilities {
 	 */
 	@Test(enabled = true, groups = {"linux", "pvm"})
 	public void testDeleteFile() {
-		String[] lines = {"node001", "node002", "node003", "node004", "node005"};
-		List<String> fileLines = new ArrayList<String>();
-		String tempFolder = null;
+		final String[] lines = {"node001", "node002", "node003", "node004", "node005"};
+		final List<String> fileLines = new ArrayList<String>();
+		final String tempFolder = null;
 		try {
 			// create a temp file
-			File folder = FileUtilities.createTempFolder();
-			File f = File.createTempFile("mine", "txt", folder);
+			final File folder = FileUtilities.createTempFolder();
+			final File f = File.createTempFile("mine", "txt", folder);
 			int total = 0;
 			int counter = 0;
 			while (total < PvmUtilities.TEMP_FILE_TAIL_TO_LOG) {
@@ -459,7 +459,7 @@ public final class TestPvmUtilities {
 				}
 			}
 			FileUtilities.writeStringsToFileNoBackup(f, fileLines, "\n");
-			PvmUtilities pvm = new PvmUtilities();
+			final PvmUtilities pvm = new PvmUtilities();
 			pvm.deleteFile(folder.getAbsolutePath(), f.getName());
 			// now look in the log to see if it contains fileLines
 			// unfortunately this must be done manually

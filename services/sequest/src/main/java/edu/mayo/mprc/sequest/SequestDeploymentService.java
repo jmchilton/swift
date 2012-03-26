@@ -54,7 +54,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		return wineWrapperScript;
 	}
 
-	public void setWineWrapperScript(String wineWrapperScript) {
+	public void setWineWrapperScript(final String wineWrapperScript) {
 		this.wineWrapperScript = wineWrapperScript;
 	}
 
@@ -66,12 +66,12 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		return sequestMappingFactory;
 	}
 
-	public void setSequestMappingFactory(SequestMappingFactory sequestMappingFactory) {
+	public void setSequestMappingFactory(final SequestMappingFactory sequestMappingFactory) {
 		this.sequestMappingFactory = sequestMappingFactory;
 	}
 
 	@Override
-	public void setEngineRootFolder(File engineRootFolder) {
+	public void setEngineRootFolder(final File engineRootFolder) {
 		super.setEngineRootFolder(engineRootFolder);
 		makeDBExe = new File(getEngineRootFolder(), "makedb4.exe");
 		sortExe = new File(getEngineRootFolder(), "sort.exe");
@@ -154,7 +154,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			File toDeploy = movedFasta;
 			reportInto.setDeployedFile(movedFasta);
 			if (GZipUtilities.isGZipped(toDeploy)) {
-				File decompDest = new File(toDeploy.getAbsolutePath() + "_decomp");
+				final File decompDest = new File(toDeploy.getAbsolutePath() + "_decomp");
 				GZipUtilities.decompressFile(toDeploy, decompDest);
 				toDeploy = decompDest;
 				decompressedFile = decompDest;
@@ -193,7 +193,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			final ProcessBuilder pb = new ProcessBuilder(cmd);
 			pb.directory(tempExecFolder);
 
-			ProcessCaller caller = new ProcessCaller(pb);
+			final ProcessCaller caller = new ProcessCaller(pb);
 			try {
 				caller.run();
 			} catch (Exception t) {
@@ -245,7 +245,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			generatedFiles.add(mkdbUpOne);
 
 			final File infoFile = new File(FileUtilities.stripExtension(FileUtilities.stripExtension(newIdx.getAbsolutePath())) + ".info");
-			StringBuilder info = new StringBuilder(200);
+			final StringBuilder info = new StringBuilder(200);
 
 			info.append("Paramset used: ").append(getParamSetName(request)).append("\n").append("\n")
 					.append("database name: ").append(request.getShortName())
@@ -271,10 +271,10 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	}
 
 	@Override
-	public SequestDeploymentResult performUndeployment(DeploymentRequest request) {
-		SequestDeploymentResult reportResult = new SequestDeploymentResult();
+	public SequestDeploymentResult performUndeployment(final DeploymentRequest request) {
+		final SequestDeploymentResult reportResult = new SequestDeploymentResult();
 
-		File deployedFile = getDeployedFastaFile(request);
+		final File deployedFile = getDeployedFastaFile(request);
 
 		cleanUpDeployedFiles(deployedFile, reportResult);
 
@@ -282,7 +282,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	}
 
 	@Override
-	protected void validateAndDeleteDeploymentRelatedFiles(File deployedFastaFile, File deploymentFolder, List<File> deletedFiles, List<File> notDeletedFiles) {
+	protected void validateAndDeleteDeploymentRelatedFiles(final File deployedFastaFile, final File deploymentFolder, final List<File> deletedFiles, final List<File> notDeletedFiles) {
 		if (FileUtilities.deleteNow(deploymentFolder)) {
 			deletedFiles.add(deploymentFolder);
 		} else {
@@ -295,11 +295,11 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		return converter;
 	}
 
-	public void setConverter(SequestToMakeDBConverter converter) {
+	public void setConverter(final SequestToMakeDBConverter converter) {
 		this.converter = converter;
 	}
 
-	private File getDeployedFastaFile(DeploymentRequest request) {
+	private File getDeployedFastaFile(final DeploymentRequest request) {
 		return new File(getCurrentDeploymentFolder(request), request.getShortName() + ".fasta");
 	}
 
@@ -310,7 +310,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	 * @param fastaFile   a fasta file we want to use in the makedb.params file
 	 * @param makeDbFile  the path to the makedb.params file
 	 */
-	private void generateMakeDbFile(File sequestFile, File fastaFile, File makeDbFile) {
+	private void generateMakeDbFile(final File sequestFile, final File fastaFile, final File makeDbFile) {
 		try {
 			converter.writeMakedbParams(
 					converter.convertSequestParamsFileIntoMakeDBPIC(sequestFile, fastaFile, sequestMappingFactory).toString(),
@@ -349,18 +349,18 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			if (depdir.exists()) {
 
 				final FilenameFilter makedbFileFilter = new FilenameFilter() {
-					public boolean accept(File dir, String name) {
+					public boolean accept(final File dir, final String name) {
 						return name.endsWith("makedb.params");
 					}
 				};
 
 				//look for all makedb.params files in this folder and if one would seem to create the same as the given params file would
 				//then we want to find the hdr file that was created from that makedb.params file this will be a hdr file with the same name
-				for (File file : depdir.listFiles(makedbFileFilter)) {
-					String found = Files.toString(file, Charsets.US_ASCII);
+				for (final File file : depdir.listFiles(makedbFileFilter)) {
+					final String found = Files.toString(file, Charsets.US_ASCII);
 					if (found.equals(want)) {
-						String commonName = file.getAbsolutePath().replace(".makedb.params", "");
-						File hdr = new File(commonName + ".fasta.hdr");
+						final String commonName = file.getAbsolutePath().replace(".makedb.params", "");
+						final File hdr = new File(commonName + ".fasta.hdr");
 						if (hdr.exists()) {
 							reportInto.setFileToSearchAgainst(hdr);
 							reportInto.addMessage("No deployment necessary, it was previously deployed.");
@@ -377,9 +377,9 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		}
 	}
 
-	protected String getParamSetName(DeploymentRequest request) {
-		File originalSequestParamsFile;
-		Object givenProperty = request.getProperty(SEQUEST_PARAMS_FILE);
+	protected String getParamSetName(final DeploymentRequest request) {
+		final File originalSequestParamsFile;
+		final Object givenProperty = request.getProperty(SEQUEST_PARAMS_FILE);
 		if (givenProperty != null) {
 			originalSequestParamsFile = (File) givenProperty;
 		} else {
@@ -397,7 +397,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	 * @param request a request that contains a unique name
 	 * @return an existing folder where we can execute the deployment in
 	 */
-	protected synchronized File getExecutionFolder(DeploymentRequest request) {
+	protected synchronized File getExecutionFolder(final DeploymentRequest request) {
 		File executionFolder = (File) request.getProperty("executionFolder");
 		if (executionFolder != null) {
 			return executionFolder;
@@ -441,15 +441,15 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	 * @return true if the prefix is available for use else false
 	 */
 	protected synchronized boolean checkForPreviousValidDeployment(final File deploymentFolder, final String prefix) {
-		Set<File> necessaryFiles = new HashSet<File>();
+		final Set<File> necessaryFiles = new HashSet<File>();
 		necessaryFiles.add(new File(deploymentFolder, prefix + ".fasta.dgt"));
 		necessaryFiles.add(new File(deploymentFolder, prefix + ".fasta.hdr"));
 		necessaryFiles.add(new File(deploymentFolder, prefix + ".fasta.idx"));
 		necessaryFiles.add(new File(deploymentFolder, prefix + ".makedb.log"));
 		necessaryFiles.add(new File(deploymentFolder, prefix + ".makedb.params"));
 
-		Set<File> existingFiles = new HashSet<File>();
-		for (File necessary : necessaryFiles) {
+		final Set<File> existingFiles = new HashSet<File>();
+		for (final File necessary : necessaryFiles) {
 			if (necessary.exists()) {
 				existingFiles.add(necessary);
 			}
@@ -462,13 +462,13 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return false;
 		} else if (existingFiles.size() < necessaryFiles.size()) {
 			//if we can't delete all of the files then we won't delete all and we will just return false
-			for (File exisiting : existingFiles) {
+			for (final File exisiting : existingFiles) {
 				if (!exisiting.canWrite()) {
 					return false;
 				}
 			}
 			//if we can delete all then do it
-			for (File existing : existingFiles) {
+			for (final File existing : existingFiles) {
 				LOGGER.info("Deleting file: " + existing.getAbsolutePath());
 				FileUtilities.quietDelete(existing);
 			}
@@ -478,12 +478,12 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		}
 	}
 
-	boolean specifiesNoEnzyme(File sequestParamsFile) {
+	boolean specifiesNoEnzyme(final File sequestParamsFile) {
 		InputStream is = null;
 		try {
 			is = new FileInputStream(sequestParamsFile);
 			//co opting the the properties functionality nafariously
-			Properties p = new Properties();
+			final Properties p = new Properties();
 			p.load(is);
 			return (p.getProperty("enzyme_info").equals("Non-Specific 0 0 - -"));
 		} catch (FileNotFoundException e) {
@@ -502,7 +502,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	 * @param request the request we can find a unique name from
 	 * @return the directory we want to have the created files reside in.
 	 */
-	protected File getCurrentDeploymentFolder(DeploymentRequest request) {
+	protected File getCurrentDeploymentFolder(final DeploymentRequest request) {
 		return new File(getDeployableDbFolder(), request.getShortName());
 	}
 
@@ -523,7 +523,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 		public Config() {
 		}
 
-		public Config(String deployableDbFolder, String engineRootFolder, String wineWrapperScript) {
+		public Config(final String deployableDbFolder, final String engineRootFolder, final String wineWrapperScript) {
 			this.deployableDbFolder = deployableDbFolder;
 			this.engineRootFolder = engineRootFolder;
 			this.wineWrapperScript = wineWrapperScript;
@@ -533,7 +533,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return deployableDbFolder;
 		}
 
-		public void setDeployableDbFolder(String deployableDbFolder) {
+		public void setDeployableDbFolder(final String deployableDbFolder) {
 			this.deployableDbFolder = deployableDbFolder;
 		}
 
@@ -541,7 +541,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return engineRootFolder;
 		}
 
-		public void setEngineRootFolder(String engineRootFolder) {
+		public void setEngineRootFolder(final String engineRootFolder) {
 			this.engineRootFolder = engineRootFolder;
 		}
 
@@ -549,19 +549,19 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return wineWrapperScript;
 		}
 
-		public void setWineWrapperScript(String wineWrapperScript) {
+		public void setWineWrapperScript(final String wineWrapperScript) {
 			this.wineWrapperScript = wineWrapperScript;
 		}
 
-		public Map<String, String> save(DependencyResolver resolver) {
-			Map<String, String> map = new TreeMap<String, String>();
+		public Map<String, String> save(final DependencyResolver resolver) {
+			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(DEPLOYABLE_DB_FOLDER, deployableDbFolder);
 			map.put(ENGINE_ROOT_FOLDER, engineRootFolder);
 			map.put(WINE_WRAPPER_SCRIPT, wineWrapperScript);
 			return map;
 		}
 
-		public void load(Map<String, String> values, DependencyResolver resolver) {
+		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			deployableDbFolder = values.get(DEPLOYABLE_DB_FOLDER);
 			engineRootFolder = values.get(ENGINE_ROOT_FOLDER);
 			wineWrapperScript = values.get(WINE_WRAPPER_SCRIPT);
@@ -588,7 +588,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return sequestMappingFactory;
 		}
 
-		public void setSequestMappingFactory(SequestMappingFactory sequestMappingFactory) {
+		public void setSequestMappingFactory(final SequestMappingFactory sequestMappingFactory) {
 			this.sequestMappingFactory = sequestMappingFactory;
 		}
 
@@ -596,13 +596,13 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			return converter;
 		}
 
-		public void setConverter(SequestToMakeDBConverter converter) {
+		public void setConverter(final SequestToMakeDBConverter converter) {
 			this.converter = converter;
 		}
 
 		@Override
-		public Worker create(Config config, DependencyResolver dependencies) {
-			SequestDeploymentService worker = new SequestDeploymentService();
+		public Worker create(final Config config, final DependencyResolver dependencies) {
+			final SequestDeploymentService worker = new SequestDeploymentService();
 			worker.setConverter(getConverter());
 			worker.setSequestMappingFactory(getSequestMappingFactory());
 			worker.setEngineRootFolder(new File(config.getEngineRootFolder()).getAbsoluteFile());
@@ -613,7 +613,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 	}
 
 	public static final class Ui implements ServiceUiFactory {
-		public void createUI(DaemonConfig daemon, ResourceConfig resource, UiBuilder builder) {
+		public void createUI(final DaemonConfig daemon, final ResourceConfig resource, final UiBuilder builder) {
 			builder
 					.property(DEPLOYABLE_DB_FOLDER, "Database Folder", "Sequest .fasta index files will be put here.<br/>" +
 							"Warning: Sequest is sensitive to path length to database index. If you are getting Sequest errors, check that the database index is placed " +

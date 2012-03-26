@@ -13,7 +13,7 @@ public final class GWTServiceException extends Exception {
 		this("", "");
 	}
 
-	public GWTServiceException(String message, String stackTrace) {
+	public GWTServiceException(final String message, final String stackTrace) {
 		super(message);
 		this.stackTrace = stackTrace;
 	}

@@ -16,7 +16,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	protected String param;
 	protected boolean hasNull = false;
 
-	public ValidatableListBox(String param, boolean allowMultiple) {
+	public ValidatableListBox(final String param, final boolean allowMultiple) {
 		super(allowMultiple);
 		this.param = param;
 	}
@@ -35,7 +35,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 			return null;
 		}
 		if (isMultipleSelect()) {
-			List<ClientValue> items = new ArrayList<ClientValue>();
+			final List<ClientValue> items = new ArrayList<ClientValue>();
 			for (int i = 0; i < getItemCount(); ++i) {
 				if (isItemSelected(i)) {
 					items.add(allowedValues.get(i));
@@ -55,7 +55,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	 *
 	 * @param values
 	 */
-	public void setAllowedValues(List<? extends ClientValue> values) {
+	public void setAllowedValues(final List<? extends ClientValue> values) {
 		if (values.equals(allowedValues)) {
 			return;
 		}
@@ -63,7 +63,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 		byObject.clear();
 		hasNull = false;
 		for (int i = 0; i < values.size(); ++i) {
-			String stringrep = getStringValue(values.get(i));
+			final String stringrep = getStringValue(values.get(i));
 			addItem(stringrep);
 			byObject.put(values.get(i), i);
 		}
@@ -79,7 +79,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 		return this.allowedValues;
 	}
 
-	public void setValidationSeverity(int validationSeverity) {
+	public void setValidationSeverity(final int validationSeverity) {
 		ValidationController.setValidationSeverity(validationSeverity, this);
 	}
 
@@ -96,9 +96,9 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	 *
 	 * @param value - the value(s) to add, if multi select then is bundled
 	 */
-	public void addValue(ClientValue value, Comparator<ClientValue> c) {
+	public void addValue(final ClientValue value, final Comparator<ClientValue> c) {
 		if (isMultipleSelect()) {
-			ClientValue selected = this.getClientValue();
+			final ClientValue selected = this.getClientValue();
 			addToMultiSelect(value, c);
 			// now set the selected ones
 			this.setValue(value);
@@ -108,22 +108,22 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 		// TODO: Add non-multiple select variant
 	}
 
-	private void addToMultiSelect(ClientValue value, Comparator<ClientValue> c) {
+	private void addToMultiSelect(final ClientValue value, final Comparator<ClientValue> c) {
 		// unpack value
-		List<? extends ClientValue> toAdd = unbundle(value);
+		final List<? extends ClientValue> toAdd = unbundle(value);
 		// copy allowed values since will replace
 
-		HashSet<ClientValue> items = new HashSet<ClientValue>();
+		final HashSet<ClientValue> items = new HashSet<ClientValue>();
 		if (allowedValues != null) {
 			items.addAll(allowedValues);
 		}
-		for (ClientValue aToAdd : toAdd) {
+		for (final ClientValue aToAdd : toAdd) {
 			if (items.contains(aToAdd)) {
 				continue;
 			}
 			items.add(aToAdd);
 		}
-		List<ClientValue> allowed = new ArrayList<ClientValue>(items.size());
+		final List<ClientValue> allowed = new ArrayList<ClientValue>(items.size());
 		allowed.addAll(items);
 
 		// these need to be sorted
@@ -137,10 +137,10 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	 *
 	 * @param value - the value(s) to add, if multi select then is bundled
 	 */
-	public void addValueWithoutSelecting(ClientValue value, Comparator<ClientValue> c) {
+	public void addValueWithoutSelecting(final ClientValue value, final Comparator<ClientValue> c) {
 
 		if (isMultipleSelect()) {
-			ClientValue selected = this.getClientValue();
+			final ClientValue selected = this.getClientValue();
 			addToMultiSelect(value, c);
 
 			this.setValue(selected);
@@ -154,15 +154,15 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	 *
 	 * @param value
 	 */
-	public void removeValue(ClientValue value, Comparator<ClientValue> c) {
+	public void removeValue(final ClientValue value, final Comparator<ClientValue> c) {
 		if (isMultipleSelect()) {
 			// unpack value
-			List<? extends ClientValue> toRemove = unbundle(value);
+			final List<? extends ClientValue> toRemove = unbundle(value);
 			// copy allowed values since will replace
-			HashSet<ClientValue> hs = new HashSet<ClientValue>();
+			final HashSet<ClientValue> hs = new HashSet<ClientValue>();
 			hs.addAll(toRemove);
-			List<ClientValue> toKeep = new ArrayList<ClientValue>();
-			for (ClientValue allowedValue : this.allowedValues) {
+			final List<ClientValue> toKeep = new ArrayList<ClientValue>();
+			for (final ClientValue allowedValue : this.allowedValues) {
 				// if not in hs keep it
 				if (!hs.contains(allowedValue)) {
 					toKeep.add(allowedValue);
@@ -180,11 +180,11 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 	 *
 	 * @param value
 	 */
-	public void setValue(ClientValue value) {
+	public void setValue(final ClientValue value) {
 		if (isMultipleSelect()) {
 			if (value != null) {
-				List<? extends ClientValue> selected = unbundle(value);
-				HashSet<ClientValue> hs = new HashSet<ClientValue>();
+				final List<? extends ClientValue> selected = unbundle(value);
+				final HashSet<ClientValue> hs = new HashSet<ClientValue>();
 				hs.addAll(selected);
 				for (int i = 0; i < allowedValues.size(); ++i) {
 					setItemSelected(i, hs.contains(allowedValues.get(i)));
@@ -200,7 +200,7 @@ public abstract class ValidatableListBox extends ListBox implements Validatable 
 				removeItem(getItemCount() - 1);
 				hasNull = false;
 			}
-			Integer i = (Integer) byObject.get(value);
+			final Integer i = (Integer) byObject.get(value);
 			if (i == null) {
 				throw new RuntimeException(getStringValue(value)
 						+ " doesn't appear in the list of allowed values for " + param);

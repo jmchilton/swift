@@ -10,7 +10,7 @@ class InputFileSearches {
 		this.searches = new HashSet<EngineSearchTask>();
 	}
 
-	public void addSearch(EngineSearchTask search) {
+	public void addSearch(final EngineSearchTask search) {
 		this.searches.add(search);
 	}
 

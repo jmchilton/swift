@@ -16,20 +16,20 @@ public final class ReportUtils {
 	private ReportUtils() {
 	}
 
-	public static String newlineToBr(String text) {
+	public static String newlineToBr(final String text) {
 		return text.replaceAll("(\r\n|\n\r|\n)", "<br/>");
 	}
 
-	public static String replaceTokensWithHyperlinks(String text, File browseRoot, String browseWebRoot, FileTokenFactory tokenFactory) {
-		Matcher matcher = tokenToHyperlink.matcher(text);
+	public static String replaceTokensWithHyperlinks(final String text, final File browseRoot, final String browseWebRoot, final FileTokenFactory tokenFactory) {
+		final Matcher matcher = tokenToHyperlink.matcher(text);
 
-		StringBuffer result = new StringBuffer(text.length());
+		final StringBuffer result = new StringBuffer(text.length());
 		while (matcher.find()) {
 			final String token = matcher.group(1);
 			final File file = tokenFactory.databaseTokenToFile(token);
-			String path = FileTokenFactory.canonicalFilePath(file);
-			String name = file.getName();
-			String relPath = path.substring(FileUtilities.canonicalDirectoryPath(browseRoot).length() - 1);
+			final String path = FileTokenFactory.canonicalFilePath(file);
+			final String name = file.getName();
+			final String relPath = path.substring(FileUtilities.canonicalDirectoryPath(browseRoot).length() - 1);
 			matcher.appendReplacement(result, Matcher.quoteReplacement("<a class=\"path\" href=\"" + browseWebRoot + relPath + "\" title=\"" + file.getPath() + "\">" + name + "</a>"));
 		}
 		matcher.appendTail(result);
@@ -46,7 +46,7 @@ public final class ReportUtils {
 	 * @param field Name of the field - used when throwing exceptions
 	 * @return Parsed date corresponding to midnight of the given day.
 	 */
-	public static DateTime parseDate(String date, String field) {
+	public static DateTime parseDate(final String date, final String field) {
 		if (date == null) {
 			throw new MprcException("'" + field + "' date not specified");
 		}

@@ -76,7 +76,7 @@ public final class TestBenchmark {
 	}
 
 
-	private void checkResult(List<TaskData> tasks, String expected) throws IOException {
+	private void checkResult(final List<TaskData> tasks, final String expected) throws IOException {
 		final Stream outputStream = new Stream();
 		Benchmark.printTaskTable(outputStream, tasks);
 		Assert.assertEquals(outputStream.getOutput(), expected);
@@ -90,12 +90,12 @@ public final class TestBenchmark {
 		}
 
 		@Override
-		public void print(String s) throws IOException {
+		public void print(final String s) throws IOException {
 			output.append(s);
 		}
 
 		@Override
-		public void println(String s) throws IOException {
+		public void println(final String s) throws IOException {
 			output.append(s).append("\n");
 		}
 
@@ -105,7 +105,7 @@ public final class TestBenchmark {
 		}
 
 		@Override
-		public void write(int b) throws IOException {
+		public void write(final int b) throws IOException {
 			output.append((char) b);
 		}
 	}

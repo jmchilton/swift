@@ -26,7 +26,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 	private static final int MAX_WAIT_FOR_MESSAGES_TO_ARRIVE = 10000;
 
-	private void logChatty(String message) {
+	private void logChatty(final String message) {
 		// LOGGER.debug(message);
 	}
 
@@ -70,7 +70,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 		(new Thread() {
 			public void run() {
-				Request request = receiveRequest();
+				final Request request = receiveRequest();
 				service.stopReceiving();
 
 				Assert.assertEquals(request.getMessageData(), REQUEST_1, "Received wrong data");
@@ -85,7 +85,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 		cleanup();
 	}
 
-	private void sendResponse(Request request) {
+	private void sendResponse(final Request request) {
 		try {
 			logChatty("Sending response to request");
 			request.sendResponse(RESPONSE_1, true);
@@ -96,7 +96,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 	private Request receiveRequest() {
 		logChatty("Waiting to receive request");
-		Request request = service.receiveRequest(10000);
+		final Request request = service.receiveRequest(10000);
 		if (request == null) {
 			throw new MprcException("No request received within 10 seconds");
 		}
@@ -113,7 +113,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 
 		(new Thread() {
 			public void run() {
-				Request request = receiveRequest();
+				final Request request = receiveRequest();
 				service.stopReceiving();
 
 				Assert.assertEquals(request.getMessageData(), REQUEST_1, "Received wrong data");
@@ -125,7 +125,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 		// Send request
 		logChatty("Sending request, waiting for response");
 		service.sendRequest(REQUEST_1, PRIORITY, new ResponseListener() {
-			public void responseReceived(Serializable response, boolean isClosing) {
+			public void responseReceived(final Serializable response, final boolean isClosing) {
 				Assert.assertEquals(response, RESPONSE_1, "Response does not match expectations");
 				Assert.assertTrue(isClosing, "This must be the only message sent");
 				numResponses.incrementAndGet();
@@ -149,7 +149,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 						request = service.receiveRequest(0);
 						if (request != null) {
 							logChatty("Request received: " + request.toString());
-							String response = "response " + Integer.toString(numRequests.get() + 1);
+							final String response = "response " + Integer.toString(numRequests.get() + 1);
 							logChatty("Sending response: " + response);
 							request.sendResponse(response, TOTAL_REQUESTS - 1 == numRequests.get());
 							logChatty("Response sent: " + response);
@@ -171,10 +171,10 @@ public final class SendReceiveTest extends MessagingTestBase {
 		};
 		thread.start();
 
-		ResponseListener listener = new ResponseListener() {
+		final ResponseListener listener = new ResponseListener() {
 			private AtomicInteger expectedRequest = new AtomicInteger(1);
 
-			public void responseReceived(Serializable response, boolean isLast) {
+			public void responseReceived(final Serializable response, final boolean isLast) {
 				logChatty("Response received: " + response.toString() + " is last: " + isLast);
 				numResponses.incrementAndGet();
 //				final int expected = expectedRequest.getAndIncrement();
@@ -209,7 +209,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 		for (int i = 1; i <= 2; i++) {
 			service.sendRequest(Integer.valueOf(i), PRIORITY, new ResponseListener() {
 				@Override
-				public void responseReceived(Serializable response, boolean isLast) {
+				public void responseReceived(final Serializable response, final boolean isLast) {
 					LOGGER.debug(response);
 				}
 			});

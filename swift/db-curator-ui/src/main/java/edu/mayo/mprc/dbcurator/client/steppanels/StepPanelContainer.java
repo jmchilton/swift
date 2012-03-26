@@ -39,9 +39,9 @@ public final class StepPanelContainer extends Composite {
 	 *
 	 * @param curationStepStubs the list of steps to represent in this mainPanel
 	 */
-	public StepPanelContainer(List<CurationStepStub> curationStepStubs) {
+	public StepPanelContainer(final List<CurationStepStub> curationStepStubs) {
 
-		ScrollPanel scrollPanel = new ScrollPanel();
+		final ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setAlwaysShowScrollBars(true);
 		scrollPanel.add(this.stepOrganizer);
 
@@ -56,17 +56,17 @@ public final class StepPanelContainer extends Composite {
 
 		dragController.addDragHandler(new DragHandler() {
 
-			public void onDragEnd(DragEndEvent event) {
+			public void onDragEnd(final DragEndEvent event) {
 				StepPanelContainer.this.updateStepOrderFromUI();
 			}
 
-			public void onDragStart(DragStartEvent event) {
+			public void onDragStart(final DragStartEvent event) {
 			}
 
-			public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
+			public void onPreviewDragEnd(final DragEndEvent event) throws VetoDragException {
 			}
 
-			public void onPreviewDragStart(DragStartEvent event) throws VetoDragException {
+			public void onPreviewDragStart(final DragStartEvent event) throws VetoDragException {
 			}
 		});
 
@@ -75,15 +75,15 @@ public final class StepPanelContainer extends Composite {
 
 		//insert the respective widgets for each one of the respective steps
 
-		for (CurationStepStub curationStepStub : curationStepStubs) {
+		for (final CurationStepStub curationStepStub : curationStepStubs) {
 			this.add(curationStepStub);
 		}
 
 	}
 
-	public void setModificationEnabled(boolean enabled) {
+	public void setModificationEnabled(final boolean enabled) {
 
-		for (CurationStepStub containedStep : this.containedSteps) {
+		for (final CurationStepStub containedStep : this.containedSteps) {
 			containedStep.setEditable(enabled);
 		}
 
@@ -96,10 +96,10 @@ public final class StepPanelContainer extends Composite {
 	}
 
 	private void updateStepOrderFromUI() {
-		List<CurationStepStub> newOrder = new ArrayList<CurationStepStub>();
-		int widgetCount = this.stepOrganizer.getWidgetCount();
+		final List<CurationStepStub> newOrder = new ArrayList<CurationStepStub>();
+		final int widgetCount = this.stepOrganizer.getWidgetCount();
 		for (int i = 0; i < widgetCount; i++) {
-			StepPanelShell shell = (StepPanelShell) stepOrganizer.getWidget(i);
+			final StepPanelShell shell = (StepPanelShell) stepOrganizer.getWidget(i);
 			newOrder.add(shell.getContainedStepPanel().getContainedStep());
 		}
 		this.containedSteps = newOrder;
@@ -112,7 +112,7 @@ public final class StepPanelContainer extends Composite {
 	 * @param toRemove the widget you want to remove
 	 * @return true if a widget was removed else false
 	 */
-	public boolean remove(Widget toRemove) {
+	public boolean remove(final Widget toRemove) {
 		return this.remove(stepOrganizer.getWidgetIndex(toRemove));
 	}
 
@@ -122,8 +122,8 @@ public final class StepPanelContainer extends Composite {
 	 * @param indexToRemove the index of the widget you want to remove
 	 * @return true if a widget wsa removed
 	 */
-	public boolean remove(int indexToRemove) {
-		boolean wasRemoved = stepOrganizer.remove(indexToRemove);
+	public boolean remove(final int indexToRemove) {
+		final boolean wasRemoved = stepOrganizer.remove(indexToRemove);
 		if (wasRemoved) {
 			this.containedSteps.remove(indexToRemove);
 		}
@@ -135,12 +135,12 @@ public final class StepPanelContainer extends Composite {
 	 *
 	 * @param stepToInsert the step that you want to insert
 	 */
-	public void add(CurationStepStub stepToInsert) {
+	public void add(final CurationStepStub stepToInsert) {
 		if (this.containedSteps.size() == 0) {
 			this.stepOrganizer.clear();
 		}
 		this.containedSteps.add(stepToInsert);
-		StepPanelShell shell = stepToInsert.getStepPanel().getShell(this);
+		final StepPanelShell shell = stepToInsert.getStepPanel().getShell(this);
 
 		//if the step has not been run allow drag and drop
 		if (shell.getContainedStepPanel().getContainedStep().getCompletionCount() == null) {
@@ -158,7 +158,7 @@ public final class StepPanelContainer extends Composite {
 	 * @param w the widget to get an index of
 	 * @return the index of widget w
 	 */
-	public int getWidgetIndex(Widget w) {
+	public int getWidgetIndex(final Widget w) {
 		return stepOrganizer.getWidgetIndex(w);
 	}
 
@@ -168,12 +168,12 @@ public final class StepPanelContainer extends Composite {
 	 * @param toInsert the widget to insert
 	 * @param index    where you want to insert the widget
 	 */
-	public void insert(Widget toInsert, int index) {
+	public void insert(final Widget toInsert, final int index) {
 		if (this.containedSteps.size() == 0) {
 			this.stepOrganizer.clear();
 		}
 
-		StepPanelShell shell = (StepPanelShell) toInsert;
+		final StepPanelShell shell = (StepPanelShell) toInsert;
 
 		//if the step has not been run then make it draggable
 		if (shell.getContainedStepPanel().getContainedStep().getCompletionCount() == null) {
@@ -201,7 +201,7 @@ public final class StepPanelContainer extends Composite {
 	 */
 	public List<CurationStepStub> getContainedSteps() {
 
-		List<CurationStepStub> retList = new ArrayList();
+		final List<CurationStepStub> retList = new ArrayList();
 
 		for (int i = 0; i < this.stepOrganizer.getWidgetCount(); i++) {
 			retList.add((((StepPanelShell) stepOrganizer.getWidget(i)).getContainedStepPanel()).getContainedStep());
@@ -215,7 +215,7 @@ public final class StepPanelContainer extends Composite {
 	 *
 	 * @param steps the steps that should be refreshed.  It is assumed the step haven't been changed so that the refresh will not have any problems
 	 */
-	public void refresh(List<CurationStepStub> steps) {
+	public void refresh(final List<CurationStepStub> steps) {
 		//have each step update itself to reflect the current state of the widget
 		for (int i = 0; i < this.stepOrganizer.getWidgetCount(); i++) {
 			((StepPanelShell) this.stepOrganizer.getWidget(i)).update();
@@ -228,14 +228,14 @@ public final class StepPanelContainer extends Composite {
 			}
 			this.containedSteps.clear();
 
-			for (CurationStepStub step : steps) {
+			for (final CurationStepStub step : steps) {
 				this.add(step);
 			}
 		} else {
 			//update to refect new state
 			for (int i = 0; i < steps.size(); i++) {
-				StepPanelShell shell = (StepPanelShell) this.stepOrganizer.getWidget(i);
-				CurationStepStub stub = steps.get(i);
+				final StepPanelShell shell = (StepPanelShell) this.stepOrganizer.getWidget(i);
+				final CurationStepStub stub = steps.get(i);
 				shell.update(stub);
 			}
 		}

@@ -54,11 +54,11 @@ public final class ReportUpdate extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		this.doGet(req, resp);
 	}
 
-	private void printError(PrintWriter output, String message, Throwable t) {
+	private void printError(final PrintWriter output, final String message, final Throwable t) {
 		LOGGER.error(message, t);
 		output.println(message);
 		if (t != null) {
@@ -66,11 +66,11 @@ public final class ReportUpdate extends HttpServlet {
 		}
 	}
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		resp.setHeader("Cache-Control", "no-cache");
 
 		// If there is a rerun parameter, we want to rerun the given search run, otherwise we produce data
-		String rerun = req.getParameter("rerun");
+		final String rerun = req.getParameter("rerun");
 		if (rerun != null) {
 			swiftDao.begin(); // Transaction-per-request
 			rerunSearch(req, resp, rerun);
@@ -79,7 +79,7 @@ public final class ReportUpdate extends HttpServlet {
 		}
 
 		// If there is a hide parameter, we want to hide the given search run, otherwise we produce data
-		String hide = req.getParameter("hide");
+		final String hide = req.getParameter("hide");
 		if (hide != null) {
 			swiftDao.begin(); // Transaction-per-request
 			hideSearch(req, resp, hide);
@@ -88,11 +88,11 @@ public final class ReportUpdate extends HttpServlet {
 		}
 
 		// Qstat causes qstat daemon info to be printed out
-		String qstatJobId = req.getParameter("qstat");
+		final String qstatJobId = req.getParameter("qstat");
 		if (qstatJobId != null) {
-			DaemonConnection connection = SwiftWebContext.getServletConfig().getQstatDaemonConnection();
+			final DaemonConnection connection = SwiftWebContext.getServletConfig().getQstatDaemonConnection();
 			resp.setContentType("text/plain");
-			SgeStatusProgressListener listener = new SgeStatusProgressListener(resp);
+			final SgeStatusProgressListener listener = new SgeStatusProgressListener(resp);
 			connection.sendWork(new QstatWorkPacket(Integer.parseInt(qstatJobId)), listener);
 			try {
 				listener.waitForEvent(QSTAT_TIMEOUT);
@@ -103,7 +103,7 @@ public final class ReportUpdate extends HttpServlet {
 		}
 
 		// Action field defines what to do next
-		String action = req.getParameter("action");
+		final String action = req.getParameter("action");
 
 		// This action does not make much sense, not sure if it is actually used
 		if ("open".equals(action)) {
@@ -122,14 +122,14 @@ public final class ReportUpdate extends HttpServlet {
 			// All following actions require a search run
 			swiftDao.begin(); // Transaction-per-request
 
-			String timestamp = req.getParameter("timestamp");
+			final String timestamp = req.getParameter("timestamp");
 
-			SearchRunFilter searchRunFilter = new SearchRunFilter();
+			final SearchRunFilter searchRunFilter = new SearchRunFilter();
 			searchRunFilter.setStart(req.getParameter("start"));
 			searchRunFilter.setCount(req.getParameter("count"));
 			searchRunFilter.setUserFilter(req.getParameter("userfilter"));
 
-			PrintWriter printOut = resp.getWriter();
+			final PrintWriter printOut = resp.getWriter();
 			out = new JsonWriter(printOut);
 			resp.setContentType(CONTENT_TYPE);
 
@@ -142,11 +142,11 @@ public final class ReportUpdate extends HttpServlet {
 				printSearchRuns(out, searchRunFilter, "rewrite");
 			} else if ("expand".equals(action)) {
 				// Expand - provide detailed task info for one task
-				int id = Integer.parseInt(req.getParameter("id"));
+				final int id = Integer.parseInt(req.getParameter("id"));
 				out.rewriteTaskDataList(id, swiftDao.getTaskDataList(id));
 			} else if ("update".equals(action)) {
 				// We print out all new search runs + updates to the ones that changed
-				Date time = new Date();
+				final Date time = new Date();
 				if (null != timestamp) {
 					time.setTime(Long.parseLong(timestamp));
 				} else {
@@ -155,12 +155,12 @@ public final class ReportUpdate extends HttpServlet {
 				updateSearchRuns(out, searchRunFilter, time);
 
 				// TODO: Do not output all expanded task lists, only the changed ones
-				String expanded = req.getParameter("expanded");
+				final String expanded = req.getParameter("expanded");
 				if (null != expanded) {
-					String[] expandedIds = expanded.split(",");
-					for (String idString : expandedIds) {
+					final String[] expandedIds = expanded.split(",");
+					for (final String idString : expandedIds) {
 						if (null != idString && idString.length() != 0) {
-							int id = Integer.parseInt(idString);
+							final int id = Integer.parseInt(idString);
 							out.rewriteTaskDataList(id, swiftDao.getTaskDataList(id));
 						}
 					}
@@ -177,7 +177,7 @@ public final class ReportUpdate extends HttpServlet {
 		}
 	}
 
-	private void rerunSearch(HttpServletRequest req, HttpServletResponse resp, String rerun) throws ServletException {
+	private void rerunSearch(final HttpServletRequest req, final HttpServletResponse resp, final String rerun) throws ServletException {
 		PrintWriter output;
 		try {
 			output = resp.getWriter();
@@ -187,7 +187,7 @@ public final class ReportUpdate extends HttpServlet {
 		}
 		final SearchRun td = getSearchRunForId(rerun);
 
-		ResubmitProgressListener listener = new ResubmitProgressListener();
+		final ResubmitProgressListener listener = new ResubmitProgressListener();
 
 		try {
 			SwiftSearcherCaller.resubmitSearchRun(td, SwiftWebContext.getServletConfig().getSwiftSearcherDaemonConnection(), listener);
@@ -212,7 +212,7 @@ public final class ReportUpdate extends HttpServlet {
 		forwardToReportPage(req, resp);
 	}
 
-	private void forwardToReportPage(HttpServletRequest req, HttpServletResponse resp) {
+	private void forwardToReportPage(final HttpServletRequest req, final HttpServletResponse resp) {
 		try {
 			// Forward the viewer back to the report page
 			resp.sendRedirect("/report/report.jsp");
@@ -221,14 +221,14 @@ public final class ReportUpdate extends HttpServlet {
 		}
 	}
 
-	private void hideSearch(HttpServletRequest req, HttpServletResponse resp, String hide) throws ServletException {
+	private void hideSearch(final HttpServletRequest req, final HttpServletResponse resp, final String hide) throws ServletException {
 		final SearchRun td = getSearchRunForId(hide);
 		td.setHidden(1);
 		forwardToReportPage(req, resp);
 	}
 
-	private SearchRun getSearchRunForId(String id) {
-		int searchRunId = Integer.parseInt(id);
+	private SearchRun getSearchRunForId(final String id) {
+		final int searchRunId = Integer.parseInt(id);
 
 		final SearchRun td;
 		try {
@@ -247,18 +247,18 @@ public final class ReportUpdate extends HttpServlet {
 	 * @param method Method to use on the search runs. "update" will send a command to update search run data, while "insert" will insert new search runs.
 	 * @param filter Filter defining what search runs and how sorted to output.
 	 */
-	private void printSearchRuns(JsonWriter out, SearchRunFilter filter, String method) {
-		List<SearchRun> searchRuns = swiftDao.getSearchRunList(filter);
-		int firstSearchRun = 0;
-		int lastSearchRun = Math.min(
+	private void printSearchRuns(final JsonWriter out, final SearchRunFilter filter, final String method) {
+		final List<SearchRun> searchRuns = swiftDao.getSearchRunList(filter);
+		final int firstSearchRun = 0;
+		final int lastSearchRun = Math.min(
 				filter.getCount() != null ? Integer.parseInt(filter.getCount()) : 0,
 				searchRuns.size());
 
 		Date newTimestamp = new Date();
 		newTimestamp.setTime(0);
 		for (int i = firstSearchRun; i < lastSearchRun; i++) {
-			SearchRun searchRun = searchRuns.get(i);
-			ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
+			final SearchRun searchRun = searchRuns.get(i);
+			final ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
 			if (null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(newTimestamp) > 0) {
 				newTimestamp = searchRun.getStartTimestamp();
 			}
@@ -266,15 +266,15 @@ public final class ReportUpdate extends HttpServlet {
 				newTimestamp = searchRun.getEndTimestamp();
 			}
 
-			int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
+			final int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
 			out.processSearchRun(i, searchRun, runningTasks, reports, method);
 		}
 		out.setTimestamp(newTimestamp);
 	}
 
-	private ArrayList<ReportInfo> getReportsForSearchRun(SearchRun searchRun) {
-		ArrayList<ReportInfo> reports = new ArrayList<ReportInfo>();
-		for (ReportData report : searchRun.getReports()) {
+	private ArrayList<ReportInfo> getReportsForSearchRun(final SearchRun searchRun) {
+		final ArrayList<ReportInfo> reports = new ArrayList<ReportInfo>();
+		for (final ReportData report : searchRun.getReports()) {
 			reports.add(
 					new ReportInfo(report.getId(),
 							fileTokenFactory.fileToTaggedDatabaseToken(report.getReportFile()),
@@ -294,15 +294,15 @@ public final class ReportUpdate extends HttpServlet {
 	 * @param timestamp Time when the last update was performed.
 	 * @param filter    Filter defining what search runs and how sorted to output.
 	 */
-	private void updateSearchRuns(JsonWriter out, SearchRunFilter filter, Date timestamp) {
-		List<SearchRun> searchRuns = swiftDao.getSearchRunList(filter);
-		int firstSearchRun = filter.getStart() != null ? Integer.parseInt(filter.getStart()) : 0;
-		int lastSearchRun = Math.min(firstSearchRun + (filter.getCount() != null ? Integer.parseInt(filter.getCount()) : searchRuns.size()), searchRuns.size());
+	private void updateSearchRuns(final JsonWriter out, final SearchRunFilter filter, final Date timestamp) {
+		final List<SearchRun> searchRuns = swiftDao.getSearchRunList(filter);
+		final int firstSearchRun = filter.getStart() != null ? Integer.parseInt(filter.getStart()) : 0;
+		final int lastSearchRun = Math.min(firstSearchRun + (filter.getCount() != null ? Integer.parseInt(filter.getCount()) : searchRuns.size()), searchRuns.size());
 
 		Date newTimestamp = timestamp;
 		for (int i = firstSearchRun; i < lastSearchRun; i++) {
-			SearchRun searchRun = searchRuns.get(i);
-			ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
+			final SearchRun searchRun = searchRuns.get(i);
+			final ArrayList<ReportInfo> reports = getReportsForSearchRun(searchRun);
 			if (null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(newTimestamp) > 0) {
 				newTimestamp = searchRun.getStartTimestamp();
 			}
@@ -310,8 +310,8 @@ public final class ReportUpdate extends HttpServlet {
 				newTimestamp = searchRun.getEndTimestamp();
 			}
 
-			int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
-			boolean doInsert = null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(timestamp) > 0;
+			final int runningTasks = swiftDao.getNumberRunningTasksForSearchRun(searchRun);
+			final boolean doInsert = null != searchRun.getStartTimestamp() && searchRun.getStartTimestamp().compareTo(timestamp) > 0;
 			out.processSearchRun(i, searchRun, runningTasks, reports, doInsert ? "insert" : "update");
 		}
 		out.setTimestamp(newTimestamp);
@@ -323,17 +323,17 @@ public final class ReportUpdate extends HttpServlet {
 		private boolean finished;
 		private final Object lock = new Object();
 
-		public SgeStatusProgressListener(HttpServletResponse response) {
+		public SgeStatusProgressListener(final HttpServletResponse response) {
 			this.response = response;
 		}
 
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 		}
 
 		public void requestProcessingStarted() {
 		}
 
-		public void waitForEvent(long timeout) throws InterruptedException {
+		public void waitForEvent(final long timeout) throws InterruptedException {
 			// TODO: This suffers from spurious wakeups, however this function can safely fail once in a while
 			synchronized (lock) {
 				if (!finished) {
@@ -353,10 +353,10 @@ public final class ReportUpdate extends HttpServlet {
 			}
 		}
 
-		public void requestTerminated(Exception e) {
-			String info = e.getMessage();
+		public void requestTerminated(final Exception e) {
+			final String info = e.getMessage();
 			try {
-				ServletOutputStream output = response.getOutputStream();
+				final ServletOutputStream output = response.getOutputStream();
 				output.print(info);
 				output.close();
 			} catch (IOException ignore) {
@@ -365,11 +365,11 @@ public final class ReportUpdate extends HttpServlet {
 			signalFinished();
 		}
 
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			if (progressInfo instanceof QstatOutput) {
-				QstatOutput info = (QstatOutput) progressInfo;
+				final QstatOutput info = (QstatOutput) progressInfo;
 				try {
-					ServletOutputStream output = response.getOutputStream();
+					final ServletOutputStream output = response.getOutputStream();
 					output.print(info.getQstatOutput());
 					output.close();
 				} catch (IOException ignore) {
@@ -391,9 +391,9 @@ public final class ReportUpdate extends HttpServlet {
 			return assignedId != -1 || lastException != null;
 		}
 
-		public void waitForResubmit(long timeout) throws InterruptedException {
+		public void waitForResubmit(final long timeout) throws InterruptedException {
 			long currentTime = System.currentTimeMillis();
-			long finalTime = currentTime + timeout;
+			final long finalTime = currentTime + timeout;
 			synchronized (lock) {
 				while (!isComplete()) {
 					lock.wait(Math.max(finalTime - currentTime, timeout));
@@ -418,7 +418,7 @@ public final class ReportUpdate extends HttpServlet {
 			}
 		}
 
-		public void requestEnqueued(String hostString) {
+		public void requestEnqueued(final String hostString) {
 		}
 
 		public void requestProcessingStarted() {
@@ -427,14 +427,14 @@ public final class ReportUpdate extends HttpServlet {
 		public void requestProcessingFinished() {
 		}
 
-		public void requestTerminated(Exception e) {
+		public void requestTerminated(final Exception e) {
 			synchronized (lock) {
 				this.lastException = e;
 				lock.notifyAll();
 			}
 		}
 
-		public void userProgressInformation(ProgressInfo progressInfo) {
+		public void userProgressInformation(final ProgressInfo progressInfo) {
 			if (progressInfo instanceof AssignedSearchRunId) {
 				synchronized (lock) {
 					this.assignedId = ((AssignedSearchRunId) progressInfo).getSearchRunId();

@@ -23,11 +23,11 @@ public final class MonitorUtilities {
 	public static int getPid() {
 		// WARNING: this is vendor specific... oh well...
 
-		String pidstr = ManagementFactory.getRuntimeMXBean().getName();
+		final String pidstr = ManagementFactory.getRuntimeMXBean().getName();
 		if (pidstr == null || pidstr.length() == 0) {
 			return -1;
 		}
-		Matcher m = PID_MATCHER.matcher(pidstr);
+		final Matcher m = PID_MATCHER.matcher(pidstr);
 		if (!m.lookingAt()) {
 			return -1;
 		}
@@ -45,7 +45,7 @@ public final class MonitorUtilities {
 	public static String getHostInformation() {
 		// find the hostname
 		String hostname = "unknown";
-		InetAddress host;
+		final InetAddress host;
 		try {
 			host = InetAddress.getLocalHost();
 			hostname = host.getHostName();
@@ -54,7 +54,7 @@ public final class MonitorUtilities {
 			// SWALLOWED
 		}
 		// find the user name
-		String userName = System.getProperty("user.name");
+		final String userName = System.getProperty("user.name");
 		// and add these to the message
 		return userName + "@" + hostname + " " + (getPid() != -1 ? "(" + getPid() + ")" : "");
 	}

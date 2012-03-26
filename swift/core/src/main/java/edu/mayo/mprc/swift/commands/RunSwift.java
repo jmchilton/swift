@@ -37,13 +37,13 @@ public class RunSwift implements FileListener, SwiftCommand {
 	/**
 	 * Run all workers configured for this daemon.
 	 */
-	public void run(SwiftEnvironment environment) {
-		DaemonConfig config = environment.getDaemonConfig();
-		File installXmlFile = environment.getConfigXmlFile();
+	public void run(final SwiftEnvironment environment) {
+		final DaemonConfig config = environment.getDaemonConfig();
+		final File installXmlFile = environment.getConfigXmlFile();
 
 		checkDoesNotContainWebModule(config);
 
-		Daemon daemon = environment.createDaemon(config);
+		final Daemon daemon = environment.createDaemon(config);
 		LOGGER.debug(daemon.toString());
 
 		startListeningToConfigFileChanges(installXmlFile);
@@ -86,8 +86,8 @@ public class RunSwift implements FileListener, SwiftCommand {
 	 *
 	 * @param installXmlFile File to check.
 	 */
-	private void startListeningToConfigFileChanges(File installXmlFile) {
-		FileMonitor monitor = new FileMonitor(10 * 1000);
+	private void startListeningToConfigFileChanges(final File installXmlFile) {
+		final FileMonitor monitor = new FileMonitor(10 * 1000);
 		monitor.addFile(installXmlFile);
 		monitor.addListener(this);
 	}
@@ -97,8 +97,8 @@ public class RunSwift implements FileListener, SwiftCommand {
 	 *
 	 * @param config Config of the deamon we are trying to run.
 	 */
-	private static void checkDoesNotContainWebModule(DaemonConfig config) {
-		for (ResourceConfig resourceConfig : config.getResources()) {
+	private static void checkDoesNotContainWebModule(final DaemonConfig config) {
+		for (final ResourceConfig resourceConfig : config.getResources()) {
 			if (resourceConfig instanceof WebUi.Config) {
 				throw new MprcException("The configuration of daemon '" + config.getName() + "' contains Swift website setup.\n"
 						+ "This daemon has to run within a web server. Please use:\n\tswiftWeb --daemon " + config.getName()
@@ -108,7 +108,7 @@ public class RunSwift implements FileListener, SwiftCommand {
 	}
 
 	@Override
-	public void fileChanged(File file) {
+	public void fileChanged(final File file) {
 		configFileChanged.countDown();
 	}
 }

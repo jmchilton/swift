@@ -36,7 +36,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	public SearchDbDaoHibernate() {
 	}
 
-	public SearchDbDaoHibernate(SwiftDao swiftDao, FastaDbDao fastaDbDao, DatabasePlaceholder databasePlaceholder) {
+	public SearchDbDaoHibernate(final SwiftDao swiftDao, final FastaDbDao fastaDbDao, final DatabasePlaceholder databasePlaceholder) {
 		super(databasePlaceholder);
 		this.swiftDao = swiftDao;
 		this.fastaDbDao = fastaDbDao;
@@ -46,7 +46,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return swiftDao;
 	}
 
-	public void setSwiftDao(SwiftDao swiftDao) {
+	public void setSwiftDao(final SwiftDao swiftDao) {
 		this.swiftDao = swiftDao;
 	}
 
@@ -54,28 +54,28 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return fastaDbDao;
 	}
 
-	public void setFastaDbDao(FastaDbDao fastaDbDao) {
+	public void setFastaDbDao(final FastaDbDao fastaDbDao) {
 		this.fastaDbDao = fastaDbDao;
 	}
 
 	@Override
-	public String check(Map<String, String> params) {
+	public String check(final Map<String, String> params) {
 		return null;
 	}
 
 	@Override
-	public void initialize(Map<String, String> params) {
+	public void initialize(final Map<String, String> params) {
 	}
 
 	@Override
-	public LocalizedModification addLocalizedModification(LocalizedModification mod) {
+	public LocalizedModification addLocalizedModification(final LocalizedModification mod) {
 		if (mod.getId() == null) {
 			return save(mod, localizedModificationEqualityCriteria(mod), false);
 		}
 		return mod;
 	}
 
-	private Criterion localizedModificationEqualityCriteria(LocalizedModification mod) {
+	private Criterion localizedModificationEqualityCriteria(final LocalizedModification mod) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("position", mod.getPosition()))
 				.add(nullSafeEq("residue", mod.getResidue()))
@@ -83,12 +83,12 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide) {
+	public IdentifiedPeptide addIdentifiedPeptide(final IdentifiedPeptide peptide) {
 		if (peptide.getId() == null) {
 			final LocalizedModList originalList = peptide.getModifications();
 			if (originalList.getId() == null) {
-				LocalizedModList newList = new LocalizedModList(originalList.size());
-				for (LocalizedModification item : originalList) {
+				final LocalizedModList newList = new LocalizedModList(originalList.size());
+				for (final LocalizedModification item : originalList) {
 					newList.add(addLocalizedModification(item));
 				}
 				peptide.setModifications(addList(newList));
@@ -104,14 +104,14 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return peptide;
 	}
 
-	private Criterion identifiedPeptideEqualityCriteria(IdentifiedPeptide peptide) {
+	private Criterion identifiedPeptideEqualityCriteria(final IdentifiedPeptide peptide) {
 		return Restrictions.conjunction()
 				.add(associationEq("sequence", peptide.getSequence()))
 				.add(associationEq("modifications", peptide.getModifications()));
 	}
 
 	@Override
-	public PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match) {
+	public PeptideSpectrumMatch addPeptideSpectrumMatch(final PeptideSpectrumMatch match) {
 		if (match.getId() == null) {
 			match.setPeptide(addIdentifiedPeptide(match.getPeptide()));
 			return save(match, matchEqualityCriteria(match), false);
@@ -119,7 +119,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return match;
 	}
 
-	private Criterion matchEqualityCriteria(PeptideSpectrumMatch match) {
+	private Criterion matchEqualityCriteria(final PeptideSpectrumMatch match) {
 		return Restrictions.conjunction()
 				.add(associationEq("peptide", match.getPeptide()))
 				.add(nullSafeEq("previousAminoAcid", match.getPreviousAminoAcid()))
@@ -150,13 +150,13 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public ProteinGroup addProteinGroup(ProteinGroup group) {
+	public ProteinGroup addProteinGroup(final ProteinGroup group) {
 		if (group.getId() == null) {
 			{
 				final ProteinSequenceList originalList = group.getProteinSequences();
 				if (originalList.getId() == null) {
-					ProteinSequenceList newList = new ProteinSequenceList(originalList.size());
-					for (ProteinSequence item : originalList) {
+					final ProteinSequenceList newList = new ProteinSequenceList(originalList.size());
+					for (final ProteinSequence item : originalList) {
 						newList.add(fastaDbDao.addProteinSequence(item));
 					}
 					group.setProteinSequences(addList(newList));
@@ -166,8 +166,8 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 			{
 				final PsmList originalList = group.getPeptideSpectrumMatches();
 				if (originalList.getId() == null) {
-					PsmList newList = new PsmList(originalList.size());
-					for (PeptideSpectrumMatch item : originalList) {
+					final PsmList newList = new PsmList(originalList.size());
+					for (final PeptideSpectrumMatch item : originalList) {
 						newList.add(addPeptideSpectrumMatch(item));
 					}
 					group.setPeptideSpectrumMatches(addList(newList));
@@ -179,7 +179,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return group;
 	}
 
-	private Criterion proteinGroupEqualityCriteria(ProteinGroup group) {
+	private Criterion proteinGroupEqualityCriteria(final ProteinGroup group) {
 		return Restrictions.conjunction()
 				.add(associationEq("proteinSequences", group.getProteinSequences()))
 				.add(associationEq("peptideSpectrumMatches", group.getPeptideSpectrumMatches()))
@@ -192,7 +192,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(final TandemMassSpectrometrySample sample) {
 		if (sample == null) {
 			return null;
 		}
@@ -206,20 +206,20 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 * Two {@link TandemMassSpectrometrySample} objects are considered identical if they point to the same file.
 	 * This way it is possible to update an older extraction of metadata for a file.
 	 */
-	private Criterion sampleEqualityCriteria(TandemMassSpectrometrySample sample) {
+	private Criterion sampleEqualityCriteria(final TandemMassSpectrometrySample sample) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("file", sample.getFile()))
 				.add(nullSafeEq("lastModified", sample.getLastModified()));
 	}
 
 	@Override
-	public SearchResult addSearchResult(SearchResult searchResult) {
+	public SearchResult addSearchResult(final SearchResult searchResult) {
 		if (searchResult.getId() == null) {
 			searchResult.setMassSpecSample(addTandemMassSpectrometrySample(searchResult.getMassSpecSample()));
 			final ProteinGroupList originalList = searchResult.getProteinGroups();
 			if (originalList.getId() == null) {
-				ProteinGroupList newList = new ProteinGroupList(originalList.size());
-				for (ProteinGroup item : originalList) {
+				final ProteinGroupList newList = new ProteinGroupList(originalList.size());
+				for (final ProteinGroup item : originalList) {
 					newList.add(addProteinGroup(item));
 				}
 				searchResult.setProteinGroups(addList(newList));
@@ -229,19 +229,19 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return searchResult;
 	}
 
-	private Criterion searchResultEqualityCriteria(SearchResult searchResult) {
+	private Criterion searchResultEqualityCriteria(final SearchResult searchResult) {
 		return Restrictions.conjunction()
 				.add(associationEq("massSpecSample", searchResult.getMassSpecSample()))
 				.add(associationEq("proteinGroups", searchResult.getProteinGroups()));
 	}
 
 	@Override
-	public BiologicalSample addBiologicalSample(BiologicalSample biologicalSample) {
+	public BiologicalSample addBiologicalSample(final BiologicalSample biologicalSample) {
 		if (biologicalSample.getId() == null) {
 			final SearchResultList originalList = biologicalSample.getSearchResults();
 			if (originalList.getId() == null) {
-				SearchResultList newList = new SearchResultList(originalList.size());
-				for (SearchResult item : originalList) {
+				final SearchResultList newList = new SearchResultList(originalList.size());
+				for (final SearchResult item : originalList) {
 					newList.add(addSearchResult(item));
 				}
 				biologicalSample.setSearchResults(addList(newList));
@@ -251,7 +251,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		return biologicalSample;
 	}
 
-	private Criterion biologicalSampleEqualityCriteria(BiologicalSample biologicalSample) {
+	private Criterion biologicalSampleEqualityCriteria(final BiologicalSample biologicalSample) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("sampleName", biologicalSample.getSampleName()))
 				.add(nullSafeEq("category", biologicalSample.getCategory()))
@@ -259,12 +259,12 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public Analysis addAnalysis(Analysis analysis, ReportData reportData) {
+	public Analysis addAnalysis(final Analysis analysis, final ReportData reportData) {
 		if (analysis.getId() == null) {
 			final BiologicalSampleList originalList = analysis.getBiologicalSamples();
 			if (originalList.getId() == null) {
-				BiologicalSampleList newList = new BiologicalSampleList(originalList.size());
-				for (BiologicalSample sample : originalList) {
+				final BiologicalSampleList newList = new BiologicalSampleList(originalList.size());
+				for (final BiologicalSample sample : originalList) {
 					newList.add(addBiologicalSample(sample));
 				}
 				analysis.setBiologicalSamples(addList(newList));
@@ -276,25 +276,25 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public Analysis getAnalysis(long reportId) {
+	public Analysis getAnalysis(final long reportId) {
 		return (Analysis) getSession().createCriteria(Analysis.class).add(Restrictions.eq("reportData.id", reportId)).uniqueResult();
 	}
 
 	@Override
-	public boolean hasAnalysis(long reportId) {
+	public boolean hasAnalysis(final long reportId) {
 		return (Long) getSession().createQuery("select count(*) from Analysis a where a.reportData.id =:reportId")
 				.setParameter("reportId", reportId).uniqueResult() > 0;
 	}
 
 	@Override
-	public List<String> getProteinAccessionNumbers(ProteinSequenceList proteinSequenceList) {
+	public List<String> getProteinAccessionNumbers(final ProteinSequenceList proteinSequenceList) {
 		return (List<String>) getSession().createQuery("select distinct e.accessionNumber from ProteinDatabaseEntry e where e.sequence in (:sequences) order by e.accessionNumber")
 				.setParameterList("sequences", proteinSequenceList.getList())
 				.list();
 	}
 
 	@Override
-	public List<ReportData> getSearchesForAccessionNumber(String accessionNumber) {
+	public List<ReportData> getSearchesForAccessionNumber(final String accessionNumber) {
 		return (List<ReportData>) getSession().createQuery(
 				"select distinct rd from " +
 						" Analysis as a" +
@@ -315,7 +315,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.list();
 	}
 
-	private Criterion analysisEqualityCriteria(Analysis analysis) {
+	private Criterion analysisEqualityCriteria(final Analysis analysis) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("scaffoldVersion", analysis.getScaffoldVersion()))
 				.add(nullSafeEq("analysisDate", analysis.getAnalysisDate()))
@@ -330,7 +330,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 * @param <T>  Type of the list, must extend {@link PersistableListBase}
 	 * @return Saved list (or the same one in case it was saved already).
 	 */
-	private <T extends PersistableListBase<?>> T addList(T list) {
+	private <T extends PersistableListBase<?>> T addList(final T list) {
 		if (list.getId() == null) {
 			return updateSet(list, list.getList(), "list");
 		}

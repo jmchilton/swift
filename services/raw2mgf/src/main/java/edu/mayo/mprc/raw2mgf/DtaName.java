@@ -13,11 +13,11 @@ public class DtaName {
 
 	private final Matcher matcher;
 
-	public DtaName(File dtaFile) {
+	public DtaName(final File dtaFile) {
 		this(dtaFile.getName());
 	}
 
-	public DtaName(String dtaFileName) {
+	public DtaName(final String dtaFileName) {
 		matcher = DTA_PATTERN.matcher(dtaFileName);
 	}
 

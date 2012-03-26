@@ -18,7 +18,7 @@ public final class SwiftCommandLine {
 	private final String error;
 	private final OptionParser parser;
 
-	public SwiftCommandLine(String command, String parameter, File installFile, String daemonId, String error, OptionParser parser) {
+	public SwiftCommandLine(final String command, final String parameter, final File installFile, final String daemonId, final String error, final OptionParser parser) {
 		this.command = command;
 		this.parameter = parameter;
 		this.installFile = installFile;

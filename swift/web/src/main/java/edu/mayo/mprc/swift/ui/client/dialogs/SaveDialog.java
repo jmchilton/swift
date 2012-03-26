@@ -26,8 +26,8 @@ public final class SaveDialog extends FrameDialog {
 	private TextBox userNameTextBox;
 	private ClientUser user;
 
-	public SaveDialog(ClientParamSet paramSet, ServiceAsync service, ClientUser user,
-	                  Callback cb) {
+	public SaveDialog(final ClientParamSet paramSet, final ServiceAsync service, final ClientUser user,
+	                  final Callback cb) {
 		super("Save", true, true);
 
 		this.service = service;
@@ -36,7 +36,7 @@ public final class SaveDialog extends FrameDialog {
 		this.user = user;
 
 		Label l;
-		Grid g = new Grid(3, 3);
+		final Grid g = new Grid(3, 3);
 		l = new Label("Save:");
 		g.setWidget(0, 0, l);
 		l.setStyleName("italic");
@@ -47,7 +47,7 @@ public final class SaveDialog extends FrameDialog {
 		l.setStyleName("italic");
 		newName = new TextBox();
 		g.setWidget(1, 1, newName);
-		KeyListener kl = new KeyListener();
+		final KeyListener kl = new KeyListener();
 		newName.addKeyboardListener(kl);
 
 		l = new Label("Owner:");
@@ -83,7 +83,7 @@ public final class SaveDialog extends FrameDialog {
 	}
 
 	public final class KeyListener extends KeyboardListenerAdapter {
-		public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+		public void onKeyUp(final Widget sender, final char keyCode, final int modifiers) {
 			setValidStatus();
 			super.onKeyUp(sender, keyCode, modifiers);
 		}
@@ -105,12 +105,12 @@ public final class SaveDialog extends FrameDialog {
 				user.getInitials(),
 				true,
 				new AsyncCallback<ClientParamSet>() {
-					public void onFailure(Throwable throwable) {
+					public void onFailure(final Throwable throwable) {
 						hide();
 						SimpleParamsEditorPanel.handleGlobalError(throwable);
 					}
 
-					public void onSuccess(ClientParamSet o) {
+					public void onSuccess(final ClientParamSet o) {
 
 						if (o != null) {
 							cb.saveCompleted(o);

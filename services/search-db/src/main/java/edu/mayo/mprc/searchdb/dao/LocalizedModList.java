@@ -10,14 +10,14 @@ import java.util.Collection;
  * @author Roman Zenka
  */
 public final class LocalizedModList extends PersistableListBase<LocalizedModification> {
-    public LocalizedModList() {
-    }
+	public LocalizedModList() {
+	}
 
-    public LocalizedModList(int initialCapacity) {
-        super(initialCapacity);
-    }
+	public LocalizedModList(final int initialCapacity) {
+		super(initialCapacity);
+	}
 
-    public LocalizedModList(Collection<LocalizedModification> items) {
-        super(items);
-    }
+	public LocalizedModList(final Collection<LocalizedModification> items) {
+		super(items);
+	}
 }

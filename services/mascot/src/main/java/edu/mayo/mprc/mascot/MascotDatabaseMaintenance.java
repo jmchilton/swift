@@ -54,7 +54,7 @@ final class MascotDatabaseMaintenance {
 
 	private String referenceUri;
 
-	public MascotDatabaseMaintenance(URI dbMaintenanceUri, HttpClient httpClient) {
+	public MascotDatabaseMaintenance(final URI dbMaintenanceUri, final HttpClient httpClient) {
 		this.dbMaintenanceUri = dbMaintenanceUri;
 		this.httpClient = httpClient;
 		this.referenceUri = dbMaintenanceUri.toString();
@@ -66,17 +66,17 @@ final class MascotDatabaseMaintenance {
 		refreshFromResponsePage(getDbMaintenancePageLocal());
 	}
 
-	private void refreshFromResponsePage(String page) {
+	private void refreshFromResponsePage(final String page) {
 
 		formParametersNameValuePairs = new HashMap<String, String>();
 		dbNameDisplayIdPairs = new HashMap<String, String>();
 
-		Source source = new Source(page);
-		FormFields formFields = source.findFormFields();
+		final Source source = new Source(page);
+		final FormFields formFields = source.findFormFields();
 		FormField formField = null;
 		Iterator valuesIterator = null;
 
-		for (Object formField1 : formFields) {
+		for (final Object formField1 : formFields) {
 			formField = (FormField) formField1;
 
 			valuesIterator = formField.getValues().iterator();
@@ -97,9 +97,9 @@ final class MascotDatabaseMaintenance {
 		}
 	}
 
-	private void selectDatabase(String databaseDisplayName) {
+	private void selectDatabase(final String databaseDisplayName) {
 		try {
-			Map<String, String> methodParams = new TreeMap<String, String>();
+			final Map<String, String> methodParams = new TreeMap<String, String>();
 			methodParams.put(STEP_PARAM, DEF_STEP);
 			methodParams.put(DB_DISPLAY_PARAM, dbNameDisplayIdPairs.get(databaseDisplayName));
 
@@ -109,16 +109,16 @@ final class MascotDatabaseMaintenance {
 		}
 	}
 
-	public synchronized MascotDbHttpRequestResult deleteDatabase(String databaseDisplayName) {
+	public synchronized MascotDbHttpRequestResult deleteDatabase(final String databaseDisplayName) {
 		try {
 			selectDatabase(databaseDisplayName);
 
-			Map<String, String> methodParams = new TreeMap<String, String>();
+			final Map<String, String> methodParams = new TreeMap<String, String>();
 			methodParams.put(STEP_PARAM, DELETE_STEP);
 
 			refreshFromResponsePage(executePostMethod(methodParams));
 
-			MascotDbHttpRequestResult requestResult = applyChanges();
+			final MascotDbHttpRequestResult requestResult = applyChanges();
 
 			refreshFromResponsePage(getDbMaintenancePageLocal());
 
@@ -137,7 +137,7 @@ final class MascotDatabaseMaintenance {
 	 * @param databaseDisplayName
 	 * @return true if this database name is shown in the mascot database maintenance interface.
 	 */
-	public synchronized boolean isDatabaseDeployed(String databaseDisplayName) {
+	public synchronized boolean isDatabaseDeployed(final String databaseDisplayName) {
 		return dbNameDisplayIdPairs.containsKey(databaseDisplayName);
 	}
 
@@ -145,7 +145,7 @@ final class MascotDatabaseMaintenance {
 		MyMascotDbHttpRequestResult requestResult = null;
 
 		try {
-			Map<String, String> methodParams = new TreeMap<String, String>();
+			final Map<String, String> methodParams = new TreeMap<String, String>();
 			methodParams.put(STEP_PARAM, APPLY_STEP);
 
 			requestResult = new MyMascotDbHttpRequestResult(executePostMethod(methodParams));
@@ -162,15 +162,15 @@ final class MascotDatabaseMaintenance {
 	 * @param methodParams
 	 * @return Response body of executed method
 	 */
-	private String executePostMethod(Map<String, String> methodParams) throws IOException {
+	private String executePostMethod(final Map<String, String> methodParams) throws IOException {
 
 		PostMethod method = null;
-		String tempReferenceUri = generateReferenceUri();
+		final String tempReferenceUri = generateReferenceUri();
 
 		try {
 			addFormDefaultParameters(method = new PostMethod(tempReferenceUri));
 
-			for (Map.Entry<String, String> me : methodParams.entrySet()) {
+			for (final Map.Entry<String, String> me : methodParams.entrySet()) {
 				method.setParameter(me.getKey(), me.getValue());
 			}
 
@@ -190,8 +190,8 @@ final class MascotDatabaseMaintenance {
 		}
 	}
 
-	private void addFormDefaultParameters(PostMethod method) {
-		for (Map.Entry<String, String> me : formParametersNameValuePairs.entrySet()) {
+	private void addFormDefaultParameters(final PostMethod method) {
+		for (final Map.Entry<String, String> me : formParametersNameValuePairs.entrySet()) {
 			method.setParameter(me.getKey(), me.getValue());
 		}
 	}
@@ -199,7 +199,7 @@ final class MascotDatabaseMaintenance {
 	private String getDbMaintenancePageLocal() {
 
 		GetMethod method = null;
-		String tempReferenceUri = generateReferenceUri();
+		final String tempReferenceUri = generateReferenceUri();
 
 		try {
 			HttpClientUtility.executeMethod(httpClient, method = new GetMethod(tempReferenceUri));
@@ -228,7 +228,7 @@ final class MascotDatabaseMaintenance {
 
 		private String requestResponseBody;
 
-		private MyMascotDbHttpRequestResult(String requestResponseBody) {
+		private MyMascotDbHttpRequestResult(final String requestResponseBody) {
 			this.requestResponseBody = requestResponseBody;
 		}
 

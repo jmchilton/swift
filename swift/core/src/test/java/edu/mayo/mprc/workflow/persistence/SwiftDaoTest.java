@@ -122,25 +122,25 @@ public final class SwiftDaoTest {
 			blank2 = swiftDao.addSwiftSearchDefinition(blank2);
 			Assert.assertEquals(blank2.getId(), blank1.getId(), "Blank searches has to be stored as one");
 
-			File f = new File("testFolder");
-			SwiftSearchDefinition folder1 = new SwiftSearchDefinition("Folder search", null, f, null, null, null, new ArrayList<FileSearch>(), false, false);
+			final File f = new File("testFolder");
+			final SwiftSearchDefinition folder1 = new SwiftSearchDefinition("Folder search", null, f, null, null, null, new ArrayList<FileSearch>(), false, false);
 			blank1 = swiftDao.addSwiftSearchDefinition(blank1);
-			File f2 = new File("testFolder");
-			SwiftSearchDefinition folder2 = new SwiftSearchDefinition("Folder search", null, f2, null, null, null, new ArrayList<FileSearch>(), false, false);
+			final File f2 = new File("testFolder");
+			final SwiftSearchDefinition folder2 = new SwiftSearchDefinition("Folder search", null, f2, null, null, null, new ArrayList<FileSearch>(), false, false);
 			blank2 = swiftDao.addSwiftSearchDefinition(blank2);
 			Assert.assertEquals(folder2.getId(), folder1.getId(), "Folder searches has to be stored as one");
 
 			final SearchEngineConfig searchEngineConfig = new SearchEngineConfig("MASCOT");
 			swiftDao.addSearchEngineConfig(searchEngineConfig, new Change("Test search engine added", new DateTime()));
-			EnabledEngines engines = new EnabledEngines();
+			final EnabledEngines engines = new EnabledEngines();
 			engines.add(searchEngineConfig);
 
 			SearchEngineParameters parameters = getSearchEngineParameters();
 
 			parameters = paramsDao.addSearchEngineParameters(parameters);
 
-			FileSearch fileSearch1 = new FileSearch(new File("input.RAW"), "bio sample", null, "experiment", engines);
-			FileSearch fileSearch2 = new FileSearch(new File("input.RAW"), "bio sample", null, "experiment", engines);
+			final FileSearch fileSearch1 = new FileSearch(new File("input.RAW"), "bio sample", null, "experiment", engines);
+			final FileSearch fileSearch2 = new FileSearch(new File("input.RAW"), "bio sample", null, "experiment", engines);
 
 			final LinkedList<FileSearch> fileSearches1 = new LinkedList<FileSearch>();
 			fileSearches1.add(fileSearch1);
@@ -178,13 +178,13 @@ public final class SwiftDaoTest {
 	public void addSearchEngine() throws Throwable {
 		swiftDao.begin();
 		try {
-			Change change = new Change("Test search engine add", new DateTime());
-			SearchEngineConfig config = new SearchEngineConfig("TEST_ENGINE");
+			final Change change = new Change("Test search engine add", new DateTime());
+			final SearchEngineConfig config = new SearchEngineConfig("TEST_ENGINE");
 			swiftDao.addSearchEngineConfig(config, change);
 			Assert.assertNotNull(config.getId(), "Save did not work");
 
-			Change change2 = new Change("Test search engine add 2", new DateTime());
-			SearchEngineConfig config2 = new SearchEngineConfig("TEST_ENGINE");
+			final Change change2 = new Change("Test search engine add 2", new DateTime());
+			final SearchEngineConfig config2 = new SearchEngineConfig("TEST_ENGINE");
 			Assert.assertTrue(config.equals(config2), "The two changes must be identical");
 
 			swiftDao.addSearchEngineConfig(config2, change2);
@@ -201,13 +201,13 @@ public final class SwiftDaoTest {
 	public void addEnabledEngines() throws Throwable {
 		swiftDao.begin();
 		try {
-			Change change = new Change("Test enabled engines", new DateTime());
-			SearchEngineConfig engine1 = new SearchEngineConfig("TEST_ENGINE1");
-			SearchEngineConfig engine2 = new SearchEngineConfig("TEST_ENGINE2");
+			final Change change = new Change("Test enabled engines", new DateTime());
+			final SearchEngineConfig engine1 = new SearchEngineConfig("TEST_ENGINE1");
+			final SearchEngineConfig engine2 = new SearchEngineConfig("TEST_ENGINE2");
 			swiftDao.addSearchEngineConfig(engine1, change);
 			swiftDao.addSearchEngineConfig(engine2, change);
 
-			EnabledEngines engines = new EnabledEngines();
+			final EnabledEngines engines = new EnabledEngines();
 			engines.add(engine1);
 			engines.add(engine2);
 
@@ -230,8 +230,8 @@ public final class SwiftDaoTest {
 	@Test
 	public void twoTransactionsPerSession() throws Throwable {
 		swiftDao.begin();
-		TaskStateData taskStateData = swiftDao.getTaskState(TaskState.READY);
-		TaskData taskData = new TaskData("Test task", new Date(), new Date(), null, null, taskStateData, "Test task description");
+		final TaskStateData taskStateData = swiftDao.getTaskState(TaskState.READY);
+		final TaskData taskData = new TaskData("Test task", new Date(), new Date(), null, null, taskStateData, "Test task description");
 		swiftDao.updateTask(taskData);
 		swiftDao.commit();
 
