@@ -28,14 +28,15 @@ public final class ScaffoldQaSpectraReader extends ScaffoldSpectraReader impleme
 	}
 
 	@Override
-	public void processMetadata(String key, String value) {
-		// We do not care about metadata.
+	public boolean processMetadata(String key, String value) {
+		// We do not care about metadata. Keep going.
+		return true;
 	}
 
 	/**
 	 * Fills in the spectrum column that is to be skipped.
 	 */
-	public void processHeader(String line) {
+	public boolean processHeader(String line) {
 		// Extract everything except the spectrum column name
 		String[] tempHeader = line.split("\t");
 		// Scaffold 2.06.01 has a bug - one column is added extra before the last starred/hidden. We give this column an explicit name "Blank Column"
@@ -58,9 +59,10 @@ public final class ScaffoldQaSpectraReader extends ScaffoldSpectraReader impleme
 		if (spectrumNameColumn == 0) {
 			throw new MprcException("Wrong Scaffold spectra file format - header column missing [" + SPECTRUM_NAME + "].");
 		}
+		return true;
 	}
 
-	public void processRow(String line) {
+	public boolean processRow(String line) {
 		sb.setLength(0);
 		int columnNumber = 0;
 		int spectrumNameStart = 0;
@@ -85,6 +87,7 @@ public final class ScaffoldQaSpectraReader extends ScaffoldSpectraReader impleme
 			}
 		}
 		mapSpectrumNameToScaffoldSpectraInfo.put(spectrumName, fixCommaSeparatedThousands(sb.toString()));
+		return true;
 	}
 
 	/**

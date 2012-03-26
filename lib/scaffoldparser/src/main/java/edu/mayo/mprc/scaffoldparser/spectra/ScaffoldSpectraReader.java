@@ -162,7 +162,7 @@ public abstract class ScaffoldSpectraReader {
 
 	private void processStream(InputStream stream, ProgressReporter reporter) throws IOException {
 		Reader reader;
-		if (totalBytesToRead > 0) {
+		if (totalBytesToRead > 0 && reporter != null) {
 			countingInputStream = new CountingInputStream(stream);
 			reader = new InputStreamReader(countingInputStream);
 			percentDoneReporter = new PercentDoneReporter(reporter, "Parsing Scaffold spectra file: ");
@@ -185,9 +185,13 @@ public abstract class ScaffoldSpectraReader {
 				if (colonPos >= 0) {
 					final String key = line.substring(0, colonPos);
 					final String value = line.substring(colonPos + 1);
-					processMetadata(key.trim(), value.trim());
+					if (!processMetadata(key.trim(), value.trim())) {
+						break;
+					}
 				} else {
-					processMetadata(null, line.trim());
+					if (!processMetadata(null, line.trim())) {
+						break;
+					}
 				}
 
 				if (line.startsWith(FIRST_HEADER_COLUMN + "\t")) {
@@ -195,7 +199,9 @@ public abstract class ScaffoldSpectraReader {
 				}
 			}
 
-			processHeader(line);
+			if (!processHeader(line)) {
+				return;
+			}
 			loadContents(br);
 		} finally {
 			FileUtilities.closeQuietly(br);
@@ -207,22 +213,25 @@ public abstract class ScaffoldSpectraReader {
 	 *
 	 * @param key   The key (before colon). Null if no colon present.
 	 * @param value Value (after colon). Entire line if no colon present.
+	 * @return Whether to keep processing. False stops.
 	 */
-	public abstract void processMetadata(String key, String value);
+	public abstract boolean processMetadata(String key, String value);
 
 	/**
 	 * Process the Scaffold spectra file header.
 	 *
 	 * @param line Scaffold spectra file header, defining all the data columns. The header is tab-separated.
+	 * @return Whether to keep processing. False stops.
 	 */
-	public abstract void processHeader(String line);
+	public abstract boolean processHeader(String line);
 
 	/**
 	 * Process one row from the spectra file.
 	 *
 	 * @param line Scaffold spectra row, tab-separated, format matches the header supplied by {@link #processHeader(String)}.
+	 * @return Whether to keep processing. False stops.
 	 */
-	public abstract void processRow(String line);
+	public abstract boolean processRow(String line);
 
 	private void loadContents(BufferedReader reader) throws IOException {
 		while (true) {
@@ -234,13 +243,23 @@ public abstract class ScaffoldSpectraReader {
 			if (END_OF_FILE.equals(line)) {
 				break;
 			}
-			processRow(line);
+			if (!processRow(line)) {
+				break;
+			}
 			if (lineNumber % REPORT_FREQUENCY == 0 && percentDoneReporter != null) {
 				percentDoneReporter.reportProgress((float) ((double) countingInputStream.getCount() / (double) totalBytesToRead));
 			}
 		}
 	}
 
+	/**
+	 * Allows a parser to change the reported scaffold version.
+	 *
+	 * @param scaffoldVersion Detected scaffold version.
+	 */
+	public void setScaffoldVersion(String scaffoldVersion) {
+		this.scaffoldVersion = scaffoldVersion;
+	}
 
 	/**
 	 * @return Version of Scaffold used to generate information for these spectra.

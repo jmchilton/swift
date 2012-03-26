@@ -5,6 +5,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.chem.AminoAcidSet;
 import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
 import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
+import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraVersion;
 import edu.mayo.mprc.searchdb.builder.*;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.SearchEngineScores;
@@ -31,7 +32,7 @@ import java.util.Locale;
  */
 public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	private static final String REPORT_DATE_PREFIX_KEY = "Spectrum report created on ";
-	private static final String SCAFFOLD_VERSION_KEY = "Scaffold Version";
+	private static final String SCAFFOLD_VERSION_KEY = ScaffoldSpectraVersion.SCAFFOLD_VERSION_KEY;
 	private static final Splitter SPLITTER = Splitter.on('\t').trimResults();
 	private static final double HUNDRED_PERCENT = 100.0;
 	private static final AminoAcidSet SUPPORTED_AMINO_ACIDS = AminoAcidSet.DEFAULT;
@@ -100,7 +101,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	}
 
 	@Override
-	public void processMetadata(String key, String value) {
+	public boolean processMetadata(String key, String value) {
 		if (key == null) {
 			int datePos = value.indexOf(REPORT_DATE_PREFIX_KEY);
 			if (datePos >= 0) {
@@ -111,6 +112,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		} else if (SCAFFOLD_VERSION_KEY.equalsIgnoreCase(key)) {
 			analysis.setScaffoldVersion(value);
 		}
+		return true;
 	}
 
 	/**
@@ -120,7 +122,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	 * @param line Scaffold spectra file header, defining all the data columns. The header is tab-separated.
 	 */
 	@Override
-	public void processHeader(String line) {
+	public boolean processHeader(String line) {
 		HashMap<String, Integer> map = buildColumnMap(line);
 		numColumns = map.size();
 		currentLine = new String[numColumns];
@@ -158,6 +160,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		mascotDeltaIonScore = getColumnOptional(map, ScaffoldSpectraReader.MASCOT_DELTA_ION_SCORE);
 		tandemHyperScore = getColumnOptional(map, ScaffoldSpectraReader.X_TANDEM_HYPER_SCORE);
 		tandemLadderScore = getColumnOptional(map, ScaffoldSpectraReader.X_TANDEM_LADDER_SCORE);
+		return true;
 	}
 
 	/**
@@ -187,7 +190,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	}
 
 	@Override
-	public void processRow(String line) {
+	public boolean processRow(String line) {
 		fillCurrentLine(line);
 		final BiologicalSampleBuilder biologicalSample = analysis.getBiologicalSamples().getBiologicalSample(currentLine[biologicalSampleName], currentLine[biologicalSampleCategory]);
 		final SearchResultBuilder searchResult = biologicalSample.getSearchResults().getTandemMassSpecResult(FileUtilities.stripGzippedExtension(currentLine[msmsSampleName]));
@@ -229,6 +232,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 						parseOptionalDouble(tandemHyperScore),
 						parseOptionalDouble(tandemLadderScore))
 		);
+		return true;
 	}
 
 	/**
