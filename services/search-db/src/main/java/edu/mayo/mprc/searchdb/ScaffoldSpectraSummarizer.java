@@ -45,9 +45,6 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	// Current line parsed into columns, with data in fields trimmed
 	private String[] currentLine;
 
-	// Translates proteins accession numbers (in context of particular .fasta database) to protein sequences.
-	private ProteinSequenceTranslator translator;
-
 	// Column indices for different fields.
 	private int biologicalSampleName;
 	private int biologicalSampleCategory;
@@ -92,7 +89,6 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	public ScaffoldSpectraSummarizer(IndexedModSet modSet, IndexedModSet scaffoldModSet, ProteinSequenceTranslator translator,
 	                                 MassSpecDataExtractor massSpecDataExtractor) {
 		format = new ScaffoldModificationFormat(modSet, scaffoldModSet);
-		this.translator = translator;
 		analysis = new AnalysisBuilder(format, translator, massSpecDataExtractor);
 	}
 
