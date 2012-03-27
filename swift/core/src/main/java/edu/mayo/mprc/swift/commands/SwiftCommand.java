@@ -1,5 +1,7 @@
 package edu.mayo.mprc.swift.commands;
 
+import edu.mayo.mprc.swift.ExitCode;
+
 /**
  * @author Roman Zenka
  */
@@ -19,5 +21,5 @@ public interface SwiftCommand {
 	 *
 	 * @param environment Swift environment to run the command within.
 	 */
-	void run(SwiftEnvironment environment);
+	ExitCode run(SwiftEnvironment environment);
 }

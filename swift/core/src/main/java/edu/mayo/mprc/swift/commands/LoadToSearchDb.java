@@ -10,6 +10,7 @@ import edu.mayo.mprc.fastadb.FastaDbWorker;
 import edu.mayo.mprc.qa.RAWDumpWorker;
 import edu.mayo.mprc.scaffold3.Scaffold3Worker;
 import edu.mayo.mprc.searchdb.SearchDbWorker;
+import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.FileSearch;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
@@ -58,7 +59,7 @@ public class LoadToSearchDb implements SwiftCommand {
 	 *
 	 * @param environment The Swift environment to execute within.
 	 */
-	public void run(final SwiftEnvironment environment) {
+	public ExitCode run(final SwiftEnvironment environment) {
 		try {
 			final SwiftSearcher.Config config = getSearcher(environment);
 			initializeConnections(environment, config);
@@ -69,6 +70,8 @@ public class LoadToSearchDb implements SwiftCommand {
 			final long reportDataId = getReportDataId(environment.getParameter());
 
 			loadData(reportDataId);
+
+			return ExitCode.Ok;
 
 		} catch (Exception e) {
 			throw new MprcException("Could not load into Swift search database", e);

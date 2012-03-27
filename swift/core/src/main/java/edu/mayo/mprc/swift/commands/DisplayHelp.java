@@ -23,7 +23,7 @@ public class DisplayHelp implements SwiftCommand {
 	}
 
 	@Override
-	public void run(final SwiftEnvironment environment) {
+	public ExitCode run(final SwiftEnvironment environment) {
 		try {
 			FileUtilities.out(ReleaseInfoCore.infoString());
 			FileUtilities.out("");
@@ -32,10 +32,10 @@ public class DisplayHelp implements SwiftCommand {
 			FileUtilities.out("");
 			FileUtilities.out("Usage:");
 			environment.getOptionParser().printHelpOn(System.out);
-			ExitCode.Ok.exit();
+			return ExitCode.Ok;
 		} catch (Exception t) {
 			LOGGER.fatal("Could not display help message.", t);
-			ExitCode.Error.exit();
+			return ExitCode.Error;
 		}
 	}
 }

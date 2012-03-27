@@ -1,5 +1,6 @@
 package edu.mayo.mprc.swift.commands;
 
+import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.swift.SgeJobRunner;
 
 import java.io.File;
@@ -22,9 +23,10 @@ public class RunSge implements SwiftCommand {
 	}
 
 	@Override
-	public void run(final SwiftEnvironment environment) {
+	public ExitCode run(final SwiftEnvironment environment) {
 		final String xmlConfigFilePath = environment.getParameter();
 		swiftSge.run(new File(xmlConfigFilePath));
+		return ExitCode.Ok;
 	}
 
 	public SgeJobRunner getSwiftSge() {

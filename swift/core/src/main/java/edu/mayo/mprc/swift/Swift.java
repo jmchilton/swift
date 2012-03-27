@@ -22,9 +22,8 @@ public final class Swift {
 
 	public static void main(final String[] args) {
 		try {
-			MainFactoryContext.initialize();
-			runSwift(args);
-			// Swift will exist with Ok code if everything is ok
+			final ExitCode result = runSwift(args);
+			result.exit();
 		} catch (Exception t) {
 			FileUtilities.err(MprcException.getDetailedMessage(t));
 		} finally {
@@ -32,13 +31,21 @@ public final class Swift {
 		}
 	}
 
-	private static void runSwift(final String[] args) {
+	/**
+	 * Actually executes Swift.
+	 *
+	 * @param args Command line arguments.
+	 * @return Requested exit code.
+	 */
+	static ExitCode runSwift(final String... args) {
+		MainFactoryContext.initialize();
+
 		LOGGER.info(ReleaseInfoCore.infoString());
 		final CommandLineParser parser = new CommandLineParser(args);
 		final SwiftCommandLine commandLine = parser.getCommandLine();
 		if (commandLine.getError() != null) {
 			FileUtilities.err(commandLine.getError() + "\nUse --" + DisplayHelp.COMMAND + " for more information.");
-			ExitCode.Error.exit();
+			return ExitCode.Error;
 		}
 
 		final SwiftEnvironment swiftEnvironment = MainFactoryContext.getSwiftEnvironment();
@@ -46,8 +53,9 @@ public final class Swift {
 			swiftEnvironment.runSwiftCommand(commandLine);
 		} catch (Exception e) {
 			LOGGER.error(MprcException.getDetailedMessage(e));
-			ExitCode.Error.exit();
+			return ExitCode.Error;
 		}
+		return ExitCode.Ok;
 	}
 
 }

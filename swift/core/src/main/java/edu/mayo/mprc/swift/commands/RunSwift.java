@@ -37,7 +37,7 @@ public class RunSwift implements FileListener, SwiftCommand {
 	/**
 	 * Run all workers configured for this daemon.
 	 */
-	public void run(final SwiftEnvironment environment) {
+	public ExitCode run(final SwiftEnvironment environment) {
 		final DaemonConfig config = environment.getDaemonConfig();
 		final File installXmlFile = environment.getConfigXmlFile();
 
@@ -74,11 +74,7 @@ public class RunSwift implements FileListener, SwiftCommand {
 			throw new MprcException("No daemons are configured in " + installXmlFile.getAbsolutePath() + ". Exiting.");
 		}
 
-		if (terminateDaemon) {
-			ExitCode.Ok.exit();
-		} else {
-			ExitCode.Restart.exit();
-		}
+		return terminateDaemon ? ExitCode.Ok : ExitCode.Restart;
 	}
 
 	/**
