@@ -24,6 +24,7 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	private MultiFactory swiftFactory;
 	private List<SwiftCommand> commands;
 
+	private ApplicationConfig applicationConfig;
 	private DaemonConfig daemonConfig;
 	private DependencyResolver dependencyResolver;
 	private File configXmlFile;
@@ -70,11 +71,6 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 		}
 
 		configXmlFile = commandLine.getInstallFile();
-		if (configXmlFile != null) {
-			final ApplicationConfig swiftConfig = loadSwiftConfig(configXmlFile, getSwiftFactory());
-			daemonConfig = SwiftConfig.getUserSpecifiedDaemonConfig(commandLine.getDaemonId(), swiftConfig);
-			SwiftConfig.setupFileTokenFactory(swiftConfig, daemonConfig, getFileTokenFactory());
-		}
 
 		command.run(this);
 	}
@@ -144,8 +140,24 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 
 	@Override
 	public DaemonConfig getDaemonConfig() {
+		if (daemonConfig == null) {
+			if (configXmlFile != null) {
+				daemonConfig = SwiftConfig.getUserSpecifiedDaemonConfig(commandLine.getDaemonId(), getApplicationConfig());
+				SwiftConfig.setupFileTokenFactory(getApplicationConfig(), daemonConfig, getFileTokenFactory());
+			}
+		}
+
 		return daemonConfig;
 	}
+
+	@Override
+	public ApplicationConfig getApplicationConfig() {
+		if (applicationConfig == null) {
+			applicationConfig = loadSwiftConfig(configXmlFile, getSwiftFactory());
+		}
+		return applicationConfig;
+	}
+
 
 	@Override
 	public Daemon createDaemon(final DaemonConfig config) {

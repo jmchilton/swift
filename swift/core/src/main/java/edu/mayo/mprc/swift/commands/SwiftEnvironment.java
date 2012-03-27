@@ -1,5 +1,6 @@
 package edu.mayo.mprc.swift.commands;
 
+import edu.mayo.mprc.config.ApplicationConfig;
 import edu.mayo.mprc.config.DaemonConfig;
 import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ServiceConfig;
@@ -37,6 +38,11 @@ public interface SwiftEnvironment {
 	 *         and a list of services to run in that environment.
 	 */
 	DaemonConfig getDaemonConfig();
+
+	/**
+	 * @return Configuration of the entire application.
+	 */
+	ApplicationConfig getApplicationConfig();
 
 	/**
 	 * Creates a daemon of given configuration.
