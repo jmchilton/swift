@@ -1,6 +1,7 @@
 package edu.mayo.mprc.swift.commands;
 
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.config.DaemonConfig;
 import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ServiceConfig;
 import edu.mayo.mprc.daemon.DaemonConnection;
@@ -61,7 +62,7 @@ public class LoadToSearchDb implements SwiftCommand {
 	 */
 	public ExitCode run(final SwiftEnvironment environment) {
 		try {
-			final SwiftSearcher.Config config = getSearcher(environment);
+			final SwiftSearcher.Config config = getSearcher(environment.getDaemonConfig());
 			initializeConnections(environment, config);
 
 			final Object database = environment.createResource(config.getDatabase());
@@ -127,6 +128,7 @@ public class LoadToSearchDb implements SwiftCommand {
 			getDao().commit();
 		} catch (Exception e) {
 			getDao().rollback();
+			throw new MprcException(e);
 		}
 
 		workflowEngine.addMonitor(new SearchMonitor() {
@@ -208,8 +210,8 @@ public class LoadToSearchDb implements SwiftCommand {
 		}
 	}
 
-	private SwiftSearcher.Config getSearcher(final SwiftEnvironment environment) {
-		final List<ResourceConfig> searchers = environment.getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
+	private SwiftSearcher.Config getSearcher(final DaemonConfig daemonConfig) {
+		final List<ResourceConfig> searchers = daemonConfig.getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
 		if (searchers.size() != 1) {
 			throw new MprcException("More than one Swift Searcher defined in this Swift install");
 		}

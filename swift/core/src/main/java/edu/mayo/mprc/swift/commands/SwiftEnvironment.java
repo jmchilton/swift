@@ -33,6 +33,9 @@ public interface SwiftEnvironment {
 	/**
 	 * User specifies which environment to run within using the --daemon command line switch.
 	 * Daemons are configured in the main Swift configuration file, by default in {@link Swift#CONFIG_FILE_NAME}.
+	 * <p/>
+	 * The side effect of this function is initialization of the {@link FileTokenFactory}. This can be done only
+	 * if the daemon is known.
 	 *
 	 * @return Configuration of the current daemon. A daemon specifies a particular environment
 	 *         and a list of services to run in that environment.
