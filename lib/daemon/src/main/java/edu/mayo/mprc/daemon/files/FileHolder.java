@@ -19,8 +19,8 @@ import java.util.Map;
  * <ul>
  * <li>{@link File} properties</li>
  * <li>{@link FileTokenHolder} properties</li>
- * <li>{@code List&lt;File>} properties</li>
- * <li>{@code Map&lt;Serializable, File>} properties</li>
+ * <li>{@code List&lt;File/FileTokenHolder>} properties</li>
+ * <li>{@code Map&lt;Serializable, File/FileTokenHolder>} properties</li>
  * </ul>
  * <p/>
  * The files are translated to FileToken
@@ -29,6 +29,8 @@ import java.util.Map;
  * <p/>
  * This way the user can send an object message with multiple references to files, and the files get transferred to the target
  * system if necessary.
+ * <p/>
+ * TODO: This is convoluted. Provide a cleaner implementation that could recursively sniff-out absolutely all files in the data structures.
  */
 public class FileHolder implements FileTokenHolder {
 	private static final long serialVersionUID = 20110418L;
@@ -84,6 +86,21 @@ public class FileHolder implements FileTokenHolder {
 				if (fileTokenHolder != null) {
 					fileTokenHolder.translateOnReceiver(translator, synchronizer);
 				}
+			} else if (serializableFileListField(field)) {
+				for (final Object o : getFieldList(field)) {
+					if (o instanceof FileTokenHolder) {
+						((FileTokenHolder) o).translateOnReceiver(translator, synchronizer);
+					}
+				}
+			} else if (serializableFileMapField(field)) {
+				for (final Object o : getFieldMap(field).entrySet()) {
+					if (o instanceof Map.Entry) {
+						Map.Entry e = (Map.Entry) o;
+						if (e.getValue() instanceof FileTokenHolder) {
+							((FileTokenHolder) e.getValue()).translateOnReceiver(translator, synchronizer);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -137,14 +154,14 @@ public class FileHolder implements FileTokenHolder {
 
 	/**
 	 * @param field Object field.
-	 * @return True if the field corresponds to a list of objects, at least one of which is a file.
+	 * @return True if the field corresponds to a list of objects, at least one of which is a file or {@link FileTokenHolder}
 	 */
 	private boolean serializableFileListField(final Field field) {
 		if (List.class.isAssignableFrom(field.getType()) && isSerializableField(field)) {
 			final List list = getFieldList(field);
 			if (list != null) {
 				for (final Object o : list) {
-					if (o instanceof File) {
+					if (o instanceof File || o instanceof FileTokenHolder) {
 						return true;
 					}
 				}
@@ -166,7 +183,8 @@ public class FileHolder implements FileTokenHolder {
 						final Map.Entry entry = (Map.Entry) o;
 						final Object key = entry.getKey();
 						final Object value = entry.getValue();
-						if (key instanceof Serializable && !(key instanceof File) && value instanceof File) {
+						if (key instanceof Serializable && !(key instanceof File) &&
+								(value instanceof File || value instanceof FileTokenHolder)) {
 							return true;
 						}
 						if (key instanceof File || value instanceof File) {
@@ -258,6 +276,8 @@ public class FileHolder implements FileTokenHolder {
 				final File file = (File) o;
 				final FileToken value = token(translator, file);
 				tokenMap.put(new FieldIndex(field.getName(), index), value);
+			} else if (o instanceof FileTokenHolder) {
+				((FileTokenHolder) o).translateOnSender(translator);
 			}
 			index++;
 		}
@@ -267,10 +287,14 @@ public class FileHolder implements FileTokenHolder {
 		for (final Object o : getFieldMap(field).entrySet()) {
 			if (o instanceof Map.Entry) {
 				final Map.Entry entry = (Map.Entry) o;
-				if (entry.getKey() instanceof Serializable && entry.getValue() instanceof File) {
-					final File file = (File) entry.getValue();
-					final FileToken value = token(translator, file);
-					tokenMap.put(new FieldIndex(field.getName(), (Serializable) entry.getKey()), value);
+				if (entry.getKey() instanceof Serializable) {
+					if (entry.getValue() instanceof File) {
+						final File file = (File) entry.getValue();
+						final FileToken value = token(translator, file);
+						tokenMap.put(new FieldIndex(field.getName(), (Serializable) entry.getKey()), value);
+					} else if (entry.getValue() instanceof FileTokenHolder) {
+						((FileTokenHolder) entry.getValue()).translateOnSender(translator);
+					}
 				}
 			}
 		}
