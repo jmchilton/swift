@@ -9,7 +9,7 @@ import java.io.File;
  *
  * @author Roman Zenka
  */
-public class Scaffold3SpectrumExportWorkPacket extends WorkPacketBase {
+public final class Scaffold3SpectrumExportWorkPacket extends WorkPacketBase {
 	private static final long serialVersionUID = 3551194247963866822L;
 
 	private File scaffoldFile;

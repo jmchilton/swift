@@ -18,7 +18,6 @@ import edu.mayo.mprc.utilities.ProcessCaller;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import java.io.File;
 import java.util.Arrays;
@@ -120,7 +119,7 @@ public final class Scaffold3Worker implements Worker {
 		final ScaffoldSpectraVersion version = new ScaffoldSpectraVersion();
 		version.load(export, null/*Not sure which version*/, null/* No progress reporting */);
 		// Currently if the version starts with 3, it is deemed ok
-		return version.getScaffoldVersion().startsWith("3");
+		return version.getScaffoldVersion().startsWith("Scaffold_3");
 	}
 
 	/**
@@ -193,7 +192,6 @@ public final class Scaffold3Worker implements Worker {
 	/**
 	 * @param work Spectrume export to do.
 	 * @return String to put into .scafml file that will produce the export.
-	 * @throws ParserConfigurationException If xml creation failed
 	 */
 	static String getScafmlSpectrumExport(final Scaffold3SpectrumExportWorkPacket work) {
 		try {
@@ -202,28 +200,25 @@ public final class Scaffold3Worker implements Worker {
 			builder.a("version", "1.5")
 					.e("Experiment")
 					.a("name", experimentName)
-					.a("load", work.getScaffoldFile().getAbsolutePath());
+					.a("load", work.getScaffoldFile().getAbsolutePath())
 
-			{
-				builder
-						.e("DisplayThresholds")
-						.a("name", "Some Thresholds")
-						.a("id", "thresh")
-						.a("proteinProbability", "0.8")
-						.a("minimumPeptideCount", "1")
-						.a("peptideProbability", "0.8")
-						.a("minimumNTT", "1")
-						.a("useCharge", "true,true,true")
-						.a("useMergedPeptideProbability", "true")
-						.up();
+					.e("DisplayThresholds")
+					.a("name", "Some Thresholds")
+					.a("id", "thresh")
+					.a("proteinProbability", "0.8")
+					.a("minimumPeptideCount", "1")
+					.a("peptideProbability", "0.8")
+					.a("minimumNTT", "1")
+					.a("useCharge", "true,true,true")
+					.a("useMergedPeptideProbability", "true")
+					.t("")
+					.up()
 
-				builder
-						.e("Export")
-						.a("type", "spectrum")
-						.a("thresholds", "thresh")
-						.a("path", work.getSpectrumExportFile().getAbsolutePath())
-						.up();
-			}
+					.e("Export")
+					.a("type", "spectrum")
+					.a("thresholds", "thresh")
+					.a("path", work.getSpectrumExportFile().getAbsolutePath())
+					.up();
 
 			final Properties outputProperties = new Properties();
 			// Explicitly identify the output as an XML document
