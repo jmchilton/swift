@@ -1,5 +1,7 @@
 package edu.mayo.mprc.utilities.progress;
 
+import java.text.MessageFormat;
+
 /**
  * How many percent are complete for a given process.
  */
@@ -19,5 +21,10 @@ public class PercentDone implements ProgressInfo {
 	 */
 	public float getPercentDone() {
 		return percentDone;
+	}
+
+	@Override
+	public String toString() {
+		return MessageFormat.format("Percent done: {0,number,#.##}", percentDone);
 	}
 }
