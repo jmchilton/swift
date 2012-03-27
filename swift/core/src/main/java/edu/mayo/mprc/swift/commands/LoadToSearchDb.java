@@ -23,6 +23,7 @@ import edu.mayo.mprc.workflow.engine.SearchMonitor;
 import edu.mayo.mprc.workflow.engine.TaskBase;
 import edu.mayo.mprc.workflow.engine.WorkflowEngine;
 import org.apache.log4j.Logger;
+import org.joda.time.Interval;
 
 import java.io.File;
 import java.util.List;
@@ -62,15 +63,23 @@ public class LoadToSearchDb implements SwiftCommand {
 	 */
 	public ExitCode run(final SwiftEnvironment environment) {
 		try {
+			final long start = System.currentTimeMillis();
+
 			final SwiftSearcher.Config config = getSearcher(environment.getDaemonConfig());
 			initializeConnections(environment, config);
 
+			// Set up the database
 			final Object database = environment.createResource(config.getDatabase());
 
 			// This is the input parameter - which report to load into the database
 			final long reportDataId = getReportDataId(environment.getParameter());
 
 			loadData(reportDataId);
+
+			final long end = System.currentTimeMillis();
+
+			Interval interval = new Interval(start, end);
+			LOGGER.info("Elapsed time: " + interval.toDuration().toString());
 
 			return ExitCode.Ok;
 
@@ -90,6 +99,10 @@ public class LoadToSearchDb implements SwiftCommand {
 
 			// Scaffold file is defined as a part of the report
 			final File scaffoldFile = getScaffoldFile(reportData);
+
+			if (!scaffoldFile.exists()) {
+				throw new MprcException("Scaffold file " + scaffoldFile.getAbsolutePath() + " does not exist");
+			}
 
 			// Curation can be obtained from the search definition
 			final int curationId = getCurationId(swiftSearchDefinition);
@@ -139,7 +152,7 @@ public class LoadToSearchDb implements SwiftCommand {
 
 			@Override
 			public void taskChange(TaskBase task) {
-				LOGGER.error("Task " + task.getName() + ": " + task.getState().getText());
+				LOGGER.info("Task " + task.getName() + ": " + task.getState().getText());
 			}
 
 			@Override
