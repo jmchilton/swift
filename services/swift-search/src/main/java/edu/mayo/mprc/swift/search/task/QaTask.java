@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-final class QaTask extends AsyncTaskBase {
+public final class QaTask extends AsyncTaskBase {
 	private List<QaTaskExperiment> experimentList;
 	private QaTaskExperiment currentExperiment;
 	// Folder where to put all the intermediate data

@@ -27,7 +27,7 @@ public final class SearchDbWorkPacket extends WorkPacketBase {
 	private File scaffoldSpectrumReport;
 
 	/**
-	 * Map from raw file name
+	 * Map from raw file name -> metadata about the raw file
 	 */
 	private Map<String, RawFileMetaData> fileMetaDataMap;
 

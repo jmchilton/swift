@@ -10,7 +10,10 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 
-final class RAWDumpTask extends AsyncTaskBase {
+/**
+ * Dumping data from a .RAW file.
+ */
+public final class RAWDumpTask extends AsyncTaskBase {
 	private static final Logger LOGGER = Logger.getLogger(RAWDumpTask.class);
 
 	private File rawFile;

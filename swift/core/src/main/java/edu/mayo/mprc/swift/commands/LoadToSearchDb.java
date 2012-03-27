@@ -4,18 +4,22 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.ResourceConfig;
 import edu.mayo.mprc.config.ServiceConfig;
 import edu.mayo.mprc.daemon.DaemonConnection;
-import edu.mayo.mprc.daemon.WorkPacket;
+import edu.mayo.mprc.daemon.files.FileTokenFactory;
+import edu.mayo.mprc.dbcurator.model.Curation;
 import edu.mayo.mprc.fastadb.FastaDbWorker;
 import edu.mayo.mprc.qa.RAWDumpWorker;
-import edu.mayo.mprc.scaffold3.Scaffold3SpectrumExportWorkPacket;
 import edu.mayo.mprc.scaffold3.Scaffold3Worker;
-import edu.mayo.mprc.scaffoldparser.spectra.ScaffoldSpectraReader;
 import edu.mayo.mprc.searchdb.SearchDbWorker;
 import edu.mayo.mprc.swift.db.SwiftDao;
+import edu.mayo.mprc.swift.dbmapping.FileSearch;
+import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
 import edu.mayo.mprc.swift.search.SwiftSearcher;
-import edu.mayo.mprc.utilities.FileUtilities;
-import edu.mayo.mprc.utilities.progress.ProgressInfo;
-import edu.mayo.mprc.utilities.progress.ProgressListener;
+import edu.mayo.mprc.swift.search.task.*;
+import edu.mayo.mprc.utilities.progress.ProgressReport;
+import edu.mayo.mprc.workflow.engine.SearchMonitor;
+import edu.mayo.mprc.workflow.engine.TaskBase;
+import edu.mayo.mprc.workflow.engine.WorkflowEngine;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -26,14 +30,13 @@ import java.util.List;
  */
 public class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
-	public static final long TIMEOUT = 100;
-	public static final int LOW_PRIORITY = 3;
 
 	private DaemonConnection rawDump;
 	private DaemonConnection scaffold3;
 	private DaemonConnection fastaDb;
 	private DaemonConnection searchDb;
 	private SwiftDao dao;
+	private FileTokenFactory fileTokenFactory;
 
 	@Override
 	public String getName() {
@@ -60,7 +63,7 @@ public class LoadToSearchDb implements SwiftCommand {
 			final SwiftSearcher.Config config = getSearcher(environment);
 			initializeConnections(environment, config);
 
-			Object database = environment.createResource(config.getDatabase());
+			final Object database = environment.createResource(config.getDatabase());
 
 			// This is the input parameter - which report to load into the database
 			final long reportDataId = getReportDataId(environment.getParameter());
@@ -72,66 +75,122 @@ public class LoadToSearchDb implements SwiftCommand {
 		}
 	}
 
-	private void loadData(long reportDataId) {
+	private void loadData(final long reportDataId) {
+		final WorkflowEngine workflowEngine = new WorkflowEngine("load " + reportDataId);
+
 		getDao().begin();
 		try {
+			// Load the information about the search
+			final ReportData reportData = getReportData(reportDataId);
+			final SwiftSearchDefinition swiftSearchDefinition = getSwiftSearchDefinition(reportData);
 
-			// Scaffold file can be looked up using the id of the report
-			final File scaffoldFile = getScaffoldFile(reportDataId);
+			// Scaffold file is defined as a part of the report
+			final File scaffoldFile = getScaffoldFile(reportData);
 
-			// Scaffold spectrum export is easily created by changing the extension
-			final File scaffoldSpectrumExport = new File(
-					scaffoldFile.getParentFile(),
-					FileUtilities.getFileNameWithoutExtension(scaffoldFile) + ScaffoldSpectraReader.EXTENSION);
+			// Curation can be obtained from the search definition
+			final int curationId = getCurationId(swiftSearchDefinition);
 
-			// We will ask Scaffold3 to ensure the spectrum is exported properly
-			final Scaffold3SpectrumExportWorkPacket spectrumExport = new Scaffold3SpectrumExportWorkPacket("export1", false,
-					scaffoldFile, scaffoldSpectrumExport);
+			// Load fasta into database
+			final FastaDbTask fastaDbTask = new FastaDbTask(fastaDb, fileTokenFactory, false, curationId);
+			workflowEngine.addTask(fastaDbTask);
 
-			runJob(scaffold3, spectrumExport);
+			// Export files from Scaffold
+			final ScaffoldSpectraExportTask scaffoldExportTask = new ScaffoldSpectraExportTask(scaffold3, fileTokenFactory, false, scaffoldFile);
+			workflowEngine.addTask(scaffoldExportTask);
 
-//			Map<String, RawFileMetaData> fileMetaDataMap = getFileMetaDataMap();
-//			new SearchDbWorkPacket("searchdb1", false, reportDataId, scaffoldSpectrumExport, fileMetaDataMap);
+			// Load scaffold export into database
+			final SearchDbTask searchDbTask = new SearchDbTask(searchDb, fileTokenFactory, false, reportDataId, scaffoldExportTask.getSpectrumExportFile());
+			searchDbTask.addDependency(scaffoldExportTask);
+			searchDbTask.addDependency(fastaDbTask);
+			workflowEngine.addTask(searchDbTask);
+
+			for (final FileSearch fileSearch : swiftSearchDefinition.getInputFiles()) {
+				// Only load files that made it to Scaffold
+				if (fileSearch.isSearch("SCAFFOLD3") || fileSearch.isSearch("SCAFFOLD")) {
+					final File rawFile = fileSearch.getInputFile();
+					final RAWDumpTask rawDumpTask = new RAWDumpTask(
+							rawFile,
+							new File(swiftSearchDefinition.getOutputFolder(), QaTask.QA_SUBDIRECTORY),
+							rawDump,
+							fileTokenFactory,
+							false);
+
+					searchDbTask.addRawDumpTask(rawDumpTask);
+					searchDbTask.addDependency(rawDumpTask);
+					workflowEngine.addTask(rawDumpTask);
+				}
+			}
 
 			getDao().commit();
 		} catch (Exception e) {
 			getDao().rollback();
 		}
+
+		workflowEngine.addMonitor(new SearchMonitor() {
+			@Override
+			public void updateStatistics(ProgressReport report) {
+				LOGGER.info(report.toString());
+			}
+
+			@Override
+			public void taskChange(TaskBase task) {
+				LOGGER.error("Task " + task.getName() + ": " + task.getState().getText());
+			}
+
+			@Override
+			public void error(TaskBase task, Throwable t) {
+				LOGGER.error(task.getName(), t);
+			}
+
+			@Override
+			public void error(Throwable e) {
+				LOGGER.error("Workflow error", e);
+			}
+
+			@Override
+			public void taskProgress(TaskBase task, Object progressInfo) {
+				LOGGER.info("Task " + task.getName() + " progress: " + progressInfo);
+			}
+		});
+
+		// Run the workflow
+		while (!workflowEngine.isDone()) {
+			workflowEngine.run();
+		}
 	}
 
 	/**
-	 * @param reportDataId Id of a Swift report.
+	 * This can throw an exception if the particular search run does not store configuration data properly.
+	 *
+	 * @param swiftSearchDefinition Definition of swift search to obtain the curation from
+	 * @return Id of the database used for producing the particular report.
+	 */
+	private int getCurationId(final SwiftSearchDefinition swiftSearchDefinition) {
+		final Curation curation = swiftSearchDefinition.getSearchParameters().getDatabase();
+		if (curation == null || curation.getId() == null) {
+			throw new MprcException("The search report does not define a database");
+		}
+		return curation.getId();
+	}
+
+	private SwiftSearchDefinition getSwiftSearchDefinition(final ReportData reportData) {
+		final Integer swiftSearchDefinitionId = reportData.getSearchRun().getSwiftSearch();
+		if (swiftSearchDefinitionId == null) {
+			throw new MprcException("The search report does not define search parameters");
+		}
+		return dao.getSwiftSearchDefinition(swiftSearchDefinitionId);
+	}
+
+	/**
+	 * @param reportData Data about the report, obtain using {@link #getReportData(long)}
 	 * @return Scaffold file (.sf3 or .sfd) for a particular report id.
 	 */
-	private File getScaffoldFile(final long reportDataId) {
-		return dao.getReportForId(reportDataId).getReportFile();
+	private File getScaffoldFile(final ReportData reportData) {
+		return reportData.getReportFile();
 	}
 
-	/**
-	 * Will send given job to given connection and wait until it completes.
-	 *
-	 * @param daemonConnection Daemon to send work to.
-	 * @param workPacket       Work to be performed.
-	 */
-	private void runJob(final DaemonConnection daemonConnection, final WorkPacket workPacket) {
-		final WorkProgress listener = new WorkProgress(workPacket);
-		daemonConnection.sendWork(workPacket, LOW_PRIORITY, listener);
-		while (true) {
-			synchronized (listener.getLock()) {
-				try {
-					listener.getLock().wait(TIMEOUT);
-					if (listener.isFinished()) {
-						break;
-					}
-				} catch (InterruptedException e) {
-					LOGGER.error("Interrupted waiting for the job to complete");
-					break;
-				}
-			}
-		}
-		if (listener.getError() != null) {
-			throw new MprcException(listener.getError());
-		}
+	private ReportData getReportData(final long reportDataId) {
+		return dao.getReportForId(reportDataId);
 	}
 
 	/**
@@ -147,7 +206,7 @@ public class LoadToSearchDb implements SwiftCommand {
 	}
 
 	private SwiftSearcher.Config getSearcher(final SwiftEnvironment environment) {
-		final List<ResourceConfig> searchers = environment.getDaemonConfig().getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
+		final List<ResourceConfig> searchers = environment.getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
 		if (searchers.size() != 1) {
 			throw new MprcException("More than one Swift Searcher defined in this Swift install");
 		}
@@ -177,60 +236,11 @@ public class LoadToSearchDb implements SwiftCommand {
 		this.dao = dao;
 	}
 
-	private static class WorkProgress implements ProgressListener {
-		private Exception error;
-		private final WorkPacket workPacket;
-		private boolean finished = false;
-		private final Object lock = new Object();
+	public FileTokenFactory getFileTokenFactory() {
+		return fileTokenFactory;
+	}
 
-		public WorkProgress(final WorkPacket workPacket) {
-			this.workPacket = workPacket;
-		}
-
-		public Object getLock() {
-			return lock;
-		}
-
-		public boolean isFinished() {
-			return finished;
-		}
-
-		public Exception getError() {
-			return error;
-		}
-
-		@Override
-		public void requestEnqueued(final String hostString) {
-			LOGGER.info(workPacket.getTaskId() + ": work enqueued");
-		}
-
-		@Override
-		public void requestProcessingStarted() {
-			LOGGER.info(workPacket.getTaskId() + ": processing started");
-		}
-
-		@Override
-		public void requestProcessingFinished() {
-			LOGGER.info(workPacket.getTaskId() + ": processing finished");
-			synchronized (lock) {
-				finished = true;
-				lock.notifyAll();
-			}
-		}
-
-		@Override
-		public void requestTerminated(final Exception e) {
-			synchronized (lock) {
-				error = e;
-				finished = true;
-				LOGGER.error(workPacket.getTaskId() + ": error - " + error);
-				lock.notifyAll();
-			}
-		}
-
-		@Override
-		public void userProgressInformation(final ProgressInfo progressInfo) {
-			LOGGER.debug(progressInfo);
-		}
+	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
+		this.fileTokenFactory = fileTokenFactory;
 	}
 }

@@ -16,6 +16,16 @@ public class FastaDbTask extends AsyncTaskBase {
 	private int curationIdToLoad;
 
 	/**
+	 * Does not require the curation to be loaded at the expense of having uglier description.
+	 */
+	public FastaDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final int curationIdToLoad) {
+		super(daemon, fileTokenFactory, fromScratch);
+		this.curationIdToLoad = curationIdToLoad;
+		setName("Fasta DB load");
+		setDescription("Load curation #" + curationIdToLoad + " to database.");
+	}
+
+	/**
 	 * See {@link AsyncTaskBase#AsyncTaskBase(edu.mayo.mprc.daemon.DaemonConnection, edu.mayo.mprc.daemon.files.FileTokenFactory, boolean)}
 	 */
 	public FastaDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Curation curationToLoad) {

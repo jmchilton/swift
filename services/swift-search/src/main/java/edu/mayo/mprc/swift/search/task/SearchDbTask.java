@@ -18,11 +18,27 @@ import java.util.Map;
  *
  * @author Roman Zenka
  */
-public class SearchDbTask extends AsyncTaskBase {
+public final class SearchDbTask extends AsyncTaskBase {
 
 	private Scaffold3Task scaffold3Task;
+	private Long reportId;
+	private File scaffoldSpectraFile;
 	private Map<String, RAWDumpTask> rawDumpTaskMap = new HashMap<String, RAWDumpTask>(5);
 
+	/**
+	 * Create the task independently on Scaffold invocation.
+	 */
+	public SearchDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Long reportId, final File scaffoldSpectraFile) {
+		super(daemon, fileTokenFactory, fromScratch);
+		setReportId(reportId);
+		setScaffoldSpectraFile(scaffoldSpectraFile);
+		setName("SearchDb");
+		setDescription("Load " + fileTokenFactory.fileToTaggedDatabaseToken(getScaffoldSpectraFile()) + " into database");
+	}
+
+	/**
+	 * Create the task that depends on Scaffold invocation.
+	 */
 	public SearchDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Scaffold3Task scaffold3Task) {
 		super(daemon, fileTokenFactory, fromScratch);
 		this.scaffold3Task = scaffold3Task;
@@ -42,7 +58,29 @@ public class SearchDbTask extends AsyncTaskBase {
 	}
 
 	private File getScaffoldSpectraFile() {
-		return scaffold3Task.getScaffoldSpectraFile();
+		return scaffoldSpectraFile == null ? scaffold3Task.getScaffoldSpectraFile() : scaffoldSpectraFile;
+	}
+
+	/**
+	 * Override the spectra file if the scaffold3 task is not available.
+	 *
+	 * @param scaffoldSpectraFile Scaffold spectra file to load.
+	 */
+	public void setScaffoldSpectraFile(File scaffoldSpectraFile) {
+		this.scaffoldSpectraFile = scaffoldSpectraFile;
+	}
+
+	private Long getReportId() {
+		return reportId == null ? scaffold3Task.getReportData().getId() : reportId;
+	}
+
+	/**
+	 * Override the report id if scaffold task is not available.
+	 *
+	 * @param reportId Report ID to link to
+	 */
+	public void setReportId(Long reportId) {
+		this.reportId = reportId;
 	}
 
 	@Override
@@ -60,7 +98,7 @@ public class SearchDbTask extends AsyncTaskBase {
 			metaDataMap.put(entry.getKey(), metaData);
 		}
 
-		return new SearchDbWorkPacket(getFullId(), isFromScratch(), scaffold3Task.getReportData().getId(), getScaffoldSpectraFile(), metaDataMap);
+		return new SearchDbWorkPacket(getFullId(), isFromScratch(), getReportId(), getScaffoldSpectraFile(), metaDataMap);
 	}
 
 	@Override

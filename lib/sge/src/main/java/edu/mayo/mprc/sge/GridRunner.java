@@ -201,7 +201,11 @@ public final class GridRunner extends AbstractRunner {
 						}
 					} else if (w.getFailed()) {
 						// This is the last response we will send - request failed
-						sendResponse(request, new DaemonException(w.getErrorMessage()), true);
+						if (allocatorListener.getLastThrowable() == null) {
+							sendResponse(request, new DaemonException(w.getErrorMessage()), true);
+						} else {
+							sendResponse(request, new DaemonException(w.getErrorMessage(), allocatorListener.getLastThrowable()), true);
+						}
 					}
 					reported = true;
 

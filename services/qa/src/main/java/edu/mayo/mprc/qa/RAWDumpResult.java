@@ -5,6 +5,9 @@ import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
 
+/**
+ * Result of the RAW dump operation - a slew of files containing metadata about the .RAW file.
+ */
 public final class RAWDumpResult extends FileHolder implements ProgressInfo {
 	private static final long serialVersionUID = 20101221L;
 	private File rawInfoFile;
