@@ -168,7 +168,7 @@ public final class ScaffoldModificationFormat {
 	private ModSpecificity matchScaffoldMod(final String position, final String title, final String deltaString, final double delta, final char residue, final Terminus terminus) {
 		final Collection<ModSpecificity> matchingModSpecificities = scaffoldModSet.findMatchingModSpecificities(delta, MOD_DELTA_PRECISION, residue, terminus, null, null);
 
-		final String effectiveTitle = fixTandemPyro(title, residue, terminus);
+		final String effectiveTitle = fixHydroxylation(fixTandemPyro(title, residue, terminus), residue);
 
 		for (final ModSpecificity specificity : matchingModSpecificities) {
 			if (effectiveTitle.equalsIgnoreCase(specificity.getModification().getTitle())) {
@@ -176,6 +176,20 @@ public final class ScaffoldModificationFormat {
 			}
 		}
 		throw new MprcException("Could not find a modification: [" + position + ": " + title + "(" + deltaString + ")]");
+	}
+
+	/**
+	 * Hack. Scaffold reports oxidation as hydroxylation, hydroxylation of M is not defined.
+	 *
+	 * @param title   Modification title.
+	 * @param residue Residue themod occured at.
+	 * @return Foxed "Hydroxylation" to "Oxidation" where applicable.
+	 */
+	private String fixHydroxylation(final String title, final char residue) {
+		if ("Hydroxylation".equalsIgnoreCase(title) && residue == 'M') {
+			return "Oxidation";
+		}
+		return title;
 	}
 
 	/**
