@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.fastadb.ProteinSequence;
@@ -35,6 +36,10 @@ public class TestScaffoldSpectraSummarizer {
 
 	private static final String LARGE = "classpath:edu/mayo/mprc/searchdb/large.tsv";
 	private static final String LARGE_EXPECTED = "/edu/mayo/mprc/searchdb/expected_large_report.tsv";
+
+	static final String SINGLE_MISSING_DB = "classpath:edu/mayo/mprc/searchdb/single_missing_db.tsv";
+	// Should parse to identical result as SINGLE
+	static final String SINGLE_MISSING_DB_EXPECTED = SINGLE_EXPECTED;
 
 	private static final double EPSILON = 1E-6;
 
@@ -150,6 +155,28 @@ public class TestScaffoldSpectraSummarizer {
 	}
 
 	/**
+	 * A report with missing source database field should be loaded correctly.
+	 */
+	@Test
+	public void shouldLoadMissingDatabaseReport() {
+		final InputStream stream = ResourceUtilities.getStream(SINGLE_MISSING_DB, TestScaffoldSpectraSummarizer.class);
+		try {
+			final ScaffoldSpectraSummarizer summarizer = makeSummarizer();
+			summarizer.load(stream, -1, SINGLE_MISSING_DB, "3", null);
+			final Analysis analysis = summarizer.getAnalysis();
+			Assert.assertEquals(analysis.getAnalysisDate(), new DateTime(2011, 12, 16, 0, 0, 0, 0), "Report date");
+			Assert.assertEquals(analysis.getScaffoldVersion(), "Scaffold_3.3.1", "Scaffold version");
+
+			Assert.assertEquals(analysis.getBiologicalSamples().size(), 1, "Biological samples");
+
+			checkAnalysisMatch(analysis, SINGLE_MISSING_DB_EXPECTED);
+		} finally {
+			FileUtilities.closeQuietly(stream);
+		}
+	}
+
+
+	/**
 	 * The report from a given analysis has to match the expected values.
 	 *
 	 * @param analysis         Analysis to check.
@@ -176,6 +203,12 @@ public class TestScaffoldSpectraSummarizer {
 
 		@Override
 		public ProteinSequence getProteinSequence(final String accessionNumber, final String databaseSources) {
+			if (Strings.isNullOrEmpty(databaseSources)) {
+				throw new MprcException("Database was null");
+			}
+			if (Strings.isNullOrEmpty(accessionNumber)) {
+				throw new MprcException("Unspecified accession number");
+			}
 			return new ProteinSequence("CAT");
 		}
 	}

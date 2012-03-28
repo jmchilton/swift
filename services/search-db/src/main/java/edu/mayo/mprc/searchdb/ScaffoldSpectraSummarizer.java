@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.chem.AminoAcidSet;
 import edu.mayo.mprc.fastadb.ProteinSequenceTranslator;
@@ -18,6 +19,8 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Summarizes Scaffold spectra report into a collection of objects suitable to be loaded into the database.
@@ -33,15 +36,19 @@ import java.util.Locale;
 public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 	private static final String REPORT_DATE_PREFIX_KEY = "Spectrum report created on ";
 	private static final String SCAFFOLD_VERSION_KEY = ScaffoldSpectraVersion.SCAFFOLD_VERSION_KEY;
+	private static final String DATABASE_NAME_KEY = "Database Name";
 	private static final Splitter SPLITTER = Splitter.on('\t').trimResults();
 	private static final double HUNDRED_PERCENT = 100.0;
 	private static final AminoAcidSet SUPPORTED_AMINO_ACIDS = AminoAcidSet.DEFAULT;
+	private static final Pattern DATABASE_REGEX = Pattern.compile("the (.*) database");
 
 	/**
 	 * To parse Scaffold-reported mods.
 	 */
 	private ScaffoldModificationFormat format;
 	private AnalysisBuilder analysis;
+	// Name of the database from the file header
+	private String databaseName;
 
 	// Current line parsed into columns, with data in fields trimmed
 	private String[] currentLine;
@@ -111,8 +118,37 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 			}
 		} else if (SCAFFOLD_VERSION_KEY.equalsIgnoreCase(key)) {
 			analysis.setScaffoldVersion(value);
+		} else if (DATABASE_NAME_KEY.equalsIgnoreCase(key)) {
+			databaseName = extractDatabaseName(value);
 		}
 		return true;
+	}
+
+	/**
+	 * Extract database name from Scaffold export. The database is specified as "the WHATEVER database"
+	 *
+	 * @param value String to extract the name from.
+	 * @return Extracted database name.
+	 */
+	static String extractDatabaseName(final String value) {
+		final Matcher matcher = DATABASE_REGEX.matcher(value);
+		if (matcher.matches()) {
+			return addFastaSuffix(matcher.group(1));
+		}
+		return addFastaSuffix(value);
+	}
+
+	/**
+	 * Add a .fasta suffix to a string if it does not have it already.
+	 *
+	 * @param value Value to add suffix to.
+	 * @return Value with suffix added.
+	 */
+	static String addFastaSuffix(final String value) {
+		if (value.endsWith(".fasta")) {
+			return value;
+		}
+		return value + ".fasta";
 	}
 
 	/**
@@ -196,7 +232,7 @@ public class ScaffoldSpectraSummarizer extends ScaffoldSpectraReader {
 		final SearchResultBuilder searchResult = biologicalSample.getSearchResults().getTandemMassSpecResult(FileUtilities.stripGzippedExtension(currentLine[msmsSampleName]));
 		final ProteinGroupBuilder proteinGroup = searchResult.getProteinGroups().getProteinGroup(
 				currentLine[proteinAccessionNumbers],
-				currentLine[databaseSources],
+				Strings.isNullOrEmpty(currentLine[databaseSources]) ? databaseName : currentLine[databaseSources],
 
 				parseInt(currentLine[numberOfTotalSpectra]),
 				parseInt(currentLine[numberOfUniquePeptides]),
