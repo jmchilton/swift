@@ -11,6 +11,7 @@ import edu.mayo.mprc.fastadb.FastaDbWorker;
 import edu.mayo.mprc.qa.RAWDumpWorker;
 import edu.mayo.mprc.scaffold3.Scaffold3Worker;
 import edu.mayo.mprc.searchdb.SearchDbWorker;
+import edu.mayo.mprc.searchdb.dao.SearchDbDao;
 import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.FileSearch;
@@ -26,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.Interval;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -39,6 +41,7 @@ public class LoadToSearchDb implements SwiftCommand {
 	private DaemonConnection fastaDb;
 	private DaemonConnection searchDb;
 	private SwiftDao dao;
+	private SearchDbDao searchDbDao;
 	private FileTokenFactory fileTokenFactory;
 
 	@Override
@@ -72,9 +75,15 @@ public class LoadToSearchDb implements SwiftCommand {
 			final Object database = environment.createResource(config.getDatabase());
 
 			// This is the input parameter - which report to load into the database
-			final long reportDataId = getReportDataId(environment.getParameter());
+			final String loadParameter = environment.getParameter();
 
-			loadData(reportDataId);
+			if ("all".equalsIgnoreCase(loadParameter)) {
+				loadAllData();
+			} else {
+				final long reportDataId = getReportDataId(loadParameter);
+
+				loadData(reportDataId);
+			}
 
 			final long end = System.currentTimeMillis();
 
@@ -85,6 +94,32 @@ public class LoadToSearchDb implements SwiftCommand {
 
 		} catch (Exception e) {
 			throw new MprcException("Could not load into Swift search database", e);
+		}
+	}
+
+	private void loadAllData() {
+		List<Long> reportsWithoutAnalysis;
+		getSearchDbDao().begin();
+		try {
+			reportsWithoutAnalysis = getSearchDbDao().getReportIdsWithoutAnalysis();
+			getSearchDbDao().commit();
+		} catch (Exception e) {
+			getSearchDbDao().rollback();
+			throw new MprcException("Could not obtain the list of reports to load", e);
+		}
+
+		final int totalReports = reportsWithoutAnalysis.size();
+		LOGGER.info("Total reports with analysis missing: " + totalReports);
+		int count = 0;
+		for (Long reportId : reportsWithoutAnalysis) {
+			count++;
+			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalReports));
+			try {
+				loadData(reportId);
+			} catch (Exception e) {
+				// SWALLOWED: We keep going
+				LOGGER.error("Could not load", e);
+			}
 		}
 	}
 
@@ -252,6 +287,14 @@ public class LoadToSearchDb implements SwiftCommand {
 
 	public void setDao(final SwiftDao dao) {
 		this.dao = dao;
+	}
+
+	public SearchDbDao getSearchDbDao() {
+		return searchDbDao;
+	}
+
+	public void setSearchDbDao(SearchDbDao searchDbDao) {
+		this.searchDbDao = searchDbDao;
 	}
 
 	public FileTokenFactory getFileTokenFactory() {
