@@ -182,12 +182,12 @@ public class LoadToSearchDb implements SwiftCommand {
 		workflowEngine.addMonitor(new SearchMonitor() {
 			@Override
 			public void updateStatistics(ProgressReport report) {
-				LOGGER.info(report.toString());
+				LOGGER.debug(report.toString());
 			}
 
 			@Override
 			public void taskChange(TaskBase task) {
-				LOGGER.info("Task " + task.getName() + ": " + task.getState().getText());
+				LOGGER.debug("Task " + task.getName() + ": " + task.getState().getText());
 			}
 
 			@Override
@@ -202,7 +202,7 @@ public class LoadToSearchDb implements SwiftCommand {
 
 			@Override
 			public void taskProgress(TaskBase task, Object progressInfo) {
-				LOGGER.info("Task " + task.getName() + " progress: " + progressInfo);
+				LOGGER.debug("Task " + task.getName() + " progress: " + progressInfo);
 			}
 		});
 
