@@ -162,7 +162,7 @@
                 <entry key="hibernate.transaction.factory_class"
                        value="${hibernate.transaction.factory_class}"/>
                 <entry key="hibernate.cache.provider_class" value="${hibernate.cache.provider_class}"/>
-                <entry key="hibernate.jdbc.batch_size" value="0"/>
+                <entry key="hibernate.jdbc.batch_size" value="20"/>
                 <entry key="hibernate.c3p0.min_size" value="5"/>
                 <entry key="hibernate.c3p0.max_size" value="20"/>
                 <entry key="hibernate.c3p0.timeout" value="6000"/>
