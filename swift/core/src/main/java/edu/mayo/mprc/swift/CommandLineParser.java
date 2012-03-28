@@ -81,7 +81,7 @@ public final class CommandLineParser {
 	 * @param toParse String to parse.
 	 */
 	public String[] parseRun(final String toParse) {
-		final int firstSpace = toParse.indexOf(' ');
+		final int firstSpace = toParse.indexOf(':');
 		final String[] result = new String[2];
 		if (firstSpace >= 0) {
 			result[0] = toParse.substring(0, firstSpace).trim();
