@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * @author Roman Zenka
  */
 public final class ScaffoldModificationFormat {
-	private static final double MOD_DELTA_PRECISION = 0.005;
+	private static final double MOD_DELTA_PRECISION = 0.01;
 	private static final String PYRO_CMC = "Pyro-cmC";
 	private IndexedModSet modSet;
 	private IndexedModSet scaffoldModSet;
