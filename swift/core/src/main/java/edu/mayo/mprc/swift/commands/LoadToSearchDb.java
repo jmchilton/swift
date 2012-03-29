@@ -116,6 +116,7 @@ public class LoadToSearchDb implements SwiftCommand {
 			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalReports));
 			try {
 				loadData(reportId);
+				LOGGER.info(MessageFormat.format("Report #{0} loaded successfully", reportId));
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
 				LOGGER.error("Could not load", e);
