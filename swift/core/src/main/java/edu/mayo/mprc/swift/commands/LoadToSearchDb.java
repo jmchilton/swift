@@ -28,6 +28,7 @@ import org.joda.time.Interval;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
+	public static final int BATCH_SIZE = 100;
 
 	private DaemonConnection rawDump;
 	private DaemonConnection scaffold3;
@@ -82,7 +84,12 @@ public class LoadToSearchDb implements SwiftCommand {
 			} else {
 				final long reportDataId = getReportDataId(loadParameter);
 
-				loadData(reportDataId);
+				WorkflowEngine workflowEngine = loadData(reportDataId);
+
+				// Run the workflow
+				while (!workflowEngine.isDone()) {
+					workflowEngine.run();
+				}
 			}
 
 			final long end = System.currentTimeMillis();
@@ -111,20 +118,45 @@ public class LoadToSearchDb implements SwiftCommand {
 		final int totalReports = reportsWithoutAnalysis.size();
 		LOGGER.info("Total reports with analysis missing: " + totalReports);
 		int count = 0;
+		List<WorkflowEngine> engines = new ArrayList<WorkflowEngine>(100);
 		for (Long reportId : reportsWithoutAnalysis) {
 			count++;
 			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalReports));
 			try {
-				loadData(reportId);
+				final WorkflowEngine engine = loadData(reportId);
+				engines.add(engine);
 				LOGGER.info(MessageFormat.format("Report #{0} loaded successfully", reportId));
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
 				LOGGER.error("Could not load", e);
 			}
+			if (engines.size() == BATCH_SIZE) {
+				runTillDone(engines);
+			}
+		}
+		runTillDone(engines);
+	}
+
+	private void runTillDone(final List<WorkflowEngine> engines) {
+		while (true) {
+			if (runEngines(engines) == true) {
+				break;
+			}
 		}
 	}
 
-	private void loadData(final long reportDataId) {
+	private boolean runEngines(final List<WorkflowEngine> engines) {
+		boolean allDone = true;
+		for (WorkflowEngine engine : engines) {
+			if (!engine.isDone()) {
+				allDone = false;
+				engine.run();
+			}
+		}
+		return allDone;
+	}
+
+	private WorkflowEngine loadData(final long reportDataId) {
 		final WorkflowEngine workflowEngine = new WorkflowEngine("load " + reportDataId);
 
 		getDao().begin();
@@ -183,34 +215,30 @@ public class LoadToSearchDb implements SwiftCommand {
 		workflowEngine.addMonitor(new SearchMonitor() {
 			@Override
 			public void updateStatistics(ProgressReport report) {
-				LOGGER.debug(report.toString());
+				LOGGER.debug(reportDataId + ":" + report.toString());
 			}
 
 			@Override
 			public void taskChange(TaskBase task) {
-				LOGGER.debug("Task " + task.getName() + ": " + task.getState().getText());
+				LOGGER.debug(reportDataId + ":" + "Task " + task.getName() + ": " + task.getState().getText());
 			}
 
 			@Override
 			public void error(TaskBase task, Throwable t) {
-				LOGGER.error(task.getName(), t);
+				LOGGER.error(reportDataId + ":" + task.getName(), t);
 			}
 
 			@Override
 			public void error(Throwable e) {
-				LOGGER.error("Workflow error", e);
+				LOGGER.error(reportDataId + ":" + "Workflow error", e);
 			}
 
 			@Override
 			public void taskProgress(TaskBase task, Object progressInfo) {
-				LOGGER.debug("Task " + task.getName() + " progress: " + progressInfo);
+				LOGGER.debug(reportDataId + ":" + "Task " + task.getName() + " progress: " + progressInfo);
 			}
 		});
-
-		// Run the workflow
-		while (!workflowEngine.isDone()) {
-			workflowEngine.run();
-		}
+		return workflowEngine;
 	}
 
 	/**
