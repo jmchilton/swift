@@ -319,9 +319,34 @@ public class IndexedModSet implements Set<Mod> {
 			if (expectedSite == null) {
 				return 1;
 			}
+
+			final char site = Character.toUpperCase(expectedSite);
+
 			if (sp.getSite().equals(expectedSite)) {
 				return 10;
 			}
+			// We do not have an exact match. Let's go down by priority.
+
+			// - Handle asp/asn ambiguity
+			if ('B' == site) {
+				if (sp.getSite().equals('D') || sp.getSite().equals('N')) {
+					return 7;
+				}
+			}
+
+			// - Handle glu/gln ambiguity
+			if ('Z' == site) {
+				if (sp.getSite().equals('E') || sp.getSite().equals('Q')) {
+					return 7;
+				}
+			}
+
+			// - the site denotes any amino acid.
+			if ('X' == site) {
+				return 6;
+			}
+
+			// - the mod is not specific to a particular amino acid
 			if (!sp.isSiteSpecificAminoAcid()) {
 				return 5;
 			}

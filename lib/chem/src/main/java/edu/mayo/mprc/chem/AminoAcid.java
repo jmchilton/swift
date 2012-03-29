@@ -42,7 +42,7 @@ public final class AminoAcid {
 		return formula;
 	}
 
-	public static class GetCode implements Function<AminoAcid, Character> {
+	public static final class GetCode implements Function<AminoAcid, Character> {
 		@Override
 		public Character apply(final AminoAcid from) {
 			return from.getCode();

@@ -11,6 +11,12 @@ import java.util.TreeSet;
 
 /**
  * Class represents the whole set of defined amino acids.
+ * <p/>
+ * Source for default monoisotopic masses:
+ * Protein Calculator 2.0.2.0614, Thermo Scientific
+ * <p/>
+ * Source for default average masses:
+ * http://education.expasy.org/student_projects/isotopident/htdocs/aa-list.html
  */
 public final class AminoAcidSet {
 
@@ -21,16 +27,9 @@ public final class AminoAcidSet {
 	public static final AminoAcidSet DEFAULT = new AminoAcidSet();
 	private static final int AA_REPORT_SIZE = 5000;
 
-
-	/**
-	 * Source for monoisotopic masses:
-	 * Protein Calculator 2.0.2.0614, Thermo Scientific
-	 * <p/>
-	 * Source for average masses:
-	 * http://education.expasy.org/student_projects/isotopident/htdocs/aa-list.html
-	 */
 	public AminoAcidSet() {
-		final ImmutableList<AminoAcid> aminoAcidList = new ImmutableList.Builder<AminoAcid>()
+		final ImmutableList.Builder<AminoAcid> aminoAcidBuilder = new ImmutableList.Builder<AminoAcid>();
+		aminoAcidBuilder
 				.add(new AminoAcid('G', "Gly", "C2H3ON", 57.021464, 57.0519))
 				.add(new AminoAcid('A', "Ala", "C3H5ON", 71.037114, 71.0788))
 				.add(new AminoAcid('S', "Ser", "C3H5O2N", 87.032028, 87.0782))
@@ -51,7 +50,11 @@ public final class AminoAcidSet {
 				.add(new AminoAcid('R', "Arg", "C6H12ON4", 156.101111, 156.1875))
 				.add(new AminoAcid('Y', "Tyr", "C9H9O2N", 163.063328, 163.1760))
 				.add(new AminoAcid('W', "Trp", "C11H10ON2", 186.079313, 186.2132))
-				.build();
+				.add(new AminoAcid('B', "Asx", "C4H?O?N?", 0.0, 0.0))
+				.add(new AminoAcid('Z', "Glx", "C5H?N?O?", 0.0, 0.0))
+				.add(new AminoAcid('X', "Xaa", "?", 0.0, 0.0));
+
+		final ImmutableList<AminoAcid> aminoAcidList = aminoAcidBuilder.build();
 
 		data = Maps.uniqueIndex(aminoAcidList, AminoAcid.GET_CODE);
 

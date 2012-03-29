@@ -109,6 +109,35 @@ public final class TestScaffoldModificationFormat {
 	}
 
 	/**
+	 * Scaffold tends to report Hydroxylation(interim name) instead of preferred Oxidation.
+	 */
+	@Test
+	public void shouldFixHydroxylation() {
+		checkSingleMod(
+				format.parseModifications("QMSVEADINGLR", "m2: Hydroxylation (+15.99)", ""),
+				"Oxidation", 15.99, 1, 'M');
+	}
+
+	/**
+	 * Unknown or non-specific amino acids need to be properly parsed.
+	 */
+	@Test
+	public void shouldFixUnknownAminoAcid() {
+		checkSingleMod(
+				format.parseModifications("EDEEESLNEVGYDDIGGXR", "x18: Carbamidomethyl (+57.02)", ""),
+				"Carbamidomethyl", 57.02, 17, 'X');
+
+		checkSingleMod(
+				format.parseModifications("EDEEESLNEVGYDDIGGBR", "b18: Carbamidomethyl (+57.02)", ""),
+				"Carbamidomethyl", 57.02, 17, 'B');
+
+		checkSingleMod(
+				format.parseModifications("EDEEESLNEVGYDDIGGZR", "z18: Carbamidomethyl (+57.02)", ""),
+				"Carbamidomethyl", 57.02, 17, 'Z');
+
+	}
+
+	/**
 	 * Check single expected mod for parse errors.
 	 *
 	 * @param mods         Set of modifications. There should be just one.
