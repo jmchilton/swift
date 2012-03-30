@@ -2,10 +2,7 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.RuntimeInitializer;
-import edu.mayo.mprc.database.DaoBase;
-import edu.mayo.mprc.database.DatabasePlaceholder;
-import edu.mayo.mprc.database.PersistableBagBase;
-import edu.mayo.mprc.database.PersistableSetBase;
+import edu.mayo.mprc.database.*;
 import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
@@ -336,9 +333,9 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 * @param <T> Type of the list, must extend {@link PersistableBagBase}
 	 * @return Saved list (or the same one in case it was saved already).
 	 */
-	private <T extends PersistableBagBase<?>> T addBag(final T bag) {
+	private <T extends PersistableHashedBagBase<?>> T addBag(final T bag) {
 		if (bag.getId() == null) {
-			return updateCollection(bag, bag.getList(), "list");
+			return updateHashedBag(bag);
 		}
 		return bag;
 	}
@@ -350,9 +347,9 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 * @param <T> Type of the list, must extend {@link PersistableBagBase}
 	 * @return Saved list (or the same one in case it was saved already).
 	 */
-	private <T extends PersistableSetBase<?>> T addSet(final T set) {
+	private <T extends PersistableHashedSetBase<?>> T addSet(final T set) {
 		if (set.getId() == null) {
-			return updateCollection(set, set.getList(), "list");
+			return updateHashedSet(set);
 		}
 		return set;
 	}

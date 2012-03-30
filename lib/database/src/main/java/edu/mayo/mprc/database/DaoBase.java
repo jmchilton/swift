@@ -187,37 +187,49 @@ public abstract class DaoBase implements Dao {
 	}
 
 	/**
-	 * Adds a collection object, making sure we do not store the same collection twice.
+	 * Adds a hashed set object, making sure we do not store the same cbag twice.
 	 * An additional field is used for storing a hash key for the collection. This is used to optimize the equality checking.
 	 *
-	 * @param owner      The owner object to be added to the database.
-	 * @param collection The collection of elements the owner object contains. Two owners are considered identical if they contain
-	 *                   the same collection.
-	 * @param setField   Name of the field under which is the collection stored to the database.
-	 * @param hashField  The field containing the hash for the collection.
+	 * @param bag The set to update.
 	 */
-	protected <T extends PersistableBase, S extends PersistableBase> T updateHashedCollection(final T owner, final HashedCollection<S> collection, final String setField, final String hashField) {
+	protected <T extends PersistableHashedBagBase> T updateHashedBag(T bag) {
 		final Session session = getSession();
-		if (owner == null) {
-			throw new MprcException("The owner of the collection must not be null");
-		}
-		if (owner.getId() != null) {
-			throw new MprcException("The collection is already saved in the database.");
-		}
-		final String className = owner.getClass().getName();
 
-		final long hash = calculateHash(collection);
-		collection.setHash(hash);
+		final long hash = calculateHash(bag.getList());
+		bag.setHash(hash);
 
-		final T existing = (T) getMatchingCollection(collection, setField, hashField, className, hash);
+		final T existing = (T) getMatchingCollection(bag, "list", "hash", bag.getClass().getName(), hash);
 
 		if (existing != null) {
 			// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-			return updateSavedItem(existing, owner, session);
+			return updateSavedItem(existing, bag, session);
 		}
 
-		session.save(owner);
-		return owner;
+		session.save(bag);
+		return bag;
+	}
+
+	/**
+	 * Adds a hashed set object, making sure we do not store the same cbag twice.
+	 * An additional field is used for storing a hash key for the collection. This is used to optimize the equality checking.
+	 *
+	 * @param set The set to update.
+	 */
+	protected <T extends PersistableHashedSetBase> T updateHashedSet(T set) {
+		final Session session = getSession();
+
+		final long hash = calculateHash(set.getList());
+		set.setHash(hash);
+
+		final T existing = (T) getMatchingCollection(set, "list", "hash", set.getClass().getName(), hash);
+
+		if (existing != null) {
+			// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
+			return updateSavedItem(existing, set, session);
+		}
+
+		session.save(set);
+		return set;
 	}
 
 	private PersistableBase getMatchingEmptyCollection(final String setField, final String className) {
@@ -255,7 +267,7 @@ public abstract class DaoBase implements Dao {
 		final Session session = getSession();
 
 		final List ts = session.createQuery(
-				"select s." + setField + " from " + className + " as s where s." + hashField + "=:hash")
+				"select s from " + className + " as s where s." + hashField + "=:hash")
 				.setParameter("hash", hash)
 				.list();
 
