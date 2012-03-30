@@ -275,7 +275,7 @@ public abstract class DaoBase implements Dao {
 		for (final Object object : ts) {
 			if (object instanceof PersistableBase) {
 				if (result == null) {
-					if (result.equals(collection)) {
+					if (object.equals(collection)) {
 						result = (PersistableBase) object;
 					}
 				} else {
