@@ -12,11 +12,11 @@ import java.util.List;
  *
  * @author Roman Zenka
  */
-public class TestPersistableList {
+public class TestPersistableBag {
 	@Test
 	public void emptyListsAreEqual() {
-		final ObjectList list1 = new ObjectList();
-		final ObjectList list2 = new ObjectList();
+		final ObjectBag list1 = new ObjectBag();
+		final ObjectBag list2 = new ObjectBag();
 		Assert.assertEquals(list1, list2, "Empty lists must be equal");
 	}
 
@@ -25,11 +25,11 @@ public class TestPersistableList {
 		final TestPersistable t1 = new TestPersistable(1);
 		final TestPersistable t2 = new TestPersistable(2);
 
-		final ObjectList list1 = new ObjectList();
+		final ObjectBag list1 = new ObjectBag();
 		list1.add(t1);
 		list1.add(t2);
 
-		final ObjectList list2 = new ObjectList();
+		final ObjectBag list2 = new ObjectBag();
 		list2.add(t2);
 		list2.add(t1);
 
@@ -41,11 +41,11 @@ public class TestPersistableList {
 		final TestPersistable t1 = new TestPersistable(1);
 		final TestPersistable t2 = new TestPersistable(2);
 
-		final ObjectList list1 = new ObjectList();
+		final ObjectBag list1 = new ObjectBag();
 		list1.add(t1);
 		list1.add(t2);
 
-		final ObjectList list2 = new ObjectList();
+		final ObjectBag list2 = new ObjectBag();
 		final List<TestPersistable> myList = new ArrayList<TestPersistable>(2);
 		myList.add(t2);
 		myList.add(t1);
@@ -86,15 +86,15 @@ public class TestPersistableList {
 		}
 	}
 
-	private class ObjectList extends PersistableListBase<TestPersistable> {
-		private ObjectList() {
+	private class ObjectBag extends PersistableBagBase<TestPersistable> {
+		private ObjectBag() {
 		}
 
-		private ObjectList(final int initialCapacity) {
+		private ObjectBag(final int initialCapacity) {
 			super(initialCapacity);
 		}
 
-		private ObjectList(final Collection<TestPersistable> items) {
+		private ObjectBag(final Collection<TestPersistable> items) {
 			super(items);
 		}
 	}

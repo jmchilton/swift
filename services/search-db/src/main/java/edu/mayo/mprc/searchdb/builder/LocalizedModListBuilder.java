@@ -1,13 +1,13 @@
 package edu.mayo.mprc.searchdb.builder;
 
-import edu.mayo.mprc.searchdb.dao.LocalizedModList;
+import edu.mayo.mprc.searchdb.dao.LocalizedModBag;
 
 /**
  * @author Roman Zenka
  */
-public class LocalizedModListBuilder implements Builder<LocalizedModList> {
-    @Override
-    public LocalizedModList build() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+public class LocalizedModListBuilder implements Builder<LocalizedModBag> {
+	@Override
+	public LocalizedModBag build() {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
 }

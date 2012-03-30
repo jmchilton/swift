@@ -8,6 +8,7 @@
         </id>
         <many-to-one name="sequence" column="peptide_sequence_id" class="edu.mayo.mprc.fastadb.PeptideSequence"
                      not-null="true"/>
-        <many-to-one name="modifications" column="localized_mod_list_id" class="LocalizedModList" not-null="true"/>
+        <many-to-one name="modifications" column="localized_mod_list_id"
+                     class="edu.mayo.mprc.searchdb.dao.LocalizedModBag" not-null="true"/>
     </class>
 </hibernate-mapping>

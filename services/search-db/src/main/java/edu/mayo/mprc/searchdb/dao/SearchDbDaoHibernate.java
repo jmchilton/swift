@@ -4,7 +4,8 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.RuntimeInitializer;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
-import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.database.PersistableBagBase;
+import edu.mayo.mprc.database.PersistableSetBase;
 import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
@@ -85,13 +86,13 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	@Override
 	public IdentifiedPeptide addIdentifiedPeptide(final IdentifiedPeptide peptide) {
 		if (peptide.getId() == null) {
-			final LocalizedModList originalList = peptide.getModifications();
+			final LocalizedModBag originalList = peptide.getModifications();
 			if (originalList.getId() == null) {
-				final LocalizedModList newList = new LocalizedModList(originalList.size());
+				final LocalizedModBag newList = new LocalizedModBag(originalList.size());
 				for (final LocalizedModification item : originalList) {
 					newList.add(addLocalizedModification(item));
 				}
-				peptide.setModifications(addList(newList));
+				peptide.setModifications(addBag(newList));
 			}
 
 			peptide.setSequence(fastaDbDao.addPeptideSequence(peptide.getSequence()));
@@ -159,7 +160,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 					for (final ProteinSequence item : originalList) {
 						newList.add(fastaDbDao.addProteinSequence(item));
 					}
-					group.setProteinSequences(addList(newList));
+					group.setProteinSequences(addSet(newList));
 				}
 			}
 
@@ -170,7 +171,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 					for (final PeptideSpectrumMatch item : originalList) {
 						newList.add(addPeptideSpectrumMatch(item));
 					}
-					group.setPeptideSpectrumMatches(addList(newList));
+					group.setPeptideSpectrumMatches(addSet(newList));
 				}
 			}
 
@@ -222,7 +223,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				for (final ProteinGroup item : originalList) {
 					newList.add(addProteinGroup(item));
 				}
-				searchResult.setProteinGroups(addList(newList));
+				searchResult.setProteinGroups(addSet(newList));
 			}
 			return save(searchResult, searchResultEqualityCriteria(searchResult), false);
 		}
@@ -244,7 +245,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				for (final SearchResult item : originalList) {
 					newList.add(addSearchResult(item));
 				}
-				biologicalSample.setSearchResults(addList(newList));
+				biologicalSample.setSearchResults(addSet(newList));
 			}
 			return save(biologicalSample, biologicalSampleEqualityCriteria(biologicalSample), false);
 		}
@@ -267,7 +268,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				for (final BiologicalSample sample : originalList) {
 					newList.add(addBiologicalSample(sample));
 				}
-				analysis.setBiologicalSamples(addList(newList));
+				analysis.setBiologicalSamples(addSet(newList));
 				analysis.setReportData(reportData);
 			}
 			return save(analysis, analysisEqualityCriteria(analysis), false);
@@ -329,17 +330,31 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	/**
-	 * Save any kind of list into the database.
+	 * Save any kind of set into the database.
 	 *
-	 * @param list List to save.
-	 * @param <T>  Type of the list, must extend {@link PersistableListBase}
+	 * @param bag List to save.
+	 * @param <T> Type of the list, must extend {@link PersistableBagBase}
 	 * @return Saved list (or the same one in case it was saved already).
 	 */
-	private <T extends PersistableListBase<?>> T addList(final T list) {
-		if (list.getId() == null) {
-			return updateSet(list, list.getList(), "list");
+	private <T extends PersistableBagBase<?>> T addBag(final T bag) {
+		if (bag.getId() == null) {
+			return updateSet(bag, bag.getList(), "list");
 		}
-		return list;
+		return bag;
+	}
+
+	/**
+	 * Save any kind of set into the database.
+	 *
+	 * @param set List to save.
+	 * @param <T> Type of the list, must extend {@link PersistableBagBase}
+	 * @return Saved list (or the same one in case it was saved already).
+	 */
+	private <T extends PersistableSetBase<?>> T addSet(final T set) {
+		if (set.getId() == null) {
+			return updateSet(set, set.getList(), "list");
+		}
+		return set;
 	}
 
 	@Override

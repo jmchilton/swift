@@ -1,15 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.database.PersistableSetBase;
 
 import java.util.Collection;
 
 /**
- * A list of search results.
+ * A set of search results.
  *
  * @author Roman Zenka
  */
-public final class SearchResultList extends PersistableListBase<SearchResult> {
+public final class SearchResultList extends PersistableSetBase<SearchResult> {
 	public SearchResultList() {
 	}
 

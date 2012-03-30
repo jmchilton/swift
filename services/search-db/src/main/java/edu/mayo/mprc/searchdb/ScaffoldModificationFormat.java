@@ -2,7 +2,7 @@ package edu.mayo.mprc.searchdb;
 
 import com.google.common.base.Objects;
 import edu.mayo.mprc.MprcException;
-import edu.mayo.mprc.searchdb.dao.LocalizedModList;
+import edu.mayo.mprc.searchdb.dao.LocalizedModBag;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.unimod.Mod;
@@ -58,8 +58,8 @@ public final class ScaffoldModificationFormat {
 	 * @param variableMods Scaffold-like list of variable modifications.
 	 * @return Parsed list of localized modifications.
 	 */
-	public LocalizedModList parseModifications(final String sequence, final String fixedMods, final String variableMods) {
-		final LocalizedModList list = new LocalizedModList();
+	public LocalizedModBag parseModifications(final String sequence, final String fixedMods, final String variableMods) {
+		final LocalizedModBag list = new LocalizedModBag();
 
 		addModifications(fixedMods.trim(), list, sequence);
 		addModifications(variableMods.trim(), list, sequence);

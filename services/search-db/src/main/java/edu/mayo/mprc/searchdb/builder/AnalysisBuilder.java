@@ -9,7 +9,7 @@ import edu.mayo.mprc.searchdb.MassSpecDataExtractor;
 import edu.mayo.mprc.searchdb.ScaffoldModificationFormat;
 import edu.mayo.mprc.searchdb.dao.Analysis;
 import edu.mayo.mprc.searchdb.dao.IdentifiedPeptide;
-import edu.mayo.mprc.searchdb.dao.LocalizedModList;
+import edu.mayo.mprc.searchdb.dao.LocalizedModBag;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 import org.joda.time.DateTime;
@@ -130,7 +130,7 @@ public class AnalysisBuilder implements Builder<Analysis> {
 			final String fixedModifications,
 			final String variableModifications) {
 		final Collection<LocalizedModification> mods = format.parseModifications(peptideSequence.getSequence(), fixedModifications, variableModifications);
-		final LocalizedModList mappedMods = new LocalizedModList(Lists.transform(Lists.newArrayList(mods), mapLocalizedModification));
+		final LocalizedModBag mappedMods = new LocalizedModBag(Lists.transform(Lists.newArrayList(mods), mapLocalizedModification));
 
 		final IdentifiedPeptide key = new IdentifiedPeptide(peptideSequence, mappedMods);
 		final IdentifiedPeptide peptide = identifiedPeptides.get(key);

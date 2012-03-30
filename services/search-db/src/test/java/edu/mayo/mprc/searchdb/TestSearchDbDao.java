@@ -183,7 +183,7 @@ public class TestSearchDbDao extends DaoTest {
 		counts.add(BiologicalSampleList.class);
 		counts.add(IdentifiedPeptide.class);
 		counts.add(LocalizedModification.class);
-		counts.add(LocalizedModList.class);
+		counts.add(LocalizedModBag.class);
 		counts.add(PeptideSpectrumMatch.class);
 		counts.add(ProteinGroup.class);
 		counts.add(ProteinGroupList.class);

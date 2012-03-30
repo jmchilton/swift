@@ -1,15 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.database.PersistableSetBase;
 
 import java.util.Collection;
 
 /**
- * A list of protein groups.
+ * A set of protein groups.
  *
  * @author Roman Zenka
  */
-public final class ProteinGroupList extends PersistableListBase<ProteinGroup> {
+public final class ProteinGroupList extends PersistableSetBase<ProteinGroup> {
 	public ProteinGroupList() {
 	}
 

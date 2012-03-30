@@ -6,9 +6,9 @@
         <id name="id" type="integer" column="peptide_spectrum_match_list_id">
             <generator class="native"/>
         </id>
-        <bag name="list" table="peptide_spectrum_match_list_members">
+        <set name="list" table="peptide_spectrum_match_list_members">
             <key column="peptide_spectrum_match_list_id"/>
             <many-to-many column="peptide_spectrum_match_id" class="PeptideSpectrumMatch"/>
-        </bag>
+        </set>
     </class>
 </hibernate-mapping>

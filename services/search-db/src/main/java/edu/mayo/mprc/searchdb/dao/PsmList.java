@@ -1,15 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.database.PersistableSetBase;
 
 import java.util.Collection;
 
 /**
- * A list of peptide spectrum matches.
+ * A set of peptide spectrum matches.
  *
  * @author Roman Zenka
  */
-public final class PsmList extends PersistableListBase<PeptideSpectrumMatch> {
+public final class PsmList extends PersistableSetBase<PeptideSpectrumMatch> {
 	public PsmList() {
 	}
 

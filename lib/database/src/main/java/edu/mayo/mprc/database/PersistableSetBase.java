@@ -4,22 +4,27 @@ import com.google.common.collect.LinkedHashMultiset;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 /**
- * Base for classes that are nothing but a list to be persisted.
- * The list should be reasonably small for this to work well.
+ * Base for classes that are nothing but a set to be persisted.
+ * We do not care about the order of the items in the database. However, we use {@link LinkedHashSet} simply
+ * because we want reproducibility for testing purposes - the items should come out in the same order as they
+ * came in.
+ * <p/>
+ * The set should be reasonably small for this to work well.
  *
  * @author Roman Zenka
  */
-public abstract class PersistableListBase<T extends PersistableBase> extends PersistableBase implements Collection<T> {
+public abstract class PersistableSetBase<T extends PersistableBase> extends PersistableBase implements Collection<T> {
 	private Collection<T> list;
 
-	public PersistableListBase() {
-		list = LinkedHashMultiset.create();
+	public PersistableSetBase() {
+		list = new LinkedHashSet();
 	}
 
-	public PersistableListBase(final int initialCapacity) {
-		list = LinkedHashMultiset.create(initialCapacity);
+	public PersistableSetBase(final int initialCapacity) {
+		list = new LinkedHashSet(initialCapacity);
 	}
 
 	@Override
@@ -37,7 +42,7 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 	 *
 	 * @param items Items to add to this list.
 	 */
-	public PersistableListBase(final Collection<T> items) {
+	public PersistableSetBase(final Collection<T> items) {
 		this(items.size());
 		list.addAll(items);
 	}
@@ -110,11 +115,11 @@ public abstract class PersistableListBase<T extends PersistableBase> extends Per
 		if (this == o) {
 			return true;
 		}
-		if (o == null || !(o instanceof PersistableListBase)) {
+		if (o == null || !(o instanceof PersistableSetBase)) {
 			return false;
 		}
 
-		final PersistableListBase that = (PersistableListBase) o;
+		final PersistableSetBase that = (PersistableSetBase) o;
 
 		final LinkedHashMultiset<T> me = makeMultiset(this.getList());
 		final LinkedHashMultiset<T> other = makeMultiset(that.getList());

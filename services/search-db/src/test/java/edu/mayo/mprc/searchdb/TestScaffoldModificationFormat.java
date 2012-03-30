@@ -1,7 +1,7 @@
 package edu.mayo.mprc.searchdb;
 
 import edu.mayo.mprc.MprcException;
-import edu.mayo.mprc.searchdb.dao.LocalizedModList;
+import edu.mayo.mprc.searchdb.dao.LocalizedModBag;
 import edu.mayo.mprc.searchdb.dao.LocalizedModification;
 import edu.mayo.mprc.unimod.IndexedModSet;
 import edu.mayo.mprc.unimod.MockUnimodDao;
@@ -36,7 +36,7 @@ public final class TestScaffoldModificationFormat {
 	 */
 	@Test
 	public void shouldParseEmptyString() {
-		final LocalizedModList mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
+		final LocalizedModBag mods = format.parseModifications("EDEEESLNEVGYDDIGGCR", "", "");
 		Assert.assertEquals(mods.size(), 0, "No mods");
 	}
 

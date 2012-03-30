@@ -1,15 +1,15 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableListBase;
+import edu.mayo.mprc.database.PersistableSetBase;
 
 import java.util.Collection;
 
 /**
- * List of biological samples.
+ * Set of biological samples (each biosample can appear just once).
  *
  * @author Roman Zenka
  */
-public final class BiologicalSampleList extends PersistableListBase<BiologicalSample> {
+public final class BiologicalSampleList extends PersistableSetBase<BiologicalSample> {
 	public BiologicalSampleList() {
 	}
 
