@@ -259,7 +259,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 				engines.add(searchEngineConfig);
 			}
 
-			return updateSet(engines, engines.getEngineConfigs(), "engineConfigs");
+			return updateCollection(engines, engines.getEngineConfigs(), "engineConfigs");
 
 		} catch (Exception t) {
 			throw new MprcException("Could not add search engine set", t);
@@ -273,7 +273,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		}
 		Preconditions.checkNotNull(engines, "Enabled engine list must not be null");
 		try {
-			return updateSet(engines, engines.getEngineConfigs(), "engineConfigs");
+			return updateCollection(engines, engines.getEngineConfigs(), "engineConfigs");
 		} catch (Exception t) {
 			throw new MprcException("Could not add search engine set", t);
 		}

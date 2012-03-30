@@ -7,7 +7,9 @@ import java.util.Iterator;
 
 /**
  * Base for classes that are nothing but a list to be persisted.
+ * <p/>
  * The list should be reasonably small for this to work well.
+ * <p/>
  * We use a multiset as the users might add the same item several times (e.g. in a modification list,
  * Scaffold sometimes reports the same residue modified with the same mod more than once).
  *

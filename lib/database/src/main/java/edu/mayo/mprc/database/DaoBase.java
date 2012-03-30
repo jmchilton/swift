@@ -10,6 +10,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public abstract class DaoBase implements Dao {
 
 	/**
 	 * List all instances of given class. This skips the instances that were previously deleted.
-	 * The list is set to read-only, otherwise Hibernate would check modifications to all returned objects
+	 * The list is collection to read-only, otherwise Hibernate would check modifications to all returned objects
 	 * on each flush. Do not modify the objects from this list!
 	 *
 	 * @param clazz Class instances to list.
@@ -145,29 +146,29 @@ public abstract class DaoBase implements Dao {
 	}
 
 	/**
-	 * Adds a simple set object, making sure we do not store the same set twice. A set may contain only its elements,
+	 * Adds a simple collection object, making sure we do not store the same collection twice. A collection may contain only its elements,
 	 * two sets are considered equal if all their elements are equal.
 	 *
-	 * @param owner    The owner object to be added to the database.
-	 * @param set      The set of elements the owner object contains. Two owners are considered identical if they contain
-	 *                 the same set.
-	 * @param setField Name of the field under which is the set stored to the database.
+	 * @param owner      The owner object to be added to the database.
+	 * @param collection The collection of elements the owner object contains. Two owners are considered identical if they contain
+	 *                   the same collection.
+	 * @param setField   Name of the field under which is the collection stored to the database.
 	 */
-	protected <T extends PersistableBase, S extends PersistableBase> T updateSet(final T owner, final Collection<S> set, final String setField) {
+	protected <T extends PersistableBase, S extends PersistableBase> T updateCollection(final T owner, final Collection<S> collection, final String setField) {
 		final Session session = getSession();
 		if (owner == null) {
-			throw new MprcException("The owner of the set must not be null");
+			throw new MprcException("The owner of the collection must not be null");
 		}
 		if (owner.getId() != null) {
-			throw new MprcException("The set is already saved in the database.");
+			throw new MprcException("The collection is already saved in the database.");
 		}
 		final T existing;
 		final String className = owner.getClass().getName();
 
-		if (set.size() > 0) {
-			existing = (T) getMatchingSet(set, setField, className);
+		if (collection.size() > 0) {
+			existing = (T) getMatchingCollection(collection, setField, className);
 		} else {
-			existing = (T) getMatchingEmptySet(setField, className);
+			existing = (T) getMatchingEmptyCollection(setField, className);
 		}
 
 		if (existing != null) {
@@ -175,9 +176,9 @@ public abstract class DaoBase implements Dao {
 				// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
 				return updateSavedItem(existing, owner, session);
 			} else {
-				// If this happens, your equals operator is probably broken. Two set objects must be equal
+				// If this happens, your equals operator is probably broken. Two collection objects must be equal
 				// iff their elements are all equal
-				throw new MprcException("Two sets with same elements are not considered equal: " + className);
+				throw new MprcException("Two collections with same elements are not considered equal: " + className);
 			}
 		}
 
@@ -185,21 +186,55 @@ public abstract class DaoBase implements Dao {
 		return owner;
 	}
 
-	private PersistableBase getMatchingEmptySet(final String setField, final String className) {
+	/**
+	 * Adds a collection object, making sure we do not store the same collection twice.
+	 * An additional field is used for storing a hash key for the collection. This is used to optimize the equality checking.
+	 *
+	 * @param owner      The owner object to be added to the database.
+	 * @param collection The collection of elements the owner object contains. Two owners are considered identical if they contain
+	 *                   the same collection.
+	 * @param setField   Name of the field under which is the collection stored to the database.
+	 * @param hashField  The field containing the hash for the collection.
+	 */
+	protected <T extends PersistableBase, S extends PersistableBase> T updateHashedCollection(final T owner, final HashedCollection<S> collection, final String setField, final String hashField) {
+		final Session session = getSession();
+		if (owner == null) {
+			throw new MprcException("The owner of the collection must not be null");
+		}
+		if (owner.getId() != null) {
+			throw new MprcException("The collection is already saved in the database.");
+		}
+		final String className = owner.getClass().getName();
+
+		final long hash = calculateHash(collection);
+
+		final T existing = (T) getMatchingCollection(collection, setField, hashField, className, hash);
+
+		if (existing != null) {
+			// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
+			return updateSavedItem(existing, owner, session);
+		}
+
+		collection.setHash(hash);
+		session.save(owner);
+		return owner;
+	}
+
+	private PersistableBase getMatchingEmptyCollection(final String setField, final String className) {
 		final List ts = getSession().createQuery(
 				"select s from " + className + " as s where s." + setField + ".size = 0")
 				.list();
 		if (1 < ts.size()) {
-			throw new MprcException("Empty set exists in two instances, database is probably corrupted");
+			throw new MprcException("Empty collection exists in two instances, database is probably corrupted");
 		} else if (1 == ts.size()) {
 			return (PersistableBase) ts.iterator().next();
 		}
 		return null;
 	}
 
-	private <S extends PersistableBase> PersistableBase getMatchingSet(final Collection<S> set, final String setField, final String className) {
+	private <S extends PersistableBase> PersistableBase getMatchingCollection(final Collection<S> collection, final String setField, final String className) {
 		final Session session = getSession();
-		final Integer[] ids = DatabaseUtilities.getIdList(set);
+		final Integer[] ids = DatabaseUtilities.getIdList(collection);
 
 		final List ts = session.createQuery(
 				"select s from " + className + " as s join s." + setField + " as m where m.id in (:ids) and s.id in ("
@@ -209,11 +244,51 @@ public abstract class DaoBase implements Dao {
 				.setParameter("ids_count", ids.length)
 				.list();
 		if (1 < ts.size()) {
-			throw new MprcException("There are " + ts.size() + " identical sets in the database");
+			throw new MprcException("There are " + ts.size() + " identical collections in the database");
 		} else if (1 == ts.size()) {
 			return (PersistableBase) ts.iterator().next();
 		}
 		return null;
+	}
+
+	private <S extends PersistableBase> PersistableBase getMatchingCollection(final Collection<S> collection, final String setField, final String hashField, final String className, long hash) {
+		final Session session = getSession();
+
+		final List ts = session.createQuery(
+				"select s." + setField + " from " + className + " as s where s." + hashField + "=:hash")
+				.setParameter("hash", hash)
+				.list();
+
+		PersistableBase result = null;
+		for (final Object object : ts) {
+			if (object instanceof PersistableBase) {
+				if (result == null) {
+					if (result.equals(collection)) {
+						result = (PersistableBase) object;
+					}
+				} else {
+					throw new MprcException("There is more than one identical collection in the database");
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Take any collection that has persisted items. Collect all the ids of all the items, hash them in a defined way.
+	 *
+	 * @param collection Collection of items.
+	 * @param <S>        Type of the collection items.
+	 * @return Hash for the collection, ignoring item order.
+	 */
+	private <S extends PersistableBase> long calculateHash(Collection<S> collection) {
+		final Integer[] ids = DatabaseUtilities.getIdList(collection);
+		Arrays.sort(ids);
+		long hash = 0;
+		for (Integer id : ids) {
+			hash = hash * 31 + id;
+		}
+		return hash;
 	}
 
 	/**
@@ -369,7 +444,7 @@ public abstract class DaoBase implements Dao {
 
 
 	/**
-	 * Delete a previously saved item. Deletion just means the deletion attribute gets set.
+	 * Delete a previously saved item. Deletion just means the deletion attribute gets collection.
 	 *
 	 * @param item   The item to create (in database)
 	 * @param change What change is this creation related to.

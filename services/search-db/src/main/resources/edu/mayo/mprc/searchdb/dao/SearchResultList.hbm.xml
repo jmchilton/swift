@@ -6,6 +6,9 @@
         <id name="id" type="integer" column="search_result_list_id">
             <generator class="native"/>
         </id>
+
+        <property name="hash" column="hash" not-null="true"/>
+
         <set name="list" table="search_result_list_members" mutable="false">
             <key column="search_result_list_id"/>
             <many-to-many column="search_result_id" class="SearchResult"/>

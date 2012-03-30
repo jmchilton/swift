@@ -1,6 +1,6 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableSetBase;
+import edu.mayo.mprc.database.PersistableHashedSetBase;
 
 import java.util.Collection;
 
@@ -9,7 +9,7 @@ import java.util.Collection;
  *
  * @author Roman Zenka
  */
-public final class PsmList extends PersistableSetBase<PeptideSpectrumMatch> {
+public final class PsmList extends PersistableHashedSetBase<PeptideSpectrumMatch> {
 	public PsmList() {
 	}
 

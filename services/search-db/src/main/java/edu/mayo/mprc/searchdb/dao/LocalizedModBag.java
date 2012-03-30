@@ -1,6 +1,6 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableBagBase;
+import edu.mayo.mprc.database.PersistableHashedBagBase;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
  *
  * @author Roman Zenka
  */
-public final class LocalizedModBag extends PersistableBagBase<LocalizedModification> {
+public final class LocalizedModBag extends PersistableHashedBagBase<LocalizedModification> {
 	public LocalizedModBag() {
 	}
 

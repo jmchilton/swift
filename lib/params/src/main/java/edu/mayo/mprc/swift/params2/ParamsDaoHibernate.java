@@ -249,7 +249,7 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 			// ModSet is unchangeable once saved
 			return modSet;
 		}
-		return updateSet(modSet, modSet.getModifications(), "modifications");
+		return updateCollection(modSet, modSet.getModifications(), "modifications");
 	}
 
 	@Override

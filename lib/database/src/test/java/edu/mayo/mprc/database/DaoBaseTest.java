@@ -67,7 +67,7 @@ public final class DaoBaseTest extends DaoTest {
 		}
 
 		LOGGER.debug("// Updating set " + set.getSetName());
-		set = base.updateSet(set, set.getMembers(), "members");
+		set = base.updateCollection(set, set.getMembers(), "members");
 		LOGGER.debug("\\ Updated set " + set.getSetName());
 		return set;
 	}

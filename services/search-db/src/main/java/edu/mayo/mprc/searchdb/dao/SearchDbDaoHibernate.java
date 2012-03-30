@@ -338,7 +338,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 */
 	private <T extends PersistableBagBase<?>> T addBag(final T bag) {
 		if (bag.getId() == null) {
-			return updateSet(bag, bag.getList(), "list");
+			return updateCollection(bag, bag.getList(), "list");
 		}
 		return bag;
 	}
@@ -352,7 +352,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	 */
 	private <T extends PersistableSetBase<?>> T addSet(final T set) {
 		if (set.getId() == null) {
-			return updateSet(set, set.getList(), "list");
+			return updateCollection(set, set.getList(), "list");
 		}
 		return set;
 	}

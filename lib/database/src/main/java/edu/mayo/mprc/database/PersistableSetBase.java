@@ -1,8 +1,7 @@
 package edu.mayo.mprc.database;
 
-import com.google.common.collect.LinkedHashMultiset;
-
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -121,24 +120,24 @@ public abstract class PersistableSetBase<T extends PersistableBase> extends Pers
 
 		final PersistableSetBase that = (PersistableSetBase) o;
 
-		final LinkedHashMultiset<T> me = makeMultiset(this.getList());
-		final LinkedHashMultiset<T> other = makeMultiset(that.getList());
+		final HashSet<T> me = makeSet(this.getList());
+		final HashSet<T> other = makeSet(that.getList());
 		return !(me != null ? !me.equals(other) : other != null);
 
 	}
 
-	private LinkedHashMultiset<T> makeMultiset(final Collection collection) {
+	private HashSet<T> makeSet(final Collection collection) {
 		if (collection == null) {
 			return null;
 		}
-		if (collection instanceof LinkedHashMultiset) {
-			return (LinkedHashMultiset<T>) collection;
+		if (collection instanceof HashSet) {
+			return (HashSet<T>) collection;
 		}
-		return LinkedHashMultiset.create(collection);
+		return new HashSet(collection);
 	}
 
 	@Override
 	public int hashCode() {
-		return getList() != null ? makeMultiset(this.getList()).hashCode() : 0;
+		return getList() != null ? makeSet(this.getList()).hashCode() : 0;
 	}
 }

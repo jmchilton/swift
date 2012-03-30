@@ -1,6 +1,6 @@
 package edu.mayo.mprc.searchdb.dao;
 
-import edu.mayo.mprc.database.PersistableSetBase;
+import edu.mayo.mprc.database.PersistableHashedSetBase;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 
 import java.util.Collection;
@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * @author Roman Zenka
  */
-public final class ProteinSequenceList extends PersistableSetBase<ProteinSequence> {
+public final class ProteinSequenceList extends PersistableHashedSetBase<ProteinSequence> {
 	public ProteinSequenceList() {
 	}
 
