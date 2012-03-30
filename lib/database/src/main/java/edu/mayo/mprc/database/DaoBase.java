@@ -202,7 +202,8 @@ public abstract class DaoBase implements Dao {
 
 		if (existing != null) {
 			// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-			return updateSavedItem(existing, bag, session);
+			bag.setId(existing.getId());
+			return existing;
 		}
 
 		session.save(bag);
@@ -225,7 +226,8 @@ public abstract class DaoBase implements Dao {
 
 		if (existing != null) {
 			// Item equals the saved object, bring forth the additional parameters that do not participate in equality.
-			return updateSavedItem(existing, set, session);
+			set.setId(existing.getId());
+			return existing;
 		}
 
 		session.save(set);
