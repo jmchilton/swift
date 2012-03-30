@@ -207,6 +207,7 @@ public abstract class DaoBase implements Dao {
 		final String className = owner.getClass().getName();
 
 		final long hash = calculateHash(collection);
+		collection.setHash(hash);
 
 		final T existing = (T) getMatchingCollection(collection, setField, hashField, className, hash);
 
@@ -215,7 +216,6 @@ public abstract class DaoBase implements Dao {
 			return updateSavedItem(existing, owner, session);
 		}
 
-		collection.setHash(hash);
 		session.save(owner);
 		return owner;
 	}
