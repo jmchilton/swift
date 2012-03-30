@@ -6,7 +6,7 @@
         <id name="id" type="integer" column="protein_group_list_id">
             <generator class="native"/>
         </id>
-        <set name="list" table="protein_group_list_members">
+        <set name="list" table="protein_group_list_members" mutable="false">
             <key column="protein_group_list_id"/>
             <many-to-many column="protein_group_id" class="ProteinGroup"/>
         </set>

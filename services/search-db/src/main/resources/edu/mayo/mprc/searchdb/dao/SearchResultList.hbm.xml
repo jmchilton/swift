@@ -6,7 +6,7 @@
         <id name="id" type="integer" column="search_result_list_id">
             <generator class="native"/>
         </id>
-        <set name="list" table="search_result_list_members">
+        <set name="list" table="search_result_list_members" mutable="false">
             <key column="search_result_list_id"/>
             <many-to-many column="search_result_id" class="SearchResult"/>
         </set>

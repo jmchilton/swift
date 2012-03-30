@@ -6,7 +6,7 @@
         <id name="id" type="integer" column="protein_sequence_list_id">
             <generator class="native"/>
         </id>
-        <set name="list" table="protein_sequence_list_members">
+        <set name="list" table="protein_sequence_list_members" mutable="false">
             <key column="protein_sequence_list_id"/>
             <many-to-many column="protein_sequence_id" class="edu.mayo.mprc.fastadb.ProteinSequence"/>
         </set>
