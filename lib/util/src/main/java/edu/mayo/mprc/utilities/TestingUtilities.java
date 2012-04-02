@@ -259,7 +259,7 @@ public final class TestingUtilities {
 				line2 = line2.trim();
 			}
 			if (!line1.equals(line2)) {
-				different = true;
+			different = true;
 				break;
 			}
 		}
