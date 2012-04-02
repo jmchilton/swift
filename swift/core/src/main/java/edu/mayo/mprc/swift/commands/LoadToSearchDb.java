@@ -45,6 +45,9 @@ public class LoadToSearchDb implements SwiftCommand {
 	private SwiftDao dao;
 	private SearchDbDao searchDbDao;
 	private FileTokenFactory fileTokenFactory;
+	private int totalToLoad;
+	private int loaded;
+
 
 	@Override
 	public String getName() {
@@ -188,6 +191,10 @@ public class LoadToSearchDb implements SwiftCommand {
 			searchDbTask.addDependency(fastaDbTask);
 			workflowEngine.addTask(searchDbTask);
 
+			SuccessfulLoadCounter counter = new SuccessfulLoadCounter(reportData.getReportFile().getName());
+			counter.addDependency(searchDbTask);
+			workflowEngine.addTask(counter);
+
 			for (final FileSearch fileSearch : swiftSearchDefinition.getInputFiles()) {
 				// Only load files that made it to Scaffold
 				if (fileSearch.isSearch("SCAFFOLD3") || fileSearch.isSearch("SCAFFOLD")) {
@@ -204,6 +211,7 @@ public class LoadToSearchDb implements SwiftCommand {
 					workflowEngine.addTask(rawDumpTask);
 				}
 			}
+
 
 			getDao().commit();
 		} catch (Exception e) {
@@ -331,5 +339,22 @@ public class LoadToSearchDb implements SwiftCommand {
 
 	public void setFileTokenFactory(final FileTokenFactory fileTokenFactory) {
 		this.fileTokenFactory = fileTokenFactory;
+	}
+
+	/**
+	 * Counts all the successful DB loads.
+	 */
+	private class SuccessfulLoadCounter extends TaskBase {
+		private final String scaffoldName;
+
+		private SuccessfulLoadCounter(String scaffoldName) {
+			this.scaffoldName = scaffoldName;
+		}
+
+		@Override
+		public void run() {
+			loaded++;
+			LOGGER.info("Loaded " + scaffoldName + " (" + loaded + " out of " + totalToLoad + ")");
+		}
 	}
 }
