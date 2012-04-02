@@ -60,8 +60,7 @@ class SimpleQueueService implements Service {
 			connection = ActiveMQConnectionPool.getConnectionToBroker(broker, userName, password);
 
 			final TemporaryQueue queue = responseQueue();
-			final Session tempQueueSession = connection.createSession(/*transacted?*/false, /*acknowledgment*/Session.CLIENT_ACKNOWLEDGE);
-			final MessageConsumer tempQueueConsumer = tempQueueSession.createConsumer(queue);
+			final MessageConsumer tempQueueConsumer = session().createConsumer(queue);
 			tempQueueConsumer.setMessageListener(new TempQueueMessageListener());
 
 			// start the connection and start listening for events
