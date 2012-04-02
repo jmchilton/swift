@@ -65,7 +65,7 @@ public final class DaemonWorkerTester {
 			initializeFromUri(uri);
 			this.runner = new SimpleRunner();
 			this.runner.setFactory(workerFactory);
-			this.runner.setExecutorService(new SimpleThreadPoolExecutor(numWorkerThreads, "test"));
+			this.runner.setExecutorService(new SimpleThreadPoolExecutor(numWorkerThreads, "test", true));
 			this.runner.setDaemonConnection(this.daemonConnection);
 			this.runner.setEnabled(true);
 			this.runner.setLogOutputFolder(FileUtilities.createTempFolder());

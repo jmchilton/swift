@@ -69,7 +69,7 @@ public class TestSearchRunner {
 		final SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
 
 		final ProgressReporter reporter = mock(ProgressReporter.class);
-		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
+		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher", true);
 
 		final SearchRun searchRun = null;
 
@@ -111,7 +111,7 @@ public class TestSearchRunner {
 		final SwiftSearchDefinition definition = defaultSearchDefinition(inputFiles);
 
 		final ProgressReporter reporter = mock(ProgressReporter.class);
-		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher");
+		final ExecutorService service = new SimpleThreadPoolExecutor(1, "testSwiftSearcher", true);
 
 		final SearchRun searchRun = null;
 

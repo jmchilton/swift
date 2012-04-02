@@ -125,7 +125,7 @@ public final class SwiftSearcher implements Worker {
 
 	public SwiftSearcher(final CurationDao curationDao, final SwiftDao swiftDao, final FileTokenFactory fileTokenFactory) {
 		// We execute the switch workflows in a single thread
-		service = new SimpleThreadPoolExecutor(1, "swiftSearcher");
+		service = new SimpleThreadPoolExecutor(1, "swiftSearcher", false/* do not block*/);
 		this.curationDao = curationDao;
 		this.swiftDao = swiftDao;
 		this.fileTokenFactory = fileTokenFactory;

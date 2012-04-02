@@ -106,7 +106,7 @@ public final class SimpleRunner extends AbstractRunner {
 	 */
 	public void setWorker(final Worker worker) {
 		this.executorService = new SimpleThreadPoolExecutor(1,
-				(daemonConnection != null ? daemonConnection.getConnectionName() : worker.getClass().getSimpleName()) + "-runner");
+				(daemonConnection != null ? daemonConnection.getConnectionName() : worker.getClass().getSimpleName()) + "-runner", true);
 		this.factory = new MyWorkerFactory(worker);
 	}
 
@@ -223,7 +223,7 @@ public final class SimpleRunner extends AbstractRunner {
 
 			runner.setFactory(getWorkerFactory(getTable(), workerFactoryConfig, dependencies));
 			final int numThreads = config.getNumThreads();
-			runner.setExecutorService(new SimpleThreadPoolExecutor(numThreads, runner.getFactory().getDescription()));
+			runner.setExecutorService(new SimpleThreadPoolExecutor(numThreads, runner.getFactory().getDescription(), true));
 			// Important to convert the log file to absolute, otherwise user.dir is not taken into account and
 			// the behavior is inconsistent within the IDE while debugging
 			runner.setLogOutputFolder(new File(config.getLogOutputFolder()).getAbsoluteFile());
