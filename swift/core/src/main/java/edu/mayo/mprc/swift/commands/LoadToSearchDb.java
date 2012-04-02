@@ -118,13 +118,13 @@ public class LoadToSearchDb implements SwiftCommand {
 			throw new MprcException("Could not obtain the list of reports to load", e);
 		}
 
-		final int totalReports = reportsWithoutAnalysis.size();
-		LOGGER.info("Total reports with analysis missing: " + totalReports);
+		totalToLoad = reportsWithoutAnalysis.size();
+		LOGGER.info("Total reports with analysis missing: " + totalToLoad);
 		int count = 0;
 		List<WorkflowEngine> engines = new ArrayList<WorkflowEngine>(100);
 		for (Long reportId : reportsWithoutAnalysis) {
 			count++;
-			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalReports));
+			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalToLoad));
 			try {
 				final WorkflowEngine engine = loadData(reportId);
 				engines.add(engine);
