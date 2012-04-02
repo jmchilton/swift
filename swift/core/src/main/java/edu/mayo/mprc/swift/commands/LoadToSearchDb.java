@@ -125,7 +125,6 @@ public class LoadToSearchDb implements SwiftCommand {
 			try {
 				final WorkflowEngine engine = loadData(reportId);
 				engines.add(engine);
-				LOGGER.info(MessageFormat.format("Report #{0} loaded successfully", reportId));
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
 				LOGGER.error("Could not load", e);

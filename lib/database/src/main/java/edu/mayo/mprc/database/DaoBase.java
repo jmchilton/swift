@@ -280,8 +280,6 @@ public abstract class DaoBase implements Dao {
 					if (object.equals(collection)) {
 						result = (PersistableBase) object;
 					}
-				} else {
-					throw new MprcException("There is more than one identical collection in the database");
 				}
 			}
 		}
