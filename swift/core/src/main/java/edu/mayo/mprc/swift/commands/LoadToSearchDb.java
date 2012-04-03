@@ -152,7 +152,11 @@ public class LoadToSearchDb implements SwiftCommand {
 		for (WorkflowEngine engine : engines) {
 			if (!engine.isDone()) {
 				allDone = false;
-				engine.run();
+				try {
+					engine.run();
+				} catch(MprcException e) {
+					LOGGER.error("The load failed", e);
+				}
 			}
 		}
 		return allDone;
