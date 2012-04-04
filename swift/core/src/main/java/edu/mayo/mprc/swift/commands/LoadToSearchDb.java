@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
-	public static final int BATCH_SIZE = 100;
+	public static final int BATCH_SIZE = 3;
 	public static final int MAX_INPUT_FILE_SIZE = 5;
 
 	private DaemonConnection rawDump;
