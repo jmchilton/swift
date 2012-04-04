@@ -315,7 +315,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 	@Override
 	public List<Long> getReportIdsWithoutAnalysis() {
-		return (List<Long>) getSession().createQuery("select rd.id from ReportData as rd where not exists (from Analysis as a where a.reportData=rd) order by rd.dateCreated desc").list();
+		return (List<Long>) getSession().createQuery("select rd.id from ReportData as rd where rd.searchRun.hidden=0 and not exists (from Analysis as a where a.reportData=rd) order by rd.dateCreated desc").list();
 	}
 
 	private Criterion analysisEqualityCriteria(final Analysis analysis) {
