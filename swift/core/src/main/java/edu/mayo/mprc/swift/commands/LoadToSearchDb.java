@@ -37,6 +37,7 @@ import java.util.List;
 public class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
 	public static final int BATCH_SIZE = 100;
+	public static final int MAX_INPUT_FILE_SIZE = 5;
 
 	private DaemonConnection rawDump;
 	private DaemonConnection scaffold3;
@@ -87,11 +88,14 @@ public class LoadToSearchDb implements SwiftCommand {
 			} else {
 				final long reportDataId = getReportDataId(loadParameter);
 
-				WorkflowEngine workflowEngine = loadData(reportDataId);
+				WorkflowEngine workflowEngine = loadData(reportDataId, 0);
 
-				// Run the workflow
-				while (!workflowEngine.isDone()) {
-					workflowEngine.run();
+				if (workflowEngine != null) {
+
+					// Run the workflow
+					while (!workflowEngine.isDone()) {
+						workflowEngine.run();
+					}
 				}
 			}
 
@@ -126,7 +130,7 @@ public class LoadToSearchDb implements SwiftCommand {
 			count++;
 			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalToLoad));
 			try {
-				final WorkflowEngine engine = loadData(reportId);
+				final WorkflowEngine engine = loadData(reportId, MAX_INPUT_FILE_SIZE);
 				engines.add(engine);
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
@@ -154,7 +158,7 @@ public class LoadToSearchDb implements SwiftCommand {
 				allDone = false;
 				try {
 					engine.run();
-				} catch(MprcException e) {
+				} catch (MprcException e) {
 					LOGGER.error("The load failed", e);
 				}
 			}
@@ -162,7 +166,7 @@ public class LoadToSearchDb implements SwiftCommand {
 		return allDone;
 	}
 
-	private WorkflowEngine loadData(final long reportDataId) {
+	private WorkflowEngine loadData(final long reportDataId, final int maxInputFileSize) {
 		final WorkflowEngine workflowEngine = new WorkflowEngine("load " + reportDataId);
 
 		getDao().begin();
@@ -170,6 +174,15 @@ public class LoadToSearchDb implements SwiftCommand {
 			// Load the information about the search
 			final ReportData reportData = getReportData(reportDataId);
 			final SwiftSearchDefinition swiftSearchDefinition = getSwiftSearchDefinition(reportData);
+
+			if (maxInputFileSize != 0) {
+				final int inputSize = swiftSearchDefinition.getInputFiles().size();
+				if (inputSize > maxInputFileSize) {
+					getDao().commit();
+					LOGGER.info("The search for report #"+reportDataId+" uses "+ inputSize +" input files, which is more than maximum allowed "+maxInputFileSize);
+					return null;
+				}
+			}
 
 			// Scaffold file is defined as a part of the report
 			final File scaffoldFile = getScaffoldFile(reportData);
