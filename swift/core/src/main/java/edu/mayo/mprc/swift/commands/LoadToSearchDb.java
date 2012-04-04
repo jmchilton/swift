@@ -131,7 +131,9 @@ public class LoadToSearchDb implements SwiftCommand {
 			LOGGER.info(MessageFormat.format("Loading report #{0} ({1} of {2})", reportId, count, totalToLoad));
 			try {
 				final WorkflowEngine engine = loadData(reportId, MAX_INPUT_FILE_SIZE);
-				engines.add(engine);
+				if (engine != null) {
+					engines.add(engine);
+				}
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
 				LOGGER.error("Could not load", e);
@@ -179,7 +181,7 @@ public class LoadToSearchDb implements SwiftCommand {
 				final int inputSize = swiftSearchDefinition.getInputFiles().size();
 				if (inputSize > maxInputFileSize) {
 					getDao().commit();
-					LOGGER.info("The search for report #"+reportDataId+" uses "+ inputSize +" input files, which is more than maximum allowed "+maxInputFileSize);
+					LOGGER.info("The search for report #" + reportDataId + " uses " + inputSize + " input files, which is more than maximum allowed " + maxInputFileSize);
 					return null;
 				}
 			}

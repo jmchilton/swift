@@ -60,7 +60,7 @@ public interface SearchDbDao extends Dao {
 	List<ReportData> getSearchesForAccessionNumber(String accessionNumber);
 
 	/**
-	 * @return List of all report ids that do not have the analysis object attached.
+	 * @return List of all report ids  that do not have the analysis object attached.
 	 */
 	List<Long> getReportIdsWithoutAnalysis();
 }
