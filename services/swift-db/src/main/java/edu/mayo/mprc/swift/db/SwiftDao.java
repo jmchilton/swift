@@ -135,5 +135,11 @@ public interface SwiftDao extends Dao, RuntimeInitializer {
 
 	void searchRunFailed(int searchRunId, String message);
 
-
+	/**
+	 * Go through the database. Find every reference to a file within {@code from} directory.
+	 * If the file does not exist, but it does exist in {@code to} directory, update the reference.
+	 * @param from From where did the files move.
+	 * @param to To where did the files move.
+	 */
+	void renameAllFileReferences(File from, File to);
 }

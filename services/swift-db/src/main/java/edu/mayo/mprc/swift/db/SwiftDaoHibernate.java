@@ -8,12 +8,14 @@ import edu.mayo.mprc.database.Change;
 import edu.mayo.mprc.database.DaoBase;
 import edu.mayo.mprc.database.DatabasePlaceholder;
 import edu.mayo.mprc.swift.dbmapping.*;
+import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressReport;
 import edu.mayo.mprc.workflow.persistence.TaskState;
 import edu.mayo.mprc.workspace.User;
 import edu.mayo.mprc.workspace.WorkspaceDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
@@ -540,6 +542,42 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		final SearchRun searchRun = getSearchRunForId(searchRunId);
 		searchRun.setErrorMessage(message);
 		searchRun.setEndTimestamp(new Date());
+	}
+
+	@Override
+	public void renameAllFileReferences(final File from, final File to) {
+		// Move everything in FileSearch
+		renameFileReferences(from, to, "FileSearch", "inputFile");
+		renameFileReferences(from, to, "ReportData", "reportFile");
+		renameFileReferences(from, to, "SwiftSearchDefinition", "outputFolder");
+		renameFileReferences(from, to, "TandemMassSpectrometrySample", "file");
+	}
+
+	private void renameFileReferences(final File from, final File to, final String table, final String field) {
+		LOGGER.info("Renaming all " + table + "." + field);
+		final Query query = getSession().createQuery("update " + table + " as f set f." + field + "=:file where f.id=:id");
+
+		final List list = getSession().createQuery("select f.id, f." + field + " from " + table + " as f").list();
+		LOGGER.info("\tChecking " + list.size() + " entries");
+		long totalMoves=0;
+		for (final Object o : list) {
+			final Object[] array = (Object[]) o;
+			final Number id = (Number) array[0];
+			final File file = (File) array[1];
+			final String relativePath = FileUtilities.getRelativePathToParent(from.getAbsolutePath(), file.getAbsolutePath(), "/", true);
+			if (relativePath != null) {
+				final File newFile = new File(to, relativePath);
+				if (!file.exists() && newFile.exists()) {
+					LOGGER.debug("\tMoving " + file.getAbsolutePath() + "\t->\t" + newFile.getAbsolutePath());
+					query
+							.setParameter("file", newFile)
+							.setParameter("id", id)
+							.executeUpdate();
+					totalMoves++;
+				}
+			}
+		}
+		LOGGER.info("\tMove complete, total items updated: "+totalMoves);
 	}
 
 	public FileTokenFactory getFileTokenFactory() {

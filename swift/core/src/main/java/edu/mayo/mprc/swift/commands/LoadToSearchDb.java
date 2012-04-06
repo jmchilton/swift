@@ -78,7 +78,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 			initializeConnections(environment, config);
 
 			// Set up the database
-			final Object database = environment.createResource(config.getDatabase());
+			initializeDatabase(environment, config);
 
 			// This is the input parameter - which report to load into the database
 			final String loadParameter = environment.getParameters().get(0);
@@ -109,6 +109,15 @@ public final class LoadToSearchDb implements SwiftCommand {
 		} catch (Exception e) {
 			throw new MprcException("Could not load into Swift search database", e);
 		}
+	}
+
+	/**
+	 * Initialize the database referenced by given Swift searcher.
+	 * @param environment Swift environment.
+	 * @param config The configuration of the Swift searcher.
+	 */
+	public static void initializeDatabase(SwiftEnvironment environment, SwiftSearcher.Config config) {
+		final Object database = environment.createResource(config.getDatabase());
 	}
 
 	private void loadAllData() {
@@ -313,7 +322,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 		}
 	}
 
-	private SwiftSearcher.Config getSearcher(final DaemonConfig daemonConfig) {
+	public static SwiftSearcher.Config getSearcher(final DaemonConfig daemonConfig) {
 		final List<ResourceConfig> searchers = daemonConfig.getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
 		if (searchers.size() != 1) {
 			throw new MprcException("More than one Swift Searcher defined in this Swift install");
