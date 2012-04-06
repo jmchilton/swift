@@ -76,8 +76,8 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	}
 
 	@Override
-	public String getParameter() {
-		return commandLine.getParameter();
+	public List<String> getParameters() {
+		return commandLine.getParameters();
 	}
 
 	/**

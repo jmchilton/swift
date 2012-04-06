@@ -8,7 +8,9 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A parsed Swift command - what did the user ask Swift to do.
@@ -43,7 +45,7 @@ public final class CommandLineParser {
 		final OptionSet options = parser.parse(args);
 
 		String command = null;
-		String parameter = null;
+		List<String> parameters = new ArrayList<String>(0);
 		String error = null;
 
 		if (options.has("?")) {
@@ -56,15 +58,13 @@ public final class CommandLineParser {
 			command = DisplayHelp.COMMAND;
 		} else if (options.has("sge")) {
 			command = RunSge.COMMAND;
-			parameter = (String) options.valueOf("sge");
+			parameters = Arrays.asList((String) options.valueOf("sge"));
 		} else {
 			if (options.has("run")) {
-				final String[] parsedRun = parseRun((String) options.valueOf("run"));
-				command = parsedRun[0];
-				parameter = parsedRun[1];
+				command = (String) options.valueOf("run");
+				parameters = options.nonOptionArguments();
 			} else {
 				command = SwiftCommandLine.DEFAULT_RUN_COMMAND;
-				parameter = "";
 			}
 		}
 		File installFile = null;
@@ -72,25 +72,7 @@ public final class CommandLineParser {
 			installFile = CommandLine.findPropertyFile(options, "install", "installation config file", Swift.CONFIG_FILE_NAME, null);
 		}
 		final String daemonId = (String) options.valueOf("daemon");
-		commandLine = new SwiftCommandLine(command, parameter, installFile, daemonId, error, parser);
-	}
-
-	/**
-	 * Parses given single run options to its parts.
-	 *
-	 * @param toParse String to parse.
-	 */
-	public String[] parseRun(final String toParse) {
-		final int firstSpace = toParse.indexOf(':');
-		final String[] result = new String[2];
-		if (firstSpace >= 0) {
-			result[0] = toParse.substring(0, firstSpace).trim();
-			result[1] = toParse.substring(firstSpace + 1).trim();
-		} else {
-			result[0] = toParse.trim();
-			result[1] = null;
-		}
-		return result;
+		commandLine = new SwiftCommandLine(command, parameters, installFile, daemonId, error, parser);
 	}
 
 	public SwiftCommandLine getCommandLine() {

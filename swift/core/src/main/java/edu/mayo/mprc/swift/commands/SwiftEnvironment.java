@@ -11,8 +11,11 @@ import edu.mayo.mprc.swift.Swift;
 import joptsimple.OptionParser;
 
 import java.io.File;
+import java.util.List;
 
 /**
+ * An environment for the running Swift instance. Knows all about the Swift configuration and about the command line parameters.
+ *
  * @author Roman Zenka
  */
 public interface SwiftEnvironment {
@@ -26,9 +29,9 @@ public interface SwiftEnvironment {
 	void runSwiftCommand(final SwiftCommandLine cmdLine);
 
 	/**
-	 * @return Parameter (currently only one supported) for the Swift command running.
+	 * @return Parameters for the Swift command.
 	 */
-	String getParameter();
+	List<String> getParameters();
 
 	/**
 	 * User specifies which environment to run within using the --daemon command line switch.

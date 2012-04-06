@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * @author Roman Zenka
  */
-public class LoadToSearchDb implements SwiftCommand {
+public final class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
 	public static final int BATCH_SIZE = 3;
 	public static final int MAX_INPUT_FILE_SIZE = 5;
@@ -81,7 +81,7 @@ public class LoadToSearchDb implements SwiftCommand {
 			final Object database = environment.createResource(config.getDatabase());
 
 			// This is the input parameter - which report to load into the database
-			final String loadParameter = environment.getParameter();
+			final String loadParameter = environment.getParameters().get(0);
 
 			if ("all".equalsIgnoreCase(loadParameter)) {
 				loadAllData();

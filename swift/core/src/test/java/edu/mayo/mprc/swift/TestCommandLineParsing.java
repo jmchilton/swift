@@ -68,10 +68,11 @@ public final class TestCommandLineParsing {
 
 	@Test
 	public void shouldSupportCustomCommand() {
-		final CommandLineParser parser = new CommandLineParser(new String[]{"--install", test.toString(), "--run", "my-command:command-params"});
+		final CommandLineParser parser = new CommandLineParser(new String[]{"--install", test.toString(), "--run", "my-command", "command-params", "more-params"});
 		final SwiftCommandLine cmd = parser.getCommandLine();
 		Assert.assertEquals(cmd.getCommand(), "my-command");
-		Assert.assertEquals(cmd.getParameter(), "command-params");
+		Assert.assertEquals(cmd.getParameters().get(0), "command-params");
+		Assert.assertEquals(cmd.getParameters().get(1), "more-params");
 		Assert.assertEquals(cmd.getError(), null);
 	}
 
