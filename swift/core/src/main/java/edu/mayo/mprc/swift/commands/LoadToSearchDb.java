@@ -24,6 +24,7 @@ import edu.mayo.mprc.utilities.progress.ProgressReport;
 import edu.mayo.mprc.workflow.engine.SearchMonitor;
 import edu.mayo.mprc.workflow.engine.TaskBase;
 import edu.mayo.mprc.workflow.engine.WorkflowEngine;
+import edu.mayo.mprc.workflow.persistence.TaskState;
 import org.apache.log4j.Logger;
 import org.joda.time.Interval;
 
@@ -114,8 +115,9 @@ public final class LoadToSearchDb implements SwiftCommand {
 
 	/**
 	 * Initialize the database referenced by given Swift searcher.
+	 *
 	 * @param environment Swift environment.
-	 * @param config The configuration of the Swift searcher.
+	 * @param config      The configuration of the Swift searcher.
 	 */
 	public static void initializeDatabase(SwiftEnvironment environment, SwiftSearcher.Config config) {
 		final Object database = environment.createResource(config.getDatabase());
@@ -146,7 +148,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 				}
 			} catch (Exception e) {
 				// SWALLOWED: We keep going
-				LOGGER.error("Could not load", e);
+				LOGGER.error("Could not load " + reportId + "\n - " + MprcException.getDetailedMessage(e));
 			}
 			if (engines.size() == BATCH_SIZE) {
 				runTillDone(engines);
@@ -173,7 +175,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 					engine.run();
 				} catch (MprcException e) {
 					// SWALLOWED: We are okay with the engine failing, we log it and go on
-					LOGGER.error("The load failed", e);
+					LOGGER.error("The load failed\n" + MprcException.getDetailedMessage(e));
 				}
 			}
 		}
@@ -230,9 +232,9 @@ public final class LoadToSearchDb implements SwiftCommand {
 				// Only load files that made it to Scaffold
 				if (fileSearch.isSearch("SCAFFOLD3") || fileSearch.isSearch("SCAFFOLD")) {
 					final File rawFile = fileSearch.getInputFile();
-					if(!"RAW".equalsIgnoreCase(FileUtilities.getExtension(rawFile.getName()))) {
+					if (!"RAW".equalsIgnoreCase(FileUtilities.getExtension(rawFile.getName()))) {
 						// We have a file that is not raw.
-						throw new MprcException("Could not load search that uses .mgf file: "+rawFile.getAbsolutePath());
+						throw new MprcException("Could not load search that uses .mgf file: " + rawFile.getAbsolutePath());
 					}
 					final RAWDumpTask rawDumpTask = new RAWDumpTask(
 							rawFile,
@@ -390,6 +392,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 		public void run() {
 			loaded++;
 			LOGGER.info("Loaded " + scaffoldName + " (" + loaded + " out of " + totalToLoad + ")");
+			setState(TaskState.COMPLETED_SUCCESFULLY);
 		}
 	}
 }
