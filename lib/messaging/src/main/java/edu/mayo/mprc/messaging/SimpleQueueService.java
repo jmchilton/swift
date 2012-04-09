@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p/>
  * Never share the service among multiple threads - it is single-threaded only due to usage of Session.
  */
-class SimpleQueueService implements Service {
+final class SimpleQueueService implements Service {
 	private static final Logger LOGGER = Logger.getLogger(SimpleQueueService.class);
 
 	private final Connection connection;
@@ -41,14 +41,24 @@ class SimpleQueueService implements Service {
 	 */
 	private final ThreadLocal<MessageConsumer> consumer = new ThreadLocal<MessageConsumer>();
 
+	/**
+	 * Name of the queue to send requests to / receive responses from.
+	 */
 	private final String queueName;
+
+	/**
+	 * A temporary queue created on the sending end that will receive responses to requests sent from this service.
+	 */
 	private final TemporaryQueue responseQueue;
 	/**
 	 * Map from correlation ID (request ID) to the response listener. Has to be synchronized, as an entry removal occurs
 	 * asynchronously when message arrives, which could collide with entry adding.
 	 */
 	private final Map<String, ResponseListener> responseMap = Collections.synchronizedMap(new HashMap<String, ResponseListener>());
-	private AtomicInteger uniqueId = new AtomicInteger(0);
+	/**
+	 * An id for requests that allows responses to be matched with the original sender.
+	 */
+	private final AtomicInteger uniqueId = new AtomicInteger(0);
 
 	/**
 	 * The very last response to a request is marked with this boolean property set to true.
@@ -62,7 +72,8 @@ class SimpleQueueService implements Service {
 	 *
 	 * @param broker Broker the queue lives on.
 	 * @param name   Name of the queue.
-	 * @throws edu.mayo.mprc.MprcException JMS failures.
+	 * @param userName User for logging to the message broker.
+	 * @param password Password for logging to the message broker.
 	 */
 	SimpleQueueService(final URI broker, final String name, final String userName, final String password) {
 		this.queueName = name;
