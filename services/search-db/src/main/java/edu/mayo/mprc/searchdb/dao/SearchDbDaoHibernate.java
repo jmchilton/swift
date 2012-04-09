@@ -304,7 +304,7 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 		if (analysis.getId() == null) {
 			final BiologicalSampleList originalList = analysis.getBiologicalSamples();
-			final PercentRangeReporter analysisRange = new PercentRangeReporter(new PercentDoneReporter(reporter, "Loading analysis into database"), 0, 1);
+			final PercentRangeReporter analysisRange = new PercentRangeReporter(new PercentDoneReporter(reporter, "Loading analysis into database: "), 0, 1);
 			final int numBioSamples = originalList.size();
 			if (originalList.getId() == null) {
 				final BiologicalSampleList newList = new BiologicalSampleList(numBioSamples);
