@@ -22,16 +22,27 @@ class SimpleQueueService implements Service {
 	private static final Logger LOGGER = Logger.getLogger(SimpleQueueService.class);
 
 	private final Connection connection;
-	private final ThreadLocal<Session> session = new ThreadLocal<Session>();
-	// This is where the requests are sent to
-	private final ThreadLocal<Destination> requestDestination = new ThreadLocal<Destination>();
-	// Cached producer for sending messages to the queue.
+	/**
+	 * Each thread using the SimpleQueueService uses a separate session.
+	 * A session for sending messages is separate from the session for receiving messages.
+	 */
+	private final ThreadLocal<Session> sendingSession = new ThreadLocal<Session>();
+	private final ThreadLocal<Session> receivingSession = new ThreadLocal<Session>();
+	/**
+	 * This is where the requests get sent to. A destination supports concurrent use.
+	 */
+	private final Destination requestDestination;
+	/**
+	 * Cached producer for sending messages.
+	 */
 	private final ThreadLocal<MessageProducer> producer = new ThreadLocal<MessageProducer>();
-	// Cached consumer for receiving messages.
+	/**
+	 * Cached consumer for receiving messages.
+	 */
 	private final ThreadLocal<MessageConsumer> consumer = new ThreadLocal<MessageConsumer>();
 
 	private final String queueName;
-	private TemporaryQueue responseQueue;
+	private final TemporaryQueue responseQueue;
 	/**
 	 * Map from correlation ID (request ID) to the response listener. Has to be synchronized, as an entry removal occurs
 	 * asynchronously when message arrives, which could collide with entry adding.
@@ -59,8 +70,11 @@ class SimpleQueueService implements Service {
 		try {
 			connection = ActiveMQConnectionPool.getConnectionToBroker(broker, userName, password);
 
-			final TemporaryQueue queue = responseQueue();
-			final MessageConsumer tempQueueConsumer = session().createConsumer(queue);
+			responseQueue = sendingSession().createTemporaryQueue();
+
+			requestDestination = sendingSession().createQueue(queueName);
+
+			final MessageConsumer tempQueueConsumer = sendingSession().createConsumer(responseQueue);
 			tempQueueConsumer.setMessageListener(new TempQueueMessageListener());
 
 			// start the connection and start listening for events
@@ -72,20 +86,13 @@ class SimpleQueueService implements Service {
 		}
 	}
 
-	private synchronized TemporaryQueue responseQueue() throws JMSException {
-		if (responseQueue == null) {
-			responseQueue = session().createTemporaryQueue();
-		}
-		return responseQueue;
-	}
-
 	public String getName() {
 		return queueName;
 	}
 
 	public void sendRequest(final Serializable request, final int priority, final ResponseListener listener) {
 		try {
-			final ObjectMessage objectMessage = session().createObjectMessage(request);
+			final ObjectMessage objectMessage = sendingSession().createObjectMessage(request);
 
 			if (null != listener) {
 				// User wants response to the message.
@@ -95,14 +102,14 @@ class SimpleQueueService implements Service {
 				responseMap.put(correlationId, listener);
 
 				// Replies go our temporary queue
-				objectMessage.setJMSReplyTo(responseQueue());
+				objectMessage.setJMSReplyTo(responseQueue);
 				// Correlation ID matches the responses with the response listener
 				objectMessage.setJMSCorrelationID(correlationId);
 				// Default priority is 5
 				objectMessage.setJMSPriority(priority);
 			}
 			LOGGER.debug("Sending message " + objectMessage.toString() + " id: " + objectMessage.getJMSMessageID());
-			messageProducer().send(requestDestination(), objectMessage);
+			messageProducer().send(requestDestination, objectMessage);
 
 			LOGGER.info("Request sent to queue: " + queueName);
 		} catch (JMSException e) {
@@ -112,7 +119,7 @@ class SimpleQueueService implements Service {
 
 	private synchronized MessageProducer messageProducer() throws JMSException {
 		if (null == producer.get()) {
-			producer.set(session().createProducer(null));
+			producer.set(sendingSession().createProducer(null));
 		}
 		return producer.get();
 	}
@@ -138,7 +145,7 @@ class SimpleQueueService implements Service {
 		try {
 			if (originalMessage.getJMSCorrelationID() != null) {
 				// Response was requested
-				final ObjectMessage responseMessage = session().createObjectMessage(response);
+				final ObjectMessage responseMessage = receivingSession().createObjectMessage(response);
 				responseMessage.setBooleanProperty(SimpleQueueService.LAST_RESPONSE, isLast);
 				responseMessage.setJMSCorrelationID(originalMessage.getJMSCorrelationID());
 				messageProducer().send(originalMessage.getJMSReplyTo(), responseMessage);
@@ -178,34 +185,29 @@ class SimpleQueueService implements Service {
 
 	private synchronized MessageConsumer messageConsumer() throws JMSException {
 		if (null == consumer.get()) {
-			consumer.set(session().createConsumer(requestDestination()));
+			consumer.set(receivingSession().createConsumer(requestDestination));
 		}
 		return consumer.get();
 	}
 
-	private Session session() {
-		if (this.session.get() == null) {
+	private Session receivingSession() {
+		return setupSession(this.receivingSession);
+	}
+
+	private Session sendingSession() {
+		return setupSession(this.sendingSession);
+	}
+
+	private Session setupSession(ThreadLocal<Session> sessionHolder) {
+		if (sessionHolder.get() == null) {
 			try {
 				final Session value = connection.createSession(/*transacted?*/false, /*acknowledgment*/Session.CLIENT_ACKNOWLEDGE);
-				this.session.set(value);
+				sessionHolder.set(value);
 			} catch (JMSException e) {
 				throw new MprcException("Could not open JMS session", e);
 			}
 		}
-		return this.session.get();
-	}
-
-	private Destination requestDestination() {
-		if (this.requestDestination.get() == null) {
-			try {
-				// This is where the requests go
-				final Destination value = this.session().createQueue(this.queueName);
-				this.requestDestination.set(value);
-			} catch (JMSException e) {
-				throw new MprcException("Could not create JMS destination", e);
-			}
-		}
-		return this.requestDestination.get();
+		return sessionHolder.get();
 	}
 
 	private class TempQueueMessageListener implements MessageListener {
