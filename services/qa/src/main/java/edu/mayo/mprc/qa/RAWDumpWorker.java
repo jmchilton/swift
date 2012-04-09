@@ -98,14 +98,14 @@ public final class RAWDumpWorker implements Worker {
 
 		final List<String> commandLine = getCommandLine(shortenedRawFile != null ? shortenedRawFile : rawFile,
 				rawInfo, rawSpectra, chromatogramFile, tuneFile, instrumentMethodFile, sampleInformationFile, errorLogFile);
-		process(commandLine, true/*windows executable*/, wrapperScript, windowsExecWrapperScript);
+		final ProcessCaller caller = process(commandLine, true/*windows executable*/, wrapperScript, windowsExecWrapperScript);
 
 		if (shortenedRawFile != null) {
 			FileUtilities.cleanupShortenedPath(shortenedRawFile);
 		}
 
 		if (!rawInfo.exists() || rawInfo.length() == 0 || !rawSpectra.exists() || rawSpectra.length() == 0) {
-			throw new MprcException("Raw dump has failed to create output files, " + rawInfo.getAbsolutePath() + " and " + rawSpectra.getAbsolutePath() + ".");
+			throw new MprcException("Raw dump has failed to create output files, " + rawInfo.getAbsolutePath() + " and " + rawSpectra.getAbsolutePath() + ".\n"+caller.getFailedCallDescription());
 		}
 	}
 
@@ -204,7 +204,7 @@ public final class RAWDumpWorker implements Worker {
 	 *                             platform, this wrapper will turn the executable into something that would run.
 	 *                             Typically this wrapper is a script that executes <c>wine</c> or <c>wineconsole</c>.
 	 */
-	static void process(final List<String> commandLine, final boolean isWindowsExecutable, final File wrapperScript, final String windowsWrapperScript) {
+	static ProcessCaller process(final List<String> commandLine, final boolean isWindowsExecutable, final File wrapperScript, final String windowsWrapperScript) {
 		final List<String> parameters = new ArrayList<String>();
 
 		if (wrapperScript != null) {
@@ -234,6 +234,8 @@ public final class RAWDumpWorker implements Worker {
 		if (caller.getExitValue() != 0) {
 			throw new MprcException("External process call failed: " + caller.getFailedCallDescription());
 		}
+
+		return caller;
 	}
 
 	/**
