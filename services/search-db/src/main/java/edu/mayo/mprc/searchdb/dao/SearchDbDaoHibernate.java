@@ -7,6 +7,8 @@ import edu.mayo.mprc.fastadb.FastaDbDao;
 import edu.mayo.mprc.fastadb.ProteinSequence;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.utilities.progress.PercentDoneReporter;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
@@ -65,7 +67,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	public void initialize(final Map<String, String> params) {
 	}
 
-	@Override
 	public LocalizedModification addLocalizedModification(final LocalizedModification mod) {
 		if (mod.getId() == null) {
 			return save(mod, localizedModificationEqualityCriteria(mod), false);
@@ -80,7 +81,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(associationEq("modSpecificity", mod.getModSpecificity()));
 	}
 
-	@Override
 	public IdentifiedPeptide addIdentifiedPeptide(final IdentifiedPeptide peptide) {
 		if (peptide.getId() == null) {
 			final LocalizedModBag originalList = peptide.getModifications();
@@ -108,7 +108,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(associationEq("modifications", peptide.getModifications()));
 	}
 
-	@Override
 	public PeptideSpectrumMatch addPeptideSpectrumMatch(final PeptideSpectrumMatch match) {
 		if (match.getId() == null) {
 			match.setPeptide(addIdentifiedPeptide(match.getPeptide()));
@@ -147,15 +146,18 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 
 	}
 
-	@Override
-	public ProteinGroup addProteinGroup(final ProteinGroup group) {
+	public ProteinGroup addProteinGroup(final ProteinGroup group, PercentRangeReporter reporter) {
 		if (group.getId() == null) {
+			final int size = group.getProteinSequences().size()+group.getPeptideSpectrumMatches().size();
+			int itemsSaved = 0;
 			{
 				final ProteinSequenceList originalList = group.getProteinSequences();
 				if (originalList.getId() == null) {
-					final ProteinSequenceList newList = new ProteinSequenceList(originalList.size());
+					final ProteinSequenceList newList = new ProteinSequenceList(size);
 					for (final ProteinSequence item : originalList) {
 						newList.add(fastaDbDao.addProteinSequence(item));
+						reporter.reportDone(size, itemsSaved);
+						itemsSaved++;
 					}
 					group.setProteinSequences(addSet(newList));
 				}
@@ -167,6 +169,8 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 					final PsmList newList = new PsmList(originalList.size());
 					for (final PeptideSpectrumMatch item : originalList) {
 						newList.add(addPeptideSpectrumMatch(item));
+						itemsSaved++;
+						reporter.reportDone(size, itemsSaved);
 					}
 					group.setPeptideSpectrumMatches(addSet(newList));
 				}
@@ -189,7 +193,6 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(nullSafeEq("percentageSequenceCoverage", group.getPercentageSequenceCoverage()));
 	}
 
-	@Override
 	public TandemMassSpectrometrySample addTandemMassSpectrometrySample(final TandemMassSpectrometrySample sample) {
 		if (sample == null) {
 			return null;
@@ -210,15 +213,17 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(nullSafeEq("lastModified", sample.getLastModified()));
 	}
 
-	@Override
-	public SearchResult addSearchResult(final SearchResult searchResult) {
+	public SearchResult addSearchResult(final SearchResult searchResult, final PercentRangeReporter reporter) {
 		if (searchResult.getId() == null) {
 			searchResult.setMassSpecSample(addTandemMassSpectrometrySample(searchResult.getMassSpecSample()));
 			final ProteinGroupList originalList = searchResult.getProteinGroups();
 			if (originalList.getId() == null) {
-				final ProteinGroupList newList = new ProteinGroupList(originalList.size());
+				final int size = originalList.size();
+				final ProteinGroupList newList = new ProteinGroupList(size);
+				int groupNum = 0;
 				for (final ProteinGroup item : originalList) {
-					newList.add(addProteinGroup(item));
+					newList.add(addProteinGroup(item, reporter.getSubset(size, groupNum)));
+					groupNum++;
 				}
 				searchResult.setProteinGroups(addSet(newList));
 			}
@@ -233,16 +238,19 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(associationEq("proteinGroups", searchResult.getProteinGroups()));
 	}
 
-	@Override
-	public BiologicalSample addBiologicalSample(final BiologicalSample biologicalSample) {
+	public BiologicalSample addBiologicalSample(final BiologicalSample biologicalSample, final PercentRangeReporter reporter) {
 		if (biologicalSample.getId() == null) {
 			final SearchResultList originalList = biologicalSample.getSearchResults();
+			final int totalResults = originalList.size();
 			if (originalList.getId() == null) {
-				final SearchResultList newList = new SearchResultList(originalList.size());
+				final SearchResultList newList = new SearchResultList(totalResults);
+				int resultNum = 0;
 				for (final SearchResult item : originalList) {
-					newList.add(addSearchResult(item));
+					newList.add(addSearchResult(item, reporter.getSubset(totalResults, resultNum)));
+					resultNum++;
 				}
 				biologicalSample.setSearchResults(addSet(newList));
+				reporter.reportDone();
 			}
 			return save(biologicalSample, biologicalSampleEqualityCriteria(biologicalSample), false);
 		}
@@ -256,14 +264,54 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				.add(associationEq("searchResults", biologicalSample.getSearchResults()));
 	}
 
+	/**
+	 * Reports percent of a task done within a given range.
+	 */
+	private final class PercentRangeReporter {
+		private final PercentDoneReporter reporter;
+		private final float percentFrom;
+		private final float percentTo;
+
+		PercentRangeReporter(PercentDoneReporter reporter, float percentFrom, float percentTo) {
+			this.reporter = reporter;
+			this.percentFrom = percentFrom;
+			this.percentTo = percentTo;
+		}
+
+		public void reportDone() {
+			reporter.reportProgress(percentTo);
+		}
+
+		public void reportDone(int totalChunks, int chunkNumber) {
+			reporter.reportProgress(percentFrom+(percentTo-percentFrom)/totalChunks*chunkNumber);
+		}
+
+		/**
+		 * Get a percent range by splitting the current range into equally sized chunks and returning a chunk of a given numer.
+		 *
+		 * @param totalChunks How many chunks.
+		 * @param chunkNumber Which chunk we want range for.
+		 * @return a reporter going over the specified chunk
+		 */
+		public PercentRangeReporter getSubset(int totalChunks, int chunkNumber) {
+			final float chunkPercent = (percentTo - percentFrom) / totalChunks;
+			return new PercentRangeReporter(reporter, percentFrom + chunkPercent * chunkNumber, percentFrom + chunkPercent * (chunkNumber + 1));
+		}
+	}
+
 	@Override
-	public Analysis addAnalysis(final Analysis analysis, final ReportData reportData) {
+	public Analysis addAnalysis(final Analysis analysis, final ReportData reportData, ProgressReporter reporter) {
+
 		if (analysis.getId() == null) {
 			final BiologicalSampleList originalList = analysis.getBiologicalSamples();
+			final PercentRangeReporter analysisRange = new PercentRangeReporter(new PercentDoneReporter(reporter, "Loading analysis into database"), 0, 1);
+			final int numBioSamples = originalList.size();
 			if (originalList.getId() == null) {
-				final BiologicalSampleList newList = new BiologicalSampleList(originalList.size());
+				final BiologicalSampleList newList = new BiologicalSampleList(numBioSamples);
+				int sampleNum = 0;
 				for (final BiologicalSample sample : originalList) {
-					newList.add(addBiologicalSample(sample));
+					newList.add(addBiologicalSample(sample, analysisRange.getSubset(numBioSamples, sampleNum)));
+					sampleNum++;
 				}
 				analysis.setBiologicalSamples(addSet(newList));
 				analysis.setReportData(reportData);

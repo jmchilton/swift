@@ -20,6 +20,8 @@ import edu.mayo.mprc.unimod.UnimodDaoHibernate;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.ResourceUtilities;
 import edu.mayo.mprc.utilities.TestingUtilities;
+import edu.mayo.mprc.utilities.progress.ProgressInfo;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.dbunit.DatabaseUnitException;
 import org.joda.time.DateTime;
 import org.testng.Assert;
@@ -150,7 +152,27 @@ public class TestSearchDbDao extends DaoTest {
 		summarizer.load(stream, -1, reportToLoad, "3", null);
 		final Analysis analysis = summarizer.getAnalysis();
 
-		searchDbDao.addAnalysis(analysis, reportData);
+		searchDbDao.addAnalysis(analysis, reportData, new ProgressReporter() {
+			@Override
+			public void reportStart() {
+
+			}
+
+			@Override
+			public void reportProgress(ProgressInfo progressInfo) {
+
+			}
+
+			@Override
+			public void reportSuccess() {
+
+			}
+
+			@Override
+			public void reportFailure(Throwable t) {
+
+			}
+		});
 		return analysis;
 	}
 

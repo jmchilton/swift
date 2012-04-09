@@ -97,7 +97,7 @@ public final class SearchDbWorker implements Worker {
 			final ScaffoldSpectraSummarizer summarizer = new ScaffoldSpectraSummarizer(databaseUnimod, scaffoldUnimod, translator, dataExtractor);
 			summarizer.load(workPacket.getScaffoldSpectrumReport(), "3", reporter);
 
-			dao.addAnalysis(summarizer.getAnalysis(), reportData);
+			dao.addAnalysis(summarizer.getAnalysis(), reportData, reporter);
 			dao.commit();
 		} catch (Exception e) {
 			dao.rollback();

@@ -2,6 +2,7 @@ package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
+import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.util.List;
 
@@ -10,26 +11,12 @@ import java.util.List;
  * is going to be run when adding peptide/protein sequences.
  */
 public interface SearchDbDao extends Dao {
-	LocalizedModification addLocalizedModification(LocalizedModification mod);
-
-	IdentifiedPeptide addIdentifiedPeptide(IdentifiedPeptide peptide);
-
-	PeptideSpectrumMatch addPeptideSpectrumMatch(PeptideSpectrumMatch match);
-
-	ProteinGroup addProteinGroup(ProteinGroup group);
-
-	TandemMassSpectrometrySample addTandemMassSpectrometrySample(TandemMassSpectrometrySample sample);
-
-	SearchResult addSearchResult(SearchResult searchResult);
-
-	BiologicalSample addBiologicalSample(BiologicalSample biologicalSample);
-
 	/**
 	 * @param analysis   Analysis to add.
 	 * @param reportData The analysis is bound to this Scaffold data report (.sf3 file)
 	 * @return Added analysis properly linked into Hibernate.
 	 */
-	Analysis addAnalysis(Analysis analysis, ReportData reportData);
+	Analysis addAnalysis(Analysis analysis, ReportData reportData, ProgressReporter reporter);
 
 	/**
 	 * @param reportId Id of {@link ReportData}
