@@ -19,6 +19,7 @@ import edu.mayo.mprc.swift.dbmapping.ReportData;
 import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
 import edu.mayo.mprc.swift.search.SwiftSearcher;
 import edu.mayo.mprc.swift.search.task.*;
+import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressReport;
 import edu.mayo.mprc.workflow.engine.SearchMonitor;
 import edu.mayo.mprc.workflow.engine.TaskBase;
@@ -160,6 +161,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 				break;
 			}
 		}
+		engines.clear();
 	}
 
 	private boolean runEngines(final List<WorkflowEngine> engines) {
@@ -170,6 +172,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 				try {
 					engine.run();
 				} catch (MprcException e) {
+					// SWALLOWED: We are okay with the engine failing, we log it and go on
 					LOGGER.error("The load failed", e);
 				}
 			}
@@ -227,6 +230,10 @@ public final class LoadToSearchDb implements SwiftCommand {
 				// Only load files that made it to Scaffold
 				if (fileSearch.isSearch("SCAFFOLD3") || fileSearch.isSearch("SCAFFOLD")) {
 					final File rawFile = fileSearch.getInputFile();
+					if(!"RAW".equalsIgnoreCase(FileUtilities.getExtension(rawFile.getName()))) {
+						// We have a file that is not raw.
+						throw new MprcException("Could not load search that uses .mgf file: "+rawFile.getAbsolutePath());
+					}
 					final RAWDumpTask rawDumpTask = new RAWDumpTask(
 							rawFile,
 							new File(swiftSearchDefinition.getOutputFolder(), QaTask.QA_SUBDIRECTORY),
