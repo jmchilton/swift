@@ -84,7 +84,8 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 			final Criteria criteria = getSession().createCriteria(Curation.class)
 					.add(Restrictions.isNotNull(DELETION_FIELD))
 					.add(Restrictions.eq("shortName", uniqueName))
-					.addOrder(Order.desc("deletion.date"))
+					.createAlias("deletion", "d") // So we can order by association
+					.addOrder(Order.desc("d.date"))
 					.setMaxResults(1);
 
 			final Curation curation = (Curation) criteria.uniqueResult();
