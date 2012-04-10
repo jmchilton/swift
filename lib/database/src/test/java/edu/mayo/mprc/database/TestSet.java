@@ -37,7 +37,7 @@ public class TestSet extends PersistableBase {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (obj == null || !(obj instanceof TestSet)) {
 			return false;
 		}
 

@@ -76,7 +76,7 @@ public final class ProteinDatabaseEntry extends PersistableBase {
 		if (this == o) {
 			return true;
 		}
-		if (null == o || getClass() != o.getClass()) {
+		if (null == o || !(o instanceof ProteinDatabaseEntry)) {
 			return false;
 		}
 

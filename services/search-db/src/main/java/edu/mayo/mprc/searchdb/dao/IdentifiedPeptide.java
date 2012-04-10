@@ -93,7 +93,7 @@ public class IdentifiedPeptide extends PersistableBase {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || !(o instanceof IdentifiedPeptide)) {
 			return false;
 		}
 

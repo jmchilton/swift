@@ -177,7 +177,7 @@ public final class Analysis extends PersistableBase {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || !(o instanceof Analysis)) {
 			return false;
 		}
 

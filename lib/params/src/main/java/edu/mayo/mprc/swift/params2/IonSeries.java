@@ -51,7 +51,7 @@ public class IonSeries extends EvolvableBase {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (obj == null || !(obj instanceof IonSeries)) {
 			return false;
 		}
 

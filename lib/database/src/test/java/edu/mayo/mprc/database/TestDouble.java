@@ -36,7 +36,7 @@ public class TestDouble extends PersistableBase {
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (o == null || !(o instanceof TestDouble)) return false;
 
 		final TestDouble that = (TestDouble) o;
 

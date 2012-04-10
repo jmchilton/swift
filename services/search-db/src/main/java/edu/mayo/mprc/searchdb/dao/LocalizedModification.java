@@ -71,7 +71,7 @@ public class LocalizedModification extends PersistableBase implements Comparable
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || !(o instanceof LocalizedModification)) {
 			return false;
 		}
 
