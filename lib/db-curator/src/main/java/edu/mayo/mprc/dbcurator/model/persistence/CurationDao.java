@@ -71,10 +71,20 @@ public interface CurationDao extends Dao {
 	/**
 	 * gets the curation by a short name
 	 *
+	 *
 	 * @param uniqueName the name that we can look up by
 	 * @return the curation with that short name
 	 */
 	Curation getCurationByShortName(final String uniqueName);
+
+	/**
+	 * Just like {@link #getCurationByShortName(String)}, but if a curation cannot be found,
+	 * it looks through the list of the deleted curations of matching name, finds one that was deleted
+	 * the latest and returns that information. This is used for matching legacy data.
+	 * @param uniqueName Name of the curation.
+	 * @return the curation with the short name, including potentially deleted ones. If none found, returns null.
+	 */
+	Curation getLegacyCuration(final String uniqueName);
 
 	List<Curation> getCurationsByShortname(String curationShortName);
 

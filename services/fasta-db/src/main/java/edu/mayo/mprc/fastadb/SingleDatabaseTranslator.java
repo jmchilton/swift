@@ -27,7 +27,10 @@ public class SingleDatabaseTranslator implements ProteinSequenceTranslator {
 				throw new MprcException("Multiple databases per Scaffold file not supported: [" + databaseSources + "]");
 			}
 			currentDatabaseSources = FileUtilities.stripGzippedExtension(databaseSources);
-			database = curationDao.getCurationByShortName(currentDatabaseSources);
+			database = curationDao.getLegacyCuration(currentDatabaseSources);
+			if(database==null) {
+				throw new MprcException("Cannot find information about database ["+currentDatabaseSources+"]");
+			}
 		} else if (!FileUtilities.stripGzippedExtension(databaseSources).equals(currentDatabaseSources)) {
 			throw new MprcException("Swift supports only a single FASTA database per Scaffold file. Two databases encountered: [" + currentDatabaseSources + "] and [" + databaseSources + "]");
 		}

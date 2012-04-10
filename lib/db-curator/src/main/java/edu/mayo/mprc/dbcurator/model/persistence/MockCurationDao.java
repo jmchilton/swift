@@ -86,6 +86,11 @@ public final class MockCurationDao implements CurationDao {
 	}
 
 	@Override
+	public Curation getLegacyCuration(String uniqueName) {
+		return null;
+	}
+
+	@Override
 	public List<Curation> getCurationsByShortname(final String curationShortName) {
 		return null;
 	}

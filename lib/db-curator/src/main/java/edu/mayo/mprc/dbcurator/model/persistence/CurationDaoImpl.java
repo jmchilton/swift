@@ -10,10 +10,7 @@ import edu.mayo.mprc.dbcurator.model.HeaderTransform;
 import edu.mayo.mprc.dbcurator.model.SourceDatabaseArchive;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.joda.time.DateTime;
 
 import java.io.File;
@@ -73,6 +70,27 @@ public final class CurationDaoImpl extends DaoBase implements CurationDao {
 			return null;
 		} else {
 			return matches.get(0);
+		}
+	}
+
+	@Override
+	public Curation getLegacyCuration(final String uniqueName) {
+		final Curation result = getCurationByShortName(uniqueName);
+		if(result!=null) {
+			return result;
+		}
+		// We failed. Let us look at all the deleted ones.
+		try {
+			final Criteria criteria = getSession().createCriteria(Curation.class)
+					.add(Restrictions.isNotNull(DELETION_FIELD))
+					.add(Restrictions.eq("shortName", uniqueName))
+					.addOrder(Order.desc("deletion.date"))
+					.setMaxResults(1);
+
+			final Curation curation = (Curation) criteria.uniqueResult();
+			return curation;
+		} catch (Exception e) {
+			throw new MprcException("Cannot get a curation named [" + uniqueName + "]", e);
 		}
 	}
 
