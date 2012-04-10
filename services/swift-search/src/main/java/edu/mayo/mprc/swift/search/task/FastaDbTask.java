@@ -26,7 +26,7 @@ public class FastaDbTask extends AsyncTaskBase {
 	}
 
 	/**
-	 * See {@link AsyncTaskBase#AsyncTaskBase(edu.mayo.mprc.daemon.DaemonConnection, edu.mayo.mprc.daemon.files.FileTokenFactory, boolean)}
+	 * See {@link AsyncTaskBase#AsyncTaskBase(DaemonConnection, FileTokenFactory, boolean)}
 	 */
 	public FastaDbTask(final DaemonConnection daemon, final FileTokenFactory fileTokenFactory, final boolean fromScratch, final Curation curationToLoad) {
 		super(daemon, fileTokenFactory, fromScratch);

@@ -16,6 +16,8 @@ public interface CurationDao extends Dao {
 	/**
 	 * gets a curation with the given ID.  This also loads all associated objects.
 	 *
+	 * The curation will be returned even if it was previously deleted, as we go by ID.
+	 *
 	 * @param curationID the id of the curation that you want (this is probably too low of level for the public to use...
 	 * @return the curation with the given id or null of not curation with that id was found
 	 */

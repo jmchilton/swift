@@ -7,7 +7,7 @@ import edu.mayo.mprc.daemon.WorkPacketBase;
  *
  * @author Roman Zenka
  */
-public class FastaDbWorkPacket extends WorkPacketBase {
+public final class FastaDbWorkPacket extends WorkPacketBase {
 
 	private static final long serialVersionUID = -6506219790252689864L;
 	private int curationId;
