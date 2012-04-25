@@ -419,9 +419,11 @@ public final class SearchRunner implements Runnable {
 		}
 
 		if (searchDbDaemon != null && rawDumpDaemon != null) {
-			// Ask far dumping the .RAW file since the QA might be disabled
-			final RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
-			addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
+			// Ask for dumping the .RAW file since the QA might be disabled
+			if (isRawFile(inputFile)) {
+				final RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
+				addSearchDbCall(scaffold3Task, rawDumpTask, searchDefinition.getSearchParameters().getDatabase());
+			}
 		}
 	}
 
@@ -608,7 +610,7 @@ public final class SearchRunner implements Runnable {
 
 				RAWDumpTask rawDumpTask = null;
 
-				if (rawDumpDaemon != null) {
+				if (rawDumpDaemon != null && isRawFile(inputFile)) {
 					rawDumpTask = addRawDumpTask(file, qaTask.getQaReportFolder());
 					qaTask.addDependency(rawDumpTask);
 				}
