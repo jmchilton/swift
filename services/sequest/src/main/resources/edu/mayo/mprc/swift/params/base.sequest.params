@@ -9,7 +9,7 @@ num_output_lines = 10                ; # peptide results to show
 num_results = 250                     ; # results to store
 num_description_lines = 5           ; # full protein descriptions to show for top N peptides
 show_fragment_ions = 0              ; 0=no, 1=yes
-print_duplicate_references = 0      ; number of duplicate references reported
+print_duplicate_references = 20     ; number of duplicate references reported
 enzyme_info = Trypsin(KR) 1 1 KR -
 max_num_differential_per_peptide = 3           ; max # of diff. mod in a peptide
 diff_search_options = 15.99492 M 57.02146 C 0.000000 X 0.000000 T 0.000000 Y 0.000000 X
