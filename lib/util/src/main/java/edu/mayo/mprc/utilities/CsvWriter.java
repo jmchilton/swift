@@ -223,7 +223,7 @@ public final class CsvWriter implements Closeable {
 	        	sb.append(escapechar).append(nextChar);
 	        } else if (escapechar != NO_ESCAPE_CHARACTER && nextChar == escapechar) {
 	        	sb.append(escapechar).append(nextChar);
-	        } else {
+	        } else if(nextChar!='\r') {
 	            sb.append(nextChar);
 	        }
 	    }
