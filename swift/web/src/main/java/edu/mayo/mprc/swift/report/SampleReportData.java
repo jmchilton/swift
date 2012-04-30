@@ -146,7 +146,8 @@ public final class SampleReportData {
 				if (line == null) {
 					break;
 				}
-				final String header = getHeader(line);
+				final Tuple<String, String> entry = getEntry(line);
+				final String header = getHeaderLabel(entry);
 				if (header != null) {
 					headers.add(header);
 				}
@@ -159,6 +160,28 @@ public final class SampleReportData {
 		return headers;
 	}
 
+	private static String getHeaderLabel(Tuple<String, String> entry) {
+		if(entry==null) {
+			return null;
+		}
+		String header;
+		if(isUserLabel(entry)) {
+			header = "User "+entry.getSecond();
+		} else if(isUserText(entry)) {
+			return null;
+		} else {
+			header = entry.getFirst();
+		}
+		return header;
+	}
+
+	private static boolean isUserLabel(Tuple<String, String> entry) {
+		return entry.getFirst().startsWith("User Label");
+	}
+
+	private static boolean isUserText(Tuple<String, String> entry) {
+		return entry.getFirst().startsWith("User Text");
+	}
 
 	static Map<String, String> parseSampleValues(final String sampleInfo) {
 		if (sampleInfo == null) {
@@ -166,6 +189,8 @@ public final class SampleReportData {
 		}
 		final Map<String, String> values = new HashMap<String, String>(TYPICAL_SAMPLE_HEADERS);
 
+		// For user labels, remember the previous user header so it can be associated with the user value
+		String nextUserHeader = null;
 		final BufferedReader reader = new BufferedReader(new StringReader(sampleInfo));
 		try {
 			while (true) {
@@ -175,7 +200,16 @@ public final class SampleReportData {
 				}
 				final Tuple<String, String> entry = getEntry(line);
 				if (entry != null) {
-					values.put(entry.getFirst(), entry.getSecond());
+					if(isUserLabel(entry)) {
+						nextUserHeader = getHeaderLabel(entry);
+					} else {
+						if(nextUserHeader!=null) {
+							values.put(nextUserHeader, entry.getSecond());
+							nextUserHeader=null;
+						} else {
+							values.put(entry.getFirst(), entry.getSecond());
+						}
+					}
 				}
 			}
 		} catch (IOException e) {

@@ -63,8 +63,8 @@ public final class SampleReportTest {
 		Assert.assertNotNull(headers);
 		Assert.assertEquals(Joiner.on(',').join(headers), "Calibration File,Comment,Data Path,Dilution Factor,Injection Volume," +
 				"Instrument Method,ISTD Amount,Level Name,Row,Processing Method,Raw File Name,"
-				+ "Sample ID,Sample Name,Sample Type,Sample Volume,Sample Weight,User Label 1,User Text 1,User Label 2," +
-				"User Text 2,User Label 3,User Text 3,User Label 4,User Text 4,User Label 5,User Text 5,Vial", "Headers must be in correct order");
+				+ "Sample ID,Sample Name,Sample Type,Sample Volume,Sample Weight,User Date,User Trap," +
+				"User Column,User Mob. Phase,User Phone,Vial", "Headers must be in correct order");
 	}
 
 	@Test
@@ -84,8 +84,8 @@ public final class SampleReportTest {
 
 		Assert.assertEquals(Joiner.on(',').join(headerCollector.getHeaders()), "Calibration File,Comment,Data Path,Dilution Factor,Injection Volume," +
 				"Instrument Method,ISTD Amount,Level Name,Row,Processing Method,Raw File Name,"
-				+ "Sample ID,Sample Name,Sample Type,Sample Volume,Sample Weight,User Label 1,User Text 1,User Label 2," +
-				"User Text 2,User Label 3,User Text 3,User Label 4,User Text 4,User Label 5,User Text 5,Vial,Test", "Headers must be in correct order");
+				+ "Sample ID,Sample Name,Sample Type,Sample Volume,Sample Weight,User Date,User Trap," +
+				"User Column,User Mob. Phase,User Phone,Vial,Test", "Headers must be in correct order");
 	}
 
 	@Test
