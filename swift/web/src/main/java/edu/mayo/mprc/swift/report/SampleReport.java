@@ -34,6 +34,7 @@ public final class SampleReport extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) {
 		resp.setContentType("text/plain");
+		resp.setHeader("Content-Disposition", "attachment; filename=sample-report.csv");
 		Writer writer = null;
 		try {
 			writer = new OutputStreamWriter(resp.getOutputStream());

@@ -39,24 +39,20 @@ public final class SampleReportData {
 	 */
 	static void writeCsv(Writer writer, SearchDbDao dao) {
 		CsvWriter csvWriter = new CsvWriter(writer);
-		try {
-			final SampleHeaderCollector headerCollector = new SampleHeaderCollector();
+		final SampleHeaderCollector headerCollector = new SampleHeaderCollector();
 
-			dao.getTandemMassSpectrometrySamples(headerCollector);
+		dao.getTandemMassSpectrometrySamples(headerCollector);
 
-			final Collection<String> combinedHeaders = headerCollector.getHeaders();
-			List<String> headerList = new ArrayList<String>(DYNAMIC_HEADER_OFFSET + combinedHeaders.size());
-			headerList.addAll(FIXED_HEADER);
-			headerList.addAll(combinedHeaders);
-			final int headersLength = headerList.size();
-			String[] headers = new String[headersLength];
-			headerList.toArray(headers);
-			csvWriter.writeNext(headers);
+		final Collection<String> combinedHeaders = headerCollector.getHeaders();
+		List<String> headerList = new ArrayList<String>(DYNAMIC_HEADER_OFFSET + combinedHeaders.size());
+		headerList.addAll(FIXED_HEADER);
+		headerList.addAll(combinedHeaders);
+		final int headersLength = headerList.size();
+		String[] headers = new String[headersLength];
+		headerList.toArray(headers);
+		csvWriter.writeNext(headers);
 
-			dao.getTandemMassSpectrometrySamples(new SamplePrinter(headers, csvWriter));
-		} finally {
-			FileUtilities.closeQuietly(writer);
-		}
+		dao.getTandemMassSpectrometrySamples(new SamplePrinter(headers, csvWriter));
 	}
 
 	/**
@@ -161,13 +157,13 @@ public final class SampleReportData {
 	}
 
 	private static String getHeaderLabel(Tuple<String, String> entry) {
-		if(entry==null) {
+		if (entry == null) {
 			return null;
 		}
 		String header;
-		if(isUserLabel(entry)) {
-			header = "User "+entry.getSecond();
-		} else if(isUserText(entry)) {
+		if (isUserLabel(entry)) {
+			header = "User " + entry.getSecond();
+		} else if (isUserText(entry)) {
 			return null;
 		} else {
 			header = entry.getFirst();
@@ -200,12 +196,12 @@ public final class SampleReportData {
 				}
 				final Tuple<String, String> entry = getEntry(line);
 				if (entry != null) {
-					if(isUserLabel(entry)) {
+					if (isUserLabel(entry)) {
 						nextUserHeader = getHeaderLabel(entry);
 					} else {
-						if(nextUserHeader!=null) {
+						if (nextUserHeader != null) {
 							values.put(nextUserHeader, entry.getSecond());
-							nextUserHeader=null;
+							nextUserHeader = null;
 						} else {
 							values.put(entry.getFirst(), entry.getSecond());
 						}
