@@ -64,6 +64,10 @@
         <servlet-name>FindProtein</servlet-name>
         <servlet-class>edu.mayo.mprc.swift.report.FindProtein</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SampleReport</servlet-name>
+        <servlet-class>edu.mayo.mprc.swift.report.SampleReport</servlet-class>
+    </servlet>
     <!--inserted manually -->
     <servlet-mapping>
         <servlet-name>SwiftAppService</servlet-name>
@@ -120,6 +124,10 @@
     <servlet-mapping>
         <servlet-name>FindProtein</servlet-name>
         <url-pattern>/find-protein</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SampleReport</servlet-name>
+        <url-pattern>/sample-report</url-pattern>
     </servlet-mapping>
 
 

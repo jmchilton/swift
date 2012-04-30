@@ -51,4 +51,9 @@ public interface SearchDbDao extends Dao {
 	 * parameters are listed (does not make sense to list them otherwise, as results cannot be loaded in that case).
 	 */
 	List<Long> getReportIdsWithoutAnalysis();
+
+	/**
+	 * @return List of all mass spec samples that are loaded in the database. The list is read-only.
+	 */
+	List<TandemMassSpectrometrySample> getTandemMassSpectrometrySamples();
 }

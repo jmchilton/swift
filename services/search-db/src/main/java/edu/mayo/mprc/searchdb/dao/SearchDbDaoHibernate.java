@@ -369,6 +369,14 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 				"and not exists (from Analysis as a where a.reportData=rd) order by rd.dateCreated desc").list();
 	}
 
+	@Override
+	public List<TandemMassSpectrometrySample> getTandemMassSpectrometrySamples() {
+		return (List<TandemMassSpectrometrySample>)getSession()
+				.createCriteria(TandemMassSpectrometrySample.class)
+				.setReadOnly(true)
+				.list();
+	}
+
 	private Criterion analysisEqualityCriteria(final Analysis analysis) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("scaffoldVersion", analysis.getScaffoldVersion()))
