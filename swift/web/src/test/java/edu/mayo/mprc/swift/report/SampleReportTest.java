@@ -1,6 +1,9 @@
 package edu.mayo.mprc.swift.report;
 
 import com.google.common.base.Joiner;
+import edu.mayo.mprc.database.QueryCallback;
+import edu.mayo.mprc.searchdb.dao.SearchDbDao;
+import edu.mayo.mprc.searchdb.dao.SearchDbDaoBlank;
 import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySample;
 import edu.mayo.mprc.utilities.TestingUtilities;
 import org.joda.time.DateTime;
@@ -11,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -75,8 +77,12 @@ public final class SampleReportTest {
 	@Test
 	public void shouldConsolidateHeaders() {
 		final List<TandemMassSpectrometrySample> samples = getTwoSamples();
-		final Collection<String> headers = SampleReportData.combinedSampleInformationHeaders(samples);
-		Assert.assertEquals(Joiner.on(',').join(headers), "Calibration File,Comment,Data Path,Dilution Factor,Injection Volume," +
+		SampleReportData.SampleHeaderCollector headerCollector = new SampleReportData.SampleHeaderCollector();
+		for (TandemMassSpectrometrySample sample : samples) {
+			headerCollector.process(new Object[]{sample});
+		}
+
+		Assert.assertEquals(Joiner.on(',').join(headerCollector.getHeaders()), "Calibration File,Comment,Data Path,Dilution Factor,Injection Volume," +
 				"Instrument Method,ISTD Amount,Level Name,Row,Processing Method,Raw File Name,"
 				+ "Sample ID,Sample Name,Sample Type,Sample Volume,Sample Weight,User Label 1,User Text 1,User Label 2," +
 				"User Text 2,User Label 3,User Text 3,User Label 4,User Text 4,User Label 5,User Text 5,Vial,Test", "Headers must be in correct order");
@@ -85,7 +91,9 @@ public final class SampleReportTest {
 	@Test
 	public void shouldProduceCsv() throws IOException {
 		StringWriter stringWriter = new StringWriter(1000);
-		SampleReportData.writeCsv(stringWriter, getTwoSamples());
+		SearchDbDao dao = new MySearchDbDao(getTwoSamples());
+		SampleReportData.writeCsv(stringWriter, dao);
+
 		String result = stringWriter.getBuffer().toString();
 		stringWriter.close();
 		Assert.assertEquals(TestingUtilities.compareStringToResourceByLine(result, "edu/mayo/mprc/swift/report/report.csv"), null);
@@ -94,10 +102,25 @@ public final class SampleReportTest {
 	private List<TandemMassSpectrometrySample> getTwoSamples() {
 		TandemMassSpectrometrySample sample1 = new TandemMassSpectrometrySample(
 				new File("/file/test1.RAW"), new DateTime(2011, 1, 2, 3, 4, 5, 0), 10, 20, 30, "instrument", "serial",
-				new DateTime(2011, 2, 3, 10, 20, 30, 0), 20*60, "Test File 1", "tune", "instrument", SAMPLE_INFO, "Error 1");
-		TandemMassSpectrometrySample sample2 =  new TandemMassSpectrometrySample(
+				new DateTime(2011, 2, 3, 10, 20, 30, 0), 20 * 60, "Test File 1", "tune", "instrument", SAMPLE_INFO, "Error 1");
+		TandemMassSpectrometrySample sample2 = new TandemMassSpectrometrySample(
 				new File("/file/test2.RAW"), new DateTime(2012, 1, 2, 3, 4, 5, 0), 11, 21, 31, "instrument 2", "serial 2",
 				new DateTime(2012, 2, 3, 10, 20, 30, 0), 1234, "Test File 2", "tune 2", "instrument 2", SAMPLE2_INFO, "Error 2");
 		return Arrays.asList(sample1, sample2);
+	}
+
+	private static class MySearchDbDao extends SearchDbDaoBlank {
+		private final List<TandemMassSpectrometrySample> samples;
+
+		private MySearchDbDao(List<TandemMassSpectrometrySample> samples) {
+			this.samples = samples;
+		}
+
+		@Override
+		public void getTandemMassSpectrometrySamples(QueryCallback callback) {
+			for (TandemMassSpectrometrySample sample : samples) {
+				callback.process(new Object[]{sample});
+			}
+		}
 	}
 }

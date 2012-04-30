@@ -2,9 +2,7 @@ package edu.mayo.mprc.database;
 
 import com.google.common.base.Preconditions;
 import edu.mayo.mprc.MprcException;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.StatelessSession;
+import org.hibernate.*;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
@@ -474,6 +472,33 @@ public abstract class DaoBase implements Dao {
 			getSession().save(change);
 		}
 		item.setDeletion(change);
+	}
+
+	/**
+	 * Scroll through results of a given query, calling a given callback on each result.
+	 * Do this in as efficient manner as possible - use stateless session (no memory garbage),
+	 * use scroll access so not all results are loaded into memory at once.
+	 * @param query Query to process.
+	 * @param callback Callback to be called per each method.
+	 */
+	protected void scrollQuery(final String query, final QueryCallback callback) {
+		final StatelessSession session = getDatabasePlaceholder().getSessionFactory().openStatelessSession();
+
+		final Transaction tx = session.beginTransaction();
+		try {
+			ScrollableResults results = session.createQuery(query).scroll(ScrollMode.FORWARD_ONLY);
+			while (results.next()) {
+				callback.process(results.get());
+			}
+			results.close();
+
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+			throw new MprcException(e);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**

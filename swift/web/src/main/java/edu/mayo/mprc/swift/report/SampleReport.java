@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 
 /**
  * Report about the .RAW files. Parses contents of {@link TandemMassSpectrometrySample}
@@ -38,18 +37,7 @@ public final class SampleReport extends HttpServlet {
 		Writer writer = null;
 		try {
 			writer = new OutputStreamWriter(resp.getOutputStream());
-			// Load all samples (otherwise we would have to load them twice)
-			final List<TandemMassSpectrometrySample> samples;
-			searchDbDao.begin();
-			try {
-				samples = searchDbDao.getTandemMassSpectrometrySamples();
-				searchDbDao.commit();
-			} catch (Exception e) {
-				searchDbDao.rollback();
-				throw new MprcException("Could not obtain analysis data", e);
-			}
-
-			SampleReportData.writeCsv(writer, samples);
+			SampleReportData.writeCsv(writer, searchDbDao);
 		} catch (Exception e) {
 			throw new MprcException(e);
 		} finally {

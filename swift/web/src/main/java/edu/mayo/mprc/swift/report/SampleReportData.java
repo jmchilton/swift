@@ -1,10 +1,13 @@
 package edu.mayo.mprc.swift.report;
 
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.database.QueryCallback;
+import edu.mayo.mprc.searchdb.dao.SearchDbDao;
 import edu.mayo.mprc.searchdb.dao.TandemMassSpectrometrySample;
 import edu.mayo.mprc.utilities.CsvWriter;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.Tuple;
+import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
 import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -17,16 +20,16 @@ import java.util.*;
 
 /**
  * Provides data for {@link SampleReport}
+ *
  * @author Roman Zenka
  */
 public final class SampleReportData {
 	private static final Logger LOGGER = Logger.getLogger(SampleReportData.class);
 	private static final int TYPICAL_SAMPLE_HEADERS = 30;
-	private static final List<String> FIXED_HEADER =Arrays.asList(
+	private static final List<String> FIXED_HEADER = Arrays.asList(
 			"File", "Last Modified",
 			"Ms1 Spectra", "Ms2 Spectra", "Ms3+ Spectra", "Instrument Name",
 			"Instrument Serial #", "Start Time", "Run Time (seconds)", "Comment", "Error Log");
-	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 	public static final int DYNAMIC_HEADER_OFFSET = FIXED_HEADER.size();
 
 	/**
@@ -34,59 +37,95 @@ public final class SampleReportData {
 	 *
 	 * @param writer Writer to write data to.
 	 */
-	static void writeCsv(Writer writer, List<TandemMassSpectrometrySample> samples) {
+	static void writeCsv(Writer writer, SearchDbDao dao) {
 		CsvWriter csvWriter = new CsvWriter(writer);
+		try {
+			final SampleHeaderCollector headerCollector = new SampleHeaderCollector();
 
-		final Collection<String> combinedHeaders = combinedSampleInformationHeaders(samples);
-		List<String> headerList = new ArrayList<String>(DYNAMIC_HEADER_OFFSET +combinedHeaders.size());
-		headerList.addAll(FIXED_HEADER);
-		headerList.addAll(combinedHeaders);
-		final int headersLength = headerList.size();
-		String[] headers=new String[headersLength];
-		headerList.toArray(headers);
+			dao.getTandemMassSpectrometrySamples(headerCollector);
 
-		csvWriter.writeNext(headers);
+			final Collection<String> combinedHeaders = headerCollector.getHeaders();
+			List<String> headerList = new ArrayList<String>(DYNAMIC_HEADER_OFFSET + combinedHeaders.size());
+			headerList.addAll(FIXED_HEADER);
+			headerList.addAll(combinedHeaders);
+			final int headersLength = headerList.size();
+			String[] headers = new String[headersLength];
+			headerList.toArray(headers);
+			csvWriter.writeNext(headers);
 
-		// Loop over all the data and write values ordered according to the header
-		final String[] data = new String[headersLength];
-		for (final TandemMassSpectrometrySample sample : samples) {
-			final Map<String, String> values = parseSampleValues(sample.getSampleInformation());
-
-			// Copy fixed data
-			data[0]=sample.getFile()==null?null:sample.getFile().getAbsolutePath();
-			data[1]=sample.getLastModified()==null?null:DATE_FORMAT.print(sample.getLastModified());
-			data[2]=String.valueOf(sample.getMs1Spectra());
-			data[3]=String.valueOf(sample.getMs2Spectra());
-			data[4]=String.valueOf(sample.getMs3PlusSpectra());
-			data[5]=sample.getInstrumentName();
-			data[6]=sample.getInstrumentSerialNumber();
-			data[7]=DATE_FORMAT.print(sample.getStartTime());
-			data[8]=String.valueOf(sample.getRunTimeInSeconds());
-			data[9]=sample.getComment();
-			data[10]=sample.getErrorLog();
-
-			for (int i = DYNAMIC_HEADER_OFFSET; i < headersLength; i++) {
-				final String header = headers[i];
-				data[i] = values.get(header);
-			}
-			csvWriter.writeNext(data);
+			dao.getTandemMassSpectrometrySamples(new SamplePrinter(headers, csvWriter));
+		} finally {
+			FileUtilities.closeQuietly(writer);
 		}
-		FileUtilities.closeQuietly(writer);
 	}
 
 	/**
 	 * Provide a combined list of all headers present in a set of samples.
-	 *
-	 * @param samples A list of tandem mass spec samples.
-	 * @return A set of headers.
 	 */
-	static Collection<String> combinedSampleInformationHeaders(final Iterable<TandemMassSpectrometrySample> samples) {
-		final LinkedHashSet<String> headers = new LinkedHashSet<String>(100);
-		for (final TandemMassSpectrometrySample sample : samples) {
-			final String sampleInfo = sample.getSampleInformation();
-			headers.addAll(parseSampleHeaders(sampleInfo));
+	static final class SampleHeaderCollector implements QueryCallback {
+		private final LinkedHashSet<String> headers = new LinkedHashSet<String>(100);
+
+		@Override
+		public void process(Object[] data) {
+			if (data[0] instanceof TandemMassSpectrometrySample) {
+				TandemMassSpectrometrySample sample = (TandemMassSpectrometrySample) data[0];
+				headers.addAll(parseSampleHeaders(sample.getSampleInformation()));
+			} else {
+				ExceptionUtilities.throwCastException(data[0], String.class);
+				return;
+			}
 		}
-		return headers;
+
+		public LinkedHashSet<String> getHeaders() {
+			return headers;
+		}
+	}
+
+	/**
+	 * Prints a given sample to provided writer.
+	 */
+	static final class SamplePrinter implements QueryCallback {
+		private final String[] headers;
+		private final CsvWriter writer;
+		private final String[] row;
+		private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+
+		public SamplePrinter(String[] headers, CsvWriter writer) {
+			this.headers = headers;
+			this.writer = writer;
+			row = new String[headers.length];
+		}
+
+		@Override
+		public void process(Object[] data) {
+			if (data[0] instanceof TandemMassSpectrometrySample) {
+				TandemMassSpectrometrySample sample = (TandemMassSpectrometrySample) data[0];
+				// Loop over all the data and write values ordered according to the header
+				final Map<String, String> values = parseSampleValues(sample.getSampleInformation());
+
+				// Copy fixed data
+				row[0] = sample.getFile() == null ? null : sample.getFile().getAbsolutePath();
+				row[1] = sample.getLastModified() == null ? null : DATE_FORMAT.print(sample.getLastModified());
+				row[2] = String.valueOf(sample.getMs1Spectra());
+				row[3] = String.valueOf(sample.getMs2Spectra());
+				row[4] = String.valueOf(sample.getMs3PlusSpectra());
+				row[5] = sample.getInstrumentName();
+				row[6] = sample.getInstrumentSerialNumber();
+				row[7] = DATE_FORMAT.print(sample.getStartTime());
+				row[8] = String.valueOf(sample.getRunTimeInSeconds());
+				row[9] = sample.getComment();
+				row[10] = sample.getErrorLog();
+
+				for (int i = DYNAMIC_HEADER_OFFSET; i < row.length; i++) {
+					final String header = headers[i];
+					row[i] = values.get(header);
+				}
+				writer.writeNext(row);
+			} else {
+				ExceptionUtilities.throwCastException(data, TandemMassSpectrometrySample.class);
+				return;
+			}
+		}
 	}
 
 	/**
@@ -119,6 +158,7 @@ public final class SampleReportData {
 		}
 		return headers;
 	}
+
 
 	static Map<String, String> parseSampleValues(final String sampleInfo) {
 		if (sampleInfo == null) {

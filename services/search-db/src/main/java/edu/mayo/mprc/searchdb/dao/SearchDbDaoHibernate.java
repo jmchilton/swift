@@ -370,11 +370,8 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 	}
 
 	@Override
-	public List<TandemMassSpectrometrySample> getTandemMassSpectrometrySamples() {
-		return (List<TandemMassSpectrometrySample>)getSession()
-				.createCriteria(TandemMassSpectrometrySample.class)
-				.setReadOnly(true)
-				.list();
+	public void getTandemMassSpectrometrySamples(QueryCallback queryCallback) {
+		scrollQuery("from TandemMassSpectrometrySample", queryCallback);
 	}
 
 	private Criterion analysisEqualityCriteria(final Analysis analysis) {

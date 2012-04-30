@@ -1,6 +1,7 @@
 package edu.mayo.mprc.searchdb.dao;
 
 import edu.mayo.mprc.database.Dao;
+import edu.mayo.mprc.database.QueryCallback;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
@@ -53,7 +54,8 @@ public interface SearchDbDao extends Dao {
 	List<Long> getReportIdsWithoutAnalysis();
 
 	/**
-	 * @return List of all mass spec samples that are loaded in the database. The list is read-only.
+	 * Go through the list of all mass spectrometry samples, calling the given callback on each.
+	 * @param callback Callback to be called once per each sample.
 	 */
-	List<TandemMassSpectrometrySample> getTandemMassSpectrometrySamples();
+	void getTandemMassSpectrometrySamples(QueryCallback callback);
 }
