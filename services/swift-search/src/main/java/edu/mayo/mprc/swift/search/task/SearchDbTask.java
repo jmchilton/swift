@@ -88,14 +88,7 @@ public final class SearchDbTask extends AsyncTaskBase {
 		final HashMap<String, RawFileMetaData> metaDataMap = new HashMap<String, RawFileMetaData>(rawDumpTaskMap.size());
 		for (final Map.Entry<String, RAWDumpTask> entry : rawDumpTaskMap.entrySet()) {
 			final RAWDumpTask task = entry.getValue();
-			final RawFileMetaData metaData = new RawFileMetaData(
-					task.getRawFile(),
-					task.getRawInfoFile(),
-					task.getTuneMethodFile(),
-					task.getInstrumentMethodFile(),
-					task.getSampleInformationFile(),
-					task.getErrorLogFile());
-			metaDataMap.put(entry.getKey(), metaData);
+			metaDataMap.put(entry.getKey(), task.getRawFileMetadata());
 		}
 
 		return new SearchDbWorkPacket(getFullId(), isFromScratch(), getReportId(), getScaffoldSpectraFile(), metaDataMap);

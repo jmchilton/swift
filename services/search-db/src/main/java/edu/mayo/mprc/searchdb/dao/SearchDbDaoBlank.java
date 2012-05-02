@@ -47,6 +47,11 @@ public class SearchDbDaoBlank implements SearchDbDao {
 	}
 
 	@Override
+	public TandemMassSpectrometrySample updateTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void begin() {
 		throw new UnsupportedOperationException();
 	}

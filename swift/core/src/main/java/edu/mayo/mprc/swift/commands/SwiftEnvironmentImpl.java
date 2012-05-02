@@ -6,6 +6,7 @@ import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.swift.SwiftConfig;
+import edu.mayo.mprc.swift.search.SwiftSearcher;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.exceptions.ExceptionUtilities;
 import joptsimple.OptionParser;
@@ -188,5 +189,14 @@ public final class SwiftEnvironmentImpl implements SwiftEnvironment {
 	@Override
 	public OptionParser getOptionParser() {
 		return commandLine.getParser();
+	}
+
+	@Override
+	public SwiftSearcher.Config getSwiftSearcher() {
+		final List<ResourceConfig> searchers = getDaemonConfig().getApplicationConfig().getModulesOfConfigType(SwiftSearcher.Config.class);
+		if (searchers.size() != 1) {
+			throw new MprcException("More than one Swift Searcher defined in this Swift install");
+		}
+		return (SwiftSearcher.Config) searchers.get(0);
 	}
 }

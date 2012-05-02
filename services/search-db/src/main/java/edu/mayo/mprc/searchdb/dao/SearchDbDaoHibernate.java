@@ -374,6 +374,12 @@ public final class SearchDbDaoHibernate extends DaoBase implements RuntimeInitia
 		scrollQuery("from TandemMassSpectrometrySample", queryCallback);
 	}
 
+	@Override
+	public TandemMassSpectrometrySample updateTandemMassSpectrometrySample(TandemMassSpectrometrySample sample) {
+		// Our adding function happens to do exactly what we need
+		return addTandemMassSpectrometrySample(sample);
+	}
+
 	private Criterion analysisEqualityCriteria(final Analysis analysis) {
 		return Restrictions.conjunction()
 				.add(nullSafeEq("scaffoldVersion", analysis.getScaffoldVersion()))

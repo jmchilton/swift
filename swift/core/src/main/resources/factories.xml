@@ -392,6 +392,7 @@
                 <bean id="swiftRunCommand" class="edu.mayo.mprc.swift.commands.RunSwift"/>
                 <ref bean="sgeRunCommand"/>
                 <ref bean="loadToSearchDbCommand"/>
+                <ref bean="loadRawMetadataCommand"/>
                 <ref bean="fileMoveCommand"/>
             </list>
         </property>
@@ -403,6 +404,11 @@
 
     <bean class="edu.mayo.mprc.swift.commands.LoadToSearchDb" id="loadToSearchDbCommand">
         <property name="dao" ref="swiftDao"/>
+        <property name="searchDbDao" ref="searchDbDao"/>
+        <property name="fileTokenFactory" ref="fileTokenFactory"/>
+    </bean>
+
+    <bean class="edu.mayo.mprc.swift.commands.LoadRawMetadata" id="loadRawMetadataCommand">
         <property name="searchDbDao" ref="searchDbDao"/>
         <property name="fileTokenFactory" ref="fileTokenFactory"/>
     </bean>

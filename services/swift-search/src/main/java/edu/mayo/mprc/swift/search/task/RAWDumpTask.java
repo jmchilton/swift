@@ -5,6 +5,7 @@ import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.qa.RAWDumpResult;
 import edu.mayo.mprc.qa.RAWDumpWorkPacket;
+import edu.mayo.mprc.searchdb.RawFileMetaData;
 import edu.mayo.mprc.utilities.progress.ProgressInfo;
 import org.apache.log4j.Logger;
 
@@ -126,6 +127,10 @@ public final class RAWDumpTask extends AsyncTaskBase {
 
 	public File getErrorLogFile() {
 		return errorLogFile;
+	}
+
+	public RawFileMetaData getRawFileMetadata() {
+		return new RawFileMetaData(rawFile, rawInfoFile, tuneMethodFile, instrumentMethodFile, sampleInformationFile, errorLogFile);
 	}
 
 	@Override

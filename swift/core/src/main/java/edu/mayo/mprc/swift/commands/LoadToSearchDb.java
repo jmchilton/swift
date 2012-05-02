@@ -120,7 +120,9 @@ public final class LoadToSearchDb implements SwiftCommand {
 	 * @param config      The configuration of the Swift searcher.
 	 */
 	public static void initializeDatabase(SwiftEnvironment environment, SwiftSearcher.Config config) {
+		LOGGER.info("Initializing database");
 		final Object database = environment.createResource(config.getDatabase());
+		LOGGER.info("Database initialized");
 	}
 
 	private void loadAllData() {

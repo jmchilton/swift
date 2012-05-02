@@ -8,6 +8,7 @@ import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.swift.Swift;
+import edu.mayo.mprc.swift.search.SwiftSearcher;
 import joptsimple.OptionParser;
 
 import java.io.File;
@@ -80,4 +81,10 @@ public interface SwiftEnvironment {
 	 * @return The parser that was used to parse the command line parameters.
 	 */
 	OptionParser getOptionParser();
+
+	/**
+	 * Shortcut method for obtaining the one Swift searcher. Fails if none or more are defined.
+	 * @return Configuration for the Swift Searcher (core Swift module).
+	 */
+	SwiftSearcher.Config getSwiftSearcher();
 }

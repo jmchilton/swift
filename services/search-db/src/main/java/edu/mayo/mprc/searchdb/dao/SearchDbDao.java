@@ -58,4 +58,11 @@ public interface SearchDbDao extends Dao {
 	 * @param callback Callback to be called once per each sample.
 	 */
 	void getTandemMassSpectrometrySamples(QueryCallback callback);
+
+	/**
+	 * Used for fixing a problem with badly parsed .RAW file information.
+	 * Looks up file information in the table based on the file name and date last modified, updates all other data.
+	 * @param sample Sample data to update.
+	 */
+	TandemMassSpectrometrySample updateTandemMassSpectrometrySample(TandemMassSpectrometrySample sample);
 }
