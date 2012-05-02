@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Parses data from the .RAW.info.tsv file.
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * @author Roman Zenka
  */
 public class InfoFileParser {
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/**
 	 * Parse .RAW.info file
