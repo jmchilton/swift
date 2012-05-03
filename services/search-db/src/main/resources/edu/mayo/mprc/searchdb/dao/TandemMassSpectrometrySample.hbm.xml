@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.mayo.mprc.searchdb.dao" default-lazy="true">
-    <class name="TandemMassSpectrometrySample" table="tandem_mass_spec_sample" mutable="false">
+    <class name="TandemMassSpectrometrySample" table="tandem_mass_spec_sample">
         <id name="id" type="integer" column="tandem_mass_spec_sample_id">
             <generator class="native"/>
         </id>
