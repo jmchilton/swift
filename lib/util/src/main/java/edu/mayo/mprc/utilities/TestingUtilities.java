@@ -1,7 +1,9 @@
 package edu.mayo.mprc.utilities;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.io.Resources;
 import edu.mayo.mprc.MprcException;
 import org.apache.log4j.Logger;
@@ -302,12 +304,28 @@ public final class TestingUtilities {
 	 * @return String describing the first difference, or null if identical. See {@link #compareStringsByLine}
 	 */
 	public static String compareStringToResourceByLine(final String actual, final String expectedResource) {
-		final String expected;
+		return compareStringsByLine(actual, resourceToString(expectedResource), true);
+	}
+
+	/**
+	 * Load given resource URL into a string.
+	 * @param url URL to load.
+	 * @return Resulting string.
+	 */
+	public static String resourceToString(String url) {
 		try {
-			expected = Resources.toString(Resources.getResource(expectedResource), Charsets.UTF_8);
+			return Resources.toString(Resources.getResource(url), Charsets.UTF_8);
 		} catch (IOException e) {
-			throw new MprcException("Could not compare to resource [" + expectedResource + "]", e);
+			throw new MprcException("Could not compare to resource [" + url + "]", e);
 		}
-		return compareStringsByLine(actual, expected, true);
+	}
+
+	/**
+	 * Split the string into lines, trim those lines, join them with proper newline characters.
+	 * @param s String to canonicalize.
+	 * @return Canonicalized string.
+	 */
+	public static String canonicalizeNewLines(final CharSequence s) {
+		return Joiner.on('\n').join(Splitter.on('\n').trimResults().split(s));
 	}
 }

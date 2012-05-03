@@ -1,0 +1,8 @@
+1,2,3
+hello,"""hello""",=hello
+"line1
+line2","line1
+line2","line1
+line2"
+,empty before
+,,12345
