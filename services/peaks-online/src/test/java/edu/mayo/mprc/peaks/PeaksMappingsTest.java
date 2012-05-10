@@ -95,7 +95,7 @@ public final class PeaksMappingsTest {
 
 		peaksMappings.setVariableMods(context, variableMods);
 
-		final String peaksParameterValue = "123.5@DL:A,123.5@NY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@G:C";
+		final String peaksParameterValue = "123.5@DL:A,123.5@NY:C,123.5@AGW:N,200.5@A:C,200.5@ABCDEFGHIKLMNPQRSTVWXYZ:N,400.0@G:A,400.0@G:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES), peaksParameterValue, "Varaible modifications did not match.");
 	}
@@ -118,11 +118,11 @@ public final class PeaksMappingsTest {
 
 		peaksMappings.setFixedMods(context, fixedMods);
 
-		final String fixed = "123.5@Y:C,123.5@AGW:N,200.5@ACDEFGHIKLMNPQRSTVWY:C,200.5@A:N,400.0@G:C";
+		final String fixed = "123.5@Y:C,123.5@AGW:N,200.5@ABCDEFGHIKLMNPQRSTVWXYZ:C,200.5@A:N,400.0@G:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTFIXEDMODIES), fixed, "Fixed modifications did not match.");
 
-		final String variable = "123.5@DL:A,123.5@NQY:C,123.5@AGW:N,200.5@A:C,200.5@ACDEFGHIKLMNPQRSTVWY:N,400.0@G:A,400.0@EGQ:C";
+		final String variable = "123.5@DL:A,123.5@NQY:C,123.5@AGW:N,200.5@A:C,200.5@ABCDEFGHIKLMNPQRSTVWXYZ:N,400.0@G:A,400.0@EGQ:C";
 
 		Assert.assertEquals(peaksMappings.getNativeParam(PeaksSearchParameters.SUBMIT_SEARCH_INPUTVARIABLEMODIES), variable, "Variable modifications did not match.");
 	}
