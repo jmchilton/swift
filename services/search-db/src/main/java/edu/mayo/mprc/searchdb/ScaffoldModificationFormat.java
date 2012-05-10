@@ -168,14 +168,30 @@ public final class ScaffoldModificationFormat {
 	private ModSpecificity matchScaffoldMod(final String position, final String title, final String deltaString, final double delta, final char residue, final Terminus terminus) {
 		final Collection<ModSpecificity> matchingModSpecificities = scaffoldModSet.findMatchingModSpecificities(delta, MOD_DELTA_PRECISION, residue, terminus, null, null);
 
-		final String effectiveTitle = fixHydroxylation(fixTandemPyro(title, residue, terminus));
+		final String effectiveTitle = fixTandemPyro(title, residue, terminus);
 
+		final ModSpecificity match = findMatch(matchingModSpecificities, effectiveTitle);
+		if(match!=null) {
+			return match;
+		}
+
+		// We failed. One last try, fixing hydroxylation
+		final ModSpecificity hydroxyMatch = findMatch(matchingModSpecificities, fixHydroxylation(effectiveTitle));
+		if(hydroxyMatch!=null) {
+			return hydroxyMatch;
+		}
+
+		throw new MprcException("Could not find a modification: [" + position + ": " + effectiveTitle + "(" + deltaString + ")]" +
+				(effectiveTitle.equals(title) ? "" : " - was [" + title + "]"));
+	}
+
+	private ModSpecificity findMatch(Collection<ModSpecificity> matchingModSpecificities, String effectiveTitle) {
 		for (final ModSpecificity specificity : matchingModSpecificities) {
 			if (effectiveTitle.equalsIgnoreCase(specificity.getModification().getTitle())) {
 				return specificity;
 			}
 		}
-		throw new MprcException("Could not find a modification: [" + position + ": " + title + "(" + deltaString + ")]");
+		return null;
 	}
 
 	/**
