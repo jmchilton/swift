@@ -151,7 +151,7 @@ public final class SendReceiveTest extends MessagingTestBase {
 							logChatty("Request received: " + request.toString());
 							final String response = "response " + Integer.toString(numRequests.get() + 1);
 							logChatty("Sending response: " + response);
-							request.sendResponse(response, TOTAL_REQUESTS - 1 == numRequests.get());
+							request.sendResponse(response, true);
 							logChatty("Response sent: " + response);
 						} else {
 							LOGGER.debug("Request was null - no request arrived within timeout");
@@ -177,9 +177,9 @@ public final class SendReceiveTest extends MessagingTestBase {
 			public void responseReceived(final Serializable response, final boolean isLast) {
 				logChatty("Response received: " + response.toString() + " is last: " + isLast);
 				numResponses.incrementAndGet();
-//				final int expected = expectedRequest.getAndIncrement();
-				// Assert.assertEquals(response, "response " + Integer.toString(expected), "Response does not match expectations");
-//				Assert.assertEquals(isLast, TOTAL_REQUESTS == expected, "Closing flag not set properly");
+				final int expected = expectedRequest.getAndIncrement();
+				Assert.assertEquals(response, "response " + Integer.toString(expected), "Response does not match expectations");
+				Assert.assertEquals(isLast, true, "Closing flag not set properly");
 			}
 		};
 
