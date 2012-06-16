@@ -50,12 +50,11 @@ public final class Swift {
 
 		final SwiftEnvironment swiftEnvironment = MainFactoryContext.getSwiftEnvironment();
 		try {
-			swiftEnvironment.runSwiftCommand(commandLine);
+			return swiftEnvironment.runSwiftCommand(commandLine);
 		} catch (Exception e) {
 			LOGGER.error(MprcException.getDetailedMessage(e));
 			return ExitCode.Error;
 		}
-		return ExitCode.Ok;
 	}
 
 }

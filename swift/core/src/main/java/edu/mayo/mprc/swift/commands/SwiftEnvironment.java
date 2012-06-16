@@ -7,6 +7,7 @@ import edu.mayo.mprc.config.ServiceConfig;
 import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.daemon.DaemonConnection;
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
+import edu.mayo.mprc.swift.ExitCode;
 import edu.mayo.mprc.swift.Swift;
 import edu.mayo.mprc.swift.search.SwiftSearcher;
 import joptsimple.OptionParser;
@@ -27,7 +28,7 @@ public interface SwiftEnvironment {
 	 *
 	 * @param cmdLine Parsed command line.
 	 */
-	void runSwiftCommand(final SwiftCommandLine cmdLine);
+	ExitCode runSwiftCommand(final SwiftCommandLine cmdLine);
 
 	/**
 	 * @return Parameters for the Swift command.
