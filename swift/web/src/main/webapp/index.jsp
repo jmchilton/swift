@@ -79,7 +79,7 @@
     <% } %>
     <div style="height: 120px; overflow: hidden">
         <h1 style="text-align: center;">
-            <img src="/common/logo_swift30beta.png" style="vertical-align: middle; margin: 0 auto;"
+            <img src="/common/logo_swift_31.png" style="vertical-align: middle; margin: 0 auto;"
                  alt="<%=SwiftWebContext.getServletConfig().getTitle()%>"/>
         </h1>
     </div>
