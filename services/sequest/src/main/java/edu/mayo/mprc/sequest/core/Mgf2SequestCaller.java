@@ -155,6 +155,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 		} finally {
 			FileUtilities.closeQuietly(br);
 			FileUtilities.closeQuietly(b);
+			FileUtilities.deleteNow(tempFolder);
 		}
 
 	}
