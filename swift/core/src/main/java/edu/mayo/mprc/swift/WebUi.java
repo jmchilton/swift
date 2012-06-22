@@ -39,6 +39,7 @@ public final class WebUi {
 	public static final String TYPE = "webUi";
 	public static final String NAME = "Swift Website";
 	public static final String DESC = "Swift's web user interface.<p>The daemon that contains the web interface will run within a web server.</p>";
+	public static final UserMessage USER_MESSAGE = new UserMessage();
 	private SwiftDao swiftDao;
 	private File browseRoot;
 	private DaemonConnection databaseUndeployerDaemonConnection;
@@ -72,6 +73,7 @@ public final class WebUi {
 	public static final String SEARCHES_FOLDER = "searchesFolder";
 
 	public WebUi() {
+		USER_MESSAGE.setMessage("Swift's new database deployment has been temporarily disabled. Swift needs to be upgraded to support Mascot's Database Manager. If you need a new database, please ask Roman.");
 	}
 
 	public SwiftDao getSwiftDao() {
@@ -172,7 +174,7 @@ public final class WebUi {
 
 	public UserMessage getUserMessage() {
 		// TODO - re-enabled message support
-		return new UserMessage();
+		return USER_MESSAGE;
 	}
 
 	/**
