@@ -27,6 +27,7 @@ final class EnzymeLookup {
 			.put("V8-E", "13")
 			.put("ChymoAndGluC", "3+13")
 			.put("Non-Specific", "17")
+			.put("GluC", "13")
 			.build();
 
 	private EnzymeLookup() {
