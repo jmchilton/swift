@@ -1,14 +1,15 @@
 package edu.mayo.mprc.omssa;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
+
+import java.util.Map;
 
 /**
  * Utility class for OMSSA's enzyme lookups.
  */
 final class EnzymeLookup {
 	//if the ommsa protease id signifies a combination then they are seperated by '+' and listed ascending within the string
-	private static BiMap<String, String> enzymeLookup = new ImmutableBiMap.Builder<String, String>()
+	private static Map<String, String> enzymeLookup = new ImmutableMap.Builder<String, String>()
 			.put("Trypsin (allow P)", "0")
 			.put("Arg-C", "1")
 			.put("Asp-N", "12")
@@ -31,10 +32,6 @@ final class EnzymeLookup {
 			.build();
 
 	private EnzymeLookup() {
-	}
-
-	public static String mapEnzymeOmssaToAbstract(final String omssaName) {
-		return enzymeLookup.inverse().get(omssaName);
 	}
 
 	public static String mapEnzymeAbstractToOmssa(final String abstractName) {
