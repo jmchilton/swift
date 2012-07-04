@@ -73,6 +73,7 @@ public final class MascotMappings implements Mappings {
 				.put("V8-E", "V8-E")
 				.put("ChymoAndGluC", "ChymoAndGluC")
 				.put("Non-Specific", "None")
+				.put("GluC", "GluC")
 				.build();
 
 		final Map<String, Protease> allowedH = new HashMap<String, Protease>();
