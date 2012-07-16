@@ -17,6 +17,7 @@ public class SingleDatabaseTranslator implements ProteinSequenceTranslator {
 	private CurationDao curationDao;
 	private Curation database;
 	private String currentDatabaseSources;
+	private boolean stripDatabaseTimestamp = false;
 	private static final Pattern TIMESTAMP = Pattern.compile("(.*)_[0-9]{6,8}");
 
 	public SingleDatabaseTranslator(final FastaDbDao fastaDbDao, final CurationDao curationDao) {
@@ -41,12 +42,22 @@ public class SingleDatabaseTranslator implements ProteinSequenceTranslator {
 					if (database == null) {
 						throw new MprcException("Cannot find information about database [" + currentDatabaseSources + "] even after removing the timestamp");
 					}
+					stripDatabaseTimestamp=true;
 				} else {
 					throw new MprcException("Cannot find information about database [" + currentDatabaseSources + "]");
 				}
 			}
-		} else if (!FileUtilities.stripGzippedExtension(databaseSources).equals(currentDatabaseSources)) {
-			throw new MprcException("Swift supports only a single FASTA database per Scaffold file. Two databases encountered: [" + currentDatabaseSources + "] and [" + databaseSources + "]");
+		} else {
+			String cleanedDatabaseName = FileUtilities.stripGzippedExtension(databaseSources);
+			if(stripDatabaseTimestamp) {
+				final Matcher matcher = TIMESTAMP.matcher(cleanedDatabaseName);
+				if(matcher.matches()) {
+					cleanedDatabaseName=matcher.group(1);
+				}
+			}
+			if (!cleanedDatabaseName.equals(currentDatabaseSources)) {
+				throw new MprcException("Swift supports only a single FASTA database per Scaffold file. Two databases encountered: [" + currentDatabaseSources + "] and [" + cleanedDatabaseName + "]");
+			}
 		}
 		return fastaDbDao.getProteinSequence(database, accessionNumber);
 	}

@@ -153,13 +153,12 @@ public class TestFastaDbDao extends DaoTest {
 							"SGGSYGRGSRGGSGGSYGGGGSGGGYGGGSGSRGGSGGSYGGGSGSGGGSGGGYGGGSGGGHSGGSGGGHSGGSGGNYGG" +
 							"GSGSGGGSGGGYGGGSGSRGGSGGSHGGGSGFGGESGGSYGGGEEASGSGGGYGGGSGKSSHS");
 
-			final ProteinSequence sequence2 = translator.getProteinSequence("nonexistent", "Current_SP");
+			final ProteinSequence sequence2 = translator.getProteinSequence("nonexistent", "Current_SP_20120716");
 			Assert.assertNull(sequence2, "No sequence found means null should be returned");
 		} finally {
 			fastaDbDao.commit();
 		}
 	}
-
 
 	private Curation loadFasta(final String resource, final String shortName) {
 		File file = null;
