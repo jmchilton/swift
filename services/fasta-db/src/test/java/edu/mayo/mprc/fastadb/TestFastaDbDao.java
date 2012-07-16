@@ -133,6 +133,34 @@ public class TestFastaDbDao extends DaoTest {
 		}
 	}
 
+	/**
+	 * Mascot can report database name with additional timestamp attached to the end.
+	 */
+	@Test
+	public void shouldSupportMascotDatabaseSuffixes() {
+		loadFasta("/edu/mayo/mprc/fastadb/test.fasta", "Current_SP");
+		fastaDbDao.begin();
+		try {
+			final ProteinSequenceTranslator translator = new SingleDatabaseTranslator(fastaDbDao, curationDao);
+			final ProteinSequence proteinSequence = translator.getProteinSequence("K1C9_HUMAN", "Current_SP_20120716.fasta.gz");
+			Assert.assertEquals(proteinSequence.getSequence(),
+					"MSCRQFSSSYLSRSGGGGGGGLGSGGSIRSSYSRFSSSGGGGGGGRFSSSSGYGGGSSRVCGRGGGGSFGYSYGGGSGGG" +
+							"FSASSLGGGFGGGSRGFGGASGGGYSSSGGFGGGFGGGSGGGFGGGYGSGFGGFGGFGGGAGGGDGGILTANEKSTMQEL" +
+							"NSRLASYLDKVQALEEANNDLENKIQDWYDKKGPAAIQKNYSPYYNTIDDLKDQIVDLTVGNNKTLLDIDNTRMTLDDFR" +
+							"IKFEMEQNLRQGVDADINGLRQVLDNLTMEKSDLEMQYETLQEELMALKKNHKEEMSQLTGQNSGDVNVEINVAPGKDLT" +
+							"KTLNDMRQEYEQLIAKNRKDIENQYETQITQIEHEVSSSGQEVQSSAKEVTQLRHGVQELEIELQSQLSKKAALEKSLED" +
+							"TKNRYCGQLQMIQEQISNLEAQITDVRQEIECQNQEYSLLLSIKMRLEKEIETYHNLLEGGQEDFESSGAGKIGLGGRGG" +
+							"SGGSYGRGSRGGSGGSYGGGGSGGGYGGGSGSRGGSGGSYGGGSGSGGGSGGGYGGGSGGGHSGGSGGGHSGGSGGNYGG" +
+							"GSGSGGGSGGGYGGGSGSRGGSGGSHGGGSGFGGESGGSYGGGEEASGSGGGYGGGSGKSSHS");
+
+			final ProteinSequence sequence2 = translator.getProteinSequence("nonexistent", "Current_SP");
+			Assert.assertNull(sequence2, "No sequence found means null should be returned");
+		} finally {
+			fastaDbDao.commit();
+		}
+	}
+
+
 	private Curation loadFasta(final String resource, final String shortName) {
 		File file = null;
 		try {
