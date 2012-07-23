@@ -1,6 +1,7 @@
 package edu.mayo.mprc.utilities;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -9,7 +10,7 @@ import java.io.IOException;
  *
  * @author Roman Zenka
  */
-public final class BufferedEofReader {
+public final class BufferedEofReader implements Closeable {
 	private final BufferedReader reader;
 
 	/**
@@ -58,5 +59,10 @@ public final class BufferedEofReader {
 			isEof = true;
 		}
 		return isEof;
+	}
+
+	@Override
+	public void close() throws IOException {
+		reader.close();
 	}
 }
