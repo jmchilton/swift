@@ -64,16 +64,7 @@ public final class CommandLine {
 					"You can set path to " + fileDescription + " using the --" + paramName + " switch.");
 		}
 
-		if (file.exists()) {
-			if (!file.isFile()) {
-				throw new MprcException("The specified " + fileDescription + " " + file + " is not a file.");
-			}
-			if (!file.canRead()) {
-				throw new MprcException("Cannot read " + fileDescription + " " + file + ".");
-			}
-		} else {
-			throw new MprcException("The " + fileDescription + " " + file.getAbsolutePath() + " does not exist.");
-		}
+		FileUtilities.ensureReadableFile(fileDescription, file);
 		return file;
 	}
 }

@@ -104,13 +104,14 @@ public final class FastaDbDaoHibernate extends DaoBase implements FastaDbDao {
 		}
 
 		final File fasta = database.getFastaFile().getFile();
+		FileUtilities.ensureReadableFile("fasta database", fasta);
 		final FASTAInputStream stream = new FASTAInputStream(fasta);
 		final PercentDoneReporter percentReporter = new PercentDoneReporter(
 				progressReporter,
 				MessageFormat.format("Loading [{0}] to database: ", fasta.getAbsolutePath()));
 		try {
-			stream.beforeFirst();
 			session.getTransaction().begin();
+			stream.beforeFirst();
 			long numSequencesRead = 0L;
 			while (stream.gotoNextSequence()) {
 				numSequencesRead++;

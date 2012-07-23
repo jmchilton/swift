@@ -1493,6 +1493,24 @@ public final class FileUtilities {
 		return fileName.substring(0, fileName.length() - extension.length() - (/*dot*/extension.length() > 0 ? 1 : 0));
 	}
 
+	/**
+	 * Throw an exception if the given file does not exist, is not a file, or is not readable.
+	 * @param fileDescription Description of the file to use in the exception.
+	 * @param file The file to check.
+	 */
+	public static void ensureReadableFile(String fileDescription, File file) {
+		if (file.exists()) {
+			if (!file.isFile()) {
+				throw new MprcException("The " + fileDescription + " " + file.getAbsolutePath() + " is not an actual file.");
+			}
+			if (!file.canRead()) {
+				throw new MprcException("The " + fileDescription + " " + file.getAbsolutePath() + " is not readable.");
+			}
+		} else {
+			throw new MprcException("The " + fileDescription + " " + file.getAbsolutePath() + " does not exist.");
+		}
+	}
+
 	private static final class TempFileBackedInputStream extends FileInputStream {
 		private final File backingFile;
 
