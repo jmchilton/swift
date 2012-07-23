@@ -119,10 +119,8 @@ final class SimpleQueueService implements Service {
 				// Default priority is 5
 				objectMessage.setJMSPriority(priority);
 			}
-			LOGGER.debug("Sending message " + objectMessage.toString() + " id: " + objectMessage.getJMSMessageID());
+			LOGGER.debug("Sending message to ["+queueName + "] with content [" + objectMessage.toString() + "] id: [" + objectMessage.getJMSMessageID() + "]");
 			messageProducer().send(requestDestination, objectMessage);
-
-			LOGGER.info("Request sent to queue: " + queueName);
 		} catch (JMSException e) {
 			throw new MprcException("Could not send message", e);
 		}
@@ -172,7 +170,7 @@ final class SimpleQueueService implements Service {
 		try {
 			final Message message = messageConsumer().receive(timeout);
 			if (message != null) {
-				LOGGER.info("Request received from queue: " + queueName);
+				LOGGER.debug("Request received from queue [" + queueName + "], contents [" + message.toString() + "]");
 				return wrapReceivedMessage(message);
 			} else {
 				return null;
