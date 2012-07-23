@@ -39,7 +39,7 @@ import java.util.List;
 public final class LoadToSearchDb implements SwiftCommand {
 	private static final Logger LOGGER = Logger.getLogger(LoadToSearchDb.class);
 	public static final int BATCH_SIZE = 3;
-	public static final int MAX_INPUT_FILE_SIZE = 5;
+	public static final int MAX_INPUT_FILE_SIZE = 6;
 
 	private DaemonConnection rawDump;
 	private DaemonConnection scaffold3;
@@ -197,7 +197,7 @@ public final class LoadToSearchDb implements SwiftCommand {
 				final int inputSize = swiftSearchDefinition.getInputFiles().size();
 				if (inputSize > maxInputFileSize) {
 					getDao().commit();
-					LOGGER.info("The search for report #" + reportDataId + " uses " + inputSize + " input files, which is more than maximum allowed " + maxInputFileSize);
+					LOGGER.info("The search for report #" + reportDataId + " ("+reportData.getSearchRun().getTitle()+") uses " + inputSize + " input files, which is more than maximum allowed " + maxInputFileSize);
 					return null;
 				}
 			}
