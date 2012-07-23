@@ -2,6 +2,7 @@ package edu.mayo.mprc.scaffoldparser.spectra;
 
 import com.google.common.io.CountingInputStream;
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.utilities.BufferedEofReader;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.PercentDoneReporter;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
@@ -234,14 +235,16 @@ public abstract class ScaffoldSpectraReader {
 	public abstract boolean processRow(String line);
 
 	private void loadContents(final BufferedReader reader) throws IOException {
+		final BufferedEofReader eofReader = new BufferedEofReader(reader);
 		while (true) {
-			final String line = reader.readLine();
+			final String line = eofReader.readLine();
 			lineNumber++;
-			if (line == null) {
-				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker.");
-			}
 			if (END_OF_FILE.equals(line)) {
 				break;
+			}
+			if (line == null || eofReader.isEof()) {
+				// We are at the end of file, but have not reach the end of file mark!
+				throw new MprcException("End of file reached before finding Scaffold's " + END_OF_FILE + " marker.");
 			}
 			if (!processRow(line)) {
 				break;
