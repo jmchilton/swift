@@ -175,7 +175,7 @@ public class SourceDatabaseArchive implements Serializable {
 
 				} catch (Exception e) {
 					LOGGER.debug(e);
-					throw new MprcException("There was a problem retrieving the FTP.  Please check the URL.", e);
+					throw new MprcException("There was a problem retrieving data from ["+url.getProtocol()+"://"+url.getHost()+(url.getPort()>0?":"+url.getPort():"")+url.getPath()+ "]", e);
 				} finally {
 					if (ftp != null) {
 						try {
