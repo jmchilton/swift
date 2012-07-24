@@ -473,6 +473,11 @@ td.result-link span {
     overflow: hidden;
 }
 
+.result-list {
+    max-height: 120px;
+    overflow-y: scroll;
+}
+
 span.result-status {
     display: block;
     width: 300px;

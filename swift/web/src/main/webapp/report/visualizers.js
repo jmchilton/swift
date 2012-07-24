@@ -53,7 +53,7 @@ SearchRunItemVisualizer.prototype.render = function(id, object, elementType) {
     return element;
 };
 
-SearchRunItemVisualizer.prototype.multiResultHeadTemplate = new Template('<table class="reportList"><tr><td class="result-link"><span>');
+SearchRunItemVisualizer.prototype.multiResultHeadTemplate = new Template('<table class="reportList"><tr><td class="result-link"><span class="result-list">');
 SearchRunItemVisualizer.prototype.multiResultEntryTemplate = new Template('<a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><br/>');
 // Entry has analysis attached
 SearchRunItemVisualizer.prototype.multiResultEntryAnalysisTemplate = new Template('<a href="/analysis?id=#{reportId}" class="analysis-data-link">Data</a><a href="#{fullUrl}" title="#{filePath}">#{fileName}</a><br clear="left"/>');
