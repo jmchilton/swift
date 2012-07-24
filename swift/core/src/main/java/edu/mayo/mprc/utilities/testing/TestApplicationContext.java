@@ -8,16 +8,13 @@ import edu.mayo.mprc.config.ServiceConfig;
 import edu.mayo.mprc.daemon.Daemon;
 import edu.mayo.mprc.daemon.MessageBroker;
 import edu.mayo.mprc.daemon.SimpleRunner;
-import edu.mayo.mprc.daemon.files.FileTokenFactory;
 import edu.mayo.mprc.database.DatabaseFactory;
 import edu.mayo.mprc.database.DatabaseUtilities;
-import edu.mayo.mprc.peaks.PeaksMappingFactory;
 import edu.mayo.mprc.swift.db.SwiftDao;
 import edu.mayo.mprc.swift.params2.ParamsDao;
 import edu.mayo.mprc.swift.search.DatabaseValidator;
 import edu.mayo.mprc.swift.search.SwiftSearcher;
 import edu.mayo.mprc.utilities.FileUtilities;
-import edu.mayo.mprc.workspace.WorkspaceDao;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -79,7 +76,7 @@ public final class TestApplicationContext {
 
 		final SwiftSearcher.Config searcherConfig = new SwiftSearcher.Config(
 				fastaFolder, fastaArchiveFolder, fastaUploadFolder,
-				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
 				null, null, databaseConfig);
 
 		daemonConfig.addService(new ServiceConfig("searcher1", new SimpleRunner.Config(searcherConfig), messageBrokerConfig.getBrokerUrl() + "?simplequeue=searcher1"));
@@ -125,28 +122,12 @@ public final class TestApplicationContext {
 		return (SwiftDao) getBean("swiftDao");
 	}
 
-	public static WorkspaceDao getWorkspaceDao() {
-		return (WorkspaceDao) getBean("workspaceDao");
-	}
-
 	public static ParamsDao getParamsDao() {
 		return (ParamsDao) getBean("paramsDao");
 	}
 
 	public static String getTitle() {
 		return (String) getBean("title");
-	}
-
-	public static File getMsmsEvalExecutable() {
-		return (File) getBean("msmsEvalExecutable");
-	}
-
-	public static PeaksMappingFactory getPeaksMappingFactory() {
-		return (PeaksMappingFactory) getBean("peaksMappingFactory");
-	}
-
-	public static FileTokenFactory getFileTokenFactory() {
-		return (FileTokenFactory) getBean("fileTokenFactory");
 	}
 
 	public static MultiFactory getResourceTable() {

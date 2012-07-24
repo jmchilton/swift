@@ -25,7 +25,6 @@
         <module>msmseval</module>
         <module>myrimatch</module>
         <module>omssa</module>
-        <module>peaks-online</module>
         <module>qa</module>
         <module>qstat</module>
         <module>raw2mgf</module>

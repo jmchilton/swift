@@ -25,7 +25,6 @@ public final class DatabaseUndeployerRunner implements Runnable {
 	private DaemonConnection tandemDeployerDaemon;
 	private DaemonConnection sequestDeployerDaemon;
 	private DaemonConnection scaffoldDeployerDaemon;
-	private DaemonConnection peaksDeployerDaemon;
 
 	private final ExecutorService executorService = Executors.newFixedThreadPool(6);
 
@@ -44,7 +43,7 @@ public final class DatabaseUndeployerRunner implements Runnable {
 	private DatabaseUndeployerState state;
 	private static final int POLLING_INTERVAL = 10000;
 
-	public DatabaseUndeployerRunner(final DatabaseUndeployerWorkPacket undeployerWorkPacket, final DaemonConnection mascotDeployerDaemon, final DaemonConnection omssaDeployerDaemon, final DaemonConnection tandemDeployerDaemon, final DaemonConnection sequestDeployerDaemon, final DaemonConnection scaffoldDeployerDaemon, final DaemonConnection peaksDeployerDaemon, final FileTokenFactory fileTokenFactory) {
+	public DatabaseUndeployerRunner(final DatabaseUndeployerWorkPacket undeployerWorkPacket, final DaemonConnection mascotDeployerDaemon, final DaemonConnection omssaDeployerDaemon, final DaemonConnection tandemDeployerDaemon, final DaemonConnection sequestDeployerDaemon, final DaemonConnection scaffoldDeployerDaemon, final FileTokenFactory fileTokenFactory) {
 		this.undeployerWorkPacket = undeployerWorkPacket;
 		this.fileTokenFactory = fileTokenFactory;
 		this.mascotDeployerDaemon = mascotDeployerDaemon;
@@ -52,7 +51,6 @@ public final class DatabaseUndeployerRunner implements Runnable {
 		this.tandemDeployerDaemon = tandemDeployerDaemon;
 		this.sequestDeployerDaemon = sequestDeployerDaemon;
 		this.scaffoldDeployerDaemon = scaffoldDeployerDaemon;
-		this.peaksDeployerDaemon = peaksDeployerDaemon;
 
 		undeploymentNameTaskPairs = new HashMap<String, DatabaseUndeploymentTask>();
 		undeployerResult = new DatabaseUndeployerResult();
@@ -129,15 +127,6 @@ public final class DatabaseUndeployerRunner implements Runnable {
 			final DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(omssaDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
 			undeploymentNameTaskPairs.put(omssaDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
 		}
-
-		/**
-		 * Once peaks undeployment code is finalized, uncomment block of code.
-		 */
-//		if (peaksDeployerDaemon != null) {
-//			DatabaseUndeploymentTask databaseUndeploymentTask = new DatabaseUndeploymentTask(peaksDeployerDaemon, undeployerWorkPacket.getDbToUndeploy(), fileTokenFactory);
-//			databaseUndeploymentTask.setWorkflowEngine(new WorkflowEngine(undeployerWorkPacket.getTaskId()));
-//			undeploymentNameTaskPairs.put(peaksDeployerDaemon.getConnectionName(), databaseUndeploymentTask);
-//		}
 	}
 
 	/**

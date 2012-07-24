@@ -39,7 +39,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 	private DaemonConnection sequestDeployerDaemon;
 	private DaemonConnection scaffoldDeployerDaemon;
 	private DaemonConnection scaffold3DeployerDaemon;
-	private DaemonConnection peaksDeployerDaemon;
 	private CurationDao curationDao;
 
 	private static final String MASCOT_DEPLOYER = "mascotDeployer";
@@ -48,7 +47,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 	private static final String OMSSA_DEPLOYER = "omssaDeployer";
 	private static final String SCAFFOLD_DEPLOYER = "scaffoldDeployer";
 	private static final String SCAFFOLD3_DEPLOYER = "scaffoldDeployer";
-	private static final String PEAKS_DEPLOYER = "peaksDeployer";
 
 	public DatabaseUndeployerWorker(final FileTokenFactory fileTokenFactory, final CurationDao curationDao) {
 		this.fileTokenFactory = fileTokenFactory;
@@ -95,14 +93,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 		this.scaffoldDeployerDaemon = scaffoldDeployerDaemon;
 	}
 
-	public DaemonConnection getPeaksDeployerDaemon() {
-		return peaksDeployerDaemon;
-	}
-
-	public void setPeaksDeployerDaemon(final DaemonConnection peaksDeployerDaemon) {
-		this.peaksDeployerDaemon = peaksDeployerDaemon;
-	}
-
 	public DaemonConnection getScaffold3DeployerDaemon() {
 		return scaffold3DeployerDaemon;
 	}
@@ -129,7 +119,7 @@ public final class DatabaseUndeployerWorker implements Worker {
 		final DatabaseUndeployerRunner undeployerRunner = new DatabaseUndeployerRunner(undeployerWorkPacket
 				, getMascotDeployerDaemon(), getOmssaDeployerDaemon()
 				, getTandemDeployerDaemon(), getSequestDeployerDaemon(), getScaffoldDeployerDaemon()
-				, getPeaksDeployerDaemon(), fileTokenFactory);
+				, fileTokenFactory);
 
 		undeployerRunner.run();
 
@@ -186,9 +176,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 			if (config.scaffold3Deployer != null) {
 				worker.setScaffold3DeployerDaemon((DaemonConnection) dependencies.createSingleton(config.scaffold3Deployer));
 			}
-			if (config.peaksDeployer != null) {
-				worker.setPeaksDeployerDaemon((DaemonConnection) dependencies.createSingleton(config.peaksDeployer));
-			}
 
 			return worker;
 		}
@@ -220,19 +207,17 @@ public final class DatabaseUndeployerWorker implements Worker {
 		private ServiceConfig sequestDeployer;
 		private ServiceConfig tandemDeployer;
 		private ServiceConfig mascotDeployer;
-		private ServiceConfig peaksDeployer;
 
 		public Config() {
 		}
 
-		public Config(final ServiceConfig scaffoldDeployer, final ServiceConfig scaffold3Deployer, final ServiceConfig omssaDeployer, final ServiceConfig sequestDeployer, final ServiceConfig tandemDeployer, final ServiceConfig mascotDeployer, final ServiceConfig peaksDeployer) {
+		public Config(final ServiceConfig scaffoldDeployer, final ServiceConfig scaffold3Deployer, final ServiceConfig omssaDeployer, final ServiceConfig sequestDeployer, final ServiceConfig tandemDeployer, final ServiceConfig mascotDeployer) {
 			this.scaffoldDeployer = scaffoldDeployer;
 			this.scaffold3Deployer = scaffold3Deployer;
 			this.omssaDeployer = omssaDeployer;
 			this.sequestDeployer = sequestDeployer;
 			this.tandemDeployer = tandemDeployer;
 			this.mascotDeployer = mascotDeployer;
-			this.peaksDeployer = peaksDeployer;
 		}
 
 		public ServiceConfig getScaffoldDeployer() {
@@ -283,14 +268,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 			this.mascotDeployer = mascotDeployer;
 		}
 
-		public ServiceConfig getPeaksDeployer() {
-			return peaksDeployer;
-		}
-
-		public void setPeaksDeployer(final ServiceConfig peaksDeployer) {
-			this.peaksDeployer = peaksDeployer;
-		}
-
 		@Override
 		public Map<String, String> save(final DependencyResolver resolver) {
 			final Map<String, String> map = new TreeMap<String, String>();
@@ -300,7 +277,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 			map.put(OMSSA_DEPLOYER, resolver.getIdFromConfig(omssaDeployer));
 			map.put(SCAFFOLD_DEPLOYER, resolver.getIdFromConfig(scaffoldDeployer));
 			map.put(SCAFFOLD3_DEPLOYER, resolver.getIdFromConfig(scaffold3Deployer));
-			map.put(PEAKS_DEPLOYER, resolver.getIdFromConfig(peaksDeployer));
 			return map;
 		}
 
@@ -311,7 +287,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 			omssaDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(OMSSA_DEPLOYER));
 			scaffoldDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(SCAFFOLD_DEPLOYER));
 			scaffold3Deployer = (ServiceConfig) resolver.getConfigFromId(values.get(SCAFFOLD3_DEPLOYER));
-			peaksDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(PEAKS_DEPLOYER));
 		}
 
 		@Override
@@ -331,9 +306,6 @@ public final class DatabaseUndeployerWorker implements Worker {
 
 					.property(OMSSA_DEPLOYER, "Omssa Database Deployer", "Database deployer must provide database undeployment functionality.")
 					.reference("omssaDeployer", UiBuilder.NONE_TYPE)
-
-					.property(PEAKS_DEPLOYER, "Peaks Database Deployer", "Database deployer must provide database undeployment functionality.")
-					.reference("peaksDeployer", UiBuilder.NONE_TYPE)
 
 					.property(SCAFFOLD_DEPLOYER, "Scaffold Database Deployer", "Database deployer must provide database undeployment functionality.")
 					.reference("scaffoldDeployer", UiBuilder.NONE_TYPE)

@@ -24,8 +24,6 @@ import edu.mayo.mprc.myrimatch.MyrimatchWorker;
 import edu.mayo.mprc.omssa.OmssaCache;
 import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
-import edu.mayo.mprc.peaks.PeaksDeploymentService;
-import edu.mayo.mprc.peaks.PeaksWorker;
 import edu.mayo.mprc.qa.QaWorker;
 import edu.mayo.mprc.qa.RAWDumpCache;
 import edu.mayo.mprc.qa.RAWDumpWorker;
@@ -67,7 +65,6 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 	private Map<String, ResourceInfo> table = new LinkedHashMap<String, ResourceInfo>();
 
 	private ScaffoldDeploymentService.Factory scaffoldDeployerWorkerFactory;
-	private PeaksDeploymentService.Factory peaksDeployerWorkerFactory;
 	private DatabaseFactory databaseFactory;
 	private MascotDeploymentService.Factory mascotDeployerWorkerFactory;
 	private SearchDbWorker.Factory searchDbWorkerFactory;
@@ -94,7 +91,6 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		addWorkerByReflection(SequestWorker.class);
 		addWorkerByReflection(XTandemWorker.class);
 		addWorker(OmssaWorker.TYPE, OmssaWorker.NAME, OmssaWorker.Config.class, getOmssaWorkerFactory(), new OmssaWorker.Ui(), OmssaWorker.DESC);
-		addWorkerByReflection(PeaksWorker.class);
 		addWorkerByReflection(MyrimatchWorker.class);
 		addWorkerByReflection(ScaffoldWorker.class);
 		addWorkerByReflection(Scaffold3Worker.class);
@@ -105,7 +101,6 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		addWorker(SequestDeploymentService.TYPE, SequestDeploymentService.NAME, SequestDeploymentService.Config.class, getSequestDeployerWorkerFactory(), new SequestDeploymentService.Ui(), SequestDeploymentService.DESC);
 		addWorkerByReflection(XTandemDeploymentService.class);
 		addWorkerByReflection(OmssaDeploymentService.class);
-		addWorker(PeaksDeploymentService.TYPE, PeaksDeploymentService.NAME, PeaksDeploymentService.Config.class, getPeaksDeployerWorkerFactory(), new PeaksDeploymentService.Ui(), PeaksDeploymentService.DESC);
 		addWorkerByReflection(MyrimatchDeploymentService.class);
 		addWorker(ScaffoldDeploymentService.TYPE, ScaffoldDeploymentService.NAME, ScaffoldDeploymentService.Config.class, getScaffoldDeployerWorkerFactory(), new ScaffoldDeploymentService.Ui(), ScaffoldDeploymentService.DESC);
 		addWorkerByReflection(Scaffold3DeploymentService.class);
@@ -152,14 +147,6 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 
 	public ScaffoldDeploymentService.Factory getScaffoldDeployerWorkerFactory() {
 		return scaffoldDeployerWorkerFactory;
-	}
-
-	public void setPeaksDeployerWorkerFactory(final PeaksDeploymentService.Factory peaksDeployerWorkerFactory) {
-		this.peaksDeployerWorkerFactory = peaksDeployerWorkerFactory;
-	}
-
-	public PeaksDeploymentService.Factory getPeaksDeployerWorkerFactory() {
-		return peaksDeployerWorkerFactory;
 	}
 
 	public void setDatabaseFactory(final DatabaseFactory databaseFactory) {

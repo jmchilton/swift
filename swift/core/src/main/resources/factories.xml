@@ -42,10 +42,6 @@
     <bean id="scaffoldDeployerWorkerFactory" class="edu.mayo.mprc.scaffold.ScaffoldDeploymentService$Factory">
     </bean>
 
-    <bean id="peaksDeployerWorkerFactory" class="edu.mayo.mprc.peaks.PeaksDeploymentService$Factory">
-        <property name="databaseFormat" value="${peaks.databaseFormat}"/>
-    </bean>
-
     <bean id="daoList" class="java.util.ArrayList">
         <constructor-arg index="0">
             <list value-type="edu.mayo.mprc.database.DaoBase">
@@ -101,7 +97,6 @@
 
     <bean id="resourceTable" class="edu.mayo.mprc.swift.ResourceTable">
         <property name="scaffoldDeployerWorkerFactory" ref="scaffoldDeployerWorkerFactory"/>
-        <property name="peaksDeployerWorkerFactory" ref="peaksDeployerWorkerFactory"/>
         <property name="databaseFactory" ref="databaseFactory"/>
         <property name="mascotDeployerWorkerFactory" ref="mascotDeployerWorkerFactory"/>
         <property name="simpleDaemonRunnerFactory" ref="simpleDaemonRunnerFactory"/>
@@ -183,38 +178,7 @@
     <bean id="sequestMappingFactory" class="edu.mayo.mprc.sequest.SequestMappingFactory"/>
     <bean id="tandemMappingFactory" class="edu.mayo.mprc.xtandem.XTandemMappingFactory"/>
     <bean id="omssaMappingFactory" class="edu.mayo.mprc.omssa.OmssaMappingFactory"/>
-    <bean id="peaksMappingFactory" class="edu.mayo.mprc.peaks.PeaksMappingFactory">
-        <property name="enzymeMapping" ref="peaksEnzymeMapping"/>
-        <property name="instrumentMapping" ref="peaksInstrumentsMapping"/>
-    </bean>
     <bean id="myrimatchMappingFactory" class="edu.mayo.mprc.myrimatch.MyrimatchMappingFactory"/>
-
-    <!-- Peaks -->
-    <bean id="peaksEnzymeMapping" class="java.util.TreeMap">
-        <constructor-arg index="0">
-            <map>
-                <entry key="Arg-C" value="Arg C"/>
-                <entry key="Arg-N" value="Arg N"/>
-                <entry key="Arg-N_ambic" value="Asp N + N-terminal Glu"/>
-                <entry key="Chymotrypsin" value="Chymotrysin"/>
-                <entry key="CNBr" value="CNBr"/>
-                <entry key="Lys-C (allow P)" value="Lys C"/>
-                <entry key="PepsinA" value="Pepsin (pH 1.3)"/>
-                <entry key="Trypsin (restrict P)" value="Trypsin"/>
-            </map>
-        </constructor-arg>
-    </bean>
-
-    <bean id="peaksInstrumentsMapping" class="java.util.TreeMap">
-        <constructor-arg index="0">
-            <map>
-                <entry key="Orbi/FT (ESI-FTICR)" value="FT-trap"/>
-                <entry key="LTQ (ESI-TRAP)" value="Quad linear-trap"/>
-                <entry key="ECD (FTMS-ECD)" value="FTMS(ecd)"/>
-                <entry key="4800 (MALDI-TOF-TOF)" value="TOF-TOF"/>
-            </map>
-        </constructor-arg>
-    </bean>
 
     <bean id="unimodDao" class="edu.mayo.mprc.unimod.UnimodDaoHibernate">
         <constructor-arg index="0" ref="databasePlaceholder"/>
@@ -267,7 +231,6 @@
                 <ref bean="sequestSearchEngine"/>
                 <ref bean="tandemSearchEngine"/>
                 <ref bean="omssaSearchEngine"/>
-                <ref bean="peaksSearchEngine"/>
                 <ref bean="myrimatchSearchEngine"/>
                 <ref bean="scaffoldSearchEngine"/>
                 <ref bean="scaffold3SearchEngine"/>
@@ -312,16 +275,6 @@
         <property name="outputDirName" value="omssa"/>
         <property name="onByDefault" value="false"/>
         <property name="mappingFactory" ref="omssaMappingFactory"/>
-        <property name="paramsInfo" ref="paramsInfo"/>
-    </bean>
-
-    <bean id="peaksSearchEngine" class="edu.mayo.mprc.swift.db.SearchEngine">
-        <property name="friendlyName" value="Peaks"/>
-        <property name="resultExtension" value=".peaks"/>
-        <property name="doSearchXmlAttribute" value="searchPeaks"/>
-        <property name="outputDirName" value="peaks"/>
-        <property name="onByDefault" value="false"/>
-        <property name="mappingFactory" ref="peaksMappingFactory"/>
         <property name="paramsInfo" ref="paramsInfo"/>
     </bean>
 

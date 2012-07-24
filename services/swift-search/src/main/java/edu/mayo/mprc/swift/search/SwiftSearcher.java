@@ -29,8 +29,6 @@ import edu.mayo.mprc.myrimatch.MyrimatchWorker;
 import edu.mayo.mprc.omssa.OmssaCache;
 import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
-import edu.mayo.mprc.peaks.PeaksDeploymentService;
-import edu.mayo.mprc.peaks.PeaksWorker;
 import edu.mayo.mprc.qa.QaWorker;
 import edu.mayo.mprc.qa.RAWDumpCache;
 import edu.mayo.mprc.qa.RAWDumpWorker;
@@ -106,8 +104,6 @@ public final class SwiftSearcher implements Worker {
 	private static final String TANDEM_DEPLOYER = "tandemDeployer";
 	private static final String OMSSA = "omssa";
 	private static final String OMSSA_DEPLOYER = "omssaDeployer";
-	private static final String PEAKS = "peaks";
-	private static final String PEAKS_DEPLOYER = "peaksDeployer";
 	private static final String MYRIMATCH = "myrimatch";
 	private static final String MYRIMATCH_DEPLOYER = "myrimatchDeployer";
 	private static final String SCAFFOLD = "scaffold";
@@ -443,7 +439,6 @@ public final class SwiftSearcher implements Worker {
 				fillEngineDaemons(engine, connectedSearchEngines, "SEQUEST", config.sequest, config.sequestDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "TANDEM", config.tandem, config.tandemDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "OMSSA", config.omssa, config.omssaDeployer, dependencies);
-				fillEngineDaemons(engine, connectedSearchEngines, "PEAKS", config.peaks, config.peaksDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "MYRIMATCH", config.myrimatch, config.myrimatchDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "SCAFFOLD", config.scaffold, config.scaffoldDeployer, dependencies);
 				fillEngineDaemons(engine, connectedSearchEngines, "SCAFFOLD3", config.scaffold3, config.scaffold3Deployer, dependencies);
@@ -552,8 +547,6 @@ public final class SwiftSearcher implements Worker {
 		private ServiceConfig tandemDeployer;
 		private ServiceConfig omssa;
 		private ServiceConfig omssaDeployer;
-		private ServiceConfig peaks;
-		private ServiceConfig peaksDeployer;
 		private ServiceConfig myrimatch;
 		private ServiceConfig myrimatchDeployer;
 		private ServiceConfig scaffold;
@@ -573,7 +566,7 @@ public final class SwiftSearcher implements Worker {
 		public Config(final String fastaPath, final String fastaArchivePath, final String fastaUploadPath
 				, final ServiceConfig raw2mgf, final ServiceConfig mgf2mgf, final ServiceConfig rawdump, final ServiceConfig mascot, final ServiceConfig mascotDeployer
 				, final ServiceConfig sequest, final ServiceConfig sequestDeployer, final ServiceConfig tandem, final ServiceConfig tandemDeployer
-				, final ServiceConfig omssa, final ServiceConfig omssaDeployer, final ServiceConfig peaks, final ServiceConfig peaksDeployer
+				, final ServiceConfig omssa, final ServiceConfig omssaDeployer
 				, final ServiceConfig myrimatch, final ServiceConfig myrimatchDeployer, final ServiceConfig scaffold, final ServiceConfig scaffoldDeployer
 				, final ServiceConfig scaffold3, final ServiceConfig scaffold3Deployer
 				, final ServiceConfig scaffoldReport, final ServiceConfig qa
@@ -594,8 +587,6 @@ public final class SwiftSearcher implements Worker {
 			this.tandemDeployer = tandemDeployer;
 			this.omssa = omssa;
 			this.omssaDeployer = omssaDeployer;
-			this.peaks = peaks;
-			this.peaksDeployer = peaksDeployer;
 			this.myrimatch = myrimatch;
 			this.myrimatchDeployer = myrimatchDeployer;
 			this.scaffold = scaffold;
@@ -670,14 +661,6 @@ public final class SwiftSearcher implements Worker {
 			return omssaDeployer;
 		}
 
-		public ServiceConfig getPeaks() {
-			return peaks;
-		}
-
-		public ServiceConfig getPeaksDeployer() {
-			return peaksDeployer;
-		}
-
 		public ServiceConfig getMyrimatch() {
 			return myrimatch;
 		}
@@ -739,8 +722,6 @@ public final class SwiftSearcher implements Worker {
 			map.put(TANDEM_DEPLOYER, resolver.getIdFromConfig(tandemDeployer));
 			map.put(OMSSA, resolver.getIdFromConfig(omssa));
 			map.put(OMSSA_DEPLOYER, resolver.getIdFromConfig(omssaDeployer));
-			map.put(PEAKS, resolver.getIdFromConfig(peaks));
-			map.put(PEAKS_DEPLOYER, resolver.getIdFromConfig(peaksDeployer));
 			map.put(MYRIMATCH, resolver.getIdFromConfig(myrimatch));
 			map.put(MYRIMATCH_DEPLOYER, resolver.getIdFromConfig(myrimatchDeployer));
 			map.put(SCAFFOLD, resolver.getIdFromConfig(scaffold));
@@ -771,8 +752,6 @@ public final class SwiftSearcher implements Worker {
 			tandemDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(TANDEM_DEPLOYER));
 			omssa = (ServiceConfig) resolver.getConfigFromId(values.get(OMSSA));
 			omssaDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(OMSSA_DEPLOYER));
-			peaks = (ServiceConfig) resolver.getConfigFromId(values.get(PEAKS));
-			peaksDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(PEAKS_DEPLOYER));
 			myrimatch = (ServiceConfig) resolver.getConfigFromId(values.get(MYRIMATCH));
 			myrimatchDeployer = (ServiceConfig) resolver.getConfigFromId(values.get(MYRIMATCH_DEPLOYER));
 			scaffold = (ServiceConfig) resolver.getConfigFromId(values.get(SCAFFOLD));
@@ -886,12 +865,6 @@ public final class SwiftSearcher implements Worker {
 
 					.property(OMSSA_DEPLOYER, OmssaDeploymentService.NAME, "If you want to use OMSSA, you have to have a database deployer set up. OMSSA deployment converts the .fasta into several index files.")
 					.reference(OmssaDeploymentService.TYPE, UiBuilder.NONE_TYPE)
-
-					.property(PEAKS, PeaksWorker.NAME, "Not fully implemented yet, do not use!")
-					.reference(PeaksWorker.TYPE, UiBuilder.NONE_TYPE)
-
-					.property(PEAKS_DEPLOYER, PeaksDeploymentService.NAME, "Not fully implemented yet, do not use!")
-					.reference(PeaksDeploymentService.TYPE, UiBuilder.NONE_TYPE)
 
 					.property(MYRIMATCH, MyrimatchWorker.NAME, "MyriMatch is used to augment the search results. Not fully integrated into Scaffold.")
 					.reference(MyrimatchWorker.TYPE, MyrimatchCache.TYPE, UiBuilder.NONE_TYPE)

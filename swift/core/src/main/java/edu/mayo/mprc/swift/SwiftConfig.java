@@ -14,8 +14,6 @@ import edu.mayo.mprc.mascot.MascotDeploymentService;
 import edu.mayo.mprc.mascot.MascotWorker;
 import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
-import edu.mayo.mprc.peaks.PeaksDeploymentService;
-import edu.mayo.mprc.peaks.PeaksWorker;
 import edu.mayo.mprc.scaffold.ScaffoldWorker;
 import edu.mayo.mprc.sequest.SequestDeploymentService;
 import edu.mayo.mprc.sequest.SequestWorker;
@@ -99,8 +97,7 @@ public final class SwiftConfig {
 			checkEngineDeployer(errors, searcher.getMascot(), searcher.getMascotDeployer(), MascotWorker.NAME, MascotDeploymentService.NAME);
 			checkEngineDeployer(errors, searcher.getSequest(), searcher.getSequestDeployer(), SequestWorker.NAME, SequestDeploymentService.NAME);
 			checkEngineDeployer(errors, searcher.getTandem(), searcher.getTandemDeployer(), XTandemWorker.NAME, XTandemDeploymentService.NAME);
-			checkEngineDeployer(errors, searcher.getPeaks(), searcher.getPeaksDeployer(), OmssaWorker.NAME, OmssaDeploymentService.NAME);
-			checkEngineDeployer(errors, searcher.getOmssa(), searcher.getOmssaDeployer(), PeaksWorker.NAME, PeaksDeploymentService.NAME);
+			checkEngineDeployer(errors, searcher.getOmssa(), searcher.getOmssaDeployer(), OmssaWorker.NAME, OmssaDeploymentService.NAME);
 			checkEngineDeployer(errors, searcher.getScaffold(), searcher.getScaffoldDeployer(), ScaffoldWorker.NAME, SequestDeploymentService.NAME);
 		}
 

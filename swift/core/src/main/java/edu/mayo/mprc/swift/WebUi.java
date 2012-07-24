@@ -16,7 +16,6 @@ import edu.mayo.mprc.msmseval.MSMSEvalWorker;
 import edu.mayo.mprc.msmseval.MsmsEvalCache;
 import edu.mayo.mprc.myrimatch.MyrimatchMappingFactory;
 import edu.mayo.mprc.omssa.OmssaMappingFactory;
-import edu.mayo.mprc.peaks.PeaksMappingFactory;
 import edu.mayo.mprc.searchdb.dao.SearchDbDao;
 import edu.mayo.mprc.sequest.SequestMappingFactory;
 import edu.mayo.mprc.swift.db.SearchEngine;
@@ -251,7 +250,6 @@ public final class WebUi {
 						fillEngineDaemons(engine, clonedSearchEngines, SequestMappingFactory.SEQUEST, searcherConfig.getSequest(), searcherConfig.getSequestDeployer(), dependencies);
 						fillEngineDaemons(engine, clonedSearchEngines, XTandemMappingFactory.TANDEM, searcherConfig.getTandem(), searcherConfig.getTandemDeployer(), dependencies);
 						fillEngineDaemons(engine, clonedSearchEngines, OmssaMappingFactory.OMSSA, searcherConfig.getOmssa(), searcherConfig.getOmssaDeployer(), dependencies);
-						fillEngineDaemons(engine, clonedSearchEngines, PeaksMappingFactory.PEAKS, searcherConfig.getPeaks(), searcherConfig.getPeaksDeployer(), dependencies);
 						fillEngineDaemons(engine, clonedSearchEngines, MyrimatchMappingFactory.MYRIMATCH, searcherConfig.getMyrimatch(), searcherConfig.getMyrimatchDeployer(), dependencies);
 						fillEngineDaemons(engine, clonedSearchEngines, "SCAFFOLD", searcherConfig.getScaffold(), searcherConfig.getScaffoldDeployer(), dependencies);
 						fillEngineDaemons(engine, clonedSearchEngines, "SCAFFOLD3", searcherConfig.getScaffold3(), searcherConfig.getScaffold3Deployer(), dependencies);

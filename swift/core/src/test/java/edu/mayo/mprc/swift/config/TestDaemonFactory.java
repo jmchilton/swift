@@ -16,8 +16,6 @@ import edu.mayo.mprc.mgf2mgf.MgfToMgfWorker;
 import edu.mayo.mprc.msmseval.MSMSEvalWorker;
 import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
-import edu.mayo.mprc.peaks.PeaksDeploymentService;
-import edu.mayo.mprc.peaks.PeaksWorker;
 import edu.mayo.mprc.qa.QaWorker;
 import edu.mayo.mprc.qa.RAWDumpWorker;
 import edu.mayo.mprc.qstat.QstatDaemonWorker;
@@ -189,18 +187,6 @@ public final class TestDaemonFactory {
 		final ServiceConfig raw2mgf = new ServiceConfig("raw2mgf", runner5, BROKER_URI + "raw2mgf");
 		main.addService(raw2mgf);
 
-		final SimpleRunner.Config runner6 = new SimpleRunner.Config();
-		runner6.setNumThreads(2);
-		runner6.setWorkerConfiguration(new PeaksWorker.Config("baseURI", "userName", "password"));
-		final ServiceConfig peaks = new ServiceConfig("peaks", runner6, BROKER_URI + "peaks");
-		main.addService(peaks);
-
-		final SimpleRunner.Config runner7 = new SimpleRunner.Config();
-		runner7.setNumThreads(2);
-		runner7.setWorkerConfiguration(new PeaksDeploymentService.Config("baseURI", "userName", "password"));
-		final ServiceConfig peaksDeployer = new ServiceConfig("peaksDeployer", runner7, BROKER_URI + "peaksDeployer");
-		main.addService(peaksDeployer);
-
 		final SimpleRunner.Config runner72 = new SimpleRunner.Config();
 		runner72.setNumThreads(2);
 		runner72.setWorkerConfiguration(new MockMascotDeploymentService.Config());
@@ -230,15 +216,14 @@ public final class TestDaemonFactory {
 		final SimpleRunner.Config runner88 = new SimpleRunner.Config();
 		runner88.setNumThreads(1);
 		runner88.setWorkerConfiguration(new DatabaseUndeployerWorker.Config(scaffoldDeployer, null, omssaDeployer
-				, sequestDeployer, tandemDeployer, mascotDeployer, peaksDeployer));
+				, sequestDeployer, tandemDeployer, mascotDeployer));
 		final ServiceConfig databasUndeployer = new ServiceConfig("databaseUndeployer", runner88, BROKER_URI + "databaseUndeployer");
 		main.addService(databasUndeployer);
 
 		final SwiftSearcher.Config searcherConfig = new SwiftSearcher.Config(
 				"fastaPath", "fastaArchivePath",
 				"fastaUploadPath", raw2mgf, mgfToMgf, rawDump, mascot, mascotDeployer, sequest,
-				sequestDeployer, tandem, tandemDeployer, omssa, omssaDeployer, peaks,
-				peaksDeployer, null, null, scaffold, scaffoldDeployer, null, null, scaffoldReport, qa, null, null, msmsEval, null);
+				sequestDeployer, tandem, tandemDeployer, omssa, omssaDeployer, null, null, scaffold, scaffoldDeployer, null, null, scaffoldReport, qa, null, null, msmsEval, null);
 		final SimpleRunner.Config runner76 = new SimpleRunner.Config();
 		runner76.setNumThreads(1);
 		runner76.setWorkerConfiguration(searcherConfig);

@@ -9,7 +9,6 @@ import edu.mayo.mprc.mascot.MascotWorkPacket;
 import edu.mayo.mprc.myrimatch.MyrimatchDeploymentResult;
 import edu.mayo.mprc.myrimatch.MyrimatchWorkPacket;
 import edu.mayo.mprc.omssa.OmssaWorkPacket;
-import edu.mayo.mprc.peaks.PeaksWorkPacket;
 import edu.mayo.mprc.searchengine.SearchEngineResult;
 import edu.mayo.mprc.sequest.SequestMGFWorkPacket;
 import edu.mayo.mprc.swift.db.SearchEngine;
@@ -108,8 +107,6 @@ final class EngineSearchTask extends AsyncTaskBase {
 					publicSearchFiles,
 					this.getFullId(),
 					isFromScratch());
-		} else if ("PEAKS".equalsIgnoreCase(engine.getCode())) {
-			workPacket = new PeaksWorkPacket(this.getFullId(), isFromScratch(), paramsFile, mgfOutput.getFilteredMgfFile());
 		} else if ("MYRIMATCH".equalsIgnoreCase(engine.getCode())) {
 			final MyrimatchDeploymentResult myrimatchDeploymentResult = (MyrimatchDeploymentResult) deploymentResult.getDeploymentResult();
 			workPacket = new MyrimatchWorkPacket(

@@ -154,30 +154,6 @@
                     </runner>
                     <brokerUrl>jms.vm://local?simplequeue=raw2mgf</brokerUrl>
                 </service>
-                <service id="47" name="peaks">
-                    <runner class="localRunner" id="48">
-                        <workerConfiguration class="peaks" id="49">
-                            <baseURI>baseURI</baseURI>
-                            <userName>userName</userName>
-                            <password>password</password>
-                        </workerConfiguration>
-                        <numThreads>2</numThreads>
-                        <logOutputFolder>.</logOutputFolder>
-                    </runner>
-                    <brokerUrl>jms.vm://local?simplequeue=peaks</brokerUrl>
-                </service>
-                <service id="50" name="peaksDeployer">
-                    <runner class="localRunner" id="51">
-                        <workerConfiguration class="peaksDeployer" id="52">
-                            <baseURI>baseURI</baseURI>
-                            <userName>userName</userName>
-                            <password>password</password>
-                        </workerConfiguration>
-                        <numThreads>2</numThreads>
-                        <logOutputFolder>.</logOutputFolder>
-                    </runner>
-                    <brokerUrl>jms.vm://local?simplequeue=peaksDeployer</brokerUrl>
-                </service>
                 <service id="53" name="mockMascotDeployer">
                     <runner class="localRunner" id="54">
                         <workerConfiguration class="mockMascotDeployer" id="55"/>
@@ -218,7 +194,6 @@
                             <sequestDeployer reference="20"/>
                             <tandemDeployer reference="26"/>
                             <mascotDeployer reference="8"/>
-                            <peaksDeployer reference="50"/>
                         </workerConfiguration>
                         <numThreads>1</numThreads>
                         <logOutputFolder>.</logOutputFolder>
@@ -242,8 +217,6 @@
                             <tandemDeployer reference="26"/>
                             <omssa reference="11"/>
                             <omssaDeployer reference="14"/>
-                            <peaks reference="47"/>
-                            <peaksDeployer reference="50"/>
                             <scaffold reference="29"/>
                             <scaffoldDeployer reference="38"/>
                             <scaffoldReport reference="32"/>
