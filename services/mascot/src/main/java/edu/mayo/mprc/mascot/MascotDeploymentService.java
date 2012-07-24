@@ -16,8 +16,7 @@ import edu.mayo.mprc.enginedeployment.DeploymentService;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.StringUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -144,7 +143,7 @@ public final class MascotDeploymentService extends DeploymentService<DeploymentR
 
 	private synchronized MascotDatabaseMaintenance getMascotDatabaseMaintenance() {
 		if (databaseMaintenance == null) {
-			databaseMaintenance = new MascotDatabaseMaintenance(dbMaintenanceUri, new HttpClient(new SimpleHttpConnectionManager()));
+			databaseMaintenance = new MascotDatabaseMaintenance(dbMaintenanceUri, new DefaultHttpClient());
 		}
 
 		return databaseMaintenance;

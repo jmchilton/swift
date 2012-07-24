@@ -7,11 +7,8 @@ import au.id.jericho.lib.html.Source;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.HttpClientUtility;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.HttpClient;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
@@ -104,7 +101,7 @@ final class MascotDatabaseMaintenance {
 			methodParams.put(DB_DISPLAY_PARAM, dbNameDisplayIdPairs.get(databaseDisplayName));
 
 			refreshFromResponsePage(executePostMethod(methodParams));
-		} catch (IOException e) {
+		} catch (MprcException e) {
 			throw new MprcException("Failed to select database " + databaseDisplayName + " from Mascot system at " + referenceUri, e);
 		}
 	}
@@ -128,7 +125,7 @@ final class MascotDatabaseMaintenance {
 
 			return requestResult;
 
-		} catch (IOException e) {
+		} catch (MprcException e) {
 			throw new MprcException("Error occurred when deleting database " + databaseDisplayName + " from Mascot system at " + referenceUri, e);
 		}
 	}
@@ -149,7 +146,7 @@ final class MascotDatabaseMaintenance {
 			methodParams.put(STEP_PARAM, APPLY_STEP);
 
 			requestResult = new MyMascotDbHttpRequestResult(executePostMethod(methodParams));
-		} catch (IOException e) {
+		} catch (MprcException e) {
 			throw new MprcException("Failed to apply changes to Mascot system at " + referenceUri, e);
 		}
 
@@ -159,58 +156,38 @@ final class MascotDatabaseMaintenance {
 	/**
 	 * If execution of http method fails, MprcException is thrown.
 	 *
-	 * @param methodParams
+	 * @param methodParams Key-val
 	 * @return Response body of executed method
 	 */
-	private String executePostMethod(final Map<String, String> methodParams) throws IOException {
-
-		PostMethod method = null;
+	private String executePostMethod(final Map<String, String> methodParams) {
 		final String tempReferenceUri = generateReferenceUri();
+		methodParams.putAll(formParametersNameValuePairs);
+		methodParams.put(REFERE_PARAM, referenceUri);
 
-		try {
-			addFormDefaultParameters(method = new PostMethod(tempReferenceUri));
+		String response = HttpClientUtility.getPostResponse(httpClient, tempReferenceUri, methodParams);
 
-			for (final Map.Entry<String, String> me : methodParams.entrySet()) {
-				method.setParameter(me.getKey(), me.getValue());
-			}
+		referenceUri = tempReferenceUri;
 
-			method.setParameter(REFERE_PARAM, referenceUri);
+		FileUtilities.out("************************************************************************************");
+		FileUtilities.out(response);
+		FileUtilities.out("************************************************************************************");
 
-			HttpClientUtility.executeMethod(httpClient, method);
+		return response;
 
-			referenceUri = tempReferenceUri;
-
-			FileUtilities.out("************************************************************************************");
-			FileUtilities.out(method.getResponseBodyAsString());
-			FileUtilities.out("************************************************************************************");
-
-			return method.getResponseBodyAsString();
-		} finally {
-			method.releaseConnection();
-		}
-	}
-
-	private void addFormDefaultParameters(final PostMethod method) {
-		for (final Map.Entry<String, String> me : formParametersNameValuePairs.entrySet()) {
-			method.setParameter(me.getKey(), me.getValue());
-		}
 	}
 
 	private String getDbMaintenancePageLocal() {
 
-		GetMethod method = null;
 		final String tempReferenceUri = generateReferenceUri();
 
 		try {
-			HttpClientUtility.executeMethod(httpClient, method = new GetMethod(tempReferenceUri));
+			final String response = HttpClientUtility.httpGet(httpClient, tempReferenceUri);
 
 			referenceUri = tempReferenceUri;
 
-			return method.getResponseBodyAsString();
-		} catch (IOException e) {
+			return response;
+		} catch (MprcException e) {
 			throw new MprcException("Failed to get Mascot maintenance page from Mascot at " + tempReferenceUri, e);
-		} finally {
-			method.releaseConnection();
 		}
 	}
 

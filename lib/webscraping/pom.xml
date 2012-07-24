@@ -22,6 +22,12 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>2.9</version>
+        </dependency>
+
         <!-- Can read arbitrarily broken HTML as DOM -->
         <dependency>
             <groupId>org.ccil.cowan.tagsoup</groupId>
@@ -29,11 +35,6 @@
             <version>1.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
 
         <!-- Mascot DB deployer uses this to scrape web forms -->
         <dependency>
