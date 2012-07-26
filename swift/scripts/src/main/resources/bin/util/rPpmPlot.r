@@ -84,6 +84,7 @@ spectrum.id.lm.border <- "red4"
 spectrum.nonid.title <- "Unidentified"
 spectrum.nonid.col <- "lightblue"
 spectrum.nonid.border <- "lightblue3"
+spectrum.nonid.symbol <- 46 # Tiny dot
 
 # Spectra identified as reverse hits
 spectrum.rev.title <- "Reverse Hit"
@@ -93,20 +94,33 @@ spectrum.rev.border <- "orange"
 spectrum.rev.test <- function(sequence) { substring(sequence, 1, nchar("Reversed_"))=="Reversed_" }
 spectrum.rev.symbol <- 4 # X for reverse hits
 
-# Spectra identified as polymers
+# Spectra identified as polymers  
 spectrum.polymer.title <- "Polymer"
 spectrum.polymer.col <- "violet"
 spectrum.polymer.colHtml <- "#f0f"
 spectrum.polymer.test <- function(polymer.segment.size, polymer.p.value) { polymer.segment.size==44 & polymer.p.value<=0.001 }
 spectrum.polymer.symbol <- 25 # Reverse triangle
 
+# Spectra with poor fragmentation (can be identified)
+spectrum.badfrag.title <- "Bad Fragmentation"
+spectrum.badfrag.col <- "aquamarine1"
+spectrum.badfrag.colHtml <- "#77ffd4"
+spectrum.badfrag.border <- "aquamarine2"
+spectrum.badfrag.test <- function(base.peak.intensity, second.peak.intensity, ms.level) { ms.level>1 & (second.peak.intensity==0 | (base.peak.intensity/second.peak.intensity>=100)) }
+spectrum.badfrag.testMsnOnly <- function(base.peak.intensity, second.peak.intensity) { second.peak.intensity==0 | (base.peak.intensity/second.peak.intensity>=100) }
+spectrum.badfrag.symbol <- 8 # Star
+
 # Lockmass line
 lockmass.found.col <- "grey"
 lockmass.lost.col <- "red"
 
 # How to visualize a hit?
-spectrum.symbol <- function(accessionNumber, polymer) {
-    ifelse(polymer, spectrum.polymer.symbol, ifelse(spectrum.rev.test(accessionNumber), spectrum.rev.symbol, ifelse(accessionNumber=="", 46, spectrum.id.symbol)))
+spectrum.symbol <- function(accessionNumber, polymer, badfrag) {
+    ifelse(polymer, spectrum.polymer.symbol, 
+        ifelse(spectrum.rev.test(accessionNumber), spectrum.rev.symbol, 
+            ifelse(accessionNumber!="", spectrum.id.symbol, 
+                ifelse(badfrag, spectrum.badfrag.symbol,
+                    spectrum.nonid.symbol))))
 }
 
 # Color mapping for the chromatogram
@@ -317,7 +331,11 @@ fitAndPpmPlots<-function(plotType, dataTab, spectrumInfo, curveColor, shadeColor
         lines(x=ifelse(spectrumInfo$Lock.Mass.Found[ms1]==0, spectrumInfo$RT[ms1], NA), y=spectrumInfo$Lock.Mass.Shift[ms1], col=lockmass.lost.col)
     }
 
-    points(fullX, fullY, pch=spectrum.symbol(dataTab$Protein.accession.numbers, rep(FALSE, times=length(fullX))), col=colorsByCharge[dataTab$Z + 1])
+    points(fullX, fullY, pch=spectrum.symbol(
+            dataTab$Protein.accession.numbers, 
+            rep(FALSE, times=length(fullX)),
+            rep(FALSE, times=length(fullX))), col=colorsByCharge[dataTab$Z + 1])
+    
     if(subsetContainsData && is.list(fit)) {
         legend("topleft", c(paste("95% +-", round(1.96 * fit$s, digits=2), " ", yLimUnit, sep="")), fill=c(ci95Col), bty="n")    
     }
@@ -334,7 +352,10 @@ fitAndPpmPlots<-function(plotType, dataTab, spectrumInfo, curveColor, shadeColor
 
 # Draws a legend for used charges
 usedChargesLegend <- function(usedCharges) {
-    legend("topright", c(legendForCharge[usedCharges], "Reversed", "Polymer"), pch=c(rep(spectrum.id.symbol, length(usedCharges)), spectrum.rev.symbol, spectrum.polymer.symbol), col=c(colorsByCharge[usedCharges], "black", "black"), title="Charge")
+    legend("topright", c(legendForCharge[usedCharges], "Reversed", "Polymer", "Bad Fragmentation"), 
+        pch=c(rep(spectrum.id.symbol, length(usedCharges)), spectrum.rev.symbol, spectrum.polymer.symbol, spectrum.badfrag.symbol), 
+        col=c(colorsByCharge[usedCharges], "black", "black", "black"), 
+        title="Charge")
 }
 
 readQaFile<-function(dataFile) {
@@ -359,6 +380,8 @@ readQaFile<-function(dataFile) {
         colClasses[["Polymer.Segment.Size"]] <- "numeric"
         colClasses[["Polymer.Score"]] <- "numeric"
         colClasses[["Polymer.p.value"]] <- "numeric"
+        colClasses[["Base.Peak.Intensity"]] <- "numeric"
+        colClasses[["Second.Peak.Intensity"]] <- "numeric"
 
         dataTabFull<-read.delim(dataFile, header=TRUE, sep="\t", colClasses=colClasses, fileEncoding="UTF-8", quote="")
 }
@@ -458,8 +481,9 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
         result$spectrum.all.count <- length(unique(dataTabFull$Scan.Id))
         result$spectrum.msn.count <- length(unique(dataTabFull$Scan.Id[dataTabFull$MS.Level>1]))
         result$spectrum.polymer.count <- length(unique(dataTabFull$Scan.Id[spectrum.polymer.test(dataTabFull$Polymer.Segment.Size, dataTabFull$Polymer.p.value)]))
+        result$spectrum.badfrag.count <- length(unique(dataTabFull$Scan.Id[spectrum.badfrag.test(dataTabFull$Base.Peak.Intensity, dataTabFull$Second.Peak.Intensity, dataTabFull$MS.Level)]))
 
-        dataTab<-subset(dataTabFull, nchar(as.character(Peptide.sequence))>0)
+        dataTab <- subset(dataTabFull, nchar(as.character(Peptide.sequence))>0)
 
         # Load chromatogram
         chromatogram <- NULL
@@ -543,7 +567,10 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
             }
 
             points(xAxis, ms2Only$Mz, 
-                        pch=spectrum.symbol(ms2Only$Protein.accession.numbers, spectrum.polymer.test(ms2Only$Polymer.Segment.Size, ms2Only$Polymer.p.value)), 
+                        pch=spectrum.symbol(
+                            ms2Only$Protein.accession.numbers, 
+                            spectrum.polymer.test(ms2Only$Polymer.Segment.Size, ms2Only$Polymer.p.value),
+                            spectrum.badfrag.testMsnOnly(ms2Only$Base.Peak.Intensity, ms2Only$Second.Peak.Intensity)), 
                         col=colorsByCharge[ms2Only$Z + 1])            
             usedChargesLegend(usedCharges)
         } else {
@@ -681,7 +708,9 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
                     spectrum.id.scans <- (msmsDataTab$Scan.. %in% dataTab$Scan.Id)                    
                     reverseScanIds <- dataTab$Scan.Id[spectrum.rev.test(dataTab$Protein.accession.numbers)]
                     spectrum.rev.scans <- (msmsDataTab$Scan.. %in% reverseScanIds)
-                    
+                    badfragScanIds <- dataTabFull$Scan.Id[spectrum.badfrag.test(dataTabFull$Base.Peak.Intensity, dataTabFull$Second.Peak.Intensity, dataTabFull$MS.Level)]
+                    spectrum.badfrag.scans <- (msmsDataTab$Scan.. %in% badfragScanIds)
+
                     # Plots a part (boolean vector) of all data as additional histogram
                     msmsEvalSubHist <- function(part, col, border) {
                         subCount <- subHistogramWithGaussian(
@@ -697,6 +726,8 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
                     # Non-IDed spectra
                     spectrum.nonid.count<-msmsEvalSubHist(part = !spectrum.id.scans, col = spectrum.nonid.col, border = spectrum.nonid.border)
                     result$spectrum.nonid.count<-spectrum.nonid.count
+                    # Badly fragmented spectra
+                    spectrum.badfrag.count<-msmsEvalSubHist(part = spectrum.badfrag.scans, col = spectrum.badfrag.col, border = spectrum.badfrag.border)                   
                     # IDed spectra
                     spectrum.id.count<-msmsEvalSubHist(part = spectrum.id.scans, col = spectrum.id.col, border = spectrum.id.border)
                     result$spectrum.id.count<-spectrum.id.count
@@ -709,9 +740,10 @@ imageGenerator<-function(dataFile, msmsEvalDataFile, infoFile, spectrumFile, chr
                         c(legendPercents(spectrum.dat.title, spectrum.dat.count), 
                           legendPercents(spectrum.id.title, spectrum.id.count), 
                           legendPercents(spectrum.rev.title, spectrum.rev.count), 
-                          legendPercents(spectrum.nonid.title, spectrum.nonid.count)), 
+                          legendPercents(spectrum.nonid.title, spectrum.nonid.count),
+                          legendPercents(spectrum.badfrag.title, spectrum.badfrag.count)), 
 
-                        fill=c(spectrum.dat.col, spectrum.id.col, spectrum.rev.col, spectrum.nonid.col), 
+                        fill=c(spectrum.dat.col, spectrum.id.col, spectrum.rev.col, spectrum.nonid.col, spectrum.badfrag.col), 
                         title="Histograms")
                 } else {
                     legend("topright", c(paste(spectrum.dat.title, spectrum.dat.count)), fill=c(spectrum.dat.col), title="Histograms")
@@ -828,6 +860,8 @@ addRowToReportFile<-function(reportFile, row) {
                                                                          colorSpan(percents(row$spectrum.rev.count, row$spectrum.msn.count), spectrum.rev.colHtml), "</td></tr>",
                             "<tr><th>", nbspize(spectrum.polymer.title), "</th><td>", colorSpan(     row$spectrum.polymer.count,                      spectrum.polymer.colHtml), "</td><td>", 
                                                                          colorSpan(percents(row$spectrum.polymer.count, row$spectrum.msn.count), spectrum.polymer.colHtml), "</td></tr>",                                                                         
+                            "<tr><th>", nbspize(spectrum.badfrag.title), "</th><td>", colorSpan(     row$spectrum.badfrag.count,                      spectrum.badfrag.colHtml), "</td><td>", 
+                                                                         colorSpan(percents(row$spectrum.badfrag.count, row$spectrum.msn.count), spectrum.badfrag.colHtml), "</td></tr>",
                         "</table></td>",
                         getHtmlTextImageFileInfo(row$lockmass.file),
                         getHtmlTextImageFileInfo(row$calibration.file),
