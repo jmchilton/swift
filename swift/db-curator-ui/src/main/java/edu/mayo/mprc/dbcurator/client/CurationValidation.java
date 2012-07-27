@@ -10,14 +10,19 @@ public final class CurationValidation {
 	private CurationValidation() {
 	}
 
+	/**
+	 * Copy of {@link edu.mayo.mprc.dbcurator.model.Curation#validateShortNameLegalCharacters(String)} to be used
+	 * on the client.
+	 *
+	 * @param toValidate Name to validate
+	 * @return Error message or null if name is ok
+	 */
 	public static String validateShortNameLegalCharacters(final String toValidate) {
-		final String spacesMessage = "Must not contain anything but a-z A-Z 0-9 : _ . - ( ) (no spaces)";
-		final String lengthMessage = "Must be between " + SHORTNAME_MIN_LENGTH + " and " + SHORTNAME_MAX_LENGTH + " characters";
 
 		if (!toValidate.matches("^[a-zA-Z0-9:_.\\-()]*$")) {
-			return spacesMessage;
+			return "Must not contain anything but a-z A-Z 0-9 : _ . - ( ) (no spaces)";
 		} else if (toValidate.length() > SHORTNAME_MAX_LENGTH || toValidate.length() < SHORTNAME_MIN_LENGTH) {
-			return lengthMessage;
+			return "Must be between " + SHORTNAME_MIN_LENGTH + " and " + SHORTNAME_MAX_LENGTH + " characters";
 		}
 		return null;
 	}

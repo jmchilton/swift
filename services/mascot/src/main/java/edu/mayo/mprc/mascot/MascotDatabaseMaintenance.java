@@ -59,7 +59,31 @@ final class MascotDatabaseMaintenance {
 		refresh();
 	}
 
-	public synchronized void refresh() {
+	public synchronized MascotDbHttpRequestResult deleteDatabase(final String databaseDisplayName) {
+		try {
+			selectDatabase(databaseDisplayName);
+
+			final Map<String, String> methodParams = new TreeMap<String, String>();
+			methodParams.put(STEP_PARAM, DELETE_STEP);
+
+			refreshFromResponsePage(executePostMethod(methodParams));
+
+			final MascotDbHttpRequestResult requestResult = applyChanges();
+
+			refreshFromResponsePage(getDbMaintenancePageLocal());
+
+			if (isDatabaseDeployed(databaseDisplayName)) {
+				throw new MprcException("Failed to deletion of database " + databaseDisplayName + " from Mascot system at " + referenceUri);
+			}
+
+			return requestResult;
+
+		} catch (MprcException e) {
+			throw new MprcException("Error occurred when deleting database " + databaseDisplayName + " from Mascot system at " + referenceUri, e);
+		}
+	}
+
+	private synchronized void refresh() {
 		refreshFromResponsePage(getDbMaintenancePageLocal());
 	}
 
@@ -103,30 +127,6 @@ final class MascotDatabaseMaintenance {
 			refreshFromResponsePage(executePostMethod(methodParams));
 		} catch (MprcException e) {
 			throw new MprcException("Failed to select database " + databaseDisplayName + " from Mascot system at " + referenceUri, e);
-		}
-	}
-
-	public synchronized MascotDbHttpRequestResult deleteDatabase(final String databaseDisplayName) {
-		try {
-			selectDatabase(databaseDisplayName);
-
-			final Map<String, String> methodParams = new TreeMap<String, String>();
-			methodParams.put(STEP_PARAM, DELETE_STEP);
-
-			refreshFromResponsePage(executePostMethod(methodParams));
-
-			final MascotDbHttpRequestResult requestResult = applyChanges();
-
-			refreshFromResponsePage(getDbMaintenancePageLocal());
-
-			if (isDatabaseDeployed(databaseDisplayName)) {
-				throw new MprcException("Failed to deletion of database " + databaseDisplayName + " from Mascot system at " + referenceUri);
-			}
-
-			return requestResult;
-
-		} catch (MprcException e) {
-			throw new MprcException("Error occurred when deleting database " + databaseDisplayName + " from Mascot system at " + referenceUri, e);
 		}
 	}
 

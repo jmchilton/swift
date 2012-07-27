@@ -1,5 +1,6 @@
 package edu.mayo.mprc.dbcurator.model;
 
+import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.database.EvolvableBase;
 import edu.mayo.mprc.fasta.DatabaseAnnotation;
 import edu.mayo.mprc.fasta.FastaFile;
@@ -19,6 +20,9 @@ import java.util.List;
 public class Curation extends EvolvableBase implements Serializable {
 	private static final long serialVersionUID = 20071220L;
 	private static final int EXPECTED_DESCRIPTION_SIZE = 500;
+
+	public static final int SHORTNAME_MAX_LENGTH = 17;
+	public static final int SHORTNAME_MIN_LENGTH = 5;
 
 	/**
 	 * any notes that were saved
@@ -450,6 +454,16 @@ public class Curation extends EvolvableBase implements Serializable {
 		return getDecoyRegex().equals(curation.getDecoyRegex());
 	}
 
+	/**
+	 * @param toValidate Short database name.
+	 */
+	public static void validateShortNameLegalCharacters(final String toValidate) {
+		if (!toValidate.matches("^[a-zA-Z0-9:_.\\-()]*$")) {
+			throw new MprcException("Database name must not contain anything but a-z A-Z 0-9 : _ . - ( ) (no spaces)");
+		} else if (toValidate.length() > SHORTNAME_MAX_LENGTH || toValidate.length() < SHORTNAME_MIN_LENGTH) {
+			throw new MprcException("Database name must be between " + SHORTNAME_MIN_LENGTH + " and " + SHORTNAME_MAX_LENGTH + " characters");
+		}
+	}
 
 	public int hashCode() {
 		int result = getNotes() != null ? getNotes().hashCode() : 0;
