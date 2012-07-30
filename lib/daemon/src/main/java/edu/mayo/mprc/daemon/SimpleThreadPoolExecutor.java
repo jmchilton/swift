@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public final class SimpleThreadPoolExecutor extends ThreadPoolExecutor {
 
 	public SimpleThreadPoolExecutor(final int numThreads, final String threadName, boolean blockIfFull) {
-		super(numThreads, numThreads, 1, TimeUnit.SECONDS, blockIfFull ? new BlockingSynchronousQueue<Runnable> () : new LinkedBlockingQueue<Runnable>(numThreads));
+		super(numThreads, numThreads, 1, TimeUnit.SECONDS, blockIfFull ? new BlockingSynchronousQueue<Runnable> () : new LinkedBlockingQueue<Runnable>());
 
 		final String name = threadName == null ? "worker" : threadName;
 
