@@ -86,7 +86,8 @@ public final class SwiftSearcher implements Worker {
 	private DaemonConnection fastaDbDaemon;
 	private DaemonConnection searchDbDaemon;
 	private Collection<SearchEngine> searchEngines;
-	private ExecutorService service;
+	private static final ExecutorService service = new SimpleThreadPoolExecutor(1, "swiftSearcher", false/* do not block*/);
+
 	private CurationDao curationDao;
 	private SwiftDao swiftDao;
 
@@ -121,7 +122,6 @@ public final class SwiftSearcher implements Worker {
 
 	public SwiftSearcher(final CurationDao curationDao, final SwiftDao swiftDao, final FileTokenFactory fileTokenFactory) {
 		// We execute the switch workflows in a single thread
-		service = new SimpleThreadPoolExecutor(1, "swiftSearcher", false/* do not block*/);
 		this.curationDao = curationDao;
 		this.swiftDao = swiftDao;
 		this.fileTokenFactory = fileTokenFactory;
