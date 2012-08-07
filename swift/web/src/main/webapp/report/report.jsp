@@ -129,16 +129,7 @@
         user.addOkCancel();
         user.onSubmitCallback = function() {
             user.saveToCookies();
-            new Ajax.Request('reportupdate', {
-                method: 'get',
-                parameters: {
-                    count: listedEntries,
-                    expanded: displayer.listExpandedItems(),
-                    timestamp : window.timestamp,
-                    userfilter: user.getRequestString(),
-                    showHidden: showHidden,
-                }
-            });
+            ajaxRequest();
         };
         $('popups').appendChild(user.getRoot());
 
@@ -186,6 +177,22 @@
         Event.stop(evt);
     }
 
+    function ajaxRequest() {
+        new Ajax.Request('reportupdate', {
+            method: 'get',
+            parameters: {
+                action: 'update',
+                start: firstEntry,
+                count: listedEntries,
+                expanded: displayer.listExpandedItems(),
+                timestamp : window.timestamp,
+                userfilter: user.getRequestString(),
+                showHidden: showHidden
+            }
+        });
+    }
+
+
     var timestamp = 0;
 
     var periodicalUpdate;
@@ -213,28 +220,9 @@
         Event.observe('popupMask', 'click', closeForm);
 
         user.loadFromCookies();
-        new Ajax.Request('reportupdate', {
-            parameters: {
-                start: firstEntry,
-                count: listedEntries,
-                timestamp: window.timestamp,
-                userfilter: user.getRequestString()
-            }});
+        ajaxRequest();
 
-        periodicalUpdate = new PeriodicalExecuter(function(pe) {
-
-            new Ajax.Request('reportupdate', {
-                method: 'get',
-                parameters: {
-                    action: 'update',
-                    start: firstEntry,
-                    count: listedEntries,
-                    expanded: displayer.listExpandedItems(),
-                    timestamp : window.timestamp,
-                    userfilter: user.getRequestString()
-                }
-            });
-        }, updateDelay);
+        periodicalUpdate = new PeriodicalExecuter(function(pe) { ajaxRequest(); }, updateDelay);
 
     });
 </script>
