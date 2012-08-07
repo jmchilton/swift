@@ -127,6 +127,7 @@ public final class ReportUpdate extends HttpServlet {
 			final SearchRunFilter searchRunFilter = new SearchRunFilter();
 			searchRunFilter.setStart(req.getParameter("start"));
 			searchRunFilter.setCount(req.getParameter("count"));
+			searchRunFilter.setShowHidden(req.getParameter("showHidden") != null && "true".equals(req.getParameter("showHidden")));
 			searchRunFilter.setUserFilter(req.getParameter("userfilter"));
 
 			final PrintWriter printOut = resp.getWriter();

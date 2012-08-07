@@ -135,7 +135,8 @@
                     count: listedEntries,
                     expanded: displayer.listExpandedItems(),
                     timestamp : window.timestamp,
-                    userfilter: user.getRequestString()
+                    userfilter: user.getRequestString(),
+                    showHidden: showHidden,
                 }
             });
         };
@@ -192,6 +193,7 @@
     var queries = getQueryString();
     var listedEntries = queries['count'] == null ? 100 : queries['count'];
     var firstEntry = queries['start'] == null ? 0 : queries['start'];
+    var showHidden = queries['showHidden'] == null ? 0 : queries['showHidden'];
     var displayer;
 
     Event.observe(window, 'load', function() {
