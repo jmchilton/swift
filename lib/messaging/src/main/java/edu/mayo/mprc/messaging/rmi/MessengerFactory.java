@@ -26,7 +26,7 @@ public final class MessengerFactory {
 		final String messengerName = SimpleOneWayMessenger.class.getName() + messengerIdentifier.incrementAndGet();
 		remoteObjectHandler.registerRemoteObject(messengerName, simpleMessenger);
 
-		return new BoundMessenger<SimpleOneWayMessenger>(new MessengerInfo(remoteObjectHandler.getLocalRegistryInfo(), messengerName), simpleMessenger, remoteObjectHandler);
+		return new BoundMessenger<SimpleOneWayMessenger>(new MessengerInfo(remoteObjectHandler.getHost(), remoteObjectHandler.getLocalPort(), messengerName), simpleMessenger, remoteObjectHandler);
 	}
 
 	public BoundMessenger<SimpleOneWayMessenger> createOneWayMessenger() throws RemoteException, UnknownHostException {
@@ -36,7 +36,7 @@ public final class MessengerFactory {
 		remoteObjectHandler.registerRemoteObject(messengerName, simpleOneWayMessenger);
 
 		return new BoundMessenger<SimpleOneWayMessenger>(
-				new MessengerInfo(remoteObjectHandler.getLocalRegistryInfo(), messengerName),
+				new MessengerInfo(remoteObjectHandler.getHost(), remoteObjectHandler.getLocalPort(), messengerName),
 				simpleOneWayMessenger,
 				remoteObjectHandler);
 	}

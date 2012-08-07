@@ -64,6 +64,10 @@ public final class RemoteObjectHandler {
 		return localPort;
 	}
 
+	public String getHost() throws UnknownHostException {
+		return InetAddress.getLocalHost().getHostName();
+	}
+
 	public InetSocketAddress getLocalRegistryInfo() throws UnknownHostException, RemoteException {
 		return new InetSocketAddress(InetAddress.getLocalHost().getHostName(), getLocalPort());
 	}

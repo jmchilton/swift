@@ -8,16 +8,26 @@ import java.net.InetSocketAddress;
  */
 public final class MessengerInfo implements Serializable {
 	private static final long serialVersionUID = 20090324L;
-	private InetSocketAddress registryInfo;
+	private String host;
+	private int port;
 	private String messengerRemoteName;
 
-	public MessengerInfo(final InetSocketAddress registryInfo, final String messengerRemoteName) {
-		this.registryInfo = registryInfo;
+	public MessengerInfo(final String host, final int port, final String messengerRemoteName) {
+		this.host = host;
+		this.port = port;
 		this.messengerRemoteName = messengerRemoteName;
 	}
 
+	public String getHost() {
+		return host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
 	public InetSocketAddress getRegistryInfo() {
-		return registryInfo;
+		return new InetSocketAddress(getHost(), getPort());
 	}
 
 	public String getMessengerRemoteName() {
