@@ -1,10 +1,20 @@
 package edu.mayo.mprc.daemon;
 
 import edu.mayo.mprc.daemon.files.FileTokenFactory;
+import edu.mayo.mprc.daemon.files.FileTokenHolder;
+import edu.mayo.mprc.messaging.Request;
+import edu.mayo.mprc.messaging.ResponseListener;
+import edu.mayo.mprc.messaging.Service;
 import edu.mayo.mprc.utilities.progress.ProgressListener;
 
 /**
- * A connection to a specific runner within another daemon. Technically, this should be called "RunnerConnection".
+ * A wrapper around {@link Service} that adds the capability to translate {@link FileTokenHolder}
+ * object as they go onto and off the wire. This requires the received {@link Request} to be
+ * wrapped into {@link DaemonRequest} in order to ensure the translation also happens as responses are sent back.
+ * <p/>
+ * The responses going on the wire add additional semantics. There are separate messages sent when the request gets enqueued,
+ * starts running, finishes running successfully or finishes running with a failure. All these responses are
+ * being reported using a {@link ProgressListener} which wraps {@link ResponseListener}.
  */
 public interface DaemonConnection {
 	/**

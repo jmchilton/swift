@@ -31,8 +31,6 @@ class JmsRequest implements Request {
 
 	/**
 	 * Acknowledge to the JMS broker that the request has been processed.
-	 *
-	 * @throws javax.jms.JMSException
 	 */
 	public void processed() {
 		try {

@@ -95,15 +95,7 @@ public final class GridRunner extends AbstractRunner {
 				gridDaemonAllocatorInputObject.setSharedTempDirectory(sharedTempDirectory.getAbsolutePath());
 			}
 
-			BufferedWriter bufferedWriter = null;
-
-			try {
-				final XStream xStream = new XStream(new DomDriver());
-				bufferedWriter = new BufferedWriter(new FileWriter(daemonWorkerAllocatorInputFile));
-				bufferedWriter.write(xStream.toXML(gridDaemonAllocatorInputObject));
-			} finally {
-				FileUtilities.closeQuietly(bufferedWriter);
-			}
+			writeWorkerAllocatorInputObject(daemonWorkerAllocatorInputFile, gridDaemonAllocatorInputObject);
 
 			final List<String> parameters = gridScriptFactory.getParameters(wrapperScript, daemonWorkerAllocatorInputFile);
 			gridWorkPacket.setParameters(parameters);
@@ -124,6 +116,18 @@ public final class GridRunner extends AbstractRunner {
 			final DaemonException daemonException = new DaemonException("Failed passing work packet " + gridWorkPacket.toString() + " to grid engine", t);
 			sendResponse(request, daemonException, true);
 			throw daemonException;
+		}
+	}
+
+	private static void writeWorkerAllocatorInputObject(File file, GridDaemonWorkerAllocatorInputObject object) throws IOException {
+		BufferedWriter bufferedWriter = null;
+
+		try {
+			final XStream xStream = new XStream(new DomDriver());
+			bufferedWriter = new BufferedWriter(new FileWriter(file));
+			bufferedWriter.write(xStream.toXML(object));
+		} finally {
+			FileUtilities.closeQuietly(bufferedWriter);
 		}
 	}
 
@@ -184,8 +188,9 @@ public final class GridRunner extends AbstractRunner {
 
 		/**
 		 * Process message from the grid engine itself.
+		 * In case the process failed, we keep the work packet around so the developer can reproduce the error.
 		 *
-		 * @param w
+		 * @param w Work packet whose state changed
 		 */
 		public void stateChanged(final GridWorkPacket w) {
 			// We report state change just once.

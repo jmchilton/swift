@@ -24,7 +24,6 @@ public interface Service {
 	 * @param request  Message to be sent.
 	 * @param priority Priority of the request.
 	 * @param listener The object to be notified about the request sending progress.
-	 * @throws edu.mayo.mprc.MprcException Message could not be sent.
 	 */
 	void sendRequest(Serializable request, int priority, ResponseListener listener);
 
@@ -37,7 +36,7 @@ public interface Service {
 	 * would bounce round-robin style between the two receivers and the messaging would block.
 	 *
 	 * @param timeout Timeout in milliseconds. If no message arrives within timeout, null is returned as request.
-	 * @throws edu.mayo.mprc.MprcException Request could not be received.
+	 * @return Received request, or null if nothing arrived within the timeout.
 	 */
 	Request receiveRequest(long timeout);
 
@@ -49,7 +48,7 @@ public interface Service {
 	/**
 	 * Gets service name.
 	 *
-	 * @return
+	 * @return Name of the service.
 	 */
 	String getName();
 }

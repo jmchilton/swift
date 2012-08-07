@@ -19,6 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Daemon thread runs a {@link Worker}. The worker has {@link Worker#processRequest} method,
  * that gets executed over and over, until it either throws an exception or indicates it is done with processing. Then the
  * daemon starts processing the next request.
+ * <p/>
+ * In case a task being run fails to be executed, the runner will produce an entry in {@link #failedTasksDirectory} so
+ * the developer can reproduce the error by having Swift process only that one single task.
  *
  * @author Roman Zenka
  */
@@ -35,7 +38,7 @@ public abstract class AbstractRunner {
 
 	/**
 	 * @return true if this runner got past its initialization and now is ready for requests.
-	 *         Disabled workers are operational immediatelly, they just do nothing.
+	 *         Disabled workers are operational immediately, they just do nothing.
 	 */
 	public abstract boolean isOperational();
 
@@ -134,7 +137,7 @@ public abstract class AbstractRunner {
 				}
 			}
 
-			// This is the last response we will send - error occured
+			// This is the last response we will send - error occurred
 			request.sendResponse(response, isLast);
 		} catch (MprcException e1) {
 			// SWALLOWED: We try to keep running even if we cannot report we failed translating the message.
