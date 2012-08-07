@@ -16,7 +16,7 @@ import edu.mayo.mprc.messaging.rmi.BoundMessenger;
 import edu.mayo.mprc.messaging.rmi.MessengerFactory;
 import edu.mayo.mprc.messaging.rmi.OneWayMessenger;
 import edu.mayo.mprc.messaging.rmi.RemoteObjectHandler;
-import edu.mayo.mprc.sge.GridDaemonWorkerAllocatorInputObject;
+import edu.mayo.mprc.sge.SgePacket;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressInfo;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
@@ -51,7 +51,7 @@ public final class SgeJobRunner {
 		FileUtilities.waitForFile(workPacketXmlFile, INPUT_FILE_TIMEOUT);
 
 		FileInputStream fileInputStream = null;
-		GridDaemonWorkerAllocatorInputObject daemonWorkerAllocatorInputObject = null;
+		SgePacket sgePacket = null;
 		BoundMessenger<OneWayMessenger> boundMessenger = null;
 		final RemoteObjectHandler handler = new RemoteObjectHandler();
 		final MessengerFactory messengerFactory = new MessengerFactory(handler);
@@ -70,29 +70,29 @@ public final class SgeJobRunner {
 
 			fileInputStream = new FileInputStream(workPacketXmlFile);
 
-			daemonWorkerAllocatorInputObject = (GridDaemonWorkerAllocatorInputObject) xStream.fromXML(fileInputStream);
+			sgePacket = (SgePacket) xStream.fromXML(fileInputStream);
 
 			//If the work packet is an instance of a FileTokenHolder, set the the FileTokenFactory on it. The FileTokenFactory object
 			//needs to be reset because it is a transient object.
-			if (daemonWorkerAllocatorInputObject.getWorkPacket() instanceof FileTokenHolder) {
-				final FileTokenHolder fileTokenHolder = (FileTokenHolder) daemonWorkerAllocatorInputObject.getWorkPacket();
-				final FileTokenFactory fileTokenFactory = new FileTokenFactory(daemonWorkerAllocatorInputObject.getDaemonConfigInfo());
+			if (sgePacket.getWorkPacket() instanceof FileTokenHolder) {
+				final FileTokenHolder fileTokenHolder = (FileTokenHolder) sgePacket.getWorkPacket();
+				final FileTokenFactory fileTokenFactory = new FileTokenFactory(sgePacket.getDaemonConfigInfo());
 
-				if (daemonWorkerAllocatorInputObject.getSharedTempDirectory() != null) {
-					fileTokenFactory.setTempFolderRepository(new File(daemonWorkerAllocatorInputObject.getSharedTempDirectory()));
+				if (sgePacket.getSharedTempDirectory() != null) {
+					fileTokenFactory.setTempFolderRepository(new File(sgePacket.getSharedTempDirectory()));
 				}
 
-				fileTokenFactory.setFileSharingFactory(new JmsFileTransferHandlerFactory(daemonWorkerAllocatorInputObject.getFileSharingFactoryURI()), false);
+				fileTokenFactory.setFileSharingFactory(new JmsFileTransferHandlerFactory(sgePacket.getFileSharingFactoryURI()), false);
 				fileTokenHolder.translateOnReceiver(fileTokenFactory, fileTokenFactory);
 			}
 
-			boundMessenger = messengerFactory.getOneWayMessenger(daemonWorkerAllocatorInputObject.getMessengerInfo());
+			boundMessenger = messengerFactory.getOneWayMessenger(sgePacket.getMessengerInfo());
 
 			final DependencyResolver dependencies = new DependencyResolver(resourceTable);
-			final Worker daemonWorker = (Worker) resourceTable.createSingleton(daemonWorkerAllocatorInputObject.getWorkerFactoryConfig(), dependencies);
-			daemonWorker.processRequest((WorkPacket) daemonWorkerAllocatorInputObject.getWorkPacket(), new DaemonWorkerProgressReporter(boundMessenger));
+			final Worker daemonWorker = (Worker) resourceTable.createSingleton(sgePacket.getWorkerFactoryConfig(), dependencies);
+			daemonWorker.processRequest((WorkPacket) sgePacket.getWorkPacket(), new DaemonWorkerProgressReporter(boundMessenger));
 		} catch (Exception e) {
-			final String errorMessage = "Failed to process work packet " + ((daemonWorkerAllocatorInputObject == null || daemonWorkerAllocatorInputObject.getWorkPacket() == null) ? "null" : daemonWorkerAllocatorInputObject.getWorkPacket().toString());
+			final String errorMessage = "Failed to process work packet " + ((sgePacket == null || sgePacket.getWorkPacket() == null) ? "null" : sgePacket.getWorkPacket().toString());
 			LOGGER.error(errorMessage, e);
 
 			try {
@@ -114,7 +114,7 @@ public final class SgeJobRunner {
 			}
 		}
 
-		LOGGER.info("Work packet " + daemonWorkerAllocatorInputObject.getWorkPacket().toString() + " successfully processed.");
+		LOGGER.info("Work packet " + sgePacket.getWorkPacket().toString() + " successfully processed.");
 		System.exit(0);
 	}
 

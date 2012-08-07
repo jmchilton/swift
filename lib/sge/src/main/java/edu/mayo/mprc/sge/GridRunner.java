@@ -26,8 +26,8 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Daemon Runner that sends {@link GridDaemonWorkerAllocatorInputObject} objects to the Grid
- * to be proccess by the @{link DaemonWorkerAllocator} class. The {@link GridDaemonWorkerAllocatorInputObject} is
+ * Daemon Runner that sends {@link SgePacket} objects to the Sun Grid Engine.
+ * The {@link SgePacket} is
  * saved as a shared xml file and a {@link java.io.File} URI that represents the shared xml file
  * is sent through the Grid.
  */
@@ -81,11 +81,11 @@ public final class GridRunner extends AbstractRunner {
 
 		try {
 			final BoundMessenger<SimpleOneWayMessenger> boundMessenger = messengerFactory.createOneWayMessenger();
-			final DaemonWorkerAllocatorMessageListener allocatorListener = new DaemonWorkerAllocatorMessageListener(request);
+			final SgeMessageListener allocatorListener = new SgeMessageListener(request);
 			boundMessenger.getMessenger().addMessageListener(allocatorListener);
 
-			final GridDaemonWorkerAllocatorInputObject gridDaemonAllocatorInputObject =
-					new GridDaemonWorkerAllocatorInputObject(request.getWorkPacket()
+			final SgePacket gridDaemonAllocatorInputObject =
+					new SgePacket(request.getWorkPacket()
 							, boundMessenger.getMessengerInfo()
 							, workerFactoryConfig
 							, fileTokenFactory.getDaemonConfigInfo()
@@ -119,7 +119,7 @@ public final class GridRunner extends AbstractRunner {
 		}
 	}
 
-	private static void writeWorkerAllocatorInputObject(File file, GridDaemonWorkerAllocatorInputObject object) throws IOException {
+	private static void writeWorkerAllocatorInputObject(File file, SgePacket object) throws IOException {
 		BufferedWriter bufferedWriter = null;
 
 		try {
@@ -132,14 +132,14 @@ public final class GridRunner extends AbstractRunner {
 	}
 
 	/**
-	 * Listens to RMI calls from the SGE daemon. None of the messages is final.
+	 * Listens to RMI calls from the process running within SGE. None of the messages is final.
 	 */
-	private class DaemonWorkerAllocatorMessageListener implements MessageListener {
+	private class SgeMessageListener implements MessageListener {
 		private static final long serialVersionUID = 20090324L;
 		private DaemonRequest request;
 		private Throwable lastThrowable;
 
-		public DaemonWorkerAllocatorMessageListener(final DaemonRequest request) {
+		public SgeMessageListener(final DaemonRequest request) {
 			this.request = request;
 		}
 
@@ -160,7 +160,7 @@ public final class GridRunner extends AbstractRunner {
 					sendResponse(request, (Serializable) message, false);
 				}
 			} else {
-				sendResponse(request, "Progress message from DaemonWorkerAllocator " + message.toString(), false);
+				sendResponse(request, "Progress message from SGE " + message.toString(), false);
 			}
 		}
 	}
@@ -171,17 +171,17 @@ public final class GridRunner extends AbstractRunner {
 	private class MyWorkPacketStateListener implements GridWorkPacketStateListener {
 		private boolean reported;
 		private DaemonRequest request;
-		private File daemonWorkerAllocatorInputFile;
+		private File sgePacketFile;
 		private BoundMessenger boundMessenger;
-		private DaemonWorkerAllocatorMessageListener allocatorListener;
+		private SgeMessageListener allocatorListener;
 
 		/**
 		 * @param allocatorListener The listener for the RMI messages. We use it so we can send an exception that was cached when SGE terminates.
 		 */
-		public MyWorkPacketStateListener(final DaemonRequest request, final File daemonWorkerAllocatorInputFile, final BoundMessenger boundMessenger, final DaemonWorkerAllocatorMessageListener allocatorListener) {
+		public MyWorkPacketStateListener(final DaemonRequest request, final File sgePacketFile, final BoundMessenger boundMessenger, final SgeMessageListener allocatorListener) {
 			reported = false;
 			this.request = request;
-			this.daemonWorkerAllocatorInputFile = daemonWorkerAllocatorInputFile;
+			this.sgePacketFile = sgePacketFile;
 			this.boundMessenger = boundMessenger;
 			this.allocatorListener = allocatorListener;
 		}
@@ -193,6 +193,9 @@ public final class GridRunner extends AbstractRunner {
 		 * @param w Work packet whose state changed
 		 */
 		public void stateChanged(final GridWorkPacket w) {
+			if (w == null) {
+				return;
+			}
 			// We report state change just once.
 			if (!reported) {
 				try {
@@ -218,10 +221,12 @@ public final class GridRunner extends AbstractRunner {
 				} catch (IOException e) {
 					LOGGER.warn("Error disposing messenger: " + boundMessenger.getMessengerInfo().getMessengerRemoteName(), e);
 				} finally {
-					if (w != null) {
+					if (!w.getFailed()) {
 						//Delete workPacket file
-						LOGGER.debug("Deleting daemon worker allocator input temp file: " + daemonWorkerAllocatorInputFile.getAbsolutePath());
-						FileUtilities.quietDelete(daemonWorkerAllocatorInputFile);
+						LOGGER.debug("Deleting sge packet file: " + sgePacketFile.getAbsolutePath());
+						FileUtilities.quietDelete(sgePacketFile);
+					} else {
+						LOGGER.warn("Retaining sge packet file: " + sgePacketFile.getAbsolutePath());
 					}
 				}
 			}

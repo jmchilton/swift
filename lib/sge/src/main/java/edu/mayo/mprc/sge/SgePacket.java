@@ -7,9 +7,10 @@ import edu.mayo.mprc.messaging.rmi.MessengerInfo;
 import java.net.URI;
 
 /**
- * Class use to send work packet to grid engine. This object is process by the DaemonWorkerAllocator.
+ * Class use to send work packet to grid engine. The object contains the actual work itself as {@link #workPacket},
+ * but also contains information about how to send progress back from the Sun Grid Engine.
  */
-public final class GridDaemonWorkerAllocatorInputObject {
+public final class SgePacket {
 
 	private Object workPacket;
 	private MessengerInfo messengerInfo;
@@ -18,10 +19,10 @@ public final class GridDaemonWorkerAllocatorInputObject {
 	private URI fileSharingFactoryURI;
 	private String sharedTempDirectory;
 
-	public GridDaemonWorkerAllocatorInputObject() {
+	public SgePacket() {
 	}
 
-	public GridDaemonWorkerAllocatorInputObject(final Object workPacket, final MessengerInfo messengerInfo, final ResourceConfig workerFactoryConfig, final DaemonConfigInfo daemonConfigInfo, final URI fileSharingFactoryURI) {
+	public SgePacket(final Object workPacket, final MessengerInfo messengerInfo, final ResourceConfig workerFactoryConfig, final DaemonConfigInfo daemonConfigInfo, final URI fileSharingFactoryURI) {
 		this.workPacket = workPacket;
 		this.messengerInfo = messengerInfo;
 		this.workerFactoryConfig = workerFactoryConfig;
