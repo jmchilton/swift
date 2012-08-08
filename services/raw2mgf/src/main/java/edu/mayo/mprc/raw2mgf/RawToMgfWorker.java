@@ -1,6 +1,7 @@
 package edu.mayo.mprc.raw2mgf;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.config.DaemonConfig;
 import edu.mayo.mprc.config.DependencyResolver;
@@ -143,7 +144,7 @@ public final class RawToMgfWorker implements Worker {
 
 				FileUtilities.ensureFolderExists(mgfFile.getParentFile());
 
-				runExtractMsnJob(ex_msn_exe, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript.getAbsolutePath());
+				runExtractMsnJob(ex_msn_exe, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript==null ? null : xvfbWrapperScript.getAbsolutePath());
 
 				// Count how many extracted
 				dtaFiles = getDtaFiles(fulltempfolder);
@@ -395,12 +396,13 @@ public final class RawToMgfWorker implements Worker {
 	 * A factory capable of creating the worker
 	 */
 	public static final class Factory extends WorkerFactoryBase<Config> {
+
 		@Override
 		public Worker create(final Config config, final DependencyResolver dependencies) {
 			final RawToMgfWorker worker = new RawToMgfWorker();
 			worker.setTempFolder(new File(config.getTempFolder()));
 			worker.setWrapperScript(config.getWrapperScript());
-			worker.setXvfbWrapperScript(new File(config.getXvfbWrapperScript()));
+			worker.setXvfbWrapperScript(Strings.isNullOrEmpty(config.getXvfbWrapperScript()) ? null : new File(config.getXvfbWrapperScript()));
 			worker.setExtractMsnExecutable(new File(config.getExtractMsnExecutable()));
 			return worker;
 		}
