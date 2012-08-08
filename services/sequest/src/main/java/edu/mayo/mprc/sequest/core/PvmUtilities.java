@@ -81,7 +81,7 @@ final class PvmUtilities {
 	private static final Pattern PROCESS_ID_PATTERN = Pattern.compile("^\\w(\\S|\\d)*\\s*(\\d+)\\s.*");
 
 	/**
-	 * find the pvm process id in an output from 'ps -auwx | grep username'
+	 * find the pvm process id in an output from 'ps auwx | grep username'
 	 * expected format of line is
 	 * <username> <pid> .... <exe>
 	 *
@@ -113,7 +113,7 @@ final class PvmUtilities {
 
 
 	/**
-	 * find the pvm process id in an output from 'ps -auwx | grep username'
+	 * find the pvm process id in an output from 'ps auwx | grep username'
 	 * expected format of line is
 	 * <username> <pid> .... <exe>
 	 *
@@ -281,7 +281,7 @@ final class PvmUtilities {
 		final List<String> psResult;
 		// find the pvm process id on the node
 
-		psResult = getSshResult(hostName, "ps -auwx | grep " + userName);
+		psResult = getSshResult(hostName, "ps auwx | grep " + userName);
 
 		return parseProcessListforPid(psResult, exe, userName);
 	}
@@ -309,7 +309,7 @@ final class PvmUtilities {
 	 * and user
 	 */
 	public static long findProcessIDforExe(final String userName, final String exe) {
-		final List<String> psArgs = Arrays.asList("ps", "-auwx");
+		final List<String> psArgs = Arrays.asList("ps", "auwx");
 		final List<String> grepArgs = Arrays.asList("grep", userName);
 		final List<String> psResult = processPipedCommand(psArgs, grepArgs);
 		// find the pvm process id on the node
@@ -397,7 +397,7 @@ final class PvmUtilities {
 	public static void killPVMonNode(final String hostName, final String userName, final String pvmdName, final String nodeTempFolder, final boolean master) {
 		final List<String> psResult;
 		// find the pvm process id on the node
-		psResult = getSshResult(hostName, "ps -auwx | grep " + userName);
+		psResult = getSshResult(hostName, "ps auwx | grep " + userName);
 		final List<String> processes = new ArrayList<String>();
 		getProcessesForUser(processes, psResult, userName);
 		// find the sequest27_ pid and kill it
@@ -474,12 +474,12 @@ final class PvmUtilities {
 	 * @param nodeTempFolder - location of the temp folder for pvm on the slaves (usually '/tmp)
 	 */
 	public static void killPVMonMasterNode(final String userName, final String pvmdName, final String nodeTempFolder) {
-		final List<String> psArgs = Arrays.asList("ps", "-auwx");
+		final List<String> psArgs = Arrays.asList("ps", "auwx");
 		final List<String> grepArgs = Arrays.asList("grep", userName);
 
 		final List<String> psResult = processPipedCommand(psArgs, grepArgs);
 
-		// want call of <"ps -auwx | grep $username">
+		// want call of <"ps auwx | grep $username">
 		final List<String> processes = new ArrayList<String>();
 		getProcessesForUser(processes, psResult, userName);
 		// find the sequest27_ pid and kill it
