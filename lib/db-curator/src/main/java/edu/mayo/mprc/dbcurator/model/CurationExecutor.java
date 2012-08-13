@@ -208,9 +208,17 @@ public final class CurationExecutor implements Runnable {
 		}
 
 		//if the resulting fasta file is not valid then we want to say something in the status but we should probably just complete anyway
-		if (this.outStream == null || !FASTAInputStream.isFASTAFileValid(this.outStream.getFile())) {
+		if (this.outStream == null) {
 			this.status.addMessage("Error: The resulting .fasta file is not valid!");
-		} else if (retainArtifacts) {
+		} else {
+			final String message = FASTAInputStream.isFASTAFileValid(this.outStream.getFile());
+			if (message != null) {
+				this.status.addMessage(message);
+				return false;
+			}
+		}
+
+		if (retainArtifacts) {
 			//if we want to keep artifacts then move them to a safe place and update the curation to indicate that it has been run
 			File finalPlace = getFastaFileName(this.curation);
 

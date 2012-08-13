@@ -136,7 +136,8 @@ public class Installer {
 
 	private static final List<String> FASTA_TEST = Arrays.asList(
 			"/test_in.fasta",
-			"/test_in.fasta.gz"
+			"/test_in.fasta.gz",
+			"/test_in_dups.fasta"
 	);
 
 	private static final List<String> FASTA_YEAST = Arrays.asList(

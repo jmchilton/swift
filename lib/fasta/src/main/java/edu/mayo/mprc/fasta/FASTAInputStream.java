@@ -8,6 +8,7 @@ import edu.mayo.mprc.utilities.GZipUtilities;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
@@ -22,6 +23,7 @@ import java.util.zip.GZIPInputStream;
  */
 public final class FASTAInputStream implements DBInputStream {
 	private static final char FASTA_HEADER = '>';
+	public static final long AVERAGE_FASTA_RECORD = 500L /*Avg protein sequence size in bytes*/ + 100L /* AVG header size in bytes */;
 
 	/**
 	 * The file that we are using as input
@@ -200,31 +202,47 @@ public final class FASTAInputStream implements DBInputStream {
 
 	/**
 	 * goes through each header in a fasta file and checks to make sure it is a valid fasta header.  If any problems
-	 * are encountered or a header does not check out then false is returned
+	 * are encountered or a header does not check out then false is returned.
+	 * <p/>
+	 * A valid fasta header must use an unique accession number for each sequence in the file.
 	 *
 	 * @param toCheck the file you want to see is a valid FASTA file
-	 * @return true if the file is a valid fasta file else false
+	 * @return null if the file is a valid fasta file. Error description otherwise.
 	 */
-	public static boolean isFASTAFileValid(final File toCheck) {
+	public static String isFASTAFileValid(final File toCheck) {
+		final HashSet<String> accessionNumbers = new HashSet<String>((int) (toCheck.length() / AVERAGE_FASTA_RECORD));
 		DBInputStream in = null;
 		try {
 			in = new FASTAInputStream(toCheck);
 			int sequenceCount = 0;
 			in.beforeFirst();
 			while (in.gotoNextSequence()) {
-				if (isHeader(in.getHeader())) {
+				final String header = in.getHeader();
+				if (isHeader(header)) {
 					sequenceCount++;
+					final int spacePos = header.indexOf(' ');
+					String accNum;
+					if (spacePos >= 0) {
+						accNum = header.substring(1, spacePos);
+					} else {
+						accNum = header.substring(1);
+					}
+					if (!accessionNumbers.add(accNum)) {
+						return "Duplicate accession number: [" + accNum + "]";
+					}
 				} else {
-					return false;
+					return "Invalid header [" + header + "]";
 				}
 			}
-			return (sequenceCount != 0);
+			if (sequenceCount == 0) {
+				return "No sequences present";
+			}
 		} catch (Exception e) {
-			// SWALLOWED: We just return false as in "not valid"
-			LOGGER.warn(e);
-			return false;
+			// SWALLOWED: Convert into error message
+			return "Fasta file [" + toCheck.getAbsolutePath() + "] is not valid: " + MprcException.getDetailedMessage(e);
 		} finally {
 			FileUtilities.closeQuietly(in);
 		}
+		return null;
 	}
 }

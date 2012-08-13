@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -37,7 +38,7 @@ public final class FastaTest {
 		final File inFile = new File(fastaFileFolder, "test_in.fasta");
 		final File outFile = File.createTempFile("test_out", ".fasta");
 
-		Assert.assertTrue(FASTAInputStream.isFASTAFileValid(inFile));
+		Assert.assertNull(FASTAInputStream.isFASTAFileValid(inFile));
 
 		final DBInputStream in = new FASTAInputStream(inFile);
 		final DBOutputStream out = new FASTAOutputStream(outFile);
@@ -68,7 +69,7 @@ public final class FastaTest {
 	@Test
 	public void testInputAndOutputZipped() throws IOException {
 		final File inFile = new File(fastaFileFolder, "test_in.fasta.gz");
-		assertTrue(FASTAInputStream.isFASTAFileValid(inFile));
+		Assert.assertNull(FASTAInputStream.isFASTAFileValid(inFile));
 		assertTrue(inFile.exists());
 
 		final File outFile = File.createTempFile("test_out", ".fasta");
@@ -89,4 +90,11 @@ public final class FastaTest {
 		FileUtilities.cleanupTempFile(outFile);
 	}
 
+	@Test
+	public void shouldDetectDuplicateAccnums() throws IOException {
+		final File inFile = new File(fastaFileFolder, "test_in_dups.fasta");
+		final String errorMessage = FASTAInputStream.isFASTAFileValid(inFile);
+		Assert.assertTrue(errorMessage.contains("Q4U9M9|104K_THEAN"), "Message [" + errorMessage + "] must mention duplicate accnum");
+		Assert.assertTrue(errorMessage.toLowerCase(Locale.US).contains("duplicate"), "Must mention duplicity: " + errorMessage);
+	}
 }
