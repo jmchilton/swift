@@ -9,6 +9,8 @@ import edu.mayo.mprc.fasta.filter.MatchMode;
 import edu.mayo.mprc.utilities.FileUtilities;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -22,22 +24,35 @@ import static org.testng.Assert.assertTrue;
 public final class CurationExecutorTest extends CurationDaoTestBase {
 
 	private static final Logger LOGGER = Logger.getLogger(CurationExecutorTest.class);
+	File curationFolder;
+	File localTempFolder;
+	File curatorArchiveFolder;
+	Curation curation;
+
+	@BeforeMethod
+	public void beforeMethod() {
+		curationFolder = FileUtilities.createTempFolder();
+		localTempFolder = FileUtilities.createTempFolder();
+		curatorArchiveFolder = FileUtilities.createTempFolder();
+
+		curation = new Curation();
+		curation.setShortName("FirstTests");
+		curation.setTitle("The first test cases");
+		curation.setNotes("This is just a test curation that will be run as a unit test.");
+	}
+
+	@AfterMethod
+	public void afterMethod() {
+		FileUtilities.cleanupTempFile(curationFolder);
+		FileUtilities.cleanupTempFile(localTempFolder);
+		FileUtilities.cleanupTempFile(curatorArchiveFolder);
+	}
 
 	@Test(groups = {"fast", "integration"}, enabled = true)
 	public void testSimpleCurationCreationAndExecution() {
 		curationDao.begin();
 		try {
-
-			final File curationFolder = FileUtilities.createTempFolder();
-			final File localTempFolder = FileUtilities.createTempFolder();
-			final File curatorArchiveFolder = FileUtilities.createTempFolder();
-
 			final String url = "classpath:/edu/mayo/mprc/dbcurator/ShortTest.fasta.gz";
-
-			final Curation curation = new Curation();
-			curation.setShortName("FirstTests");
-			curation.setTitle("The first test cases");
-			curation.setNotes("This is just a test curation that will be run as a unit test.");
 
 			final NewDatabaseInclusion inclusionStep = new NewDatabaseInclusion();
 			inclusionStep.setUrl(url);
@@ -68,19 +83,7 @@ public final class CurationExecutorTest extends CurationDaoTestBase {
 			curation.addStep(scrambleStep, -1); //add manipulation step to the; //add the step to the end of the curation
 
 			//get the object that we will use to keep track of the executor's progress
-			final CurationExecutor executor = new CurationExecutor(curation, false, curationDao, curationFolder, localTempFolder, curatorArchiveFolder);
-			final CurationStatus status = executor.execute();
-
-			//every 5 seconds output the progress of the curation and any messages that were produced
-			while (status.isInProgress()) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					LOGGER.error(e);
-				}
-				LOGGER.info(status.getMessages());
-				LOGGER.info("Step " + status.getCurrentStepNumber() + " is " + status.getCurrentStepProgress() + "% complete");
-			}
+			final CurationStatus status = executeCuration();
 
 			//if we had a failure then let's figure out why
 			if (status.getFailedStepValidations() != null && status.getFailedStepValidations().size() > 0) {
@@ -93,12 +96,65 @@ public final class CurationExecutorTest extends CurationDaoTestBase {
 
 			LOGGER.info(curation.simpleDescription());
 			curationDao.commit();
-			FileUtilities.cleanupTempFile(curationFolder);
-			FileUtilities.cleanupTempFile(localTempFolder);
-			FileUtilities.cleanupTempFile(curatorArchiveFolder);
 		} catch (Exception e) {
 			curationDao.rollback();
 			throw new MprcException(e);
 		}
 	}
+
+	@Test(groups = {"fast", "integration"}, enabled = true)
+	public void shouldFailWhenInvalidFastaCreated() {
+		curationDao.begin();
+		try {
+			final ManualInclusionStep manualInclusion = new ManualInclusionStep();
+			manualInclusion.setHeader(">MyManualInclusion_HUMAN");
+			manualInclusion.setSequence("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+			final ManualInclusionStep manualInclusion2 = new ManualInclusionStep();
+			manualInclusion2.setHeader(">MyManualInclusion_HUMAN");
+			manualInclusion2.setSequence("*#@)!?");
+
+			//add the steps to the curation
+			curation.addStep(manualInclusion, -1);
+			curation.addStep(manualInclusion2, -1);
+			final CurationStatus status = executeCuration();
+
+			Assert.assertEquals(status.getCompletedStepValidations().size(), 1);
+			Assert.assertEquals(status.getFailedStepValidations().size(), 1);
+			Assert.assertEquals(status.getFailedStepValidations().get(0).getMessages().get(0), "Duplicate accession number: [MyManualInclusion_HUMAN]");
+
+			//get the final messages from the executor
+			LOGGER.info(status.getMessages());
+
+			LOGGER.info(curation.simpleDescription());
+			curationDao.commit();
+		} catch (Exception e) {
+			curationDao.rollback();
+			throw new MprcException(e);
+		}
+	}
+
+	private CurationStatus executeCuration() {
+		final CurationExecutor executor = new CurationExecutor(curation, false, curationDao, curationFolder, localTempFolder, curatorArchiveFolder);
+		final CurationStatus status = executor.execute();
+
+		waitForCurationToComplete(status);
+		return status;
+	}
+
+	/**
+	 * every 0.5 seconds output the progress of the curation and any messages that were produced
+	 */
+	private void waitForCurationToComplete(CurationStatus status) {
+		while (status.isInProgress()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				LOGGER.error(e);
+			}
+			LOGGER.info(status.getMessages());
+			LOGGER.info("Step " + status.getCurrentStepNumber() + " is " + status.getCurrentStepProgress() + "% complete");
+		}
+	}
+
 }

@@ -14,8 +14,6 @@ import java.util.List;
  * @version 1.0
  */
 public final class StepValidation {
-	public static final String SUCCESS = "success";
-
 	/**
 	 * a simple message indicating any problems, "success" if not issues were observed
 	 */
@@ -45,7 +43,7 @@ public final class StepValidation {
 	 * @return true if the validation indicates success or else false
 	 */
 	public boolean isOK() {
-		return this.messages.size() == 0;
+		return this.messages.isEmpty();
 	}
 
 	/**
@@ -89,13 +87,6 @@ public final class StepValidation {
 	//	e.printStackTrace();
 	//	this.wrappedExceptions.add(e);
 	//}
-
-	/**
-	 *
-	 */
-	void incrCompletionCount() {
-		this.completionCount++;
-	}
 
 	/**
 	 * adds a message as well as wrapping an exception.  The exception will have its stack trace printed to the set OutputStream

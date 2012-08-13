@@ -107,6 +107,7 @@ public final class CurationExecutor implements Runnable {
 			curationDao.begin();
 
 			if (executeCuration()) {
+				curationDao.rollback();
 				return;
 			}
 
@@ -148,6 +149,7 @@ public final class CurationExecutor implements Runnable {
 		}
 
 		//for each step in the curation
+		final CurationStep lastStep = steps.get(steps.size() - 1);
 		for (final CurationStep step : steps) {
 			//if we have been interupted then exit.  This is pretty course grained interuption
 			//but it would take a lot more work to make it finer grained.
@@ -193,6 +195,18 @@ public final class CurationExecutor implements Runnable {
 			if (this.outStream != null) {
 				this.outStream.close();
 			}
+			// On the last curation step we also validate the resulting FASTA file
+			if (step.equals(lastStep)) {
+				// if the resulting fasta file is not valid then we want to say something in the status but we should probably just complete anyway
+				if (this.outStream == null) {
+					postValidation.setMessage("Error: The resulting .fasta file is not valid!");
+				} else {
+					final String message = FASTAInputStream.isFASTAFileValid(this.outStream.getFile());
+					if (message != null) {
+						postValidation.setMessage(message);
+					}
+				}
+			}
 			if (postValidation.isOK()) {
 				this.status.addCompletedStepValidation(postValidation);
 			} else {
@@ -205,18 +219,6 @@ public final class CurationExecutor implements Runnable {
 			}
 			this.status.addMessage("Step " + this.status.getCurrentStepNumber() + " completed with " +
 					postValidation.getCompletionCount() + " sequences");
-		}
-
-		//if the resulting fasta file is not valid then we want to say something in the status but we should probably just complete anyway
-		if (this.outStream == null) {
-			this.status.addMessage("Error: The resulting .fasta file is not valid!");
-			return true;
-		} else {
-			final String message = FASTAInputStream.isFASTAFileValid(this.outStream.getFile());
-			if (message != null) {
-				this.status.addMessage(message);
-				return true;
-			}
 		}
 
 		if (retainArtifacts) {

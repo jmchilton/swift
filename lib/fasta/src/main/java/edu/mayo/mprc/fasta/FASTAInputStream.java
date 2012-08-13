@@ -143,7 +143,7 @@ public final class FASTAInputStream implements DBInputStream {
 
 		//set the current sequence to the concatenation of all strings
 		// If the sequence ends with an * signalizing end codon, quietly drop it
-		if (sequenceBuilder.charAt(sequenceBuilder.length() - 1) == '*') {
+		if (sequenceBuilder.length()>0 && sequenceBuilder.charAt(sequenceBuilder.length() - 1) == '*') {
 			currentSequence = sequenceBuilder.substring(0, sequenceBuilder.length() - 1);
 		} else {
 			currentSequence = sequenceBuilder.toString();
