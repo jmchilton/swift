@@ -210,11 +210,12 @@ public final class CurationExecutor implements Runnable {
 		//if the resulting fasta file is not valid then we want to say something in the status but we should probably just complete anyway
 		if (this.outStream == null) {
 			this.status.addMessage("Error: The resulting .fasta file is not valid!");
+			return true;
 		} else {
 			final String message = FASTAInputStream.isFASTAFileValid(this.outStream.getFile());
 			if (message != null) {
 				this.status.addMessage(message);
-				return false;
+				return true;
 			}
 		}
 
