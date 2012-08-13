@@ -51,16 +51,17 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 		}
 
 		LOGGER.debug("Asked to deploy curation " + request.getShortName());
-		final File toDeploy = this.getFileToDeploy(request.getShortName());
-		LOGGER.debug("Deploying file " + toDeploy.getAbsolutePath());
-		if (!toDeploy.exists()) {
-			LOGGER.debug("Creating file to deploy at " + toDeploy.getAbsolutePath());
-			FileUtilities.copyFile(getCurationFile(request), toDeploy, /*overwrite*/false);
-		}
+		final File deployFrom = getCurationFile(request);
+		final File deployTo = this.getFileToDeploy(request.getShortName());
 
-		LOGGER.debug("Setting deployed file to " + toDeploy.getAbsolutePath());
+		LOGGER.debug("Deploying file " + deployTo.getAbsolutePath());
 
-		reportInto.setDeployedFile(toDeploy);
+		FileUtilities.ensureFolderExists(deployTo.getParentFile());
+		FileUtilities.copyFile(deployFrom, deployTo, /*overwrite*/true);
+
+		LOGGER.debug("Setting deployed file to " + deployTo.getAbsolutePath());
+
+		reportInto.setDeployedFile(deployTo);
 
 		return reportInto;
 	}
@@ -102,9 +103,7 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	 * out where we want to place the FASTA file.
 	 */
 	protected File getFileToDeploy(final String uniqueName) {
-		final File deploymentFolder = getCurrentDeploymentFolder(uniqueName);
-		FileUtilities.ensureFolderExists(deploymentFolder);
-		return new File(deploymentFolder, uniqueName + ".fasta");
+		return new File(getCurrentDeploymentFolder(uniqueName), uniqueName + ".fasta");
 	}
 
 	private File getCurrentDeploymentFolder(final String uniqueName) {
@@ -112,14 +111,16 @@ public final class Scaffold3DeploymentService extends DeploymentService<Deployme
 	}
 
 	public boolean wasPreviouslyDeployed(final DeploymentRequest request, final DeploymentResult reportInto) {
-		final File toCheckForPreviousDeployment = this.getFileToDeploy(request.getShortName());
+		final File deployFrom = getCurationFile(request);
+		final File deployTo = getFileToDeploy(request.getShortName());
 
-		if (!toCheckForPreviousDeployment.exists()) {
+		// The target either does not exist or it is older than the source
+		if (!deployTo.exists() || deployTo.lastModified() < deployFrom.lastModified()) {
 			return false;
 		}
 
-		reportInto.setDeployedFile(toCheckForPreviousDeployment);
-		LOGGER.debug("File already deployed: " + toCheckForPreviousDeployment.getAbsolutePath());
+		reportInto.setDeployedFile(deployTo);
+		LOGGER.debug("File already deployed: " + deployTo.getAbsolutePath());
 		return true;
 	}
 
