@@ -52,6 +52,8 @@ public final class FASTAOutputStream implements DBOutputStream {
 	 * @throws java.io.IOException if there was a problem performing the output
 	 */
 	public void appendSequence(final String header, final String sequence) throws IOException {
+		final String cleanSequence = cleanupProteinSequence(sequence);
+
 		//check to make sure the header contains a > since this is what denotes a header
 		if (header.length() == 0 || header.charAt(0) != '>') {
 			this.out.write('>');
@@ -61,20 +63,39 @@ public final class FASTAOutputStream implements DBOutputStream {
 		this.out.write("\n");
 
 		//find out how many lines there eare and print out each but the last line in a loop
-		final int steps = sequence.length() / LINE_WIDTH;
+		final int steps = cleanSequence.length() / LINE_WIDTH;
 		int i = 0;
 		for (; i < steps; i++) {
-			this.out.write(sequence, i * LINE_WIDTH, LINE_WIDTH);
+			this.out.write(cleanSequence, i * LINE_WIDTH, LINE_WIDTH);
 			this.out.write("\n");
 		}
 
 		//if we have more to print then print out the last line but make sure that we don't run off of the String
-		if ((sequence.length() - i * LINE_WIDTH) != 0) {
-			this.out.write(sequence, i * LINE_WIDTH, sequence.length() - i * LINE_WIDTH);
+		if ((cleanSequence.length() - i * LINE_WIDTH) != 0) {
+			this.out.write(cleanSequence, i * LINE_WIDTH, cleanSequence.length() - i * LINE_WIDTH);
 			this.out.write("\n");
 		}
 
 		this.sequenceCount++;
+	}
+
+	/**
+	 * Clean up a given protein sequence, by converting to uppercase and removing anything that is not A-Z.
+	 *
+	 * @param sequence Sequence to clean up.
+	 * @return Cleaned-up sequence.
+	 */
+	public static String cleanupProteinSequence(String sequence) {
+		StringBuilder result = new StringBuilder(sequence.length());
+		for (int i = 0; i < sequence.length(); i++) {
+			final char aa = sequence.charAt(i);
+			if (aa >= 'A' && aa <= 'Z') {
+				result.append(aa);
+			} else if (aa >= 'a' && aa <= 'z') {
+				result.append(Character.toUpperCase(aa));
+			}
+		}
+		return result.toString();
 	}
 
 	/**
