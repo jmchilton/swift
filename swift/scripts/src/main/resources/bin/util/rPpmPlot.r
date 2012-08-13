@@ -409,10 +409,12 @@ usedChargesLegend <- function(charges, symbols) {
         col <- c(col, "black")
     }
 
-    legend("topright", title, 
-        pch=pch, 
-        col=col, 
-        title="Charge")
+    if(length(title)>0) {
+        legend("topright", title,
+            pch=pch,
+            col=col,
+            title="Charge")
+    }
 }
 
 readQaFile<-function(dataFile) {
