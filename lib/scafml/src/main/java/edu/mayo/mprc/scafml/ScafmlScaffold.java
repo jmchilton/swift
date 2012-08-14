@@ -51,6 +51,28 @@ public final class ScafmlScaffold extends FileHolder {
 	}
 
 	/**
+	 * @return The time when the newest input file was modified.
+	 */
+	public long getNewestInputTime() {
+		long newestInput = Long.MIN_VALUE;
+		for (ScafmlFastaDatabase database : getExperiment().getDatabases()) {
+			final long databaseModified = database.getDatabase().lastModified();
+			if (databaseModified > newestInput) {
+				newestInput = databaseModified;
+			}
+		}
+		for (ScafmlBiologicalSample sample : getExperiment().getBiologicalSamples()) {
+			for (ScafmlInputFile inputFile : sample.getInputFiles()) {
+				final long inputFileModified = inputFile.getFile().lastModified();
+				if (inputFileModified > newestInput) {
+					newestInput = inputFileModified;
+				}
+			}
+		}
+		return newestInput;
+	}
+
+	/**
 	 * @return .scafml file as a string.
 	 */
 	public String getDocument() {

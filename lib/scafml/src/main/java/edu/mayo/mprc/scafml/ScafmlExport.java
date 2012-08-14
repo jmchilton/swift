@@ -3,10 +3,13 @@ package edu.mayo.mprc.scafml;
 import edu.mayo.mprc.daemon.files.FileHolder;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ScafmlExport extends FileHolder {
 	private static final long serialVersionUID = 7906225867829407626L;
 	private File scaffoldOutputDir;
+	private String experimentName;
 
 	// Additional exports
 	private boolean exportSpectra;
@@ -31,7 +34,8 @@ public final class ScafmlExport extends FileHolder {
 	public ScafmlExport() {
 	}
 
-	public ScafmlExport(final File scaffoldOutputDir, final boolean exportSpectra, final boolean exportPeptideReport, final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNonTrypticTerminii, final String starred, final String delimiter, final boolean regularExpression, final boolean matchName, final boolean saveOnlyIdentifiedSpectra, final boolean saveNoSpectra) {
+	public ScafmlExport(final String experimentName, final File scaffoldOutputDir, final boolean exportSpectra, final boolean exportPeptideReport, final double proteinProbability, final double peptideProbability, final int minimumPeptideCount, final int minimumNonTrypticTerminii, final String starred, final String delimiter, final boolean regularExpression, final boolean matchName, final boolean saveOnlyIdentifiedSpectra, final boolean saveNoSpectra) {
+		this.experimentName = experimentName;
 		this.scaffoldOutputDir = scaffoldOutputDir;
 		this.exportSpectra = exportSpectra;
 		this.exportPeptideReport = exportPeptideReport;
@@ -98,6 +102,20 @@ public final class ScafmlExport extends FileHolder {
 		}
 
 		result.append("\n");
+	}
+
+	/**
+	 * @return A list of exported file names to be generated.
+	 */
+	public List<String> getExportFileList() {
+		final ArrayList<String> list = new ArrayList<String>(2);
+		if (exportPeptideReport) {
+			list.add(experimentName+".peptide-report.xls");
+		}
+		if(exportSpectra) {
+			list.add(experimentName + ".spectra.txt");
+		}
+		return list;
 	}
 
 	/**

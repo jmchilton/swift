@@ -4,6 +4,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.files.FileHolder;
 import edu.mayo.mprc.utilities.xml.XMLUtilities;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,8 +46,16 @@ public final class ScafmlExperiment extends FileHolder {
 		this.scafmlFastaDatabases.put(pFastaDatabase.getId(), pFastaDatabase);
 	}
 
+	public Collection<ScafmlFastaDatabase> getDatabases() {
+		return scafmlFastaDatabases.values();
+	}
+
 	public ScafmlBiologicalSample getBiologicalSample(final String id) {
-		return this.biologicalSamples.get(id);
+		return biologicalSamples.get(id);
+	}
+
+	public Collection<ScafmlBiologicalSample> getBiologicalSamples() {
+		return biologicalSamples.values();
 	}
 
 	public void addBiologicalSample(final ScafmlBiologicalSample pBiologicalSample) {

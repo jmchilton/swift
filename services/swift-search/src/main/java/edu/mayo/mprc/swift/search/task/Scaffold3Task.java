@@ -18,6 +18,7 @@ import edu.mayo.mprc.utilities.progress.ProgressInfo;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
@@ -86,10 +87,6 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 	public WorkPacket createWorkPacket() {
 		setDescription("Scaffold 3 search " + this.experiment);
 		final File scaffoldFile = new File(outputFolder, experiment + ".sf3");
-		if (!isFromScratch() && scaffoldFile.exists() && scaffoldFile.isFile() && scaffoldFile.length() > 0) {
-			storeReportFile();
-			return null;
-		}
 
 		for (final Map.Entry<String, DatabaseDeployment> entry : databases.entrySet()) {
 			if (entry.getValue() == null || entry.getValue().getFastaFile() == null) {
@@ -120,12 +117,40 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 		final ScafmlScaffold scafmlFile = ScafmlDump.dumpScafmlFile(experiment, swiftSearchDefinition, inputs, outputFolder, searchResults, fastaFiles);
 		scafmlFile.setVersionMajor(3);
 		scafmlFile.setVersionMinor(0);
-		return new Scaffold3WorkPacket(
+		final Scaffold3WorkPacket workPacket = new Scaffold3WorkPacket(
 				outputFolder,
 				scafmlFile,
 				this.experiment,
 				getFullId(),
 				isFromScratch());
+
+		if (isScaffoldValid(workPacket, scaffoldFile)) {
+			storeReportFile();
+			return null;
+		}
+		return workPacket;
+
+	}
+
+	/**
+	 * @param workPacket   Work packet that is meant to re-create the existing Scaffold file.
+	 * @param scaffoldFile Scaffold file to test.
+	 * @return True if the file is valid - older than all its inputs, matches the input parameters.
+	 */
+	private boolean isScaffoldValid(final Scaffold3WorkPacket workPacket, final File scaffoldFile) {
+		if (isFromScratch()) {
+			return false;
+		}
+
+		final List<String> outputFiles = workPacket.getOutputFiles();
+		return !workPacket.cacheIsStale(workPacket.getOutputFolder(), outputFiles);
+	}
+
+	/**
+	 * @return True if the first timestamp corresponds to a file that is newer than the second timestamp.
+	 */
+	private boolean newer(long timestamp1, long timestamp2) {
+		return timestamp1 > timestamp2;
 	}
 
 	@Override

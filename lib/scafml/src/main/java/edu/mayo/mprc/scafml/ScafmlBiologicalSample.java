@@ -5,6 +5,7 @@ import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.files.FileHolder;
 import edu.mayo.mprc.utilities.xml.XMLUtilities;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 
 public final class ScafmlBiologicalSample extends FileHolder {
@@ -56,6 +57,9 @@ public final class ScafmlBiologicalSample extends FileHolder {
 		}
 	}
 
+	public Collection<ScafmlInputFile> getInputFiles() {
+		return inputFiles.values();
+	}
 
 	public void setAnalyzeAsMudpit(final String sAnalyzeMudpit) {
 		this.analyzeAsMudpit = sAnalyzeMudpit;

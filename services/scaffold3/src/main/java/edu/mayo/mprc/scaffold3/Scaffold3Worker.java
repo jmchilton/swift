@@ -161,7 +161,7 @@ public final class Scaffold3Worker implements Worker {
 		// Create the .scafml file
 		workPacket.getScafmlFile().getExperiment().setReportDecoyHits(isReportDecoyHits());
 		final String scafmlDocument = workPacket.getScafmlFile().getDocument();
-		final File scafmlFile = new File(outputFolder, workPacket.getExperimentName() + ".scafml");
+		final File scafmlFile = workPacket.getScafmlFileLocation();
 		FileUtilities.writeStringToFile(scafmlFile, scafmlDocument, true);
 		return scafmlFile;
 	}
