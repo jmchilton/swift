@@ -143,6 +143,7 @@ class ScafmlDump {
 
 		final StarredProteins star = scaffoldSettings.getStarredProteins();
 		final ScafmlExport export = new ScafmlExport(
+				experiment,
 				workFolder, // Output folder
 				true, // Always export spectra for QA
 				definition.getPeptideReport() != null, // Export peptide report
