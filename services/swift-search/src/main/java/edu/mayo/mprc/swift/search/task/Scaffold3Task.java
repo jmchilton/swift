@@ -40,16 +40,18 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 	private ReportData reportData;
 	private final SwiftDao swiftDao;
 	private final SearchRun searchRun;
+	private final boolean reportDecoyHits;
 
 	public Scaffold3Task(final String experiment, final SwiftSearchDefinition definition, final DaemonConnection scaffoldDaemon,
 	                     final SwiftDao swiftDao, final SearchRun searchRun,
-	                     final File outputFolder, final FileTokenFactory fileTokenFactory, final boolean fromScratch) {
+	                     final File outputFolder, final FileTokenFactory fileTokenFactory, final boolean reportDecoyHits, final boolean fromScratch) {
 		super(scaffoldDaemon, fileTokenFactory, fromScratch);
 		this.experiment = experiment;
 		this.swiftSearchDefinition = definition;
 		this.outputFolder = outputFolder;
 		this.swiftDao = swiftDao;
 		this.searchRun = searchRun;
+		this.reportDecoyHits = reportDecoyHits;
 		setName("Scaffold3");
 		setDescription("Scaffold 3 search " + this.experiment);
 	}
@@ -117,6 +119,7 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 		final ScafmlScaffold scafmlFile = ScafmlDump.dumpScafmlFile(experiment, swiftSearchDefinition, inputs, outputFolder, searchResults, fastaFiles);
 		scafmlFile.setVersionMajor(3);
 		scafmlFile.setVersionMinor(0);
+		scafmlFile.getExperiment().setReportDecoyHits(reportDecoyHits);
 		final Scaffold3WorkPacket workPacket = new Scaffold3WorkPacket(
 				outputFolder,
 				scafmlFile,

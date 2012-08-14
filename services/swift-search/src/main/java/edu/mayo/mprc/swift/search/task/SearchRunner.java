@@ -127,6 +127,7 @@ public final class SearchRunner implements Runnable {
 	private DaemonConnection qaDaemon;
 	private DaemonConnection fastaDbDaemon;
 	private DaemonConnection searchDbDaemon;
+	private boolean reportDecoyHits;
 
 	private Collection<SearchEngine> searchEngines = null;
 
@@ -164,7 +165,8 @@ public final class SearchRunner implements Runnable {
 			final CurationDao curationDao,
 			final SwiftDao swiftDao,
 			final FileTokenFactory fileTokenFactory,
-			final SearchRun searchRun) {
+			final SearchRun searchRun,
+			final boolean reportDecoyHits) {
 		this.searchDefinition = searchDefinition;
 		this.packet = packet;
 		this.raw2mgfDaemon = raw2mgfDaemon;
@@ -183,6 +185,7 @@ public final class SearchRunner implements Runnable {
 		this.swiftDao = swiftDao;
 		this.fileTokenFactory = fileTokenFactory;
 		this.searchRun = searchRun;
+		this.reportDecoyHits = reportDecoyHits;
 		assertValid();
 	}
 
@@ -808,6 +811,7 @@ public final class SearchRunner implements Runnable {
 					swiftDao, searchRun,
 					scaffoldOutputDir,
 					fileTokenFactory,
+					reportDecoyHits,
 					isFromScratch());
 			scaffoldCalls.put(key, scaffoldTask);
 		}

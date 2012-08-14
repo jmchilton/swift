@@ -89,7 +89,8 @@ public class TestSearchRunner {
 				mock(CurationDao.class),
 				mock(SwiftDao.class),
 				dummyFileTokenFactory(),
-				searchRun);
+				searchRun,
+				false);
 
 		runner.initialize();
 		Assert.assertEquals(runner.getWorkflowEngine().getNumTasks(), 23);
@@ -131,7 +132,8 @@ public class TestSearchRunner {
 				mock(CurationDao.class),
 				mock(SwiftDao.class),
 				dummyFileTokenFactory(),
-				searchRun);
+				searchRun,
+				false);
 
 		runner.initialize();
 		// final String dot = runner.getWorkflowEngine().dumpDot();

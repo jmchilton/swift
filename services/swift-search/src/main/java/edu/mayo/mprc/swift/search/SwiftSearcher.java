@@ -87,6 +87,7 @@ public final class SwiftSearcher implements Worker {
 	private DaemonConnection searchDbDaemon;
 	private Collection<SearchEngine> searchEngines;
 	private static final ExecutorService service = new SimpleThreadPoolExecutor(1, "swiftSearcher", false/* do not block*/);
+	private boolean reportDecoyHits;
 
 	private CurationDao curationDao;
 	private SwiftDao swiftDao;
@@ -117,6 +118,7 @@ public final class SwiftSearcher implements Worker {
 	private static final String DATABASE = "database";
 	private static final String FASTA_DB = "fastaDb";
 	private static final String SEARCH_DB = "searchDb";
+	private static final String REPORT_DECOY_HITS = "reportDecoyHits";
 
 	private FileTokenFactory fileTokenFactory;
 
@@ -274,6 +276,14 @@ public final class SwiftSearcher implements Worker {
 		this.searchDbDaemon = searchDbDaemon;
 	}
 
+	public boolean isReportDecoyHits() {
+		return reportDecoyHits;
+	}
+
+	public void setReportDecoyHits(boolean reportDecoyHits) {
+		this.reportDecoyHits = reportDecoyHits;
+	}
+
 	public void assertValid() {
 		assert supportedEngines != null : "Supported engines must not be null";
 		assert !raw2mgfEnabled || raw2mgfDaemon != null : "Raw2mgf daemon must be set up if it is enabled";
@@ -323,7 +333,8 @@ public final class SwiftSearcher implements Worker {
 					curationDao,
 					swiftDao,
 					fileTokenFactory,
-					searchRun);
+					searchRun,
+					reportDecoyHits);
 
 			searchRunner.initialize();
 
@@ -478,6 +489,8 @@ public final class SwiftSearcher implements Worker {
 				worker.setDbLoadEnabled(true);
 			}
 
+			worker.setReportDecoyHits(config.reportDecoyHits);
+
 			return worker;
 		}
 
@@ -535,6 +548,7 @@ public final class SwiftSearcher implements Worker {
 		private String fastaPath;
 		private String fastaArchivePath;
 		private String fastaUploadPath;
+		private boolean reportDecoyHits;
 
 		private ServiceConfig raw2mgf;
 		private ServiceConfig mgf2mgf;
@@ -599,6 +613,7 @@ public final class SwiftSearcher implements Worker {
 			this.searchDb = searchDb;
 			this.msmsEval = msmsEval;
 			this.database = database;
+			this.reportDecoyHits = true;
 		}
 
 		public ServiceConfig getMsmsEval() {
@@ -705,6 +720,10 @@ public final class SwiftSearcher implements Worker {
 			return database;
 		}
 
+		public boolean isReportDecoyHits() {
+			return reportDecoyHits;
+		}
+
 		@Override
 		public Map<String, String> save(final DependencyResolver resolver) {
 			final Map<String, String> map = new TreeMap<String, String>();
@@ -734,6 +753,7 @@ public final class SwiftSearcher implements Worker {
 			map.put(SEARCH_DB, resolver.getIdFromConfig(searchDb));
 			map.put(MSMS_EVAL, resolver.getIdFromConfig(msmsEval));
 			map.put(DATABASE, resolver.getIdFromConfig(database));
+			map.put(REPORT_DECOY_HITS, Boolean.toString(reportDecoyHits));
 			return map;
 		}
 
@@ -764,6 +784,7 @@ public final class SwiftSearcher implements Worker {
 			searchDb = (ServiceConfig) resolver.getConfigFromId(values.get(SEARCH_DB));
 			msmsEval = (ServiceConfig) resolver.getConfigFromId(values.get(MSMS_EVAL));
 			database = (DatabaseFactory.Config) resolver.getConfigFromId(values.get(DATABASE));
+			reportDecoyHits = Boolean.parseBoolean(values.get(REPORT_DECOY_HITS));
 		}
 
 		@Override
@@ -830,6 +851,12 @@ public final class SwiftSearcher implements Worker {
 					})
 					.reference(DatabaseFactory.TYPE, UiBuilder.NONE_TYPE)
 					.defaultValue(database)
+
+					.property(REPORT_DECOY_HITS, "Report Decoy Hits",
+							"<p>When checked, Scaffold will utilize the accession number patterns to distinguish decoy from forward hits.<p>" +
+									"<p>This causes FDR rates to be calculated using the number of decoy hits. Scaffold will also display the reverse hits in pink.</p>")
+					.boolValue()
+					.defaultValue(Boolean.toString(Boolean.TRUE))
 
 					.property(RAW_2_MGF, RawToMgfWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf automatically with this module. Requires <tt>extract_msn</tt> running either on a Windows machine or on a linux box through wine.")
 					.reference(RawToMgfWorker.TYPE, RawToMgfCache.TYPE, UiBuilder.NONE_TYPE)

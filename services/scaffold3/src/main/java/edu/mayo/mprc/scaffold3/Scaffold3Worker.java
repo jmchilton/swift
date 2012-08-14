@@ -28,7 +28,6 @@ import java.util.TreeMap;
 public final class Scaffold3Worker implements Worker {
 	private static final Logger LOGGER = Logger.getLogger(Scaffold3Worker.class);
 	private static final String SCAFFOLD_BATCH_SCRIPT = "scaffoldBatchScript";
-	private static final String REPORT_DECOY_HITS = "reportDecoyHits";
 	public static final String TYPE = "scaffold3";
 	public static final String NAME = "Scaffold 3";
 	public static final String DESC = "Scaffold 3 integrates results from multiple search engines into a single file. You need Scaffold 3 Batch license from <a href=\"http://www.proteomesoftware.com/\">http://www.proteomesoftware.com/</a>";
@@ -159,7 +158,6 @@ public final class Scaffold3Worker implements Worker {
 	 */
 	private File createScafmlFile(final Scaffold3WorkPacket workPacket, final File outputFolder) {
 		// Create the .scafml file
-		workPacket.getScafmlFile().getExperiment().setReportDecoyHits(isReportDecoyHits());
 		final String scafmlDocument = workPacket.getScafmlFile().getDocument();
 		final File scafmlFile = workPacket.getScafmlFileLocation();
 		FileUtilities.writeStringToFile(scafmlFile, scafmlDocument, true);
@@ -243,14 +241,6 @@ public final class Scaffold3Worker implements Worker {
 		this.scaffoldBatchScript = scaffoldBatchScript;
 	}
 
-	public boolean isReportDecoyHits() {
-		return reportDecoyHits;
-	}
-
-	public void setReportDecoyHits(final boolean reportDecoyHits) {
-		this.reportDecoyHits = reportDecoyHits;
-	}
-
 	/**
 	 * A factory capable of creating the worker
 	 */
@@ -260,7 +250,6 @@ public final class Scaffold3Worker implements Worker {
 		public Worker create(final Config config, final DependencyResolver dependencies) {
 			final Scaffold3Worker worker = new Scaffold3Worker();
 			worker.setScaffoldBatchScript(new File(config.getScaffoldBatchScript()).getAbsoluteFile());
-			worker.setReportDecoyHits(config.isReportDecoyHits());
 
 			return worker;
 		}
@@ -300,13 +289,11 @@ public final class Scaffold3Worker implements Worker {
 		public Map<String, String> save(final DependencyResolver resolver) {
 			final Map<String, String> map = new TreeMap<String, String>();
 			map.put(SCAFFOLD_BATCH_SCRIPT, getScaffoldBatchScript());
-			map.put(REPORT_DECOY_HITS, Boolean.toString(isReportDecoyHits()));
 			return map;
 		}
 
 		public void load(final Map<String, String> values, final DependencyResolver resolver) {
 			setScaffoldBatchScript(values.get(SCAFFOLD_BATCH_SCRIPT));
-			setReportDecoyHits(Boolean.parseBoolean(values.get(REPORT_DECOY_HITS)));
 		}
 
 		@Override
@@ -321,13 +308,7 @@ public final class Scaffold3Worker implements Worker {
 					.property(SCAFFOLD_BATCH_SCRIPT, "ScaffoldBatch3 path", "Path to the ScaffoldBatch3 script<p>Default for Linux: <code>/opt/Scaffold3/ScaffoldBatch3</code></p>")
 					.defaultValue("/opt/Scaffold3/ScaffoldBatch3")
 					.required()
-					.executable(Arrays.asList("-v"))
-
-					.property(REPORT_DECOY_HITS, "Report Decoy Hits",
-							"<p>When checked, Scaffold will utilize the accession number patterns to distinguish decoy from forward hits.<p>" +
-									"<p>This causes FDR rates to be calculated using the number of decoy hits. Scaffold will also display the reverse hits in pink.</p>")
-					.boolValue()
-					.defaultValue(Boolean.toString(Boolean.TRUE));
+					.executable(Arrays.asList("-v"));
 		}
 	}
 
