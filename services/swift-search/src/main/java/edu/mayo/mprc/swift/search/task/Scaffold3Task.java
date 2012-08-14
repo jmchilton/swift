@@ -149,13 +149,6 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 		return !workPacket.cacheIsStale(workPacket.getOutputFolder(), outputFiles);
 	}
 
-	/**
-	 * @return True if the first timestamp corresponds to a file that is newer than the second timestamp.
-	 */
-	private boolean newer(long timestamp1, long timestamp2) {
-		return timestamp1 > timestamp2;
-	}
-
 	@Override
 	public String getScaffoldVersion() {
 		return "3";
