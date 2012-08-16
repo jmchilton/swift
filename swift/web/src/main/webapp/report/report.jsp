@@ -129,7 +129,7 @@
         user.addOkCancel();
         user.onSubmitCallback = function() {
             user.saveToCookies();
-            ajaxRequest();
+            ajaxRequest('load');
         };
         $('popups').appendChild(user.getRoot());
 
@@ -177,11 +177,11 @@
         Event.stop(evt);
     }
 
-    function ajaxRequest() {
+    function ajaxRequest(action) {
         new Ajax.Request('reportupdate', {
             method: 'get',
             parameters: {
-                action: 'update',
+                action: action,
                 start: firstEntry,
                 count: listedEntries,
                 expanded: displayer.listExpandedItems(),
@@ -220,9 +220,9 @@
         Event.observe('popupMask', 'click', closeForm);
 
         user.loadFromCookies();
-        ajaxRequest();
+        ajaxRequest('load');
 
-        periodicalUpdate = new PeriodicalExecuter(function(pe) { ajaxRequest(); }, updateDelay);
+        periodicalUpdate = new PeriodicalExecuter(function(pe) { ajaxRequest('update'); }, updateDelay);
 
     });
 </script>

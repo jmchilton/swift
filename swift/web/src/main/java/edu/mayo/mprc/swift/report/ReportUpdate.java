@@ -135,7 +135,7 @@ public final class ReportUpdate extends HttpServlet {
 			resp.setContentType(CONTENT_TYPE);
 
 			// No action - clear everything, get fresh copy of data
-			if (action == null || action.length() == 0) {
+			if (action == null || action.length() == 0 || "load".equals(action)) {
 				out.clearAll();
 				printSearchRuns(out, searchRunFilter, "insert");
 			} else if ("rewrite".equals(action)) {
