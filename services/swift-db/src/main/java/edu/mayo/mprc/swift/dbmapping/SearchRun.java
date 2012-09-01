@@ -166,7 +166,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 	 * @return true if this search is running longer than it should.
 	 */
 	public boolean isRunningTooLong() {
-		if (!isCompleted() && getStartTimestamp() != null) {
+		if (!isCompleted() && getTasksFailed() == 0 && getStartTimestamp() != null) {
 			Date now = new Date();
 			if (now.getTime() - getStartTimestamp().getTime() > MAX_MILLIS_PER_SEARCH) {
 				return true;
