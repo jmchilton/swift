@@ -237,7 +237,7 @@ public final class SearchRunner implements Runnable {
 	}
 
 	private void yield() {
-		// Currently does nothing, the engine immediatelly keeps processing more work
+		// Currently does nothing, the engine immediately keeps processing more work
 	}
 
 	public void assertValid() {

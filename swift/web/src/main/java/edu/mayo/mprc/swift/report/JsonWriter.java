@@ -115,6 +115,9 @@ public final class JsonWriter {
 		} else {
 			appendKeyString(builder, "duration", formatTimeSpan(endStamp.getTime() - searchRun.getStartTimestamp().getTime()));
 		}
+		if(searchRun.isRunningTooLong()) {
+			appendKeyNumber(builder, "ranTooLong", 1);
+		}
 		if (!justLiveData) {
 			appendKeyNumber(builder, "subtasks", (long) searchRun.getNumTasks());
 		}

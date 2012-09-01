@@ -30,7 +30,7 @@ public final class JsonCommunicationTest {
 	private SearchRun searchRun;
 	private static final String SEARCH_RUN_JSON =
 			"{\"_\":0, \"id\":null, \"title\":\"Transaction title\", \"user\":\"Roman Zenka\", " +
-					"\"submitted\":\"5/6/05 10:22 AM\", \"duration\":\"397 days, 13:11:11\", \"subtasks\":123, " +
+					"\"submitted\":\"5/6/05 10:22 AM\", \"duration\":\"397 days, 13:11:11\", \"ranTooLong\":1, \"subtasks\":123, " +
 					"\"search\":0, " +
 					"\"errormsg\":\"Transaction error message\", " +
 					"\"ok\":13, \"failures\":14, \"warnings\":15, \"running\":3, " +

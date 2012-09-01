@@ -596,8 +596,8 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 			return workspaceCheck;
 		}
 
-		if (rowCount(TaskStateData.class) == 0) {
-			return "The task state enumeration is not initialized";
+		if (rowCount(TaskStateData.class) != (long)TaskState.values().length) {
+			return "The task state enumeration is not up to date";
 		}
 		if (rowCount(SearchRun.class) == 0) {
 			return "There were no searches previously run";
@@ -617,7 +617,7 @@ public final class SwiftDaoHibernate extends DaoBase implements SwiftDao {
 		// Initialize the dependent DAO
 		workspaceDao.initialize(params);
 
-		if (rowCount(TaskStateData.class) == 0) {
+		if (rowCount(TaskStateData.class) != (long)TaskState.values().length) {
 			LOGGER.info("Initializing task state enumeration");
 			for (final TaskState state : TaskState.values()) {
 				getSession().saveOrUpdate(new TaskStateData(state.getText()));

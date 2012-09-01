@@ -244,6 +244,10 @@ table.reportList td {
     background-repeat: no-repeat;
 }
 
+.ran-too-long {
+    color: #ff0000;
+}
+
 .dropdown {
     z-index: 199;
     display: none;

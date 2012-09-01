@@ -28,6 +28,7 @@ public class SearchRun extends PersistableBase implements Serializable {
 	private int tasksFailed;
 	private int tasksCompleted;
 	private Set<ReportData> reports = new HashSet<ReportData>();
+	private static final long MAX_MILLIS_PER_SEARCH = 3L * 60L * 60L * 1000L;
 
 	private int hidden;
 
@@ -159,6 +160,19 @@ public class SearchRun extends PersistableBase implements Serializable {
 
 	public void setHidden(final int hidden) {
 		this.hidden = hidden;
+	}
+
+	/**
+	 * @return true if this search is running longer than it should.
+	 */
+	public boolean isRunningTooLong() {
+		if (!isCompleted() && getStartTimestamp() != null) {
+			Date now = new Date();
+			if (now.getTime() - getStartTimestamp().getTime() > MAX_MILLIS_PER_SEARCH) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
