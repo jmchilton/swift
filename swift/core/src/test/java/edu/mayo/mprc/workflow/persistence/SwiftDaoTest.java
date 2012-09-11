@@ -113,6 +113,34 @@ public final class SwiftDaoTest {
 	}
 
 	@Test
+	public void shouldDoubleSaveStarredCaseSensitive() throws Throwable {
+		swiftDao.begin();
+		try {
+
+			StarredProteins starredProteins = makeRegexStarredProteins("ALBU_HUMAN OVAL_CHICK");
+			starredProteins = paramsDao.addStarredProteins(starredProteins);
+
+			StarredProteins starredProteins2 = makeRegexStarredProteins("ALBU_Human Oval_Chick");
+			starredProteins2 = paramsDao.addStarredProteins(starredProteins2);
+
+			Assert.assertNotSame(starredProteins, starredProteins2);
+
+		} catch (Exception e) {
+			swiftDao.rollback();
+			throw e;
+		}
+	}
+
+	private StarredProteins makeRegexStarredProteins(String proteins) {
+		StarredProteins starredProteins = new StarredProteins();
+		starredProteins.setDelimiter("\\s+");
+		starredProteins.setMatchName(true);
+		starredProteins.setStarred(proteins);
+		starredProteins.setRegularExpression(true);
+		return starredProteins;
+	}
+
+	@Test
 	public void doubleSaveSearchDefinition() throws Throwable {
 		swiftDao.begin();
 		try {

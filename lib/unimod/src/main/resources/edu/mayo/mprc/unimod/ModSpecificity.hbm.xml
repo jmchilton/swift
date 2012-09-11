@@ -18,6 +18,6 @@
         <property name="proteinOnly" column="protein_only" type="boolean"/>
         <property name="classification" column="classification" type="string" length="200"/>
         <property name="specificityGroup" column="specificity_group" type="int"/>
-        <property name="comments" column="comments" type="text"/>
+        <property name="comments" column="comments" type="text"/> <!-- TODO: Make binary -->
     </class>
 </hibernate-mapping>

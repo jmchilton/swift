@@ -7,7 +7,7 @@
             <generator class="native"/>
         </id>
         <property name="mass" type="double" column="mass"/>
-        <property name="sequence" type="text" column="sequence"/>
+        <property name="sequence" type="text" column="sequence"/> <!-- TODO: Make binary -->
     </class>
     <database-object>
         <create>ALTER TABLE `protein_sequence` ADD INDEX `sequence` USING HASH (`sequence`(200) ASC) ;</create>

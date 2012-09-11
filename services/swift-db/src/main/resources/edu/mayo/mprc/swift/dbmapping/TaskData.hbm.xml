@@ -14,12 +14,12 @@
         <property name="startTimestamp" column="start_timestamp" index="task_start_timestamp_index"/>
         <property name="endTimestamp" column="end_timestamp"/>
         <property name="errorCode" column="error_code"/>
-        <property name="errorMessage" column="error_message" type="text"/>
-        <property name="exceptionString" column="exception" type="text"/>
+        <property name="errorMessage" column="error_message" type="text"/> <!-- TODO: Make binary -->
+        <property name="exceptionString" column="exception" type="text"/> <!-- TODO: Make binary -->
         <many-to-one name="searchRun" class="edu.mayo.mprc.swift.dbmapping.SearchRun" column="transaction_id"
                      index="task_transaction_index"/>
         <many-to-one name="taskState" class="TaskStateData" column="task_state" lazy="false"/>
-        <property name="descriptionLong" column="description_long" type="text"/>
+        <property name="descriptionLong" column="description_long" type="text"/> <!-- TODO: Make binary -->
         <property name="gridJobId" column="grid_job_id" length="25"/>
         <property name="outputLogDatabaseToken" column="out_log" length="256"/>
         <property name="errorLogDatabaseToken" column="err_log" length="256"/>
