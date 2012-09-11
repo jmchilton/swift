@@ -296,9 +296,7 @@ public final class SearchRunner implements Runnable {
 			}
 		}
 
-		if (fastaDbDaemon != null) {
-			addFastaDbCall(searchDefinition.getSearchParameters().getDatabase());
-		}
+		addFastaDbCall(searchDefinition.getSearchParameters().getDatabase());
 	}
 
 	private SearchEngine getSearchEngine(final String code) {
@@ -390,12 +388,7 @@ public final class SearchRunner implements Runnable {
 						throw new MprcException("Scaffold search submitted without having Scaffold service enabled.");
 					}
 
-					final ScaffoldTaskI scaffoldTaskI = addScaffoldCall(inputFile, search, scaffoldDeployment);
-					if (!(scaffoldTaskI instanceof ScaffoldTask)) {
-						ExceptionUtilities.throwCastException(scaffoldTaskI, ScaffoldTask.class);
-						return;
-					}
-					scaffoldTask = (ScaffoldTask) scaffoldTaskI;
+					scaffoldTask = addScaffoldCall(inputFile, search, scaffoldDeployment);
 
 					if (searchDefinition.getQa() != null) {
 						addQaTask(inputFile, scaffoldTask, mgfOutput);
@@ -406,13 +399,7 @@ public final class SearchRunner implements Runnable {
 						throw new MprcException("Scaffold search submitted without having Scaffold 3 service enabled.");
 					}
 
-					final ScaffoldTaskI scaffoldTaskI = addScaffold3Call(inputFile, search, scaffold3Deployment);
-					if (!(scaffoldTaskI instanceof Scaffold3Task)) {
-						ExceptionUtilities.throwCastException(scaffoldTaskI, Scaffold3Task.class);
-						return;
-					}
-
-					scaffold3Task = (Scaffold3Task) scaffoldTaskI;
+					scaffold3Task = addScaffold3Call(inputFile, search, scaffold3Deployment);
 
 					if (searchDefinition.getQa() != null) {
 						addQaTask(inputFile, scaffold3Task, mgfOutput);
@@ -421,7 +408,7 @@ public final class SearchRunner implements Runnable {
 			}
 		}
 
-		if (searchDbDaemon != null && rawDumpDaemon != null) {
+		if (searchDbDaemon != null && rawDumpDaemon != null && scaffold3Task != null) {
 			// Ask for dumping the .RAW file since the QA might be disabled
 			if (isRawFile(inputFile)) {
 				final RAWDumpTask rawDumpTask = addRawDumpTask(inputFile.getInputFile(), QaTask.getQaSubdirectory(scaffold3Task.getScaffoldXmlFile()));
@@ -770,10 +757,17 @@ public final class SearchRunner implements Runnable {
 	 * Add a scaffold call (or update existing one) that depends on this input file to be sought through
 	 * the given engine search.
 	 */
-	private ScaffoldTaskI addScaffoldCall(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
+	private ScaffoldTask addScaffoldCall(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
 		final String experiment = inputFile.getExperiment();
 		final ScaffoldCall key = new ScaffoldCall(experiment, "2");
-		ScaffoldTaskI scaffoldTask = scaffoldCalls.get(key);
+
+		ScaffoldTaskI scaffoldTaskI = scaffoldCalls.get(key);
+		if (scaffoldTaskI != null && !(scaffoldTaskI instanceof ScaffoldTask)) {
+			ExceptionUtilities.throwCastException(scaffoldTaskI, ScaffoldTask.class);
+			return null;
+		}
+		ScaffoldTask scaffoldTask = (ScaffoldTask) scaffoldTaskI;
+
 		if (scaffoldTask == null) {
 			final File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffoldEngine());
 			scaffoldTask = new ScaffoldTask(
@@ -798,10 +792,16 @@ public final class SearchRunner implements Runnable {
 	 * Add a scaffold 3 call (or update existing one) that depends on this input file to be sought through
 	 * the given engine search.
 	 */
-	private ScaffoldTaskI addScaffold3Call(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
+	private Scaffold3Task addScaffold3Call(final FileSearch inputFile, final EngineSearchTask search, final DatabaseDeployment scaffoldDbDeployment) {
 		final String experiment = inputFile.getExperiment();
 		final ScaffoldCall key = new ScaffoldCall(experiment, "3");
-		ScaffoldTaskI scaffoldTask = scaffoldCalls.get(key);
+		ScaffoldTaskI scaffoldTaskI = scaffoldCalls.get(key);
+		if (scaffoldTaskI != null && !(scaffoldTaskI instanceof Scaffold3Task)) {
+			ExceptionUtilities.throwCastException(scaffoldTaskI, Scaffold3Task.class);
+			return null;
+		}
+		Scaffold3Task scaffoldTask = (Scaffold3Task) scaffoldTaskI;
+
 		if (scaffoldTask == null) {
 			final File scaffoldOutputDir = getOutputFolderForSearchEngine(getScaffold3Engine());
 			scaffoldTask = new Scaffold3Task(
@@ -824,15 +824,18 @@ public final class SearchRunner implements Runnable {
 	}
 
 	private FastaDbTask addFastaDbCall(final Curation curation) {
-		final int id = curation.getId();
-		final FastaDbTask task = fastaDbCalls.get(id);
-		if (task == null) {
-			final FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, curation);
-			fastaDbCalls.put(id, newTask);
-			return newTask;
-		} else {
-			return task;
+		if (fastaDbDaemon != null) {
+			final int id = curation.getId();
+			final FastaDbTask task = fastaDbCalls.get(id);
+			if (task == null) {
+				final FastaDbTask newTask = new FastaDbTask(fastaDbDaemon, fileTokenFactory, false, curation);
+				fastaDbCalls.put(id, newTask);
+				return newTask;
+			} else {
+				return task;
+			}
 		}
+		return null;
 	}
 
 	private SearchDbTask addSearchDbCall(final Scaffold3Task scaffold3Task, final RAWDumpTask rawDumpTask, final Curation curation) {

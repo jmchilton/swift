@@ -258,9 +258,11 @@ public abstract class TaskBase implements Task {
 	}
 
 	public void addDependency(final Task task) {
-		if (!task.getOutputs().contains(this)) {
-			inputs.add(task);
-			task.getOutputs().add(this);
+		if (task != null) {
+			if (!task.getOutputs().contains(this)) {
+				inputs.add(task);
+				task.getOutputs().add(this);
+			}
 		}
 	}
 
