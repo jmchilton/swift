@@ -379,6 +379,7 @@ usedChargesLegend <- function(charges, symbols) {
     sym <- spectrum.rev.symbol
     tit <- spectrum.rev.title
     num <- sum(symbols==sym)
+    if(is.na(num)) num<-0
     if(num>0) {       
         title <- c(title, paste(tit, " (", num, ")", sep=""))
         pch <- c(pch, sym)
@@ -387,6 +388,7 @@ usedChargesLegend <- function(charges, symbols) {
     sym <- spectrum.polymer.symbol
     tit <- spectrum.polymer.title
     num <- sum(symbols==sym)
+    if(is.na(num)) num<-0
     if(num>0) {       
         title <- c(title, paste(tit, " (", num, ")", sep=""))
         pch <- c(pch, sym)
@@ -395,6 +397,7 @@ usedChargesLegend <- function(charges, symbols) {
     sym <- spectrum.unfrag.symbol
     tit <- spectrum.unfrag.title
     num <- sum(symbols==sym)
+    if(is.na(num)) num<-0
     if(num>0) {       
         title <- c(title, paste(tit, " (", num, ")", sep=""))
         pch <- c(pch, sym)
@@ -403,6 +406,7 @@ usedChargesLegend <- function(charges, symbols) {
     sym <- spectrum.domfrag.symbol
     tit <- spectrum.domfrag.title
     num <- sum(symbols==sym)
+    if(is.na(num)) num<-0
     if(num>0) {       
         title <- c(title, paste(tit, " (", num, ")", sep=""))
         pch <- c(pch, sym)
@@ -418,9 +422,10 @@ usedChargesLegend <- function(charges, symbols) {
 }
 
 addQaColumn<-function(columns, name, type) {
-    if(name %in% columns) {
+    if(name %in% names(columns)) {
         columns[[name]] <- type
     }
+    columns
 }
 
 readQaFile<-function(dataFile) {
@@ -429,26 +434,26 @@ readQaFile<-function(dataFile) {
         header<-read.delim(dataFile, header=TRUE, sep="\t", nrows=1, fileEncoding="UTF-8", quote="")
         colClasses<-rep("NULL", length(names(header)))
         names(colClasses)<-names(header)
-        addQaColumn(colClasses, "Scan.Id", "integer")
-        addQaColumn(colClasses, "Mz", "numeric")
-        addQaColumn(colClasses, "Z", "integer")
-        addQaColumn(colClasses, "Parent.m.z", "numeric")
-        addQaColumn(colClasses, "Protein.accession.numbers", "character")
-        addQaColumn(colClasses, "Peptide.sequence", "character")
-        addQaColumn(colClasses, "Observed.m.z", "numeric")
-        addQaColumn(colClasses, "Actual.peptide.mass..AMU.", "numeric")
-        addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..PPM.", "numeric")
-        addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..AMU.", "numeric")
-        addQaColumn(colClasses, "discriminant", "numeric")
-        addQaColumn(colClasses, "TIC", "numeric")
-        addQaColumn(colClasses, "RT", "numeric")
-        addQaColumn(colClasses, "MS.Level", "integer")
-        addQaColumn(colClasses, "Polymer.Segment.Size", "numeric")
-        addQaColumn(colClasses, "Polymer.Score", "numeric")
-        addQaColumn(colClasses, "Polymer.p.value", "numeric")
-        addQaColumn(colClasses, "Base.Peak.m.z", "numeric")
-        addQaColumn(colClasses, "Base.Peak.Intensity", "numeric")
-        addQaColumn(colClasses, "Second.Peak.Intensity", "numeric")
+        colClasses<-addQaColumn(colClasses, "Scan.Id", "integer")
+        colClasses<-addQaColumn(colClasses, "Mz", "numeric")
+        colClasses<-addQaColumn(colClasses, "Z", "integer")
+        colClasses<-addQaColumn(colClasses, "Parent.m.z", "numeric")
+        colClasses<-addQaColumn(colClasses, "Protein.accession.numbers", "character")
+        colClasses<-addQaColumn(colClasses, "Peptide.sequence", "character")
+        colClasses<-addQaColumn(colClasses, "Observed.m.z", "numeric")
+        colClasses<-addQaColumn(colClasses, "Actual.peptide.mass..AMU.", "numeric")
+        colClasses<-addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..PPM.", "numeric")
+        colClasses<-addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..AMU.", "numeric")
+        colClasses<-addQaColumn(colClasses, "discriminant", "numeric")
+        colClasses<-addQaColumn(colClasses, "TIC", "numeric")
+        colClasses<-addQaColumn(colClasses, "RT", "numeric")
+        colClasses<-addQaColumn(colClasses, "MS.Level", "integer")
+        colClasses<-addQaColumn(colClasses, "Polymer.Segment.Size", "numeric")
+        colClasses<-addQaColumn(colClasses, "Polymer.Score", "numeric")
+        colClasses<-addQaColumn(colClasses, "Polymer.p.value", "numeric")
+        colClasses<-addQaColumn(colClasses, "Base.Peak.m.z", "numeric")
+        colClasses<-addQaColumn(colClasses, "Base.Peak.Intensity", "numeric")
+        colClasses<-addQaColumn(colClasses, "Second.Peak.Intensity", "numeric")
 
         dataTabFull<-read.delim(dataFile, header=TRUE, sep="\t", colClasses=colClasses, fileEncoding="UTF-8", quote="")
 
@@ -456,18 +461,23 @@ readQaFile<-function(dataFile) {
         dataTabFull$identified <- dataTabFull$Protein.accession.numbers!=""
         dataTabFull$rev <- spectrum.rev.test(dataTabFull$Protein.accession.numbers)
         dataTabFull$polymer <- spectrum.polymer.test(dataTabFull$Polymer.Segment.Size, dataTabFull$Polymer.p.value) 
-        dataTabFull$unfrag <- spectrum.unfrag.test(
-            dataTabFull$Base.Peak.Intensity, 
-            dataTabFull$Second.Peak.Intensity, 
-            dataTabFull$Parent.m.z,
-            dataTabFull$Base.Peak.m.z,
-            dataTabFull$MS.Level)
-        dataTabFull$domfrag <- spectrum.domfrag.test(
-            dataTabFull$Base.Peak.Intensity, 
-            dataTabFull$Second.Peak.Intensity, 
-            dataTabFull$Parent.m.z,
-            dataTabFull$Base.Peak.m.z,
-            dataTabFull$MS.Level)
+        if("Base.Peak.Intensity" %in% names(dataTabFull)) {
+            dataTabFull$unfrag <- spectrum.unfrag.test(
+                dataTabFull$Base.Peak.Intensity, 
+                dataTabFull$Second.Peak.Intensity, 
+                dataTabFull$Parent.m.z,
+                dataTabFull$Base.Peak.m.z,
+                dataTabFull$MS.Level)
+            dataTabFull$domfrag <- spectrum.domfrag.test(
+                dataTabFull$Base.Peak.Intensity, 
+                dataTabFull$Second.Peak.Intensity, 
+                dataTabFull$Parent.m.z,
+                dataTabFull$Base.Peak.m.z,
+                dataTabFull$MS.Level)
+        } else {
+            dataTabFull['unfrag'] <- 0
+            dataTabFull['domfrag'] <- 0
+        }
 
         dataTabFull
 }
@@ -1010,3 +1020,4 @@ print("Closing report file.")
 close(reportFile)
 
 # vi: set filetype=R expandtab tabstop=4 shiftwidth=4 autoindent smartindent:
+
