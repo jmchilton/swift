@@ -417,32 +417,38 @@ usedChargesLegend <- function(charges, symbols) {
     }
 }
 
+addQaColumn<-function(columns, name, type) {
+    if(name %in% columns) {
+        columns[[name]] <- type
+    }
+}
+
 readQaFile<-function(dataFile) {
     print(paste("Reading QA data file: ", dataFile))
 
         header<-read.delim(dataFile, header=TRUE, sep="\t", nrows=1, fileEncoding="UTF-8", quote="")
         colClasses<-rep("NULL", length(names(header)))
         names(colClasses)<-names(header)
-        colClasses[["Scan.Id"]] <- "integer"
-        colClasses[["Mz"]] <- "numeric"
-        colClasses[["Z"]] <- "integer"
-        colClasses[["Parent.m.z"]] <- "numeric"
-        colClasses[["Protein.accession.numbers"]] <- "character"
-        colClasses[["Peptide.sequence"]] <- "character"
-        colClasses[["Observed.m.z"]] <- "numeric"
-        colClasses[["Actual.peptide.mass..AMU."]] <- "numeric"
-        colClasses[["Actual.minus.calculated.peptide.mass..PPM."]] <- "numeric"
-        colClasses[["Actual.minus.calculated.peptide.mass..AMU."]] <- "numeric"        
-        colClasses[["discriminant"]] <- "numeric"
-        colClasses[["TIC"]] <- "numeric"
-        colClasses[["RT"]] <- "numeric"
-        colClasses[["MS.Level"]] <- "integer"
-        colClasses[["Polymer.Segment.Size"]] <- "numeric"
-        colClasses[["Polymer.Score"]] <- "numeric"
-        colClasses[["Polymer.p.value"]] <- "numeric"
-        colClasses[["Base.Peak.m.z"]] <- "numeric"
-        colClasses[["Base.Peak.Intensity"]] <- "numeric"
-        colClasses[["Second.Peak.Intensity"]] <- "numeric"
+        addQaColumn(colClasses, "Scan.Id", "integer")
+        addQaColumn(colClasses, "Mz", "numeric")
+        addQaColumn(colClasses, "Z", "integer")
+        addQaColumn(colClasses, "Parent.m.z", "numeric")
+        addQaColumn(colClasses, "Protein.accession.numbers", "character")
+        addQaColumn(colClasses, "Peptide.sequence", "character")
+        addQaColumn(colClasses, "Observed.m.z", "numeric")
+        addQaColumn(colClasses, "Actual.peptide.mass..AMU.", "numeric")
+        addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..PPM.", "numeric")
+        addQaColumn(colClasses, "Actual.minus.calculated.peptide.mass..AMU.", "numeric")
+        addQaColumn(colClasses, "discriminant", "numeric")
+        addQaColumn(colClasses, "TIC", "numeric")
+        addQaColumn(colClasses, "RT", "numeric")
+        addQaColumn(colClasses, "MS.Level", "integer")
+        addQaColumn(colClasses, "Polymer.Segment.Size", "numeric")
+        addQaColumn(colClasses, "Polymer.Score", "numeric")
+        addQaColumn(colClasses, "Polymer.p.value", "numeric")
+        addQaColumn(colClasses, "Base.Peak.m.z", "numeric")
+        addQaColumn(colClasses, "Base.Peak.Intensity", "numeric")
+        addQaColumn(colClasses, "Second.Peak.Intensity", "numeric")
 
         dataTabFull<-read.delim(dataFile, header=TRUE, sep="\t", colClasses=colClasses, fileEncoding="UTF-8", quote="")
 
