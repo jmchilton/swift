@@ -12,6 +12,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1495,8 +1496,9 @@ public final class FileUtilities {
 
 	/**
 	 * Throw an exception if the given file does not exist, is not a file, or is not readable.
+	 *
 	 * @param fileDescription Description of the file to use in the exception.
-	 * @param file The file to check.
+	 * @param file            The file to check.
 	 */
 	public static void ensureReadableFile(String fileDescription, File file) {
 		if (file.exists()) {
@@ -1508,6 +1510,29 @@ public final class FileUtilities {
 			}
 		} else {
 			throw new MprcException("The " + fileDescription + " " + file.getAbsolutePath() + " does not exist.");
+		}
+	}
+
+	/**
+	 * Read up to specified amount of characters from a given file into a string.
+	 * If the file is larger, read gets truncated.
+	 * <p/>
+	 * TODO: Optimize this!
+	 *
+	 * @param file      File to read.
+	 * @param charset   Character set to read.
+	 * @param maxLength Maximum lenght of a string to read.
+	 * @return String that was read from the file.
+	 */
+	public static String toString(final File file, final Charset charset, final int maxLength) {
+		try {
+			final String content = Files.toString(file, charset);
+			if (content.length() > maxLength) {
+				return content.substring(0, maxLength);
+			}
+			return content;
+		} catch (IOException e) {
+			throw new MprcException("Could not read file: [" + file.getAbsolutePath() + "]", e);
 		}
 	}
 
