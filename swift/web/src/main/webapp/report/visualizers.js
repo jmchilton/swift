@@ -120,7 +120,7 @@ SearchRunItemVisualizer.prototype.fillWithContents = function(fragment, id, obje
         var tdTitle = document.createElement('td');
         tdTitle.appendChild(document.createTextNode(object.title));
         if(object.ranTooLong) {
-            tdTitle.addClassName("ran-too-long")
+            tdTitle.className = "ran-too-long";
         }
         var title = element.appendChild(tdTitle);
 
