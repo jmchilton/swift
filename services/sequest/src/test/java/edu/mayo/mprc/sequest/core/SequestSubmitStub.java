@@ -1,19 +1,20 @@
 package edu.mayo.mprc.sequest.core;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class SequestSubmitStub implements SequestSubmitterInterface {
-	private List<String> dtas;
+	private List<File> dtas;
 	private SequestCallerInterface sequestCaller;
 
 	SequestSubmitStub(final long maxLineLength, final long maxChunkSize, final int maxDtaFiles, final String paramsFileName, final String workingDir, final String tarName) {
-		dtas = new ArrayList<String>();
+		dtas = new ArrayList<File>();
 	}
 
-	public void addDtaFile(final String fileName, final boolean forced) {
-		dtas.add(fileName);
+	public void addDtaFile(final File file, final boolean forced) {
+		dtas.add(file);
 	}
 
 	public int getHowManyFiles() {

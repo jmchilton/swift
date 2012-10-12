@@ -53,7 +53,7 @@ class Mgf2SequestCallerStubbed implements Mgf2SequestInterface {
 
 		final SequestSubmitterInterface s = new SequestSubmit(100, paramsFile, outputDir, new File(outputDir, "mytar.tar"), hostsFile);
 
-		final SequestRunnerStub sc = new SequestRunnerStub(tempfolder, null, new ArrayList<String>(), hostsFile);
+		final SequestRunnerStub sc = new SequestRunnerStub(tempfolder, null, new ArrayList<File>(), hostsFile);
 
 		sc.setSequestExe(this.sequestExe);
 

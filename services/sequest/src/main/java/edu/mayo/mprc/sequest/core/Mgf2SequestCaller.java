@@ -119,7 +119,7 @@ public final class Mgf2SequestCaller implements Mgf2SequestInterface {
 		final File tarFileName = prepareTarFileLocation(tarFile);
 		final SequestSubmitterInterface s = new SequestSubmit(maxCommandLineLength, searchParamsFile, outputDir, tarFileName, hostsFile);
 
-		final SequestRunner sc = new SequestRunner(tempFolder, paramsFile, new ArrayList<String>(), hostsFile);
+		final SequestRunner sc = new SequestRunner(tempFolder, paramsFile, new ArrayList<File>(), hostsFile);
 
 		sc.setSequestExe(this.sequestExe);
 		sc.setWatchDogTimeOut(watchDogTimeOut);

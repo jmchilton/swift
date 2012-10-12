@@ -1,8 +1,10 @@
 package edu.mayo.mprc.sequest.core;
 
+import java.io.File;
+
 interface SequestSubmitterInterface {
 
-	void addDtaFile(String fileName, boolean forced);
+	void addDtaFile(File file, boolean forced);
 
 	int getHowManyFiles();
 

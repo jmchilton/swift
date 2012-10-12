@@ -16,7 +16,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 
 	private static final Logger LOGGER = Logger.getLogger(SequestRunner.class);
 	private File paramsFile;
-	private List<String> sequestDtaFiles;
+	private List<File> sequestDtaFiles;
 	private static final String SEQUEST_EXE = "/usr/local/bin/sequest27_master";
 	private static final String SEQUEST_OPTIONS = "-P";
 	public static final String NO_DTA_FILES_PASSED = "No dta files were passed to sequest caller.";
@@ -59,7 +59,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	 * @param sequestDtaFiles - the list of '.dta' files for this call to the sequest executable
 	 * @param hostsFile       - pvm.hosts file location. Needed for checking whether pvm operates ok.
 	 */
-	public SequestRunner(final File workingdir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
+	public SequestRunner(final File workingdir, final File paramsFile, final List<File> sequestDtaFiles, final File hostsFile) {
 		setWorkingDir(workingdir);
 		this.paramsFile = paramsFile;
 		this.sequestDtaFiles = sequestDtaFiles;
@@ -72,9 +72,8 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 		newArgs.add(SEQUEST_OPTIONS + paramsPath);
 		//sequestDtaFiles.each {newargs.add((String) it)}
 
-		for (final String dta : sequestDtaFiles) {
-			final String fileName = new File(dta).getName();
-			newArgs.add(fileName);
+		for (final File dta : sequestDtaFiles) {
+			newArgs.add(dta.getName());
 		}
 
 		LOGGER.debug("sequest caller processing " + sequestDtaFiles.size() + " dta files");
@@ -131,7 +130,7 @@ class SequestRunner implements Runnable, SequestCallerInterface {
 	}
 
 
-	public SequestCallerInterface createInstance(final File workingdir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
+	public SequestCallerInterface createInstance(final File workingdir, final File paramsFile, final List<File> sequestDtaFiles, final File hostsFile) {
 		final SequestRunner runner = new SequestRunner(workingdir, paramsFile, sequestDtaFiles, this.hostsFile);
 		runner.setWatchDogTimeOut(this.getWatchDogTimeOut());
 		runner.setStartTimeOut(this.getStartTimeOut());

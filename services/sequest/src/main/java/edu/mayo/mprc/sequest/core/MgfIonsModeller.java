@@ -439,7 +439,7 @@ final class MgfIonsModeller implements IonsModellerInterface {
 			//LOGGER.debug("created file="+dta.getAbsolutePath());
 
 
-			this.sequestSubmitter.addDtaFile(this.dtaFileName, false);
+			this.sequestSubmitter.addDtaFile(new File(this.dtaFileName), false);
 			this.ionsSection++;
 		}
 	}

@@ -23,7 +23,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	/**
 	 * list of dta files to pass to sequest
 	 */
-	private List<String> sequestDtaFiles;
+	private List<File> sequestDtaFiles;
 
 	/**
 	 * the accumulated length of filenames in segment
@@ -75,7 +75,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		// this needs to be grabbed from the system
 		this.maxLineLength = (int) maxLineLength;
 		this.paramsFile = paramsFile;
-		sequestDtaFiles = new ArrayList<String>();
+		sequestDtaFiles = new ArrayList<File>();
 		outputDir = workingDir;
 		this.tarFile = tarFile;
 		this.hostsFile = hostsFile;
@@ -86,20 +86,24 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	/**
 	 * add a dta file for submission
 	 */
-	public void addDtaFile(final String fileName, final boolean forced) {
+	public void addDtaFile(final File file, final boolean forced) {
 		if (n == 0) {
-			this.creationTime = new Date().getTime();
+			creationTime = new Date().getTime();
 		}
-		this.n++;
-		this.sequestDtaFiles.add(fileName);
-		this.accumulatedLength = this.accumulatedLength + ((new File(fileName)).getName()).length() + 1;
-		if (this.accumulatedLength >= maxLineLength || forced) {
-			if (forced) {
-				LOGGER.debug("forced set");
-			}
 
+		final int addedLength = file.getName().length() + 1;
+
+		// We would get over max line length - submit
+		if (!forced && this.accumulatedLength + addedLength >= maxLineLength) {
 			submitFilesToSequest();
-			this.creationTime = new Date().getTime();
+		}
+
+		n++;
+		sequestDtaFiles.add(file);
+		accumulatedLength += addedLength;
+
+		if (forced) {
+			submitFilesToSequest();
 		}
 	}
 
@@ -113,7 +117,6 @@ final class SequestSubmit implements SequestSubmitterInterface {
 	public void forceSubmit() {
 		if (haveSequestDtaFiles()) {
 			submitFilesToSequest();
-			this.creationTime = new Date().getTime();
 		}
 
 		// do the cleanup
@@ -134,7 +137,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		FileUtilities.quietDelete(this.tarFile);
 	}
 
-	private List<String> getSequestDtaFiles() {
+	private List<File> getSequestDtaFiles() {
 		return this.sequestDtaFiles;
 	}
 
@@ -153,24 +156,7 @@ final class SequestSubmit implements SequestSubmitterInterface {
 			FileUtilities.copyFile(sequestLog, new File(outputDir, sequestLog.getName() + "." + submitCount), true);
 		}
 
-
-		final boolean lastFileNotProcessed = (this.accumulatedLength > this.maxLineLength);
-
-		// make a new list with one less file to submit to sequest
-		final List<String> dtaFiles = new ArrayList<String>(this.getSequestDtaFiles());
-		if (lastFileNotProcessed) {
-			dtaFiles.remove(dtaFiles.size() - 1);
-		}
-
-		// recheck the length
-		long length = 0;
-		for (final String dtaFile : dtaFiles) {
-			final File file = new File(dtaFile);
-			length += (file.getName()).length() + 1;
-		}
-		if (length > this.accumulatedLength) {
-			throw new MprcException("sequest dta file combined length = " + length + ", exceeds maxlength=" + maxLineLength);
-		}
+		final List<File> dtaFiles = new ArrayList<File>(this.getSequestDtaFiles());
 
 		SequestRunner sequestRunner = null;
 		// make the call to sequest
@@ -212,13 +198,9 @@ final class SequestSubmit implements SequestSubmitterInterface {
 			tt = new TarWriter(this.tarFile);
 			// .out and .dta files are in the working  dir for sequest
 			final List<String> DtaToTar = new ArrayList<String>();
-			final List<String> sequestDtaSnapshot = new ArrayList<String>(this.getSequestDtaFiles());
-			for (final String aSequestDtaSnapshot : sequestDtaSnapshot) {
-				final File sequestDtaSnapshotFile = new File(aSequestDtaSnapshot);
+			final List<File> sequestDtaSnapshot = new ArrayList<File>(this.getSequestDtaFiles());
+			for (final File sequestDtaSnapshotFile : sequestDtaSnapshot) {
 				DtaToTar.add((new File(sequestRunner.getWorkingDir(), sequestDtaSnapshotFile.getName())).getAbsolutePath());
-			}
-			if (lastFileNotProcessed) {
-				DtaToTar.remove(DtaToTar.size() - 1);
 			}
 			// need to tar these files and the corresponding .out files
 			final Date startTar = new Date();
@@ -243,16 +225,9 @@ final class SequestSubmit implements SequestSubmitterInterface {
 		LOGGER.debug("tar file = " + tt.getTarFile() + " has " + TarReader.readNumberHeaders(tt.getTarFile()) + " headers");
 
 		// then remove the files
-		final int tn = this.sequestDtaFiles.size();
-		final String last = this.sequestDtaFiles.get(tn - 1);
-		this.sequestDtaFiles = new ArrayList<String>();
-		if (lastFileNotProcessed) {
-			this.sequestDtaFiles.add(last);
-			this.accumulatedLength = last.length();
-		} else {
-			this.accumulatedLength = 0;
-		}
-
+		this.sequestDtaFiles = new ArrayList<File>();
+		this.accumulatedLength = 0;
+		this.creationTime = new Date().getTime();
 	}
 
 

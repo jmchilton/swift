@@ -12,7 +12,7 @@ import java.util.List;
  * result post processing (tarring); can be tested without sequest
  */
 public final class SequestRunnerStub extends SequestRunner {
-	public SequestRunnerStub(final File workingDir, final File paramsFile, final List<String> sequestDtaFiles, final File hostsFile) {
+	public SequestRunnerStub(final File workingDir, final File paramsFile, final List<File> sequestDtaFiles, final File hostsFile) {
 		super(workingDir, paramsFile, sequestDtaFiles, hostsFile);
 		setCommand("echo");
 		final List<String> someArgs = new ArrayList<String>();

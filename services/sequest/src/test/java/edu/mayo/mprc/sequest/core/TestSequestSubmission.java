@@ -72,7 +72,7 @@ public final class TestSequestSubmission {
 			int n = 1;
 			LOGGER.debug("max  line length is {s.getMaxLineLength()}");
 			for (final String dtafilename : dtafilenames) {
-				s.addDtaFile(dtafilename, false);
+				s.addDtaFile(new File(dtafilename), false);
 				LOGGER.debug("wrote " + n + ", accumulatedlength=" + s.getAccumulatedLength());
 				n++;
 			}
@@ -123,7 +123,7 @@ public final class TestSequestSubmission {
 
 			final SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 
-			final SequestRunnerStub scs = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
+			final SequestRunnerStub scs = new SequestRunnerStub(folder, null, new ArrayList<File>(), getHostsFile());
 			scs.setStartTimeOut(10 * 1000);
 			scs.setWatchDogTimeOut(10 * 1000);
 			s.setSequestCaller(scs);
@@ -146,7 +146,7 @@ public final class TestSequestSubmission {
 			final long fullLength = totallength - new File((dtafilenames.get(dtafilenames.size() - 1))).length() - 1;
 			s.setMaxLineLength((int) fullLength);
 			for (final String dtafilename : dtafilenames) {
-				s.addDtaFile((String) dtafilename, false);
+				s.addDtaFile(new File(dtafilename), false);
 			}
 			LOGGER.debug("wrote 10");
 			// should be 1 of them in there;
@@ -174,7 +174,7 @@ public final class TestSequestSubmission {
 
 			final SequestSubmit s = new SequestSubmit(100, new File("myparams"), folder, new File(folder, "mytar.tar"), getHostsFile());
 
-			final SequestRunnerStub sc = new SequestRunnerStub(folder, null, new ArrayList<String>(), getHostsFile());
+			final SequestRunnerStub sc = new SequestRunnerStub(folder, null, new ArrayList<File>(), getHostsFile());
 			sc.setWatchDogTimeOut(10 * 1000);
 			sc.setStartTimeOut(10 * 1000);
 
@@ -198,7 +198,7 @@ public final class TestSequestSubmission {
 			for (int i = 0; i < 10; i++) {
 
 				final String dtafilename = this.createDtaAndOutFile(folder);
-				s.addDtaFile(dtafilename, false);
+				s.addDtaFile(new File(dtafilename), false);
 			}
 			LOGGER.debug("wrote 10");
 			// should be 0 of them in there;
@@ -247,7 +247,7 @@ public final class TestSequestSubmission {
 
 
 			final String dtafilename = this.createDtaAndOutFile(folder);
-			s.addDtaFile(dtafilename, true);
+			s.addDtaFile(new File(dtafilename), true);
 
 			LOGGER.debug("wrote 1");
 			// should be 0 of them in there;
@@ -298,7 +298,7 @@ public final class TestSequestSubmission {
 
 
 			final String dtafilename = this.createDtaAndOutFile(folder);
-			s.addDtaFile(dtafilename, true);
+			s.addDtaFile(new File(dtafilename), true);
 
 			LOGGER.debug("wrote 1");
 			// should be 0 of them in there;
@@ -591,7 +591,7 @@ public final class TestSequestSubmission {
 	}
 
 	private SequestRunnerStub getSequestRunnerStub(final File folder) {
-		return new SequestRunnerStub(folder, null, new ArrayList<String>(0), getHostsFile());
+		return new SequestRunnerStub(folder, null, new ArrayList<File>(0), getHostsFile());
 	}
 
 	@Test(enabled = true, groups = {"linux", "sequest"})
@@ -606,11 +606,11 @@ public final class TestSequestSubmission {
 
 		try {
 
-			final List<String> dtafiles;
+			final List<File> dtafiles;
 
-			dtafiles = new ArrayList<String>();
-			dtafiles.add("mydta1.dta");
-			dtafiles.add("mydta2.dta");
+			dtafiles = new ArrayList<File>();
+			dtafiles.add(new File("mydta1.dta"));
+			dtafiles.add(new File("mydta2.dta"));
 
 			try {
 
@@ -638,10 +638,10 @@ public final class TestSequestSubmission {
 
 		final File folder = FileUtilities.createTempFolder();
 
-		final List<String> dtafiles;
+		final List<File> dtafiles;
 
-		dtafiles = new ArrayList<String>();
-		dtafiles.add("mydta1.dta");
+		dtafiles = new ArrayList<File>();
+		dtafiles.add(new File("mydta1.dta"));
 
 		try {
 
@@ -652,7 +652,7 @@ public final class TestSequestSubmission {
 		}
 	}
 
-	private SequestRunner getSequestRunner(final File temp, final List<String> dtafiles) {
+	private SequestRunner getSequestRunner(final File temp, final List<File> dtafiles) {
 		return new SequestRunner(temp, new File("myparams"), dtafiles, getHostsFile());
 	}
 
@@ -666,15 +666,11 @@ public final class TestSequestSubmission {
 
 		final File folder = FileUtilities.createTempFolder();
 
-		final List<String> dtafiles;
-
-		dtafiles = new ArrayList<String>();
-
 		final SequestRunner c;
 
 
 		try {
-			c = getSequestRunner(folder, dtafiles);
+			c = getSequestRunner(folder, new ArrayList<File>());
 			c.getCall();
 		} catch (MprcException m) {
 			if (!m.getMessage().contains(SequestRunner.NO_DTA_FILES_PASSED)) {
@@ -692,10 +688,10 @@ public final class TestSequestSubmission {
 
 		final File folder = FileUtilities.createTempFolder();
 
-		final List<String> dtafiles;
+		final List<File> dtafiles;
 
-		dtafiles = new ArrayList<String>();
-		dtafiles.add("mydta.dta");
+		dtafiles = new ArrayList<File>();
+		dtafiles.add(new File("mydta.dta"));
 
 		final SequestRunner c;
 
@@ -723,10 +719,10 @@ public final class TestSequestSubmission {
 
 		final File folder = FileUtilities.createTempFolder();
 
-		final List<String> dtafiles;
+		final List<File> dtafiles;
 
-		dtafiles = new ArrayList<String>();
-		dtafiles.add("mydta.dta");
+		dtafiles = new ArrayList<File>();
+		dtafiles.add(new File("mydta.dta"));
 
 		File params = null;
 		try {

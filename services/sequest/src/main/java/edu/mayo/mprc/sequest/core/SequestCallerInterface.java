@@ -8,7 +8,7 @@ import java.util.List;
  */
 interface SequestCallerInterface {
 
-	SequestCallerInterface createInstance(File workingDir, File paramsFile, List<String> sequestDtaFiles, File hostsFile);
+	SequestCallerInterface createInstance(File workingDir, File paramsFile, List<File> sequestDtaFiles, File hostsFile);
 
 	String getCall();
 
