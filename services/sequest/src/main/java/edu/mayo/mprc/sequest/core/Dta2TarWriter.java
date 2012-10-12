@@ -47,15 +47,13 @@ final class Dta2TarWriter {
 					topPath = someFile.getParent();
 				}
 				final File p = new File(path);
-				File dest = new File(new File(topPath), "outs");
-				dest = new File(dest, lastFolder);
-				LOGGER.debug("moving .out files to " + dest.getAbsolutePath());
-				FileUtilities.rename(p, dest);
-				// also move files in outputDir to the 'outs' folder
-				for (final File file : outputDir.listFiles()) {
-					FileUtilities.rename(file, new File(dest, file.getName()));
-				}
-				throw new MprcException("tar failed, as sequest out file does not exist :" + outFileName);
+				File outs = new File(new File(topPath), "outs");
+				FileUtilities.ensureFolderExists(outs);
+				File destination = new File(outs, lastFolder);
+				LOGGER.debug("moving .out files to " + destination.getAbsolutePath());
+				FileUtilities.rename(p, destination);
+				throw new MprcException("tar failed, as sequest out file does not exist [" + outFileName + "].\n" +
+						"Moving the Sequest working folder to ["+destination.getAbsolutePath()+"] - check what went wrong and delete this folder.");
 			}
 			final File out = new File(outFileName);
 			allFiles.add(dtaFile);
