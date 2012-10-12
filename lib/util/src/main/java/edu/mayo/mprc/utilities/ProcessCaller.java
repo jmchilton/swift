@@ -42,6 +42,11 @@ public final class ProcessCaller implements Runnable {
 	 * How long we wait after the end for the pipe to deliver the rest of output
 	 */
 	private static final int PIPE_TIMEOUT = 1000 * 60;
+	/**
+	 * How long after starting the process do we warn about the possibility of killing it?
+	 * Ideally the process would produce output so frequently that the warning never gets issued.
+	 */
+	public static final int WARN_ABOUT_KILLING_MILLIS = 30 * 1000;
 
 	private final ProcessBuilder builder;
 	private Process process;
@@ -57,6 +62,7 @@ public final class ProcessCaller implements Runnable {
 	private StreamDrainer errorStreamDrainer;
 	private Timer timer;
 	private AtomicLong killAtTime = new AtomicLong();
+	private AtomicLong warnAtTime = new AtomicLong();
 	private boolean killed;
 
 	private static final NumberFormat KILL_TIME_FORMAT = new DecimalFormat("#0.00");
@@ -98,6 +104,7 @@ public final class ProcessCaller implements Runnable {
 	 */
 	public void setKillTimeout(final long millis) {
 		killAtTime.set(System.currentTimeMillis() + millis);
+		warnAtTime.set(System.currentTimeMillis() + WARN_ABOUT_KILLING_MILLIS);
 		if (process != null) {
 			setupKillTimer();
 		}
@@ -120,7 +127,13 @@ public final class ProcessCaller implements Runnable {
 							cancel();
 							return;
 						}
-						LOGGER.debug("Time to kill process " + KILL_TIME_FORMAT.format((killAtTime.get() - System.currentTimeMillis()) / 1000.0) + " seconds.");
+
+						if (warnAtTime.get() > 0L && System.currentTimeMillis() >= warnAtTime.get()) {
+							final double remainingTime = (killAtTime.get() - System.currentTimeMillis()) / 1000.0;
+							LOGGER.debug("Time to kill process " + KILL_TIME_FORMAT.format(remainingTime) + " seconds.");
+							// And schedule next warning
+							warnAtTime.set(System.currentTimeMillis() + WARN_ABOUT_KILLING_MILLIS);
+						}
 					}
 				}
 			}, 10, 1000);
@@ -133,6 +146,7 @@ public final class ProcessCaller implements Runnable {
 	public void clearKillTimeout() {
 		if (timer != null) {
 			killAtTime.set(0);
+			warnAtTime.set(0);
 			timer.cancel();
 			timer = null;
 		}
