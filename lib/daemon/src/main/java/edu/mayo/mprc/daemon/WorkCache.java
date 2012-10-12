@@ -34,6 +34,7 @@ import java.util.Map;
  */
 public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker {
 	private static final Logger LOGGER = Logger.getLogger(WorkCache.class);
+	public static final int MAX_CACHE_FOLDERS = 1000 * 10;
 	private File cacheFolder;
 	private DaemonConnection daemon;
 	private final Map<String, CacheProgressReporter> workInProgress = new HashMap<String, CacheProgressReporter>(10);
@@ -253,19 +254,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		@Override
 		public void requestProcessingFinished() {
 			try {
-				int i = 1;
-				while (true) {
-					final File newFolder = new File(targetFolder, String.valueOf(i));
-					if (!newFolder.exists()) {
-						FileUtilities.ensureFolderExists(newFolder);
-						break;
-					}
-					i = i + 1;
-					if (i > 1000 * 10) {
-						throw new MprcException("Too many cached folders in " + targetFolder.getAbsolutePath() + ": " + i);
-					}
-				}
-				final File target = new File(targetFolder, String.valueOf(i));
+				final File target = createNewFolder(targetFolder);
 				for (final String outputFile : outputFiles) {
 					// Move the work in progress folder to its final location
 					final File wipFile = new File(wipFolder, outputFile);
@@ -295,6 +284,35 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 				}
 			}
 			reporter.reportSuccess();
+		}
+
+		/**
+		 * Create new folder within parent. The folder name is simply a number, starting at 1.
+		 *
+		 * @param parent Parent folder to create a new folder in.
+		 * @return The new folder created.
+		 */
+		private File createNewFolder(final File parent) {
+			final int numFiles = parent.listFiles().length;
+			if (numFiles > MAX_CACHE_FOLDERS) {
+				throw new MprcException("Too many cached folders in " + parent.getAbsolutePath() + ": " + numFiles);
+			}
+			if (!parent.canWrite()) {
+				throw new MprcException("The cache directory [" + parent.getAbsolutePath() + "] is not writeable.");
+			}
+			int i = numFiles+1;
+			while (true) {
+				final File newFolder = new File(parent, String.valueOf(i));
+				if (!newFolder.exists()) {
+					FileUtilities.ensureFolderExists(newFolder);
+					break;
+				}
+				i += 1;
+				if (i > MAX_CACHE_FOLDERS) {
+					throw new MprcException("Could not create a new folder in " + parent.getAbsolutePath() + ": " + i + " attempts failed");
+				}
+			}
+			return new File(parent, String.valueOf(i));
 		}
 
 		@Override

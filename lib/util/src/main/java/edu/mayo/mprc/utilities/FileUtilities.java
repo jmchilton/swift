@@ -754,7 +754,7 @@ public final class FileUtilities {
 			return;
 		}
 		final boolean mkdirOk = folder.mkdirs();
-		if (!folder.exists()) {
+		if (!folder.isDirectory()) {
 			throw new MprcException("Cannot create directory  " + folder.getAbsolutePath() + (mkdirOk ? " (did not appear after being created)" : ""));
 		}
 	}
