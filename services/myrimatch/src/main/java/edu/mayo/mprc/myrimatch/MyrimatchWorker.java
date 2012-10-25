@@ -53,7 +53,6 @@ public final class MyrimatchWorker implements Worker {
 
 		try {
 			checkPacketCorrectness(packet);
-			packet.waitForInputFiles();
 
 			FileUtilities.ensureFolderExists(packet.getWorkFolder());
 

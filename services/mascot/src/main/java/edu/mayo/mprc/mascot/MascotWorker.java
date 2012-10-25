@@ -85,7 +85,6 @@ public final class MascotWorker implements Worker {
 		assert mascotWorkPacket.getSearchParamsFile() != null : "Mascot search failed: param file not specified";
 		assert mascotWorkPacket.getOutputFile() != null : "Mascot search failed: output file not specified";
 		assert mascotWorkPacket.getShortDbName() != null : "Mascot search failed: short db name not specified";
-		mascotWorkPacket.waitForInputFiles();
 
 		try {
 			LOGGER.debug(MessageFormat.format("Mascot search starting:\n\t{0} -> {1}\n\t(db name: {2})",

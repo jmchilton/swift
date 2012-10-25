@@ -1,5 +1,7 @@
 package edu.mayo.mprc.workflow.engine;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.workflow.persistence.TaskState;
@@ -246,15 +248,12 @@ public abstract class TaskBase implements Task {
 
 	public void completeWhenFilesAppear(final File... files) {
 		waitingForFileToAppear.set(true);
-		for (final File file : files) {
-			// TODO: Do this in a separate thread
-			FileUtilities.waitForFile(file, 2 * 60 * 1000);
-			if (!file.exists()) {
-				setError(new MprcException("The file " + file.getPath() + " did not appear even after 2 minutes."));
-				return;
-			}
+		try {
+			FileUtilities.waitForFiles(Sets.<File>newHashSet(files));
+			setState(TaskState.COMPLETED_SUCCESFULLY);
+		} catch (MprcException e) {
+			setError(new MprcException("The files [" + Joiner.on("], [").join(files) + "] did not appear even after 2 minutes."));
 		}
-		setState(TaskState.COMPLETED_SUCCESFULLY);
 	}
 
 	public void addDependency(final Task task) {

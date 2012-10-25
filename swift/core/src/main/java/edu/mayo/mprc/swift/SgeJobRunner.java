@@ -35,9 +35,6 @@ public final class SgeJobRunner {
 	private static final Logger LOGGER = Logger.getLogger(SgeJobRunner.class);
 	private ResourceTable resourceTable;
 
-	// Two minutes should be more than enough for the file written on one machine to appear on another machine
-	private static final int INPUT_FILE_TIMEOUT = 2 * 60 * 1000;
-
 	public SgeJobRunner() {
 	}
 
@@ -48,7 +45,7 @@ public final class SgeJobRunner {
 	 */
 	public void run(final File workPacketXmlFile) {
 		// Wait for the work packet to fully materialize in case it was transferred over a shared filesystem
-		FileUtilities.waitForFile(workPacketXmlFile, INPUT_FILE_TIMEOUT);
+		FileUtilities.waitForFile(workPacketXmlFile);
 
 		FileInputStream fileInputStream = null;
 		SgePacket sgePacket = null;
@@ -83,7 +80,7 @@ public final class SgeJobRunner {
 				}
 
 				fileTokenFactory.setFileSharingFactory(new JmsFileTransferHandlerFactory(sgePacket.getFileSharingFactoryURI()), false);
-				fileTokenHolder.translateOnReceiver(fileTokenFactory, fileTokenFactory);
+				fileTokenHolder.translateOnReceiver(fileTokenFactory, fileTokenFactory, null);
 			}
 
 			boundMessenger = messengerFactory.getOneWayMessenger(sgePacket.getMessengerInfo());

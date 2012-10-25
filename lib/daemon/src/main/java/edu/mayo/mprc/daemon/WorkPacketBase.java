@@ -9,7 +9,7 @@ import edu.mayo.mprc.daemon.files.FileTokenHolder;
  * A base for all messaging packets.
  * Contains task identifier to be used in the nested diagnostic context.
  */
-public class WorkPacketBase extends FileHolder implements WorkPacket {
+public abstract class WorkPacketBase extends FileHolder implements WorkPacket {
 	private static final long serialVersionUID = 20071228L;
 	private String taskId;
 	private boolean fromScratch;
@@ -46,6 +46,6 @@ public class WorkPacketBase extends FileHolder implements WorkPacket {
 	 */
 	public static void simulateTransfer(final FileTokenHolder workPacket) {
 		workPacket.translateOnSender(NULL_TOKEN_FACTORY);
-		workPacket.translateOnReceiver(NULL_TOKEN_FACTORY, NULL_TOKEN_FACTORY);
+		workPacket.translateOnReceiver(NULL_TOKEN_FACTORY, NULL_TOKEN_FACTORY, null);
 	}
 }

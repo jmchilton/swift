@@ -1,6 +1,9 @@
 package edu.mayo.mprc.daemon.files;
 
+import javax.annotation.Nullable;
+import java.io.File;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * A file token holder is simply a class that holds - directly or indirectly, objects of {@link FileToken} type.
@@ -27,11 +30,13 @@ public interface FileTokenHolder extends Serializable {
 	 * to <code>File</code>s. As the files get modified, the provided synchronizer can be used to push the changes back to
 	 * the original token sender.
 	 *
-	 * @param translator   An object that allows translation of file tokens back to files.
-	 * @param synchronizer In case the files corresponding to the token get changed, and this change has to be propagated
-	 *                     to the original token sender, use the synchronizer to accomplish this.
+	 * @param translator           An object that allows translation of file tokens back to files.
+	 * @param synchronizer         In case the files corresponding to the token get changed, and this change has to be propagated
+	 * @param filesThatShouldExist A set to which the translation would add all files that are supposed to exist on the receiver
+	 *                             (they existed on the sender). If null, a new set is created + the existence of the files is checked at the end. If the
+	 *                             files are missing, the function will wait up to 2 minutes for them to appear, after which an exception will be thrown.
 	 */
-	void translateOnReceiver(ReceiverTokenTranslator translator, FileTokenSynchronizer synchronizer);
+	void translateOnReceiver(ReceiverTokenTranslator translator, FileTokenSynchronizer synchronizer, @Nullable Set<File> filesThatShouldExist);
 
 	/**
 	 * This method must be called at some point on the receiver side. The call of this method

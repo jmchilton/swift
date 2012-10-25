@@ -60,8 +60,6 @@ public final class OmssaWorker implements Worker {
 		final OmssaWorkPacket omssaWorkPacket = (OmssaWorkPacket) workPacket;
 		LOGGER.info("Starting OMSSA search: " + omssaWorkPacket.toString());
 
-		omssaWorkPacket.waitForInputFiles();
-
 		final File outputFile = omssaWorkPacket.getOutputFile();
 		final File modOutputFile = new File(outputFile.getParentFile(), outputFile.getName() + ".org");
 		File tempFolder = null;

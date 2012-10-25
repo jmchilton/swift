@@ -4,6 +4,7 @@ import edu.mayo.mprc.daemon.files.*;
 import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
+import java.util.Set;
 
 /**
  * Progress report sent after task is submitted for execution.
@@ -59,7 +60,7 @@ public final class AssignedTaskData implements ProgressInfo, FileTokenHolder {
 		outputLogFile = translator.translateBeforeTransfer(outputLogFile);
 	}
 
-	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer) {
+	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer, final Set<File> filesThatShouldExist) {
 		this.receiverTokenTranslator = translator;
 	}
 

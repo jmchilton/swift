@@ -5,7 +5,6 @@ import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.daemon.CachableWorkPacket;
 import edu.mayo.mprc.daemon.WorkPacketBase;
-import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 
 import java.io.File;
@@ -48,8 +47,6 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 	private File databaseFile;
 	private File inputFile;
 	private boolean publishResultFiles;
-	// Two minutes should be more than enough for the file written on one machine to appear on another machine
-	private static final int INPUT_FILE_TIMEOUT = 2 * 60 * 1000;
 
 	public EngineWorkPacket(final String taskId, final boolean fromScratch) {
 		super(taskId, fromScratch);
@@ -131,24 +128,6 @@ public abstract class EngineWorkPacket extends WorkPacketBase implements Cachabl
 
 	public boolean isPublishResultFiles() {
 		return publishResultFiles;
-	}
-
-	/**
-	 * Wait for the files to appear if they were just written by searcher on another machine.
-	 * This is to deal with slow network file systems.
-	 */
-	public void waitForInputFiles() {
-		if (getInputFile() != null) {
-			FileUtilities.waitForFile(getInputFile(), INPUT_FILE_TIMEOUT);
-		}
-
-		if (getSearchParamsFile() != null) {
-			FileUtilities.waitForFile(getSearchParamsFile(), INPUT_FILE_TIMEOUT);
-		}
-
-		if (getDatabaseFile() != null) {
-			FileUtilities.waitForFile(getDatabaseFile(), INPUT_FILE_TIMEOUT);
-		}
 	}
 
 	@Override

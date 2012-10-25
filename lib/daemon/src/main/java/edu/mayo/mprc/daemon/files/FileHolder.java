@@ -1,15 +1,13 @@
 package edu.mayo.mprc.daemon.files;
 
 import edu.mayo.mprc.MprcException;
+import edu.mayo.mprc.utilities.FileUtilities;
 
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A class implementing the {@link FileTokenHolder} protocol that does not actually hold any {@link FileToken} objects
@@ -67,12 +65,32 @@ public class FileHolder implements FileTokenHolder {
 	}
 
 	@Override
-	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer) {
+	public void translateOnReceiver(final ReceiverTokenTranslator translator, final FileTokenSynchronizer synchronizer, Set<File> filesThatShouldExist) {
+		// Collect all files that were supposed to exist
+		boolean checkFiles = false;
+
+		if(filesThatShouldExist==null) {
+			filesThatShouldExist = new HashSet<File>(tokenMap.size());
+			checkFiles=true;
+		}
+
+		translateOnReceiverBody(translator, synchronizer, filesThatShouldExist);
+
+		if(checkFiles) {
+			FileUtilities.waitForFiles(filesThatShouldExist);
+		}
+	}
+
+	private void translateOnReceiverBody(ReceiverTokenTranslator translator, FileTokenSynchronizer synchronizer, Set<File> filesThatShouldExist) {
 		this.translator = translator;
 		this.synchronizer = synchronizer;
+
 		// Set all directly accessible fields
 		for (final Map.Entry<FieldIndex, FileToken> entry : tokenMap.entrySet()) {
 			final File file = translator.getFile(entry.getValue());
+			if(entry.getValue().existsOnSourceDaemon()) {
+				filesThatShouldExist.add(file);
+			}
 			if (entry.getKey().getIndex() == null) {
 				setFileField(entry.getKey().getField(), file);
 			} else {
@@ -84,12 +102,12 @@ public class FileHolder implements FileTokenHolder {
 			if (serializableFileTokenField(field)) {
 				final FileTokenHolder fileTokenHolder = getFileTokenHolder(field);
 				if (fileTokenHolder != null) {
-					fileTokenHolder.translateOnReceiver(translator, synchronizer);
+					fileTokenHolder.translateOnReceiver(translator, synchronizer, filesThatShouldExist);
 				}
 			} else if (serializableFileListField(field)) {
 				for (final Object o : getFieldList(field)) {
 					if (o instanceof FileTokenHolder) {
-						((FileTokenHolder) o).translateOnReceiver(translator, synchronizer);
+						((FileTokenHolder) o).translateOnReceiver(translator, synchronizer, filesThatShouldExist);
 					}
 				}
 			} else if (serializableFileMapField(field)) {
@@ -97,7 +115,7 @@ public class FileHolder implements FileTokenHolder {
 					if (o instanceof Map.Entry) {
 						Map.Entry e = (Map.Entry) o;
 						if (e.getValue() instanceof FileTokenHolder) {
-							((FileTokenHolder) e.getValue()).translateOnReceiver(translator, synchronizer);
+							((FileTokenHolder) e.getValue()).translateOnReceiver(translator, synchronizer, filesThatShouldExist);
 						}
 					}
 				}

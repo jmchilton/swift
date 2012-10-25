@@ -1,13 +1,17 @@
 package edu.mayo.mprc.utilities;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import edu.mayo.mprc.MprcException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -50,6 +54,10 @@ public final class FileUtilities {
 	 * of checking each entry for being a file/folder
 	 */
 	private static final int MIN_FOLDER_SIZE_FOR_LS = 40;
+	/**
+	 * How many milliseconds to wait for NFS to have a file appear.
+	 */
+	public static final int NFS_FILE_TIMEOUT_MILLIS = 2 * 60 * 1000;
 
 	private FileUtilities() {
 
@@ -820,6 +828,55 @@ public final class FileUtilities {
 				throw new MprcException("File " + toWaitFor.getAbsolutePath() + " didn't appear after timeout: " + msTimeout + "ms.");
 			}
 		}
+	}
+
+	/**
+	 * Blocks until all the files come into existence.
+	 *
+	 * @param toWaitFor Set of files to wait for.
+	 * @param msTimeout How long to wait till the files appear.
+	 */
+	public static void waitForFiles(final Set<File> toWaitFor, final int msTimeout) {
+		final long startTime = new Date().getTime();
+		long warnStartTime = startTime;
+		HashSet<File> currentSet = new HashSet<File>(toWaitFor);
+		final FileExists fileExists = new FileExists();
+		while (true) {
+			Iterables.removeIf(currentSet, fileExists);
+			if(currentSet.isEmpty()) {
+				break;
+			}
+			try {
+				Thread.sleep(FILE_WAIT_GRANULARITY);
+			} catch (InterruptedException e) {
+				throw new MprcException(e);
+			}
+			// After 5 seconds of the file not being there, notify the user we are waiting for it to appear
+			if (new Date().getTime() - warnStartTime > WAIT_FOR_FILE_TIMEOUT) {
+				LOGGER.debug("Waiting for "+ currentSet.size() + " files to appear. Timeout " + (msTimeout / MS_PER_SECOND) + " seconds.");
+				warnStartTime = new Date().getTime();
+			}
+			if (new Date().getTime() - startTime > msTimeout) {
+				throw new MprcException("Files [" + Joiner.on("], [").join(currentSet) + "] didn't appear after timeout: " + msTimeout + "ms.");
+			}
+		}
+	}
+
+	/**
+	 * Default wait for a file, to accomodate for NFS timeouts. These can be up to 1 minute by default, wait 2 mins to be safe.
+	 *
+	 * @param toWaitFor File to wait for.
+	 */
+	public static void waitForFile(final File toWaitFor) {
+		waitForFile(toWaitFor, NFS_FILE_TIMEOUT_MILLIS);
+	}
+
+	/**
+	 * Just like {@link #waitForFile(java.io.File, int)} with default timeout of {@link #NFS_FILE_TIMEOUT_MILLIS}.
+	 * @param toWaitFor Set of files to wait for.
+	 */
+	public static void waitForFiles(final Set<File> toWaitFor) {
+		waitForFiles(toWaitFor, NFS_FILE_TIMEOUT_MILLIS);
 	}
 
 	public static final File DEFAULT_TEMP_DIRECTORY = getDefaultTempDirectory();
@@ -1643,6 +1700,16 @@ public final class FileUtilities {
 		}
 		if (!success) {
 			throw new MprcException("Failed to change last modification time for file [" + file.getAbsolutePath() + "]");
+		}
+	}
+
+	private static final class FileExists implements Predicate<File> {
+		private FileExists() {
+		}
+
+		@Override
+		public boolean apply(@Nullable final File input) {
+			return input.exists();
 		}
 	}
 }

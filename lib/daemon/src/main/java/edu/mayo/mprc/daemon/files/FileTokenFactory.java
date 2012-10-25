@@ -148,7 +148,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 			return null;
 		}
 		try {
-			return new SharedToken(null, FileUtilities.getCanonicalFileNoLinks(file).toURI().toString());
+			return new SharedToken(null, FileUtilities.getCanonicalFileNoLinks(file).toURI().toString(), file.exists());
 		} catch (Exception e) {
 			throw new MprcException("Anonymous FileToken object could not be created.", e);
 		}
@@ -220,7 +220,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 			return null;
 		}
 		if (databaseDaemonConfigInfo != null) {
-			final FileToken fileToken = new SharedToken(databaseDaemonConfigInfo, tokenPath);
+			final FileToken fileToken = new SharedToken(databaseDaemonConfigInfo, tokenPath, false);
 			return getFile(fileToken);
 		} else {
 			throw new MprcException("Database DaemonConfigInfo object is not set. Can not translate database String token to File.");
@@ -329,7 +329,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 		final String filePath = canonicalFilePath(file);
 
 		if (sourceDaemonConfigInfo.getSharedFileSpacePath() == null) {
-			return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(LOCAL_TYPE_PREFIX, filePath));
+			return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(LOCAL_TYPE_PREFIX, filePath), file.exists());
 		} else {
 			if (filePath.length() < sourceDaemonConfigInfo.getSharedFileSpacePath().length()) {
 				return fileToLocalToken(sourceDaemonConfigInfo, file);
@@ -337,7 +337,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 			final String filePathPrefix = filePath.substring(0, sourceDaemonConfigInfo.getSharedFileSpacePath().length());
 
 			if (filePathPrefix.equals(sourceDaemonConfigInfo.getSharedFileSpacePath()) && filePathPrefix.length() > 0) {
-				return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(SHARED_TYPE_PREFIX, filePath.substring(sourceDaemonConfigInfo.getSharedFileSpacePath().length())));
+				return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(SHARED_TYPE_PREFIX, filePath.substring(sourceDaemonConfigInfo.getSharedFileSpacePath().length())), file.exists());
 			} else {
 				return fileToLocalToken(sourceDaemonConfigInfo, file);
 			}
@@ -346,7 +346,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 
 	private FileToken fileToLocalToken(final DaemonConfigInfo sourceDaemonConfigInfo, final File file) {
 		if (daemonConfigInfo.equals(sourceDaemonConfigInfo)) {
-			return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(LOCAL_TYPE_PREFIX, canonicalFilePath(file)));
+			return new SharedToken(sourceDaemonConfigInfo, addPrefixToPath(LOCAL_TYPE_PREFIX, canonicalFilePath(file)), file.exists());
 		} else {
 			return throwLocalUnsupported(file);
 		}
@@ -360,10 +360,10 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 		if (fileToken.getSourceDaemonConfigInfo() == null) {
 			return translateFileToken(getFileToken(fileToken.getTokenPath()), destinationDaemonConfigInfo);
 		} else if (fileToken.getSourceDaemonConfigInfo().getSharedFileSpacePath() != null && destinationDaemonConfigInfo.getSharedFileSpacePath() != null && fileTokenOnSharedPath(fileToken)) {
-			return new SharedToken(destinationDaemonConfigInfo, fileToken.getTokenPath());
+			return new SharedToken(destinationDaemonConfigInfo, fileToken.getTokenPath(), fileToken.existsOnSourceDaemon());
 		} else if (fileToken.getSourceDaemonConfigInfo().equals(destinationDaemonConfigInfo)) {
 			// Transfer within the same daemon
-			return new SharedToken(destinationDaemonConfigInfo, fileToken.getTokenPath());
+			return new SharedToken(destinationDaemonConfigInfo, fileToken.getTokenPath(), fileToken.existsOnSourceDaemon());
 		} else {
 			return translateFileToken(getFileToken(getFile(fileToken)), destinationDaemonConfigInfo);
 		}
@@ -455,7 +455,7 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 	public FileToken getLogFileTokenForRemoteToken(final FileToken remoteFileToken) {
 		if (isFileTokenShared(remoteFileToken)) {
 			//Shared file space.
-			return new SharedToken(daemonConfigInfo, remoteFileToken.getTokenPath());
+			return new SharedToken(daemonConfigInfo, remoteFileToken.getTokenPath(), remoteFileToken.existsOnSourceDaemon());
 		} else if (isFileTokenLocal(remoteFileToken)) {
 			//Do not replicate data if in same system.
 			return remoteFileToken;
@@ -520,14 +520,21 @@ public final class FileTokenFactory implements SenderTokenTranslator, ReceiverTo
 		private static final long serialVersionUID = 20111119L;
 		private DaemonConfigInfo sourceDaemonConfigInfo;
 		private String tokenPath;
+		private boolean existsOnSource;
 
-		private SharedToken(final DaemonConfigInfo sourceDaemonConfigInfo, final String tokenPath) {
+		private SharedToken(final DaemonConfigInfo sourceDaemonConfigInfo, final String tokenPath, boolean existsOnSource) {
 			this.sourceDaemonConfigInfo = sourceDaemonConfigInfo;
 			this.tokenPath = tokenPath;
+			this.existsOnSource = existsOnSource;
 		}
 
 		public String getTokenPath() {
 			return tokenPath;
+		}
+
+		@Override
+		public boolean existsOnSourceDaemon() {
+			return existsOnSource;
 		}
 
 		public DaemonConfigInfo getSourceDaemonConfigInfo() {

@@ -229,8 +229,6 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 		private String taskDescription;
 		private File targetFolder;
 		private ProgressReporter reporter;
-		// How long do we wait for a file to appear after the worker claims success (ms)
-		public static final int FILE_WAIT_TIMEOUT = 2 * 60 * 1000;
 
 		private MyProgressListener(final CachableWorkPacket workPacket, final File wipFolder, final File targetCacheFolder, final List<String> outputFiles, final String taskDescriptionFile, final String taskDescription, final ProgressReporter reporter) {
 			this.workPacket = workPacket;
@@ -260,7 +258,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 					final File wipFile = new File(wipFolder, outputFile);
 					final File resultingOutputFile = new File(target, outputFile);
 
-					FileUtilities.waitForFile(wipFile, FILE_WAIT_TIMEOUT);
+					FileUtilities.waitForFile(wipFile);
 					LOGGER.info("Caching output file: " + resultingOutputFile.getAbsolutePath());
 
 					// We move the output file
@@ -300,7 +298,7 @@ public abstract class WorkCache<T extends WorkPacket> implements NoLoggingWorker
 			if (!parent.canWrite()) {
 				throw new MprcException("The cache directory [" + parent.getAbsolutePath() + "] is not writeable.");
 			}
-			int i = numFiles+1;
+			int i = numFiles + 1;
 			while (true) {
 				final File newFolder = new File(parent, String.valueOf(i));
 				if (!newFolder.exists()) {

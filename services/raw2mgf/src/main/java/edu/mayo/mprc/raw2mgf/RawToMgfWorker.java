@@ -136,15 +136,15 @@ public final class RawToMgfWorker implements Worker {
 
 		long totalSpectraExtracted = 0;
 		try {
+			final File ex_msn_exe = getExtractMsnExecutable();
+
+			FileUtilities.ensureFolderExists(mgfFile.getParentFile());
+
 			while (currentSpectrum <= lastSpectrumInBatch) {
 				// Extract .dta files
 				File[] dtaFiles = null;
 
-				final File ex_msn_exe = getExtractMsnExecutable();
-
-				FileUtilities.ensureFolderExists(mgfFile.getParentFile());
-
-				runExtractMsnJob(ex_msn_exe, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript==null ? null : xvfbWrapperScript.getAbsolutePath());
+				runExtractMsnJob(ex_msn_exe, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript == null ? null : xvfbWrapperScript.getAbsolutePath());
 
 				// Count how many extracted
 				dtaFiles = getDtaFiles(fulltempfolder);

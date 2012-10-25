@@ -140,7 +140,7 @@ public class FileHolderTest {
 			public File getFile(final FileToken fileToken) {
 				return new File(getFilePathFromToken(fileToken));
 			}
-		}, synchronizer);
+		}, synchronizer, null);
 
 		Assert.assertEquals(translatedTokens, 7);
 		assertFilesTranslated(test.getFile(), "dest/test.txt", temp);

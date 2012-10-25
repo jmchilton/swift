@@ -123,5 +123,4 @@ public final class RawToMgfWorkPacket extends WorkPacketBase implements Cachable
 		final File cachedMgf = new File(targetFolder, outputFiles.get(0));
 		reporter.reportProgress(new RawToMgfResult(cachedMgf));
 	}
-
 }

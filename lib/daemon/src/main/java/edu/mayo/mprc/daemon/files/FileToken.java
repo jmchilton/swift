@@ -20,4 +20,9 @@ public interface FileToken extends Serializable {
 	 * @return
 	 */
 	String getTokenPath();
+
+	/** Return true if the file exists on the daemon that crated this file token.
+	 * This is used on NFS filesystem to ensure that if the file existed on source,
+	 * it also exists on the destination as expected. */
+	boolean existsOnSourceDaemon();
 }

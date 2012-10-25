@@ -63,8 +63,6 @@ public final class SequestWorker implements Worker {
 				+ "\n\toutput file: " + sequestWorkPacket.getOutputFile()
 				+ "\n\tsearch params: " + sequestWorkPacket.getSearchParamsFile());
 
-		sequestWorkPacket.waitForInputFiles();
-
 		FileUtilities.ensureFolderExists(sequestWorkPacket.getOutputFile().getParentFile());
 
 		final Mgf2SequestCaller m = new Mgf2SequestCaller();

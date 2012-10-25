@@ -13,6 +13,7 @@ import edu.mayo.mprc.swift.dbmapping.FileSearch;
 import edu.mayo.mprc.swift.dbmapping.ReportData;
 import edu.mayo.mprc.swift.dbmapping.SearchRun;
 import edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition;
+import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressInfo;
 
 import java.io.File;
@@ -176,8 +177,9 @@ final class Scaffold3Task extends AsyncTaskBase implements ScaffoldTaskI {
 
 	public void onSuccess() {
 		// Store Scaffold report before we announce success
+		FileUtilities.waitForFile(getResultingFile());
 		storeReportFile();
-		completeWhenFilesAppear(getResultingFile(), getScaffoldSpectraFile());
+		completeWhenFilesAppear(getScaffoldSpectraFile());
 	}
 
 	/**

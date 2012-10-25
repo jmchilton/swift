@@ -58,7 +58,6 @@ public final class XTandemWorker implements Worker {
 
 		try {
 			checkPacketCorrectness(packet);
-			packet.waitForInputFiles();
 
 			FileUtilities.ensureFolderExists(packet.getWorkFolder());
 
