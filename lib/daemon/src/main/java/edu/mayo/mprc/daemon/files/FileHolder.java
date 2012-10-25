@@ -88,7 +88,7 @@ public class FileHolder implements FileTokenHolder {
 		// Set all directly accessible fields
 		for (final Map.Entry<FieldIndex, FileToken> entry : tokenMap.entrySet()) {
 			final File file = translator.getFile(entry.getValue());
-			if(entry.getValue().existsOnSourceDaemon()) {
+			if(entry.getValue()!=null && entry.getValue().existsOnSourceDaemon()) {
 				filesThatShouldExist.add(file);
 			}
 			if (entry.getKey().getIndex() == null) {
