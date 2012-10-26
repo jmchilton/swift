@@ -65,12 +65,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>db-curator documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/db-curator</url>
-        </site>
-    </distributionManagement>
 </project>

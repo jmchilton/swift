@@ -27,12 +27,4 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>qstat documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/qstat</url>
-        </site>
-    </distributionManagement>
 </project>

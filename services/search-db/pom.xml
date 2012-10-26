@@ -84,12 +84,4 @@
         <developerConnection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/services/search-db</developerConnection>
         <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/services/search-db</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>search-db documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/search-db</url>
-        </site>
-    </distributionManagement>
 </project>

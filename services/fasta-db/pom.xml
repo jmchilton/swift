@@ -59,13 +59,4 @@
         <developerConnection>scm:svn:http://bsisvn.mayo.edu/mprc/trunk/java/services/fasta-db</developerConnection>
         <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/services/fasta-db</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>fasta-db documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/fasta-db</url>
-        </site>
-    </distributionManagement>
-
 </project>

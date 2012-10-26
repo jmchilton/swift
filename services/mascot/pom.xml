@@ -45,12 +45,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>mascot documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/mascot</url>
-        </site>
-    </distributionManagement>
 </project>

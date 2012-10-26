@@ -585,5 +585,13 @@
         <developerConnection>scm:git:ssh://git@github.com/romanzenka/swift.git</developerConnection>
         <url>${scm.url.base}/swift/tree/master/${project.artifactId}</url>
     </scm>
+
+    <distributionManagement>
+        <site>
+            <id>mprc-site</id>
+            <name>${project.name} Documentation</name>
+            <url>scp://delphi.mayo.edu/var/www/html/projects/${project.artifactId}</url>
+        </site>
+    </distributionManagement>
 </project>
 

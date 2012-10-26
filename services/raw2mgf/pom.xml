@@ -33,12 +33,4 @@
             <classifier>jdk15</classifier>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>raw2mgf documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/raw2mgf</url>
-        </site>
-    </distributionManagement>
 </project>

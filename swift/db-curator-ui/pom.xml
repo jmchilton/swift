@@ -106,12 +106,4 @@
         <developerConnection>scm:svn:https://bsisvn.mayo.edu/mprc/trunk/java/swift/db-curator-ui</developerConnection>
         <url>http://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/swift/db-curator-ui</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>db-curator-ui documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/db-curator-ui</url>
-        </site>
-    </distributionManagement>
 </project>

@@ -32,12 +32,4 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>mgf2mgf documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/mgf2mgf</url>
-        </site>
-    </distributionManagement>
 </project>

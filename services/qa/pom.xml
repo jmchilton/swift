@@ -77,12 +77,4 @@
             <version>6.21</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>${project.name} documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/${project.name}</url>
-        </site>
-    </distributionManagement>
 </project>

@@ -78,12 +78,4 @@
         <developerConnection>scm:svn:http://delphi.mayo.edu/mprc/trunk/java/swift/gwt-common</developerConnection>
         <url>https://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/swift/gwt-common</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>gwt-common documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/gwt-common</url>
-        </site>
-    </distributionManagement>
 </project>

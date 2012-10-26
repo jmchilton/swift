@@ -49,12 +49,4 @@
             <classifier>jdk15</classifier>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>sequest documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/sequest</url>
-        </site>
-    </distributionManagement>
 </project>

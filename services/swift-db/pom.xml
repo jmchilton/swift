@@ -62,12 +62,4 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>swift-db documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/swift-db</url>
-        </site>
-    </distributionManagement>
 </project>

@@ -37,12 +37,4 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>db-undeploy documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/db-undeploy</url>
-        </site>
-    </distributionManagement>
 </project>

@@ -34,12 +34,4 @@
             <classifier>jdk15</classifier>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>scaffold3 documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/scaffold3</url>
-        </site>
-    </distributionManagement>
 </project>

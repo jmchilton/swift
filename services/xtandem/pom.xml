@@ -38,14 +38,5 @@
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
         </dependency>
-
     </dependencies>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>xtandem documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/xtandem</url>
-        </site>
-    </distributionManagement>
 </project>

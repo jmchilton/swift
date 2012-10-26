@@ -84,12 +84,4 @@
         <developerConnection>scm:svn:https://bsisvn.mayo.edu/mprc/trunk/java/swift/config-ui</developerConnection>
         <url>https://delphi.mayo.edu/wiki/trac.cgi/browser/trunk/java/swift/config-ui</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>mprc-site</id>
-            <name>configuration documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects/config-ui</url>
-        </site>
-    </distributionManagement>
 </project>
