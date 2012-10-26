@@ -378,7 +378,7 @@
         <site>
             <id>mprc-site</id>
             <name>${project.name} Documentation</name>
-            <url>scp://delphi.mayo.edu/var/www/html/projects</url>
+            <url>scp://delphi.mayo.edu/var/www/html/projects/mprc</url>
         </site>
     </distributionManagement>
 
