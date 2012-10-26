@@ -21,7 +21,16 @@
         <module>launcher</module>
         <module>config-ui</module>
         <module>db-curator-ui</module>
-	<module>gwt-common</module>
-	<module>scripts</module>
+        <module>gwt-common</module>
+        <module>scripts</module>
     </modules>
+
+    <!-- Source Control Management -->
+    <scm>
+        <!-- SCM setup -->
+        <connection>scm:git:git://github.com/romanzenka/swift.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/romanzenka/swift.git</developerConnection>
+        <url>${scm.url.base}/swift/tree/master/swift/${project.artifactId}</url>
+    </scm>
+
 </project>
