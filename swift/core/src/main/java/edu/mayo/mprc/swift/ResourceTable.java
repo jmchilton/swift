@@ -62,7 +62,9 @@ import java.util.*;
 public final class ResourceTable extends FactoryBase<ResourceConfig, Object> implements MultiFactory {
 	public static final String SERVICE = "service";
 
-	private Map<String, ResourceInfo> table = new LinkedHashMap<String, ResourceInfo>();
+	private final Map</*type*/String, ResourceInfo> table = new LinkedHashMap<String, ResourceInfo>();
+	// Same as the previous map, just does lookup using the config class.
+	private final Map</*configClass*/Class<? extends ResourceConfig>, ResourceInfo> tableConfigClass = new LinkedHashMap<Class<? extends ResourceConfig>, ResourceInfo>();
 
 	private ScaffoldDeploymentService.Factory scaffoldDeployerWorkerFactory;
 	private DatabaseFactory databaseFactory;
@@ -221,8 +223,23 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		this.gridDaemonRunnerFactory = gridDaemonRunnerFactory;
 	}
 
-	private void addResource(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory, final ServiceUiFactory uiFactory, final String description) {
-		table.put(id, new ResourceInfo(id, userName, configClass, factory, ResourceType.Resource, uiFactory, description));
+	private void addToTable(String type, String userName, Class<? extends ResourceConfig> configClass, ResourceFactory<? extends ResourceConfig, ?> factory, ServiceUiFactory uiFactory, String description, ResourceType resourceType) {
+		final ResourceInfo info = new ResourceInfo(type, userName, configClass, factory, resourceType, uiFactory, description);
+		table.put(type, info);
+		tableConfigClass.put(configClass, info);
+	}
+
+	private void addResource(final String type, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory, final ServiceUiFactory uiFactory, final String description) {
+		addToTable(type, userName, configClass, factory, uiFactory, description, ResourceType.Resource);
+	}
+
+	private void addWorker(final String type, final String userName, final Class<? extends ResourceConfig> configClass, final WorkerFactoryBase<? extends ResourceConfig> factory,
+	                       final ServiceUiFactory uiFactory, final String description) {
+		addToTable(type, userName, configClass, factory, uiFactory, description, ResourceType.Worker);
+	}
+
+	private void addRunner(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory) {
+		addToTable(id, userName, configClass, factory, null, null, ResourceType.Runner);
 	}
 
 	private void addWorkerByReflection(final Class<?> workerClass) {
@@ -254,22 +271,18 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		}
 	}
 
-	private void addWorker(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final WorkerFactoryBase<? extends ResourceConfig> factory,
-	                       final ServiceUiFactory uiFactory, final String description) {
-		table.put(id, new ResourceInfo(id, userName, configClass, factory, ResourceType.Worker, uiFactory, description));
-	}
-
-	private void addRunner(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory) {
-		table.put(id, new ResourceInfo(id, userName, configClass, factory, ResourceType.Runner, null, null));
-	}
-
 	private Map<String, ResourceInfo> getTable() {
 		initialize();
 		return table;
 	}
 
+	private Map<Class<? extends ResourceConfig>, ResourceInfo> getTableConfigClass() {
+		initialize();
+		return tableConfigClass;
+	}
+
 	@Override
-	public Map<String/*id*/, Class<? extends ResourceConfig>> getConfigClasses() {
+	public Map<String/*type*/, Class<? extends ResourceConfig>> getConfigClasses() {
 		final Map<String, Class<? extends ResourceConfig>> map = new HashMap<String, Class<? extends ResourceConfig>>(getTable().size());
 		for (final ResourceInfo info : getTable().values()) {
 			map.put(info.getId(), info.getConfigClass());
@@ -277,36 +290,36 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		return map;
 	}
 
+	private ResourceInfo getByConfigClass(final Class<? extends ResourceConfig> configClass) {
+		return getTableConfigClass().get(configClass);
+	}
+
 	@Override
 	public ResourceFactory getFactory(final Class<? extends ResourceConfig> configClass) {
 
-		for (final ResourceInfo info : getTable().values()) {
-			if (info.getConfigClass().equals(configClass)) {
-				return info.getFactory();
-			}
+		final ResourceInfo info = getByConfigClass(configClass);
+		if (info != null) {
+			return info.getFactory();
 		}
 
 		throw new MprcException("Unknown type " + configClass.getName() +
-				", supported types are " + Joiner.on(", ").join(getSupportedConfigClassNames(null)));
+				", supported types are " + Joiner.on(", ").join(getSupportedConfigClassNames()));
 	}
 
 	@Override
 	public String getId(final Class<? extends ResourceConfig> configClass) {
-		for (final ResourceInfo info : getTable().values()) {
-			if (info.getConfigClass().equals(configClass)) {
-				return info.getId();
-			}
+		final ResourceInfo info = getByConfigClass(configClass);
+		if (info != null) {
+			return info.getId();
 		}
 		return null;
 	}
 
 	@Override
-	public Collection<String> getSupportedConfigClassNames(final Object type) {
+	public Collection<String> getSupportedConfigClassNames() {
 		final List<String> names = new ArrayList<String>(getTable().size());
 		for (final ResourceInfo info : getTable().values()) {
-			if (type == null || info.getType() == type) {
-				names.add(info.getConfigClass().getName());
-			}
+			names.add(info.getConfigClass().getName());
 		}
 		return names;
 	}
@@ -373,12 +386,13 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 	 */
 	@Override
 	public String getUserName(final ResourceConfig config) {
-		return getTable().get(getId(config.getClass())).getUserName();
+		final ResourceInfo info = getByConfigClass(config.getClass());
+		return info==null ? null : info.getUserName();
 	}
 
 	@Override
 	public Object getResourceType(final String id) {
-		return getTable().get(id).getType();
+		return getTable().get(id).getResourceType();
 	}
 
 	public ResourceType getResourceTypeAsType(final String id) {
@@ -395,10 +409,6 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		return getTable().get(type).getConfigClass();
 	}
 
-	public Class<? extends ResourceConfig> getConfigClassForType(final String type) {
-		return getConfigClass(type);
-	}
-
 	public ServiceUiFactory
 	getUiFactory(final String type) {
 		return getTable().get(type).getUiFactory();
@@ -413,16 +423,16 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		private final String userName;
 		private final Class<? extends ResourceConfig> configClass;
 		private final ResourceFactory<?, ?> factory;
-		private final ResourceType type;
+		private final ResourceType resourceType;
 		private final ServiceUiFactory uiFactory;
 		private final String description;
 
-		public ResourceInfo(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory, final ResourceType type, final ServiceUiFactory uiFactory, final String description) {
+		public ResourceInfo(final String id, final String userName, final Class<? extends ResourceConfig> configClass, final ResourceFactory<? extends ResourceConfig, ?> factory, final ResourceType resourceType, final ServiceUiFactory uiFactory, final String description) {
 			this.id = id;
 			this.userName = userName;
 			this.configClass = configClass;
 			this.factory = factory;
-			this.type = type;
+			this.resourceType = resourceType;
 			this.uiFactory = uiFactory;
 			this.description = description;
 		}
@@ -443,8 +453,8 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 			return factory;
 		}
 
-		public ResourceType getType() {
-			return type;
+		public ResourceType getResourceType() {
+			return resourceType;
 		}
 
 		public ServiceUiFactory getUiFactory() {
