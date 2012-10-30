@@ -171,7 +171,7 @@ public class ConfigurationData {
 	 * @throws IllegalAccessException
 	 */
 	private ResourceConfig getDefaultResourceConfig(final String type, final DaemonConfig parent, final ResourceTable moduleConfigTable) {
-		final Class<? extends ResourceConfig> configClass = moduleConfigTable.getConfigClassForType(type);
+		final Class<? extends ResourceConfig> configClass = moduleConfigTable.getConfigClass(type);
 		final ResourceConfig resourceConfig;
 		try {
 			resourceConfig = configClass.newInstance();

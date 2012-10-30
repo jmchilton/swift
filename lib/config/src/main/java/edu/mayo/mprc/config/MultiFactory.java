@@ -12,7 +12,7 @@ import java.util.Map;
  * <li>userName - name to show to the user
  * <li>configClass - Class name of the config class
  * <li>factory - A factory capable of taking the config and producing an instance of the item
- * <li>type - additional information about the character of the resource. The resources can be grouped by the type in methods such as {@link #getSupportedConfigClassNames(Object)}
+ * <li>type - additional information about the character of the resource. The resources can be grouped by the type in methods such as {@link #getSupportedConfigClassNames()}
  * </ul>
  */
 public interface MultiFactory extends ResourceFactory<ResourceConfig, Object> {
@@ -29,10 +29,7 @@ public interface MultiFactory extends ResourceFactory<ResourceConfig, Object> {
 
 	String getId(Class<? extends ResourceConfig> configClass);
 
-	/**
-	 * Type==null - return all classes.
-	 */
-	Collection<String> getSupportedConfigClassNames(Object type);
+	Collection<String> getSupportedConfigClassNames();
 
 	String getUserName(String type);
 
