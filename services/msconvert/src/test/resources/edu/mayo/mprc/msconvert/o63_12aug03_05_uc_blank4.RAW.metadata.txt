@@ -1,0 +1,53 @@
+fileDescription:
+  fileContent:
+    cvParam: MS1 spectrum
+    cvParam: MSn spectrum
+  sourceFileList: 
+    sourceFile:
+      id: RAW1
+      name: o63_12aug03_05_uc_blank4.RAW
+      location: file:///Z:/mnt/mprc/software/public/bumbershoot/pwiz-wine-3_0_4019//test
+      cvParam: Thermo nativeID format
+      cvParam: Thermo RAW file
+sampleList:
+instrumentConfigurationList:
+  instrumentConfiguration:
+    id: IC1
+    referenceableParamGroupRef: CommonInstrumentParams
+    componentList:
+      source: 
+        order: 1
+        cvParam: nanoelectrospray
+        cvParam: nanospray inlet
+      analyzer: 
+        order: 2
+        cvParam: orbitrap
+      detector: 
+        order: 3
+        cvParam: inductive detector
+    softwareRef: Xcalibur
+  instrumentConfiguration:
+    id: IC2
+    referenceableParamGroupRef: CommonInstrumentParams
+    componentList:
+      source: 
+        order: 1
+        cvParam: nanoelectrospray
+        cvParam: nanospray inlet
+      analyzer: 
+        order: 2
+        cvParam: radial ejection linear ion trap
+      detector: 
+        order: 3
+        cvParam: electron multiplier
+    softwareRef: Xcalibur
+softwareList:
+  software:
+    id: Xcalibur
+    version: 2.4 SP1
+    cvParam: Xcalibur
+  software:
+    id: pwiz
+    version: 3.0.4019
+    cvParam: ProteoWizard
+dataProcessingList

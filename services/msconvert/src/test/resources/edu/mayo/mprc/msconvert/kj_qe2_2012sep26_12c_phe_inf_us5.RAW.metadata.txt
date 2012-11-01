@@ -1,0 +1,40 @@
+fileDescription:
+  fileContent:
+    cvParam: selected ion monitoring chromatogram
+  sourceFileList: 
+    sourceFile:
+      id: RAW1
+      name: kj_qe2_2012sep26_12c_phe_inf_us5.RAW
+      location: file:///Z:/mnt/mprc/software/public/bumbershoot/pwiz-wine-3_0_4019//test
+      cvParam: Thermo nativeID format
+      cvParam: Thermo RAW file
+sampleList:
+instrumentConfigurationList:
+  instrumentConfiguration:
+    id: IC1
+    referenceableParamGroupRef: CommonInstrumentParams
+    componentList:
+      source: 
+        order: 1
+        cvParam: nanoelectrospray
+        cvParam: nanospray inlet
+      analyzer: 
+        order: 2
+        cvParam: quadrupole
+      analyzer: 
+        order: 3
+        cvParam: orbitrap
+      detector: 
+        order: 4
+        cvParam: inductive detector
+    softwareRef: Xcalibur
+softwareList:
+  software:
+    id: Xcalibur
+    version: 2.1-152001/2.1.0.1520
+    cvParam: Xcalibur
+  software:
+    id: pwiz
+    version: 3.0.4019
+    cvParam: ProteoWizard
+dataProcessingList
