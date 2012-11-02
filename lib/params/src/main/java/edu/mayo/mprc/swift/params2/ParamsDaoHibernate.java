@@ -192,7 +192,9 @@ public final class ParamsDaoHibernate extends DaoBase implements ParamsDao {
 	}
 
 	private Criterion getExtractMsnSettingsEqualityCriteria(final ExtractMsnSettings extractMsnSettings) {
-		return nullSafeEq("commandLineSwitches", extractMsnSettings.getCommandLineSwitches());
+		return Restrictions.conjunction()
+				.add(nullSafeEq("commandLineSwitches", extractMsnSettings.getCommandLineSwitches()))
+				.add(nullSafeEq("command", extractMsnSettings.getCommand()));
 	}
 
 	public ExtractMsnSettings addExtractMsnSettings(final ExtractMsnSettings extractMsnSettings) {

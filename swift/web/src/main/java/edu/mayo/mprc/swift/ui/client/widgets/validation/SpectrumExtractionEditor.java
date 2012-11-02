@@ -74,9 +74,12 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 	}
 
 	public ClientValue getClientValue() {
+		if (extractMsnSettings == null) {
+			return null;
+		}
 		// We filter the command-line switches if engine is not extract_msn
 		return new ClientExtractMsnSettings(
-				commandLineSupported(extractMsnSettings.getCommand()) ? extractMsnSettings.getCommandLineSwitches() : null,
+				commandLineSupported(extractMsnSettings.getCommand()) ? extractMsnSettings.getCommandLineSwitches() : "",
 				extractMsnSettings.getCommand());
 	}
 
@@ -113,7 +116,8 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 	}
 
 	public void setEnabled(final boolean enabled) {
-		settings.setEnabled(enabled);
+		settings.setEnabled(enabled && commandLineSupported(engineName.getValue(engineName.getSelectedIndex())));
+		engineName.setEnabled(enabled);
 	}
 
 	public void addChangeListener(final ChangeListener changeListener) {
@@ -125,16 +129,22 @@ public final class SpectrumExtractionEditor extends Composite implements Validat
 	}
 
 	public void onChange(final Widget widget) {
+		updateSettings();
 		updateInterface();
 		changeListenerCollection.fireChange(this);
 	}
 
-	private void updateInterface() {
+	private void updateSettings() {
 		extractMsnSettings.setCommandLineSwitches(settings.getText().trim());
 		final String engine = engineName.getValue(engineName.getSelectedIndex());
 		extractMsnSettings.setCommand(engine);
+		updateInterface();
+	}
+
+	private void updateInterface() {
+		final String engine = engineName.getValue(engineName.getSelectedIndex());
 		final boolean commandLineVisible = commandLineSupported(engine);
-		settings.setVisible(commandLineVisible);
+		settings.setEnabled(commandLineVisible);
 		help.setVisible(commandLineVisible);
 	}
 
