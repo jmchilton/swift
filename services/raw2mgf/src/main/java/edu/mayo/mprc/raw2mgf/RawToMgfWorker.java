@@ -13,6 +13,7 @@ import edu.mayo.mprc.daemon.WorkPacket;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
 import edu.mayo.mprc.daemon.exception.DaemonException;
+import edu.mayo.mprc.utilities.FilePathShortener;
 import edu.mayo.mprc.utilities.FileUtilities;
 import edu.mayo.mprc.utilities.progress.ProgressReporter;
 import org.apache.log4j.Logger;
@@ -115,39 +116,23 @@ public final class RawToMgfWorker implements Worker {
 		final File fulltempfolder = getMirrorFolderonTemp(tempFolder);
 		FileUtilities.ensureFolderExists(fulltempfolder);
 
-		boolean temporaryLinkMade = false;
-		File temporaryRawFile = null;
-		if (FileUtilities.isLinuxPlatform() && rawFile.getAbsolutePath().length() > MAX_RAW_PATH_LENGTH) {
-			// We are on Linux, therefore most likely running wine
-			// Make a temporary link to our original raw file, to shorten the path
-			try {
-				temporaryRawFile = FileUtilities.shortenFilePath(rawFile);
-				LOGGER.debug("Shortening .RAW path (over " + MAX_RAW_PATH_LENGTH + " characters) by linking: " + rawFile.getAbsolutePath() + "->" + rawFile.getAbsolutePath());
-				rawFile = temporaryRawFile;
-				temporaryLinkMade = true;
-			} catch (Exception ignore) {
-				// SWALLOWED: If we fail to make a link, we use the original file. But we must NOT delete it afterwards!
-				temporaryLinkMade = false;
-			}
-		}
+		FilePathShortener shortener = new FilePathShortener(rawFile, MAX_RAW_PATH_LENGTH);
+		rawFile = shortener.getShortenedFile();
 
 		long currentSpectrum = firstSpectrum == null ? 1 : firstSpectrum;
 		long lastSpectrumInBatch = currentSpectrum + spectrumBatchSize - 1;
 
-		long totalSpectraExtracted = 0;
 		try {
-			final File ex_msn_exe = getExtractMsnExecutable();
+			final File executable = getExtractMsnExecutable();
 
 			FileUtilities.ensureFolderExists(mgfFile.getParentFile());
 
+			long totalSpectraExtracted = 0;
 			while (currentSpectrum <= lastSpectrumInBatch) {
+				runExtractMsnJob(executable, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript == null ? null : xvfbWrapperScript.getAbsolutePath());
+
 				// Extract .dta files
-				File[] dtaFiles = null;
-
-				runExtractMsnJob(ex_msn_exe, fulltempfolder, params, rawFile, currentSpectrum, lastSpectrumInBatch, wrapperScript, xvfbWrapperScript == null ? null : xvfbWrapperScript.getAbsolutePath());
-
-				// Count how many extracted
-				dtaFiles = getDtaFiles(fulltempfolder);
+				File[] dtaFiles = getDtaFiles(fulltempfolder);
 
 				// Terminate if we could not find any .dta anymore
 				if (dtaFiles.length == 0) {
@@ -172,9 +157,7 @@ public final class RawToMgfWorker implements Worker {
 		} catch (Exception we) {
 			throw new DaemonException("Error extracting dta files from " + batchWorkPacket.getInputFile(), we);
 		} finally {
-			if (temporaryLinkMade) {
-				FileUtilities.cleanupShortenedPath(temporaryRawFile);
-			}
+			shortener.cleanup();
 		}
 	}
 
