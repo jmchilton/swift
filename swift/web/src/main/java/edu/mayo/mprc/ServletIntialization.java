@@ -73,7 +73,10 @@ public final class ServletIntialization {
 	private static File getConfigFile(final ServletConfig config) {
 		File confFile = null;
 		if (getSwiftHome(config) == null) {
-			final String swiftHome = System.getenv(SWIFT_HOME);
+			String swiftHome = System.getenv(SWIFT_HOME);
+			if(swiftHome == null) {
+				swiftHome = System.getProperty(SWIFT_HOME);
+			}
 			if (swiftHome != null) {
 				confFile = new File(swiftHome, SWIFT_CONF_RELATIVE_PATH).getAbsoluteFile();
 			}
