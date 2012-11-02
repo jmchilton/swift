@@ -9,7 +9,6 @@ import edu.mayo.mprc.config.ui.ServiceUiFactory;
 import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
 import edu.mayo.mprc.enginedeployment.DeploymentService;
@@ -177,13 +176,8 @@ public final class OmssaDeploymentService extends DeploymentService<DeploymentRe
 
 			final ProcessCaller caller = getFormatDBCaller(toDeploy);
 
-			caller.run(); //this will block until complete but that is OK since this daemon is a thread.
-
+			caller.runAndCheck("formatDB"); //this will block until complete but that is OK since this daemon is a thread.
 			LOGGER.info("OMSSA database " + request.getShortName() + " is deployed");
-
-			if (caller.getExitValue() != 0) {
-				throw new DaemonException("Non-zero exit value for format db call: " + caller.getFailedCallDescription());
-			}
 
 			reportInto.setGeneratedFiles(FileUtilities.getFilesFromFolder(toDeploy.getParentFile()));
 

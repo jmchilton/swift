@@ -136,17 +136,13 @@ public final class Scaffold3Worker implements Worker {
 		final ProcessCaller caller = new ProcessCaller(processBuilder);
 		caller.setOutputMonitor(new ScaffoldLogMonitor(progressReporter));
 
-		caller.run();
-		final int exitValue = caller.getExitValue();
+		try {
+			caller.runAndCheck("Scaffold3");
+		} catch (Exception e) {
+			throw new MprcException(e);
+		}
 
 		FileUtilities.restoreUmaskRights(outputFolder, true);
-
-		LOGGER.debug("Scaffold finished with exit value " + exitValue);
-		if (exitValue != 0) {
-			throw new DaemonException("Non-zero exit value=" + exitValue + " for call " + caller.getCallDescription() + "\n\tStandard out:"
-					+ caller.getOutputLog() + "\n\tStandard error:"
-					+ caller.getErrorLog());
-		}
 	}
 
 	/**

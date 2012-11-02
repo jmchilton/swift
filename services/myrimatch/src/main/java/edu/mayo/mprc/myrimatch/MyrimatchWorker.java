@@ -91,20 +91,16 @@ public final class MyrimatchWorker implements Worker {
 
 			LOGGER.info("Myrimatch search, " + packet.toString() + ", has been submitted.");
 			processCaller.setOutputMonitor(new MyrimatchLogMonitor(progressReporter));
-			processCaller.run();
+			processCaller.runAndCheck("myrimatch");
 
-			if (processCaller.getExitValue() != 0) {
-				progressReporter.reportFailure(new MprcException("Execution of Myrimatch search engine failed. Error: " + processCaller.getFailedCallDescription()));
-			} else {
-				final File createdResultFile = new File(packet.getWorkFolder(), FileUtilities.stripExtension(packet.getInputFile().getName()) + ".pepXML");
-				if (!createdResultFile.equals(resultFile)) {
-					FileUtilities.rename(createdResultFile, resultFile);
-				}
-
-				workPacket.synchronizeFileTokensOnReceiver();
-				progressReporter.reportSuccess();
-				LOGGER.info("Myrimatch search, " + packet.toString() + ", has been successfully completed.");
+			final File createdResultFile = new File(packet.getWorkFolder(), FileUtilities.stripExtension(packet.getInputFile().getName()) + ".pepXML");
+			if (!createdResultFile.equals(resultFile)) {
+				FileUtilities.rename(createdResultFile, resultFile);
 			}
+
+			workPacket.synchronizeFileTokensOnReceiver();
+			progressReporter.reportSuccess();
+			LOGGER.info("Myrimatch search, " + packet.toString() + ", has been successfully completed.");
 		} catch (Exception t) {
 			progressReporter.reportFailure(t);
 		}

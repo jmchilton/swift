@@ -98,6 +98,25 @@ public final class ProcessCaller implements Runnable {
 	}
 
 	/**
+	 * Utility method that runs a given command, throwing an exception if it returns with nonzero exit value +
+	 * reporting in detail what went wrong.
+	 *
+	 * @param callName Shorthand name for the process to be used in the error messages.
+	 */
+	public void runAndCheck(final String callName) {
+		try {
+			run();
+		} catch (Exception t) {
+			throw new MprcException(callName + " process failed: " + getFailedCallDescription(), t);
+		}
+		LOGGER.debug(callName + " process returned " + getExitValue());
+		if (getExitValue() != 0) {
+			throw new MprcException(callName + " process failed: " + getFailedCallDescription());
+		}
+
+	}
+
+	/**
 	 * The process will be killed in the specified amount of milliseconds, unless it terminates first.
 	 *
 	 * @param millis How many milliseconds to wait before the process gets terminated.

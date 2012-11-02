@@ -87,12 +87,7 @@ public final class OmssaWorker implements Worker {
 
 		final ProcessCaller caller = new ProcessCaller(procBuilder);
 
-		caller.run();
-
-		LOGGER.debug("OMSSA finished with exit value " + String.valueOf(caller.getExitValue()));
-		if (caller.getExitValue() != 0) {
-			throw new DaemonException("OMSSA finished with nonzero exit value. Call was: " + caller.getFailedCallDescription());
-		}
+		caller.runAndCheck("OMSSA");
 
 		// gzip the output file
 		try {

@@ -194,15 +194,7 @@ public final class SequestDeploymentService extends DeploymentService<SequestDep
 			pb.directory(tempExecFolder);
 
 			final ProcessCaller caller = new ProcessCaller(pb);
-			try {
-				caller.run();
-			} catch (Exception t) {
-				throw new MprcException("Could not create sequest database index.", t);
-			}
-			if (caller.getExitValue() != 0) {
-				throw new MprcException("Could not create sequest database index - the indexing tool returned nonzero return value:\n" + caller.getFailedCallDescription());
-			}
-
+			caller.runAndCheck("Sequest database indexing (makedb)");
 
 			//6.  Ensure .fasta.hdr was indeed produced
 			if (!hdrFile.exists()) {

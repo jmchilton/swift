@@ -95,20 +95,9 @@ public final class ExtractMsnWrapper {
 		}
 
 		final String[] theCall = getCall();
-		final ProcessBuilder builder = new ProcessBuilder(theCall)
-				.directory(folder);
-
+		final ProcessBuilder builder = new ProcessBuilder(theCall).directory(folder);
 		final ProcessCaller caller = new ProcessCaller(builder);
-
-		try {
-			caller.run();
-		} catch (Exception t) {
-			throw new MprcException("ExtractMsnWrapper call failed: " + caller.getFailedCallDescription(), t);
-		}
-		LOGGER.debug("extract_msn.exe returned " + caller.getExitValue());
-		if (caller.getExitValue() != 0) {
-			throw new MprcException("ExtractMsnWrapper call failed: " + caller.getFailedCallDescription());
-		}
+		caller.runAndCheck("extract_msn");
 		if (folder.listFiles().length == 0) {
 			throw new MprcException("The folder with .dta files is empty: " + folder.getAbsolutePath() + "\nextract_msn call:\n"
 					+ caller.getFailedCallDescription());

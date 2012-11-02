@@ -45,12 +45,9 @@ public final class QstatDaemonWorker implements Worker {
 		final ProcessBuilder builder = new ProcessBuilder("qstat", "-j", String.valueOf(jobId));
 		final ProcessCaller caller = new ProcessCaller(builder);
 		try {
-			caller.run();
+			caller.runAndCheck("qstat");
 		} catch (Exception t) {
-			throw new DaemonException("Could not execute qstat", t);
-		}
-		if (caller.getExitValue() != 0) {
-			throw new DaemonException("Qstat returned non-null value. Call details: " + caller.getFailedCallDescription());
+			throw new DaemonException(t);
 		}
 
 		reporter.reportProgress(new QstatOutput(caller.getOutputLog()));

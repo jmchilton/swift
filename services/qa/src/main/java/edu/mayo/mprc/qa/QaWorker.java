@@ -296,20 +296,8 @@ public final class QaWorker implements Worker {
 		result.add(reportFile.getAbsolutePath());
 
 		final ProcessBuilder builder = new ProcessBuilder(result.toArray(new String[result.size()]));
-
 		final ProcessCaller caller = new ProcessCaller(builder);
-
-		try {
-			caller.run();
-		} catch (Exception t) {
-			throw new MprcException("Qa R script call failed: " + caller.getFailedCallDescription(), t);
-		}
-
-		LOGGER.debug("R script call returned " + caller.getExitValue());
-
-		if (caller.getExitValue() != 0) {
-			throw new MprcException("Qa R script call failed: " + caller.getFailedCallDescription());
-		}
+		caller.runAndCheck("QA R script");
 	}
 
 	public String getRExecutable() {

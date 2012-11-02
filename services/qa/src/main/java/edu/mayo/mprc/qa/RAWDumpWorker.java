@@ -105,7 +105,7 @@ public final class RAWDumpWorker implements Worker {
 		}
 
 		if (!rawInfo.exists() || rawInfo.length() == 0 || !rawSpectra.exists() || rawSpectra.length() == 0) {
-			throw new MprcException("Raw dump has failed to create output files, " + rawInfo.getAbsolutePath() + " and " + rawSpectra.getAbsolutePath() + ".\n"+caller.getFailedCallDescription());
+			throw new MprcException("Raw dump has failed to create output files, " + rawInfo.getAbsolutePath() + " and " + rawSpectra.getAbsolutePath() + ".\n" + caller.getFailedCallDescription());
 		}
 	}
 
@@ -220,20 +220,8 @@ public final class RAWDumpWorker implements Worker {
 		LOGGER.info("Running command from the following parameters " + parameters.toString());
 
 		final ProcessBuilder builder = new ProcessBuilder(parameters.toArray(new String[parameters.size()]));
-
 		final ProcessCaller caller = new ProcessCaller(builder);
-
-		try {
-			caller.run();
-		} catch (Exception t) {
-			throw new MprcException("External process call failed: " + caller.getFailedCallDescription(), t);
-		}
-
-		LOGGER.debug("External process call returned " + caller.getExitValue());
-
-		if (caller.getExitValue() != 0) {
-			throw new MprcException("External process call failed: " + caller.getFailedCallDescription());
-		}
+		caller.runAndCheck("rawdump");
 
 		return caller;
 	}

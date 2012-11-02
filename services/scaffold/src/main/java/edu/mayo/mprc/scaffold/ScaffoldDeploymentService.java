@@ -8,7 +8,6 @@ import edu.mayo.mprc.config.ui.ServiceUiFactory;
 import edu.mayo.mprc.config.ui.UiBuilder;
 import edu.mayo.mprc.daemon.Worker;
 import edu.mayo.mprc.daemon.WorkerFactoryBase;
-import edu.mayo.mprc.daemon.exception.DaemonException;
 import edu.mayo.mprc.enginedeployment.DeploymentRequest;
 import edu.mayo.mprc.enginedeployment.DeploymentResult;
 import edu.mayo.mprc.enginedeployment.DeploymentService;
@@ -130,16 +129,8 @@ public final class ScaffoldDeploymentService extends DeploymentService<Deploymen
 
 		final ProcessBuilder processBuilder = new ProcessBuilder(thisargs)
 				.directory(workFolder);
-
 		final ProcessCaller caller = new ProcessCaller(processBuilder);
-
-		caller.run();
-		final int exitValue = caller.getExitValue();
-
-		LOGGER.debug("Scaffold finished with exit value " + String.valueOf(exitValue));
-		if (exitValue != 0) {
-			throw new DaemonException("Non-zero exit value=" + exitValue + " for call: " + caller.getFailedCallDescription());
-		}
+		caller.runAndCheck("Scaffold");
 
 		if (null == getExistingIndex(toDeploy)) {
 			throw new MprcException("Index creation failed.  Could not find any created index with the fasta file: " + toDeploy.getAbsolutePath());

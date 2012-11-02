@@ -86,12 +86,7 @@ public final class MSMSEval {
 			processCaller.setRetainLogs(writeMSMSEvalOutputToLogger);
 			processCaller.setLogToConsole(writeMSMSEvalOutputToLogger);
 
-			processCaller.run();
-
-			if (processCaller.getExitValue() != 0) {
-				throw new MprcException(processCaller.getFailedCallDescription());
-			}
-
+			processCaller.runAndCheck("msmseval");
 		} else {
 			throw new IllegalArgumentException("Process builder object for the msmsEval command is null.");
 		}
