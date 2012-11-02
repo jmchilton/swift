@@ -13,6 +13,7 @@ import edu.mayo.mprc.mascot.MascotDeploymentService;
 import edu.mayo.mprc.mascot.MascotWorker;
 import edu.mayo.mprc.mascot.MockMascotDeploymentService;
 import edu.mayo.mprc.mgf2mgf.MgfToMgfWorker;
+import edu.mayo.mprc.msconvert.MsconvertWorker;
 import edu.mayo.mprc.msmseval.MSMSEvalWorker;
 import edu.mayo.mprc.omssa.OmssaDeploymentService;
 import edu.mayo.mprc.omssa.OmssaWorker;
@@ -187,6 +188,13 @@ public final class TestDaemonFactory {
 		final ServiceConfig raw2mgf = new ServiceConfig("raw2mgf", runner5, BROKER_URI + "raw2mgf");
 		main.addService(raw2mgf);
 
+		final SimpleRunner.Config runner6 = new SimpleRunner.Config();
+		runner6.setNumThreads(3);
+		final MsconvertWorker.Config msconvertConfig = new MsconvertWorker.Config("run_msconvert.sh", "run_msaccess.sh");
+		runner6.setWorkerConfiguration(msconvertConfig);
+		final ServiceConfig msconvert = new ServiceConfig("msconvert", runner6, BROKER_URI + "msconvert");
+		main.addService(msconvert);
+
 		final SimpleRunner.Config runner72 = new SimpleRunner.Config();
 		runner72.setNumThreads(2);
 		runner72.setWorkerConfiguration(new MockMascotDeploymentService.Config());
@@ -222,7 +230,7 @@ public final class TestDaemonFactory {
 
 		final SwiftSearcher.Config searcherConfig = new SwiftSearcher.Config(
 				"fastaPath", "fastaArchivePath",
-				"fastaUploadPath", raw2mgf, mgfToMgf, rawDump, mascot, mascotDeployer, sequest,
+				"fastaUploadPath", raw2mgf, msconvert, mgfToMgf, rawDump, mascot, mascotDeployer, sequest,
 				sequestDeployer, tandem, tandemDeployer, omssa, omssaDeployer, null, null, scaffold, scaffoldDeployer, null, null, scaffoldReport, qa, null, null, msmsEval, null);
 		final SimpleRunner.Config runner76 = new SimpleRunner.Config();
 		runner76.setNumThreads(1);

@@ -31,10 +31,10 @@ public final class SwiftDaoTest {
 		swiftDao.begin();
 		try {
 
-			ExtractMsnSettings settings = new ExtractMsnSettings("-D");
+			ExtractMsnSettings settings = new ExtractMsnSettings("-D", ExtractMsnSettings.EXTRACT_MSN);
 			settings = paramsDao.addExtractMsnSettings(settings);
 
-			ExtractMsnSettings settings2 = new ExtractMsnSettings("-D");
+			ExtractMsnSettings settings2 = new ExtractMsnSettings("-D", ExtractMsnSettings.EXTRACT_MSN);
 			settings2 = paramsDao.addExtractMsnSettings(settings2);
 
 			Assert.assertEquals(settings.getId(), settings2.getId(), "Same objects have to get the same id");

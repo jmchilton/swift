@@ -21,6 +21,8 @@ import edu.mayo.mprc.mascot.MascotDeploymentService;
 import edu.mayo.mprc.mascot.MascotWorker;
 import edu.mayo.mprc.mascot.MockMascotDeploymentService;
 import edu.mayo.mprc.mgf2mgf.MgfToMgfWorker;
+import edu.mayo.mprc.msconvert.MsconvertCache;
+import edu.mayo.mprc.msconvert.MsconvertWorker;
 import edu.mayo.mprc.msmseval.MSMSEvalWorker;
 import edu.mayo.mprc.msmseval.MsmsEvalCache;
 import edu.mayo.mprc.myrimatch.MyrimatchCache;
@@ -69,6 +71,7 @@ public final class SwiftSearcher implements Worker {
 
 	private boolean raw2mgfEnabled = false;
 	private boolean mgf2mgfEnabled = false;
+	private boolean msconvertEnabled = false;
 	private boolean rawdumpEnabled = false;
 	private boolean msmsEvalEnabled = false;
 	private boolean scaffoldReportEnabled = false;
@@ -78,6 +81,7 @@ public final class SwiftSearcher implements Worker {
 	private Collection<SearchEngine> supportedEngines = new HashSet<SearchEngine>();
 
 	private DaemonConnection raw2mgfDaemon;
+	private DaemonConnection msconvertDaemon;
 	private DaemonConnection mgfCleanupDaemon;
 	private DaemonConnection rawDumpDaemon;
 	private DaemonConnection msmsEvalDaemon;
@@ -96,6 +100,7 @@ public final class SwiftSearcher implements Worker {
 	private static final String FASTA_ARCHIVE_PATH = "fastaArchivePath";
 	private static final String FASTA_UPLOAD_PATH = "fastaUploadPath";
 	private static final String RAW_2_MGF = "raw2mgf";
+	private static final String MSCONVERT = "msconvert";
 	private static final String MGF_2_MGF = "mgf2mgf";
 	private static final String RAWDUMP = "rawdump";
 	private static final String MASCOT = "mascot";
@@ -143,6 +148,14 @@ public final class SwiftSearcher implements Worker {
 
 	public void setMgf2mgfEnabled(final boolean mgf2mgfEnabled) {
 		this.mgf2mgfEnabled = mgf2mgfEnabled;
+	}
+
+	public boolean isMsconvertEnabled() {
+		return msconvertEnabled;
+	}
+
+	public void setMsconvertEnabled(boolean msconvertEnabled) {
+		this.msconvertEnabled = msconvertEnabled;
 	}
 
 	public boolean isRawdumpEnabled() {
@@ -220,6 +233,14 @@ public final class SwiftSearcher implements Worker {
 		this.raw2mgfDaemon = raw2mgfDaemon;
 	}
 
+	public DaemonConnection getMsconvertDaemon() {
+		return msconvertDaemon;
+	}
+
+	public void setMsconvertDaemon(DaemonConnection msconvertDaemon) {
+		this.msconvertDaemon = msconvertDaemon;
+	}
+
 	public DaemonConnection getMgfCleanupDaemon() {
 		return mgfCleanupDaemon;
 	}
@@ -288,6 +309,7 @@ public final class SwiftSearcher implements Worker {
 		assert supportedEngines != null : "Supported engines must not be null";
 		assert !raw2mgfEnabled || raw2mgfDaemon != null : "Raw2mgf daemon must be set up if it is enabled";
 		assert !mgf2mgfEnabled || mgfCleanupDaemon != null : "MgfCleanup daemon must be set up if it is enabled";
+		assert !msconvertEnabled || msconvertDaemon != null : "Msconvert daemon must be set up if it is enabled";
 	}
 
 	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {
@@ -320,6 +342,7 @@ public final class SwiftSearcher implements Worker {
 					swiftSearchWorkPacket,
 					swiftSearchDefinition,
 					raw2mgfDaemon,
+					msconvertDaemon,
 					mgfCleanupDaemon,
 					rawDumpDaemon,
 					msmsEvalDaemon,
@@ -385,7 +408,7 @@ public final class SwiftSearcher implements Worker {
 		try {
 			final Set<SearchEngine> problematicEngines = new HashSet<SearchEngine>();
 			for (final FileSearch inputFile : definition.getInputFiles()) {
-				if (!inputFile.getInputFile().getName().endsWith(".mgf") && !this.raw2mgfEnabled) {
+				if (!inputFile.getInputFile().getName().endsWith(".mgf") && !(this.raw2mgfEnabled || this.msconvertEnabled)) {
 					raw2mgfProblem = true;
 				}
 
@@ -423,7 +446,7 @@ public final class SwiftSearcher implements Worker {
 
 	public String toString() {
 		final StringBuilder result = new StringBuilder(NAME).append(" capable of running ");
-		if (raw2mgfEnabled) {
+		if (raw2mgfEnabled || msconvertEnabled) {
 			result.append("Raw->MGF");
 		}
 		appendEngines(supportedEngines, result);
@@ -458,6 +481,10 @@ public final class SwiftSearcher implements Worker {
 			if (config.raw2mgf != null) {
 				worker.setRaw2mgfDaemon((DaemonConnection) dependencies.createSingleton(config.raw2mgf));
 				worker.setRaw2mgfEnabled(true);
+			}
+			if (config.msconvert != null) {
+				worker.setMsconvertDaemon((DaemonConnection) dependencies.createSingleton(config.msconvert));
+				worker.setMsconvertEnabled(true);
 			}
 			if (config.mgf2mgf != null) {
 				worker.setMgfCleanupDaemon((DaemonConnection) dependencies.createSingleton(config.mgf2mgf));
@@ -551,6 +578,7 @@ public final class SwiftSearcher implements Worker {
 		private boolean reportDecoyHits;
 
 		private ServiceConfig raw2mgf;
+		private ServiceConfig msconvert;
 		private ServiceConfig mgf2mgf;
 		private ServiceConfig rawdump;
 		private ServiceConfig mascot;
@@ -578,7 +606,8 @@ public final class SwiftSearcher implements Worker {
 		}
 
 		public Config(final String fastaPath, final String fastaArchivePath, final String fastaUploadPath
-				, final ServiceConfig raw2mgf, final ServiceConfig mgf2mgf, final ServiceConfig rawdump, final ServiceConfig mascot, final ServiceConfig mascotDeployer
+				, final ServiceConfig raw2mgf, final ServiceConfig msconvert,
+				      final ServiceConfig mgf2mgf, final ServiceConfig rawdump, final ServiceConfig mascot, final ServiceConfig mascotDeployer
 				, final ServiceConfig sequest, final ServiceConfig sequestDeployer, final ServiceConfig tandem, final ServiceConfig tandemDeployer
 				, final ServiceConfig omssa, final ServiceConfig omssaDeployer
 				, final ServiceConfig myrimatch, final ServiceConfig myrimatchDeployer, final ServiceConfig scaffold, final ServiceConfig scaffoldDeployer
@@ -591,6 +620,7 @@ public final class SwiftSearcher implements Worker {
 			this.fastaArchivePath = fastaArchivePath;
 			this.fastaUploadPath = fastaUploadPath;
 			this.raw2mgf = raw2mgf;
+			this.msconvert = msconvert;
 			this.mgf2mgf = mgf2mgf;
 			this.rawdump = rawdump;
 			this.mascot = mascot;
@@ -634,6 +664,10 @@ public final class SwiftSearcher implements Worker {
 
 		public ServiceConfig getRaw2mgf() {
 			return raw2mgf;
+		}
+
+		public ServiceConfig getMsconvert() {
+			return msconvert;
 		}
 
 		public ServiceConfig getMgf2mgf() {
@@ -731,6 +765,7 @@ public final class SwiftSearcher implements Worker {
 			map.put(FASTA_ARCHIVE_PATH, fastaArchivePath);
 			map.put(FASTA_UPLOAD_PATH, fastaUploadPath);
 			map.put(RAW_2_MGF, resolver.getIdFromConfig(raw2mgf));
+			map.put(MSCONVERT, resolver.getIdFromConfig(msconvert));
 			map.put(MGF_2_MGF, resolver.getIdFromConfig(mgf2mgf));
 			map.put(RAWDUMP, resolver.getIdFromConfig(rawdump));
 			map.put(MASCOT, resolver.getIdFromConfig(mascot));
@@ -762,6 +797,7 @@ public final class SwiftSearcher implements Worker {
 			fastaArchivePath = values.get(FASTA_ARCHIVE_PATH);
 			fastaUploadPath = values.get(FASTA_UPLOAD_PATH);
 			raw2mgf = (ServiceConfig) resolver.getConfigFromId(values.get(RAW_2_MGF));
+			msconvert = (ServiceConfig) resolver.getConfigFromId(values.get(MSCONVERT));
 			mgf2mgf = (ServiceConfig) resolver.getConfigFromId(values.get(MGF_2_MGF));
 			rawdump = (ServiceConfig) resolver.getConfigFromId(values.get(RAWDUMP));
 			mascot = (ServiceConfig) resolver.getConfigFromId(values.get(MASCOT));
@@ -860,6 +896,9 @@ public final class SwiftSearcher implements Worker {
 
 					.property(RAW_2_MGF, RawToMgfWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf automatically with this module. Requires <tt>extract_msn</tt> running either on a Windows machine or on a linux box through wine.")
 					.reference(RawToMgfWorker.TYPE, RawToMgfCache.TYPE, UiBuilder.NONE_TYPE)
+
+					.property(RAW_2_MGF, RawToMgfWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf using ProteoWizard's msconvert. Requires <tt>msconvert</tt> running either on a Windows machine or on a linux box through wine.")
+					.reference(MsconvertWorker.TYPE, MsconvertCache.TYPE, UiBuilder.NONE_TYPE)
 
 					.property(MGF_2_MGF, MgfToMgfWorker.NAME, "Search .mgf files directly. This module cleans up the .mgf headers so they can be used by Scaffold when merging search engine results.")
 					.reference(MgfToMgfWorker.TYPE, UiBuilder.NONE_TYPE)

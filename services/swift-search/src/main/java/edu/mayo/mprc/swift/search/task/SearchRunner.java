@@ -31,7 +31,9 @@ import java.util.concurrent.ExecutorService;
  * first creates a workflow, that is then being executed by {@link edu.mayo.mprc.workflow.engine.WorkflowEngine}.
  * <h3>Workflow creation</h3>
  * {@link #searchDefinitionToLists(edu.mayo.mprc.swift.dbmapping.SwiftSearchDefinition)} turns
- * the search definition into lists of tasks to do ({@link #rawToMgfConversions},
+ * the search definition into lists of tasks to do (
+ * {@link #rawToMgfConversions},
+ * {@link #msconvertConversions},
  * {@link #mgfCleanups},
  * {@link #databaseDeployments},
  * {@link #engineSearches},
@@ -61,6 +63,12 @@ public final class SearchRunner implements Runnable {
 	 * Value: Raw->MGF conversion task.
 	 */
 	private Map<Tuple<String, File>, RawToMgfTask> rawToMgfConversions = new HashMap<Tuple<String, File>, RawToMgfTask>();
+
+	/**
+	 * Key: (raw file, raw settings) tuple, obtained by {@link #getRawToMgfConversionHashKey(java.io.File, edu.mayo.mprc.swift.params2.ExtractMsnSettings)}.<br/>
+	 * Value: Raw->MGF conversion task.
+	 */
+	private Map<Tuple<String, File>, MsconvertTask> msconvertConversions = new HashMap<Tuple<String, File>, MsconvertTask>();
 
 	/**
 	 * Key: .mgf file obtained by {@link #getMgfCleanupHashKey(java.io.File)}.<br/>
@@ -120,6 +128,7 @@ public final class SearchRunner implements Runnable {
 	private List<Task> reportCalls = new LinkedList<Task>();
 
 	private DaemonConnection raw2mgfDaemon;
+	private DaemonConnection msconvertDaemon;
 	private DaemonConnection mgfCleanupDaemon;
 	private DaemonConnection rawDumpDaemon;
 	private DaemonConnection msmsEvalDaemon;
@@ -152,6 +161,7 @@ public final class SearchRunner implements Runnable {
 			final SwiftSearchWorkPacket packet,
 			final SwiftSearchDefinition searchDefinition,
 			final DaemonConnection raw2mgfDaemon,
+			final DaemonConnection msconvertDaemon,
 			final DaemonConnection mgfCleanupDaemon,
 			final DaemonConnection rawDumpDaemon,
 			final DaemonConnection msmsEvalDaemon,
@@ -170,6 +180,7 @@ public final class SearchRunner implements Runnable {
 		this.searchDefinition = searchDefinition;
 		this.packet = packet;
 		this.raw2mgfDaemon = raw2mgfDaemon;
+		this.msconvertDaemon = msconvertDaemon;
 		this.mgfCleanupDaemon = mgfCleanupDaemon;
 		this.rawDumpDaemon = rawDumpDaemon;
 		this.msmsEvalDaemon = msmsEvalDaemon;
@@ -249,6 +260,7 @@ public final class SearchRunner implements Runnable {
 			assert workflowEngine.getNumTasks() ==
 					databaseDeployments.size() +
 							rawToMgfConversions.size() +
+							msconvertConversions.size() +
 							mgfCleanups.size() +
 							rawDumpTasks.size() +
 							spectrumQaTasks.size() +
@@ -264,6 +276,7 @@ public final class SearchRunner implements Runnable {
 	private void collectAllTasks() {
 		workflowEngine.addAllTasks(databaseDeployments.values());
 		workflowEngine.addAllTasks(rawToMgfConversions.values());
+		workflowEngine.addAllTasks(msconvertConversions.values());
 		workflowEngine.addAllTasks(mgfCleanups.values());
 		workflowEngine.addAllTasks(rawDumpTasks.values());
 		workflowEngine.addAllTasks(spectrumQaTasks.values());
@@ -496,23 +509,42 @@ public final class SearchRunner implements Runnable {
 
 	private MgfOutput addRaw2MgfConversionStep(final FileSearch inputFile) {
 		final File file = inputFile.getInputFile();
-		final Tuple<String, File> hashKey = getRawToMgfConversionHashKey(file, searchDefinition.getSearchParameters().getExtractMsnSettings());
-		RawToMgfTask task = rawToMgfConversions.get(hashKey);
+		final ExtractMsnSettings conversionSettings = searchDefinition.getSearchParameters().getExtractMsnSettings();
 
-		if (task == null) {
-			final File mgfFile = getMgfFileLocation(inputFile);
+		final Tuple<String, File> hashKey = getRawToMgfConversionHashKey(file, conversionSettings);
 
-			task = new RawToMgfTask(
-					/*Input file*/ file,
-					/*Mgf file location*/ mgfFile,
-					/*raw2mgf command line*/ searchDefinition.getSearchParameters().getExtractMsnSettings().getCommandLineSwitches(),
-					Boolean.TRUE.equals(searchDefinition.getPublicMgfFiles()),
-					raw2mgfDaemon, fileTokenFactory, isFromScratch());
+		if (ExtractMsnSettings.EXTRACT_MSN.equals(conversionSettings.getCommand())) {
+			RawToMgfTask task = rawToMgfConversions.get(hashKey);
 
-			rawToMgfConversions.put(hashKey, task);
+			if (task == null) {
+				final File mgfFile = getMgfFileLocation(inputFile);
+
+				task = new RawToMgfTask(
+						/*Input file*/ file,
+						/*Mgf file location*/ mgfFile,
+						/*raw2mgf command line*/ searchDefinition.getSearchParameters().getExtractMsnSettings().getCommandLineSwitches(),
+						Boolean.TRUE.equals(searchDefinition.getPublicMgfFiles()),
+						raw2mgfDaemon, fileTokenFactory, isFromScratch());
+
+				rawToMgfConversions.put(hashKey, task);
+			}
+			return task;
+		} else {
+			MsconvertTask task = msconvertConversions.get(hashKey);
+
+			if (task == null) {
+				final File mgfFile = getMgfFileLocation(inputFile);
+
+				task = new MsconvertTask(
+						/*Input file*/ file,
+						/*Mgf file location*/ mgfFile,
+						Boolean.TRUE.equals(searchDefinition.getPublicMgfFiles()),
+						raw2mgfDaemon, fileTokenFactory, isFromScratch());
+
+				msconvertConversions.put(hashKey, task);
+			}
+			return task;
 		}
-
-		return task;
 	}
 
 	/**

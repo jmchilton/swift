@@ -254,7 +254,7 @@ public final class ClientProxyGenerator {
 	}
 
 	private static ClientExtractMsnSettings convertTo(final ExtractMsnSettings extractMsnSettings) {
-		return new ClientExtractMsnSettings(extractMsnSettings.getCommandLineSwitches());
+		return new ClientExtractMsnSettings(extractMsnSettings.getCommandLineSwitches(), extractMsnSettings.getCommand());
 	}
 
 	private ClientScaffoldSettings convertTo(final ScaffoldSettings scaffoldSettings) {
@@ -293,7 +293,7 @@ public final class ClientProxyGenerator {
 		if (extractMsnSettings == null) {
 			return ExtractMsnSettings.DEFAULT;
 		}
-		return new ExtractMsnSettings(extractMsnSettings.getCommandLineSwitches());
+		return new ExtractMsnSettings(extractMsnSettings.getCommandLineSwitches(), extractMsnSettings.getCommand());
 	}
 
 	public ScaffoldSettings convertFrom(final ClientScaffoldSettings scaffoldSettings) {

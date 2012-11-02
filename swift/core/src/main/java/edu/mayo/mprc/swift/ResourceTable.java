@@ -16,6 +16,8 @@ import edu.mayo.mprc.mascot.MascotDeploymentService;
 import edu.mayo.mprc.mascot.MascotWorker;
 import edu.mayo.mprc.mascot.MockMascotDeploymentService;
 import edu.mayo.mprc.mgf2mgf.MgfToMgfWorker;
+import edu.mayo.mprc.msconvert.MsconvertCache;
+import edu.mayo.mprc.msconvert.MsconvertWorker;
 import edu.mayo.mprc.msmseval.MSMSEvalWorker;
 import edu.mayo.mprc.msmseval.MsmsEvalCache;
 import edu.mayo.mprc.myrimatch.MyrimatchCache;
@@ -109,6 +111,7 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 
 		// Format converters
 		addWorkerByReflection(RawToMgfWorker.class);
+		addWorkerByReflection(MsconvertWorker.class);
 		addWorkerByReflection(MgfToMgfWorker.class);
 
 		// Special
@@ -124,6 +127,7 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 
 		// Caches
 		addWorkerByReflection(RawToMgfCache.class);
+		addWorkerByReflection(MsconvertCache.class);
 		addWorkerByReflection(MascotCache.class);
 		addWorkerByReflection(SequestCache.class);
 		addWorkerByReflection(XTandemCache.class);

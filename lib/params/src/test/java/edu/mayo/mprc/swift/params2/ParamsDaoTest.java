@@ -246,7 +246,7 @@ public final class ParamsDaoTest extends DaoTest {
 
 		params.setPeptideTolerance(new Tolerance("10 ppm"));
 		params.setFragmentTolerance(new Tolerance("0.5 Da"));
-		params.setExtractMsnSettings(new ExtractMsnSettings("-Z10"));
+		params.setExtractMsnSettings(new ExtractMsnSettings("-Z10", "extract_msn"));
 		params.setScaffoldSettings(new ScaffoldSettings(0.95, 0.95, 2, 2, null, true, true, true, true));
 
 		Instrument instrument = getSimpleInstrument();
@@ -274,7 +274,7 @@ public final class ParamsDaoTest extends DaoTest {
 		Assert.assertEquals(variableMods.getId(), variableMods2.getId(), "Empty mod set has to have identical ID");
 
 		SearchEngineParameters params2 = new SearchEngineParameters();
-		params2.setExtractMsnSettings(new ExtractMsnSettings("-Z10"));
+		params2.setExtractMsnSettings(new ExtractMsnSettings("-Z10", "extract_msn"));
 		params2.setScaffoldSettings(new ScaffoldSettings(0.95, 0.95, 2, 2, null, true, true, true, true));
 		params2.setDatabase(database);
 		params2.setFixedModifications(fixedMods);
@@ -288,7 +288,7 @@ public final class ParamsDaoTest extends DaoTest {
 		Assert.assertEquals(params2.getId(), params.getId(), "Must save as the same object");
 
 		SearchEngineParameters params3 = new SearchEngineParameters();
-		params3.setExtractMsnSettings(new ExtractMsnSettings("-Z10"));
+		params3.setExtractMsnSettings(new ExtractMsnSettings("-Z10", "extract_msn"));
 		params3.setScaffoldSettings(new ScaffoldSettings(0.95, 0.95, 2, 2, null, true, true, true, true));
 		params3.setDatabase(database);
 		params3.setFixedModifications(fixedMods);

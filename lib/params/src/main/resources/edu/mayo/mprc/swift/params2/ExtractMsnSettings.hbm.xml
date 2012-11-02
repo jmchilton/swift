@@ -9,6 +9,9 @@
             <generator class="native"/>
         </id>
 
-        <property name="commandLineSwitches" type="string" length="200" column="command_line_switches" unique="true"/>
+        <properties name="command_specification" unique="true">
+            <property name="commandLineSwitches" type="string" length="200" column="command_line_switches"/>
+            <property name="command" type="string" length="50" column="command"/>
+        </properties>
     </class>
 </hibernate-mapping>
