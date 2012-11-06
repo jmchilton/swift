@@ -897,7 +897,7 @@ public final class SwiftSearcher implements Worker {
 					.property(RAW_2_MGF, RawToMgfWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf automatically with this module. Requires <tt>extract_msn</tt> running either on a Windows machine or on a linux box through wine.")
 					.reference(RawToMgfWorker.TYPE, RawToMgfCache.TYPE, UiBuilder.NONE_TYPE)
 
-					.property(RAW_2_MGF, RawToMgfWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf using ProteoWizard's msconvert. Requires <tt>msconvert</tt> running either on a Windows machine or on a linux box through wine.")
+					.property(MSCONVERT, MsconvertWorker.NAME, "Search Thermo's .RAW files by converting them to .mgf using ProteoWizard's msconvert. Requires <tt>msconvert</tt> running either on a Windows machine or on a linux box through wine.")
 					.reference(MsconvertWorker.TYPE, MsconvertCache.TYPE, UiBuilder.NONE_TYPE)
 
 					.property(MGF_2_MGF, MgfToMgfWorker.NAME, "Search .mgf files directly. This module cleans up the .mgf headers so they can be used by Scaffold when merging search engine results.")
