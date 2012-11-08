@@ -539,7 +539,7 @@ public final class SearchRunner implements Runnable {
 						/*Input file*/ file,
 						/*Mgf file location*/ mgfFile,
 						Boolean.TRUE.equals(searchDefinition.getPublicMgfFiles()),
-						raw2mgfDaemon, fileTokenFactory, isFromScratch());
+						msconvertDaemon, fileTokenFactory, isFromScratch());
 
 				msconvertConversions.put(hashKey, task);
 			}
