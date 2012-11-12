@@ -20,6 +20,7 @@
     <modules>
         <module>db-undeploy</module>
         <module>fasta-db</module>
+        <module>idpicker</module>
         <module>mascot</module>
         <module>mgf2mgf</module>
         <module>msmseval</module>
