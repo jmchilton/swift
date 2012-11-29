@@ -40,7 +40,7 @@ public final class MsconvertWorker implements Worker {
 	/**
 	 * Maximum size of msconvert/msaccess .RAW file path.
 	 */
-	public static final int MAX_MSACCESS_PATH_SIZE = 200;
+	public static final int MAX_MSACCESS_PATH_SIZE = 120;
 	public static final String MSACCESS_SUFFIX = ".metadata.txt";
 
 	private File msconvertExecutable;
@@ -177,7 +177,7 @@ public final class MsconvertWorker implements Worker {
 		//  check if already exists (skip condition)
 		if (batchWorkPacket.isSkipIfExists()) {
 			final File mgfFile = batchWorkPacket.getOutputFile();
-			if (mgfFile.exists()) {
+			if (mgfFile.exists() && mgfFile.lastModified() >= rawFile.lastModified()) {
 				LOGGER.info(rawFile.getAbsolutePath() + " conversion already done.");
 				return true;
 			}
