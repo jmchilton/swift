@@ -44,6 +44,10 @@ public final class TestMsAccessParse {
 		Assert.fail("The corrupted file was not detected");
 	}
 
+	@Test
+	public void shouldProcessSingleSpectrumFile() {
+		Assert.assertTrue(checkFile("single_spectrum.metadata.txt"), "Single-spectrum file will be processed as profile-mode");
+	}
 
 	private boolean checkFile(final String file) {
 		final Reader reader = ResourceUtilities.getReader("classpath:edu/mayo/mprc/msconvert/" + file, getClass());

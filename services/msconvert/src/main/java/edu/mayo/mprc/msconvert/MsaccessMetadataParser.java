@@ -2,6 +2,7 @@ package edu.mayo.mprc.msconvert;
 
 import edu.mayo.mprc.MprcException;
 import edu.mayo.mprc.utilities.FileUtilities;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.regex.Matcher;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
  * @author Roman Zenka
  */
 public final class MsaccessMetadataParser {
+	private static final Logger LOGGER = Logger.getLogger(MsaccessMetadataParser.class);
 	private static final Pattern STARTING_SPACES = Pattern.compile("^(\\s*)([^:]*):?\\s*(.*)");
 	public static final int SPACES_PER_TAB = 2;
 
@@ -29,6 +31,8 @@ public final class MsaccessMetadataParser {
 	private String orbitrapConfigs = "";
 	private boolean wasAnalyzerSpecified = false;
 	private boolean wasOrbitrap = false;
+	private boolean wasInstrumentConfigurationList = false;
+	private boolean wasInstrumentConfiguration = false;
 	private String source = "";
 
 	/**
@@ -88,21 +92,34 @@ public final class MsaccessMetadataParser {
 	}
 
 	private void processingEnded() {
-		if (!wasAnalyzerSpecified) {
+		if (!wasAnalyzerSpecified && wasInstrumentConfigurationList && wasInstrumentConfiguration) {
 			throw new MprcException("The msaccess metadata file [" + source + "] is likely corrupted.\ninstrumentConfigurationList.instrumentConfiguration.componentList.analyzer.cvParam field missing.");
+		}
+		if (wasInstrumentConfigurationList && !wasInstrumentConfiguration) {
+			LOGGER.error("The msaccess metadata file [" + source + "] does not specify any instrument configuration. This could be caused by a file artificially created by QualBrowser. Processing with peak picking to be safe.");
 		}
 		orbitrapConfigs += wasOrbitrap ? "O" : ".";
 	}
 
 	public boolean isOrbitrapForMs2() {
-		return "O".equals(orbitrapConfigs) || ".O".equals(orbitrapConfigs) || "OO".equals(orbitrapConfigs);
+		return isUnspecifiedInstrumentConfiguration()
+				||
+				"O".equals(orbitrapConfigs) || ".O".equals(orbitrapConfigs) || "OO".equals(orbitrapConfigs);
+	}
+
+	private boolean isUnspecifiedInstrumentConfiguration() {
+		return wasInstrumentConfigurationList && !wasInstrumentConfiguration;
 	}
 
 	private void processKeyValue(String key, String value) {
 		// Now our stack knows exactly where are we in the tree.
+		if ("instrumentConfigurationList".equals(key)) {
+			wasInstrumentConfigurationList = true;
+		}
 		if ("instrumentConfigurationList/instrumentConfiguration".equals(key)) {
 			orbitrapConfigs += wasOrbitrap ? "O" : ".";
 			wasOrbitrap = false;
+			wasInstrumentConfiguration = true;
 		}
 		if ("instrumentConfigurationList/instrumentConfiguration/componentList/analyzer/cvParam".equals(key)) {
 			wasAnalyzerSpecified = true;

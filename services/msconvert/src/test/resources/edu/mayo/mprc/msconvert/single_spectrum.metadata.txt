@@ -1,0 +1,22 @@
+fileDescription:
+  fileContent:
+    cvParam: MSn spectrum
+  sourceFileList:
+    sourceFile:
+      id: RAW1
+      name: QE1_2012oct8_02_100_yeast_t10_Spectra_19030-qb.raw
+      location: file:///Z:/mnt/mprc/instruments/QE1/2012_Data/z09_qe1_2012september
+      cvParam: Thermo nativeID format
+      cvParam: Thermo RAW file
+sampleList:
+instrumentConfigurationList:
+softwareList:
+  software:
+    id: Xcalibur
+    version:
+    cvParam: Xcalibur
+  software:
+    id: pwiz
+    version: 3.0.4019
+    cvParam: ProteoWizard
+dataProcessingList
