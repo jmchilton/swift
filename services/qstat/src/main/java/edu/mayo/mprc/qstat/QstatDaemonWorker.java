@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public final class QstatDaemonWorker implements Worker {
 	public static final String TYPE = "qstat";
-	public static final String NAME = "qstat";
+	public static final String NAME = "Qstat";
 	public static final String DESC = "A trivial daemon running <tt>qstat</tt> command to retrieve status of a job running in Sun Grid Engine. This is used only in the web interface and is provided for convenience only. The module has to be enabled on a computer that is Sun Grid Engine submit host.";
 
 	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {

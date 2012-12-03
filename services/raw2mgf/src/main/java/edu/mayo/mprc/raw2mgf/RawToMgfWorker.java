@@ -39,7 +39,7 @@ import static java.util.Arrays.sort;
 public final class RawToMgfWorker implements Worker {
 	private static final Logger LOGGER = Logger.getLogger(RawToMgfWorker.class);
 	public static final String TYPE = "raw2mgf";
-	public static final String NAME = ".RAW to .mgf Conversion";
+	public static final String NAME = "Extract_msn";
 	public static final String DESC = "<p>Converts Thermo's .RAW files to Mascot Generic Format (.mgf). Without this module, Swift cannot process <tt>.RAW</tt> files.</p><p>We are using <tt>extract_msn</tt> from XCalibur, which is a windows program. On Linux we execute extract_msn using <tt>wine</tt>, which has to be installed prior to using the convertor.</p>";
 	private File tempFolder = new File(".");
 	private File extractMsnExecutable;

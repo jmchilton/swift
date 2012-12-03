@@ -1,9 +1,6 @@
 package edu.mayo.mprc.utilities;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
+import com.google.common.base.*;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -843,7 +840,7 @@ public final class FileUtilities {
 		final FileExists fileExists = new FileExists();
 		while (true) {
 			Iterables.removeIf(currentSet, fileExists);
-			if(currentSet.isEmpty()) {
+			if (currentSet.isEmpty()) {
 				break;
 			}
 			try {
@@ -853,7 +850,7 @@ public final class FileUtilities {
 			}
 			// After 5 seconds of the file not being there, notify the user we are waiting for it to appear
 			if (new Date().getTime() - warnStartTime > WAIT_FOR_FILE_TIMEOUT) {
-				LOGGER.debug("Waiting for "+ currentSet.size() + " files to appear. Timeout " + (msTimeout / MS_PER_SECOND) + " seconds.");
+				LOGGER.debug("Waiting for " + currentSet.size() + " files to appear. Timeout " + (msTimeout / MS_PER_SECOND) + " seconds.");
 				warnStartTime = new Date().getTime();
 			}
 			if (new Date().getTime() - startTime > msTimeout) {
@@ -1710,6 +1707,14 @@ public final class FileUtilities {
 		@Override
 		public boolean apply(@Nullable final File input) {
 			return input.exists();
+		}
+	}
+
+	public static class AbsolutePath implements Function<File, String> {
+
+		@Override
+		public String apply(File from) {
+			return from == null ? null : from.getAbsolutePath();
 		}
 	}
 }

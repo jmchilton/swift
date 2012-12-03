@@ -32,7 +32,7 @@ import java.util.TreeMap;
 public final class MsconvertWorker implements Worker {
 	private static final Logger LOGGER = Logger.getLogger(MsconvertWorker.class);
 	public static final String TYPE = "msconvert";
-	public static final String NAME = ".RAW to .mgf Conversion using msconvert";
+	public static final String NAME = "Msconvert";
 	public static final String DESC = "<p>Converts Thermo's .RAW files to Mascot Generic Format (.mgf) using ProteoWizard's <tt>msconvert</tt>. " +
 			"Without this module, Swift cannot process <tt>.RAW</tt> files.</p>" +
 			"<p>You need to supply scripts capable of executing <tt>msconvert.exe</tt> and <tt>msaccess.exe</tt>, which is not trivial on Linux.</p>" +

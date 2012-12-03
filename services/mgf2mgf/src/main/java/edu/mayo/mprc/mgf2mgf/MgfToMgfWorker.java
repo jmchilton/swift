@@ -18,7 +18,7 @@ import java.util.Map;
 public final class MgfToMgfWorker implements Worker {
 
 	public static final String TYPE = "mgf2mgf";
-	public static final String NAME = ".mgf Cleanup";
+	public static final String NAME = "Mgf Cleanup";
 	public static final String DESC = "Swift expects <tt>.mgf</tt> headers to be in certain format (indicate the spectrum), so the results of the search engines can be more easily pieced together. If you want to search .mgf files directly, the cleaner has to check that the headers are okay and modify them if they are not. Without this module, Swift cannot process <tt>.mgf</tt> files.";
 
 	public void processRequest(final WorkPacket workPacket, final ProgressReporter progressReporter) {

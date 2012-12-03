@@ -3,8 +3,7 @@ package edu.mayo.mprc.swift.configuration.client.view;
 import com.google.gwt.user.client.ui.*;
 import edu.mayo.mprc.swift.configuration.client.model.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class DaemonWrapper extends SimplePanel {
 	private final DaemonModel daemonModel;
@@ -14,6 +13,13 @@ public final class DaemonWrapper extends SimplePanel {
 	private Map<ResourceModel, ModuleConfigUis> uis = new HashMap<ResourceModel, ModuleConfigUis>();
 	private DaemonView daemonConfigUI;
 	private Context context;
+
+	private static class InfoComparator implements Comparator<AvailableModules.Info> {
+		@Override
+		public int compare(AvailableModules.Info o1, AvailableModules.Info o2) {
+			return o1.getName().compareToIgnoreCase(o2.getName());
+		}
+	}
 
 	private class ModuleConfigUis {
 		private ModuleConfigUis(final ModuleWrapper moduleWrapper, final RunnerView runner) {
@@ -49,8 +55,14 @@ public final class DaemonWrapper extends SimplePanel {
 		this.daemonModel.addListener(new MyDaemonModelListener());
 
 		newModulePicker = new ListBox(false);
-		for (final AvailableModules.Info info : availableModules.getModuleInfos()) {
-			newModulePicker.addItem(info.getName(), info.getType());
+		final Collection<AvailableModules.Info> moduleInfos = availableModules.getModuleInfos();
+		final List<AvailableModules.Info> moduleInfoList = new ArrayList<AvailableModules.Info>(moduleInfos);
+		Collections.sort(moduleInfoList, new InfoComparator());
+
+		for (final AvailableModules.Info info : moduleInfoList) {
+			if (info.isModule()) {
+				newModulePicker.addItem(info.getName(), info.getType());
+			}
 		}
 
 		newModuleButton = new Button("Add new module");

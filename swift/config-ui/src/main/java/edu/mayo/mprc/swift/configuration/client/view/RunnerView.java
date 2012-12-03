@@ -64,15 +64,17 @@ public final class RunnerView extends SimplePanel {
 	private void updateProperties(final ResourceModel model, final HashMap<String, String> properties) {
 		for (final Map.Entry<String, String> entry : properties.entrySet()) {
 			model.setProperty(entry.getKey(), entry.getValue());
+			model.firePropertyChange(entry.getKey(), entry.getValue());
 		}
 	}
 
 	public void setModel(final ResourceModel model) {
+		localRunnerView.setModel(model);
+		sgeRunnerView.setModel(model);
+
 		if ("localRunner".equals(model.getType())) {
-			localRunnerView.setModel(model);
 			runnerType.selectTab(0);
 		} else if ("sgeRunner".equals(model.getType())) {
-			sgeRunnerView.setModel(model);
 			runnerType.selectTab(1);
 		} else {
 			throw new RuntimeException("Unsupported runner " + model.getClass().getName());

@@ -10,7 +10,7 @@ import edu.mayo.mprc.daemon.WorkCache;
 public final class MsmsEvalCache extends WorkCache<MSMSEvalWorkPacket> {
 
 	public static final String TYPE = "msmsEvalCache";
-	public static final String NAME = "msmsEval Cache";
+	public static final String NAME = "MsmsEval Cache";
 	public static final String DESC = "Caches previous evaluation of MSMS spectra quality.";
 
 	public MsmsEvalCache() {

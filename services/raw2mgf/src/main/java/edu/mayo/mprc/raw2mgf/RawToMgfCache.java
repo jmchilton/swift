@@ -10,7 +10,7 @@ import edu.mayo.mprc.daemon.WorkCache;
 public final class RawToMgfCache extends WorkCache<RawToMgfWorkPacket> {
 
 	public static final String TYPE = "raw2mgfCache";
-	public static final String NAME = ".RAW to .mgf Cache";
+	public static final String NAME = "Extract_msn Cache";
 	public static final String DESC = "<p>Caches .mgf files previously converted from .RAW. This can speed up operation if one file is being processed multiple times.</p>";
 
 	public RawToMgfCache() {

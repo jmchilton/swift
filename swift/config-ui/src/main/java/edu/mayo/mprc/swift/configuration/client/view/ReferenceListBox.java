@@ -3,6 +3,9 @@ package edu.mayo.mprc.swift.configuration.client.view;
 import com.google.gwt.user.client.ui.*;
 import edu.mayo.mprc.swift.configuration.client.model.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -106,6 +109,8 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 		model.addListener(new MyApplicationModelListener());
 		for (final DaemonModel daemonModel : model.getDaemons()) {
 			daemonModel.addListener(daemonModelListener);
+			final ArrayList<ResourceModel> children = daemonModel.getChildren();
+			Collections.sort(children, new ResourceModelComparator());
 			for (final ResourceModel module : daemonModel.getChildren()) {
 				addResourceModel(module);
 			}
@@ -171,6 +176,13 @@ public final class ReferenceListBox extends SimplePanel implements SourcesChange
 	public void removeChangeListener(final ChangeListener changeListener) {
 		if (changeListeners != null) {
 			changeListeners.remove(changeListener);
+		}
+	}
+
+	private static class ResourceModelComparator implements Comparator<ResourceModel> {
+		@Override
+		public int compare(ResourceModel o1, ResourceModel o2) {
+			return o1.getName().compareToIgnoreCase(o2.getName());
 		}
 	}
 

@@ -32,7 +32,7 @@ public final class MSMSEvalWorker implements Worker {
 
 	private static final Logger LOGGER = Logger.getLogger(MSMSEvalWorker.class);
 	public static final String TYPE = "msmsEval";
-	public static final String NAME = "msmsEval";
+	public static final String NAME = "MsmsEval";
 	public static final String DESC = "Evaluates the quality of spectra. See <a href=\"http://proteomics.ucd.ie/msmseval/\">http://proteomics.ucd.ie/msmseval/</a> for more information.";
 
 	private File msmsEvalExecutable;
