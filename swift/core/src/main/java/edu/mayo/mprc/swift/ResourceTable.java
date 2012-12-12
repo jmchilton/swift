@@ -11,6 +11,8 @@ import edu.mayo.mprc.daemon.WorkerFactoryBase;
 import edu.mayo.mprc.database.DatabaseFactory;
 import edu.mayo.mprc.dbundeploy.DatabaseUndeployerWorker;
 import edu.mayo.mprc.fastadb.FastaDbWorker;
+import edu.mayo.mprc.idpicker.IdpickerCache;
+import edu.mayo.mprc.idpicker.IdpickerWorker;
 import edu.mayo.mprc.mascot.MascotCache;
 import edu.mayo.mprc.mascot.MascotDeploymentService;
 import edu.mayo.mprc.mascot.MascotWorker;
@@ -98,6 +100,7 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		addWorkerByReflection(MyrimatchWorker.class);
 		addWorkerByReflection(ScaffoldWorker.class);
 		addWorkerByReflection(Scaffold3Worker.class);
+		addWorkerByReflection(IdpickerWorker.class);
 
 		// DB deployers
 		addWorker(MascotDeploymentService.TYPE, MascotDeploymentService.NAME, MascotDeploymentService.Config.class, getMascotDeployerWorkerFactory(), new MascotDeploymentService.Ui(), MascotDeploymentService.DESC);
@@ -135,6 +138,7 @@ public final class ResourceTable extends FactoryBase<ResourceConfig, Object> imp
 		addWorkerByReflection(OmssaCache.class);
 		addWorkerByReflection(RAWDumpCache.class);
 		addWorkerByReflection(MsmsEvalCache.class);
+		addWorkerByReflection(IdpickerCache.class);
 
 		// Resources
 		addResource(DatabaseFactory.TYPE, DatabaseFactory.NAME, DatabaseFactory.Config.class, getDatabaseFactory(), new DatabaseFactory.Ui(), DatabaseFactory.DESC);

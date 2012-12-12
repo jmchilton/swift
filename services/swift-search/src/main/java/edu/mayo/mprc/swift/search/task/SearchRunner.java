@@ -74,7 +74,7 @@ public final class SearchRunner implements Runnable {
 	 * Key: .mgf file obtained by {@link #getMgfCleanupHashKey(java.io.File)}.<br/>
 	 * Value: Mgf cleanup task
 	 */
-	private Map<File, MgfOutput> mgfCleanups = new HashMap<File, MgfOutput>();
+	private Map<File, FileProducingTask> mgfCleanups = new HashMap<File, FileProducingTask>();
 
 	/**
 	 * Key: raw file<br/>
@@ -329,6 +329,10 @@ public final class SearchRunner implements Runnable {
 		return getSearchEngine("SCAFFOLD3");
 	}
 
+	private SearchEngine getIdpickerEngine() {
+		return getSearchEngine("IDPICKER");
+	}
+
 	/**
 	 * Save parameter files to the disk.
 	 */
@@ -359,7 +363,7 @@ public final class SearchRunner implements Runnable {
 	}
 
 	void addInputFileToLists(final FileSearch inputFile, final boolean publicSearchFiles) {
-		final MgfOutput mgfOutput = addMgfProducingProcess(inputFile);
+		final FileProducingTask mgfOutput = addMgfProducingProcess(inputFile);
 		addInputAnalysis(inputFile, mgfOutput);
 
 		final SearchEngine scaffold = getScaffoldEngine();
@@ -376,15 +380,17 @@ public final class SearchRunner implements Runnable {
 					addDatabaseDeployment(scaffold3, null/*scaffold has no param file*/,
 							searchDefinition.getSearchParameters().getDatabase());
 		}
+		final SearchEngine idpicker = getIdpickerEngine();
 
 		ScaffoldTask scaffoldTask = null;
 		Scaffold3Task scaffold3Task = null;
 
 		// Go through all possible search engines this file requires
 		for (final SearchEngine engine : searchEngines) {
-			// All non-scaffold searches get normal entries
+			// All 'normal' searches get normal entries
 			// While building these, the Scaffold search entry itself is initialized in a separate list
-			if (!isScaffoldEngine(engine) && inputFile.getEnabledEngines().isEnabled(engine.getCode())) {
+			// The IDPicker search is special as well, it is set up to process the results of the myrimatch search
+			if (isNormalEngine(engine) && inputFile.getEnabledEngines().isEnabled(engine.getCode())) {
 				final File paramFile = getParamFile(engine);
 
 				DatabaseDeploymentResult deploymentResult = null;
@@ -395,7 +401,7 @@ public final class SearchRunner implements Runnable {
 					deploymentResult = addDatabaseDeployment(engine, paramFile, searchDefinition.getSearchParameters().getDatabase());
 				}
 				final File outputFolder = getOutputFolderForSearchEngine(engine);
-				final EngineSearchTask search = addEngineSearch(engine, paramFile, inputFile, outputFolder, mgfOutput, deploymentResult, publicSearchFiles);
+				final EngineSearchTask search = addEngineSearch(engine, paramFile, inputFile.getInputFile(), outputFolder, mgfOutput, deploymentResult, publicSearchFiles);
 				if (searchWithScaffold2(inputFile)) {
 					if (scaffoldDeployment == null) {
 						throw new MprcException("Scaffold search submitted without having Scaffold service enabled.");
@@ -418,6 +424,18 @@ public final class SearchRunner implements Runnable {
 						addQaTask(inputFile, scaffold3Task, mgfOutput);
 					}
 				}
+				// If IDPIcker is on, we chain an IDPicker call to the output of the previous search engine.
+				// We support Myrimatch only for now
+				if (searchWithIdpicker(inputFile) && "MYRIMATCH".equals(engine.getCode())) {
+					addEngineSearch(
+							idpicker,
+							getParamFile(idpicker),
+							search.getOutputFile(),
+							getOutputFolderForSearchEngine(idpicker),
+							search,
+							null,
+							true);
+				}
 			}
 		}
 
@@ -438,12 +456,18 @@ public final class SearchRunner implements Runnable {
 		return inputFile.isSearch("SCAFFOLD3");
 	}
 
+	private boolean searchWithIdpicker(final FileSearch inputFile) {
+		return inputFile.isSearch("IDPICKER");
+	}
+
 	private boolean sequest(final SearchEngine engine) {
 		return "SEQUEST".equalsIgnoreCase(engine.getCode());
 	}
 
-	private boolean isScaffoldEngine(final SearchEngine engine) {
-		return "SCAFFOLD".equalsIgnoreCase(engine.getCode()) || "SCAFFOLD3".equalsIgnoreCase(engine.getCode());
+	private boolean isNormalEngine(final SearchEngine engine) {
+		return !"SCAFFOLD".equalsIgnoreCase(engine.getCode()) &&
+				!"SCAFFOLD3".equalsIgnoreCase(engine.getCode()) &&
+				!"IDPICKER".equalsIgnoreCase(engine.getCode());
 	}
 
 	private void addParamFile(final String engineCode, final File file) {
@@ -461,7 +485,7 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile Input file to analyze.
 	 * @param mgf       Mgf of the input file.
 	 */
-	private void addInputAnalysis(final FileSearch inputFile, final MgfOutput mgf) {
+	private void addInputAnalysis(final FileSearch inputFile, final FileProducingTask mgf) {
 		// TODO: Extract metadata from the input file
 
 		// Analyze spectrum quality if requested
@@ -494,10 +518,10 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile file to convert.
 	 * @return Task capable of producing an mgf (either by conversion or by cleaning up an existing mgf).
 	 */
-	MgfOutput addMgfProducingProcess(final FileSearch inputFile) {
+	FileProducingTask addMgfProducingProcess(final FileSearch inputFile) {
 		final File file = inputFile.getInputFile();
 
-		MgfOutput mgfOutput = null;
+		FileProducingTask mgfOutput = null;
 		// First, make sure we have a valid mgf, no matter what input we got
 		if (file.getName().endsWith(".mgf")) {
 			mgfOutput = addMgfCleanupStep(inputFile);
@@ -507,7 +531,7 @@ public final class SearchRunner implements Runnable {
 		return mgfOutput;
 	}
 
-	private MgfOutput addRaw2MgfConversionStep(final FileSearch inputFile) {
+	private FileProducingTask addRaw2MgfConversionStep(final FileSearch inputFile) {
 		final File file = inputFile.getInputFile();
 		final ExtractMsnSettings conversionSettings = searchDefinition.getSearchParameters().getExtractMsnSettings();
 
@@ -550,9 +574,9 @@ public final class SearchRunner implements Runnable {
 	/**
 	 * We have already made .mgf file. Because it can be problematic, we need to clean it up
 	 */
-	private MgfOutput addMgfCleanupStep(final FileSearch inputFile) {
+	private FileProducingTask addMgfCleanupStep(final FileSearch inputFile) {
 		final File file = inputFile.getInputFile();
-		MgfOutput mgfOutput = mgfCleanups.get(getMgfCleanupHashKey(file));
+		FileProducingTask mgfOutput = mgfCleanups.get(getMgfCleanupHashKey(file));
 		if (mgfOutput == null) {
 			final File outputFile = getMgfFileLocation(inputFile);
 			mgfOutput = new MgfTitleCleanupTask(mgfCleanupDaemon, file, outputFile, fileTokenFactory, isFromScratch());
@@ -567,7 +591,7 @@ public final class SearchRunner implements Runnable {
 	 * @param inputFile Input file
 	 * @param mgf       .mgf for the input file
 	 */
-	private void addSpectrumQualityAnalysis(final FileSearch inputFile, final MgfOutput mgf) {
+	private void addSpectrumQualityAnalysis(final FileSearch inputFile, final FileProducingTask mgf) {
 		if (inputFile == null) {
 			throw new MprcException("Bug: Input file must not be null");
 		}
@@ -616,7 +640,7 @@ public final class SearchRunner implements Runnable {
 		return packet.isFromScratch();
 	}
 
-	private void addQaTask(final FileSearch inputFile, final ScaffoldTaskI scaffoldTask, final MgfOutput mgfOutput) {
+	private void addQaTask(final FileSearch inputFile, final ScaffoldTaskI scaffoldTask, final FileProducingTask mgfOutput) {
 		if (qaDaemon != null) {
 			if (qaTask == null) {
 				qaTask = new QaTask(qaDaemon, fileTokenFactory, isFromScratch());
@@ -757,16 +781,15 @@ public final class SearchRunner implements Runnable {
 	 * <p/>
 	 * The search also knows about the conversion and db deployment so it can determine when it can run.
 	 */
-	private EngineSearchTask addEngineSearch(final SearchEngine engine, final File paramFile, final FileSearch inputFile, final File searchOutputFolder, final MgfOutput mgfOutput, final DatabaseDeploymentResult deploymentResult, final boolean publicSearchFiles) {
-		final File rawOrMgfFile = inputFile.getInputFile();
-		final String searchKey = getEngineSearchHashKey(engine, rawOrMgfFile);
+	private EngineSearchTask addEngineSearch(final SearchEngine engine, final File paramFile, final File inputFile, final File searchOutputFolder, final FileProducingTask fileProducingTask, final DatabaseDeploymentResult deploymentResult, final boolean publicSearchFiles) {
+		final String searchKey = getEngineSearchHashKey(engine, inputFile);
 		EngineSearchTask search = engineSearches.get(searchKey);
 		if (search == null) {
-			final File outputFile = getSearchResultLocation(engine, searchOutputFolder, rawOrMgfFile);
+			final File outputFile = getSearchResultLocation(engine, searchOutputFolder, inputFile);
 			search = new EngineSearchTask(
 					engine,
-					rawOrMgfFile.getName(),
-					mgfOutput,
+					inputFile.getName(),
+					fileProducingTask,
 					deploymentResult,
 					outputFile,
 					paramFile,
@@ -776,7 +799,7 @@ public final class SearchRunner implements Runnable {
 					isFromScratch());
 
 			// Depend on the .mgf to be done and on the database deployment
-			search.addDependency(mgfOutput);
+			search.addDependency(fileProducingTask);
 			if (deploymentResult instanceof Task) {
 				search.addDependency((Task) deploymentResult);
 			}

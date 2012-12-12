@@ -48,8 +48,29 @@ public final class IdpQonvertSettings implements Serializable {
 	}
 
 	private static DecimalFormat FORMAT = new DecimalFormat("0.########");
+
 	private static String dbl(final double value) {
 		return FORMAT.format(value);
+	}
+
+	/**
+	 * @return The list of settings as a big string to be written into a config file.
+	 *         The settings should have the same effect as if specified on the command line.
+	 */
+	public String toConfigFile() {
+		StringBuilder builder = new StringBuilder(2000);
+		boolean key = true;
+		for (String item : toCommandLine()) {
+			if (key) {
+				builder.append(item.substring(1))
+						.append("=\"");
+			} else {
+				builder.append(item)
+						.append("\"\n");
+			}
+			key = !key;
+		}
+		return builder.toString();
 	}
 
 	public List<String> toCommandLine() {
